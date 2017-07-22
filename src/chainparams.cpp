@@ -126,7 +126,9 @@ public:
 
         // Note that of those with the service bits flag, most only support a subset of possible options
 
-        vSeeds.emplace_back("134.255.221.7", false); // Globaltoken Base Node
+        vSeeds.emplace_back("134.255.221.7", false); // Globaltoken base node
+		vSeeds.emplace_back("coinminers.net", false); // Official GlobalToken pool's IP
+		vSeeds.emplace_back("lameserver.de", false); // GlobalToken Node by Astrali
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,38);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
@@ -200,7 +202,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1551398400; // Fri, 01 Mar 2019.
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000001f057509eba81aed91");
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000100010001");
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"); //0
