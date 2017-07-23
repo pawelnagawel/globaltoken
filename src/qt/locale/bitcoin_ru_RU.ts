@@ -58,6 +58,10 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken Core</translation>
+    </message>
+	<message>
         <source>Bitcoin</source>
         <translation>Bitcoin Core</translation>
     </message>
@@ -226,14 +230,18 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     <message>
+        <source>Globaltoken Core</source>
+        <translation>Globaltoken Core</translation>
+    </message>
+	<message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
     </message>
     <message>
         <source>Whitelisted peers cannot be DoS banned and their transactions are always relayed, even if they are already in the mempool, useful e.g. for a gateway</source>
-        <translation>bitcoin-core</translation>
+        <translation>globaltoken-core</translation>
     </message>
     <message>
         <source>Information</source>

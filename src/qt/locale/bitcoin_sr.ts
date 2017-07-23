@@ -130,7 +130,7 @@
         <translation>Промени &amp;лозинку...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Globaltoken address</source>
         <translation>Пошаљите новац на globaltoken адресу</translation>
     </message>
     <message>
@@ -442,7 +442,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     <message>
         <source>Options:</source>
         <translation>Opcije</translation>

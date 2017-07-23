@@ -13,7 +13,7 @@ can be found in the contrib/init folder.
 1. Service User
 ---------------------------------
 
-All three Linux startup configurations assume the existence of a "bitcoin" user
+All three Linux startup configurations assume the existence of a "globaltoken" user
 and group.  They must be created before attempting to use these scripts.
 The OS X configuration assumes globaltokend will be set up for the current user.
 
@@ -44,7 +44,7 @@ This allows for running globaltokend without having to do any manual configurati
 relative to the data directory. `wallet` *only* supports relative paths.
 
 For an example configuration file that describes the configuration settings,
-see `contrib/debian/examples/bitcoin.conf`.
+see `contrib/debian/examples/globaltoken.conf`.
 
 3. Paths
 ---------------------------------
@@ -54,23 +54,23 @@ see `contrib/debian/examples/bitcoin.conf`.
 All three configurations assume several paths that might need to be adjusted.
 
 Binary:              `/usr/bin/globaltokend`  
-Configuration file:  `/etc/bitcoin/bitcoin.conf`  
+Configuration file:  `/etc/globaltoken/globaltoken.conf`  
 Data directory:      `/var/lib/globaltokend`  
 PID file:            `/var/run/globaltokend/globaltokend.pid` (OpenRC and Upstart) or `/var/lib/globaltokend/globaltokend.pid` (systemd)  
 Lock file:           `/var/lock/subsys/globaltokend` (CentOS)  
 
 The configuration file, PID directory (if applicable) and data directory
-should all be owned by the bitcoin user and group.  It is advised for security
+should all be owned by the globaltoken user and group.  It is advised for security
 reasons to make the configuration file and data directory only readable by the
-bitcoin user and group.  Access to bitcoin-cli and other globaltokend rpc clients
+globaltoken user and group.  Access to globaltoken-cli and other globaltokend rpc clients
 can then be controlled by group membership.
 
 3b) Mac OS X
 
 Binary:              `/usr/local/bin/globaltokend`  
-Configuration file:  `~/Library/Application Support/Bitcoin/bitcoin.conf`  
-Data directory:      `~/Library/Application Support/Bitcoin`
-Lock file:           `~/Library/Application Support/Bitcoin/.lock`
+Configuration file:  `~/Library/Application Support/Globaltoken/globaltoken.conf`  
+Data directory:      `~/Library/Application Support/Globaltoken`
+Lock file:           `~/Library/Application Support/Globaltoken/.lock`
 
 4. Installing Service Configuration
 -----------------------------------
@@ -109,14 +109,14 @@ setting the BITCOIND and FLAGS environment variables in the file
 
 4e) Mac OS X
 
-Copy org.bitcoin.globaltokend.plist into ~/Library/LaunchAgents. Load the launch agent by
-running `launchctl load ~/Library/LaunchAgents/org.bitcoin.globaltokend.plist`.
+Copy org.globaltoken.globaltokend.plist into ~/Library/LaunchAgents. Load the launch agent by
+running `launchctl load ~/Library/LaunchAgents/org.globaltoken.globaltokend.plist`.
 
 This Launch Agent will cause globaltokend to start whenever the user logs in.
 
 NOTE: This approach is intended for those wanting to run globaltokend as the current user.
-You will need to modify org.bitcoin.globaltokend.plist if you intend to use it as a
-Launch Daemon with a dedicated bitcoin user.
+You will need to modify org.globaltoken.globaltokend.plist if you intend to use it as a
+Launch Daemon with a dedicated globaltoken user.
 
 5. Auto-respawn
 -----------------------------------
