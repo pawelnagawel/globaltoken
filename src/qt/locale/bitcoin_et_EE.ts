@@ -130,8 +130,8 @@
         <translation>Kõvakettal olevate plokkide reindekseerimine...</translation>
     </message>
     <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -754,12 +754,16 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     <message>
         <source>Options:</source>
         <translation>Valikud:</translation>
     </message>
     <message>
+        <source>Globaltoken Core</source>
+        <translation>Globaltoken Core</translation>
+    </message>
+	<message>
         <source>Bitcoin Core</source>
         <translation>Bitcoin Core</translation>
     </message>

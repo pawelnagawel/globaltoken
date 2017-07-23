@@ -202,6 +202,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     </context>
 </TS>
