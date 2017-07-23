@@ -489,7 +489,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Craidd Bitcoin</translation>
+        <translation>Craidd Globaltoken</translation>
     </message>
     <message>
         <source>Information</source>

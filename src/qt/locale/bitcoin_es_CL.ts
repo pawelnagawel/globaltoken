@@ -777,7 +777,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>bitcoin core</translation>
+        <translation>globaltoken core</translation>
     </message>
     <message>
         <source>Error loading block database</source>

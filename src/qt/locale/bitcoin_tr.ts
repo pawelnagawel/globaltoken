@@ -3055,7 +3055,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Bitcoin Çekirdeği</translation>
+        <translation>Globaltoken Çekirdeği</translation>
     </message>
     <message>
         <source>Globaltoken Core</source>

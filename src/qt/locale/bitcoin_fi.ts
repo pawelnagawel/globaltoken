@@ -62,8 +62,8 @@
         <translation>Vastaanotto-osoitteet</translation>
     </message>
     <message>
-        <source>These are your Bitcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Nämä ovat Bitcoin-osoitteesi maksujen lähettämistä varten. Tarkista aina määrä ja vastaanotto-osoite ennen kolikoiden lähettämistä.</translation>
+        <source>These are your Globaltoken addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Nämä ovat Globaltoken-osoitteesi maksujen lähettämistä varten. Tarkista aina määrä ja vastaanotto-osoite ennen kolikoiden lähettämistä.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -2143,7 +2143,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Bitcoin-ydin</translation>
+        <translation>Globaltoken-ydin</translation>
     </message>
     <message>
         <source>The %s developers</source>

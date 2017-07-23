@@ -70,7 +70,7 @@
         <translation>Globaltoken Core</translation>
     </message>
 	<message>
-        <source>Bitcoin</source>
+        <source>Globaltoken</source>
         <translation>Bitcoin Core</translation>
     </message>
     <message>
