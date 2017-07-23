@@ -757,7 +757,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Kapilubluban ning Bitcoin</translation>
+        <translation>Kapilubluban ning Globaltoken</translation>
     </message>
     <message>
         <source>Block creation options:</source>

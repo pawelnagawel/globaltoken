@@ -789,7 +789,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Berthama Bitcoin</translation>
+        <translation>Berthama Globaltoken</translation>
     </message>
     <message>
         <source>Information</source>

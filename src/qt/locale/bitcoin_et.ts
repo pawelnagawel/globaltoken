@@ -1763,7 +1763,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Bitcoini tuumik</translation>
+        <translation>Globaltokeni tuumik</translation>
     </message>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>

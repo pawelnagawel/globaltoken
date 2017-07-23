@@ -609,7 +609,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>nucleo Bitcoin</translation>
+        <translation>nucleo Globaltoken</translation>
     </message>
     <message>
         <source>&lt;category&gt; can be:</source>

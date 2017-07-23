@@ -3063,7 +3063,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Bitcoin のコア</translation>
+        <translation>Globaltoken のコア</translation>
     </message>
     <message>
         <source>The %s developers</source>
