@@ -9,10 +9,10 @@ BITCOINCLI=${BITCOINCLI:-$SRCDIR/bitcoin-cli}
 BITCOINTX=${BITCOINTX:-$SRCDIR/globaltoken-tx}
 BITCOINQT=${BITCOINQT:-$SRCDIR/qt/globaltoken-qt}
 
-[ ! -x $BITCOIND ] && echo "$BITCOIND not found or not executable." && exit 1
+[ ! -x $BITCOIND ] && echo "$GLOBALTOKEND not found or not executable." && exit 1
 
 # The autodetected version git tag can screw up manpage output a little bit
-BTCVER=($($BITCOINCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
+BTCVER=($($GLOBALTOKENCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
 
 # Create a footer file with copyright content.
 # This gets autodetected fine for globaltokend if --version-string is not set,
