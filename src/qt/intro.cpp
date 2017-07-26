@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2017 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -22,9 +23,9 @@
 
 static const uint64_t GB_BYTES = 1000000000LL;
 /* Minimum free space (in GB) needed for data directory */
-static const uint64_t BLOCK_CHAIN_SIZE = 120;
+static const uint64_t BLOCK_CHAIN_SIZE = 1;
 /* Minimum free space (in GB) needed for data directory when pruned; Does not include prune target */
-static const uint64_t CHAIN_STATE_SIZE = 2;
+static const uint64_t CHAIN_STATE_SIZE = 1;
 /* Total required space (in GB) depending on user choice (prune, not prune) */
 static uint64_t requiredSpace;
 
@@ -126,8 +127,8 @@ Intro::Intro(QWidget *parent) :
     ui->lblExplanation1->setText(ui->lblExplanation1->text()
         .arg(tr(PACKAGE_NAME))
         .arg(BLOCK_CHAIN_SIZE)
-        .arg(2009)
-        .arg(tr("Bitcoin"))
+        .arg(2016)
+        .arg(tr("Globaltoken"))
     );
     ui->lblExplanation2->setText(ui->lblExplanation2->text().arg(tr(PACKAGE_NAME)));
 
@@ -146,7 +147,7 @@ Intro::Intro(QWidget *parent) :
     }
     requiredSpace += CHAIN_STATE_SIZE;
     ui->sizeWarningLabel->setText(
-        tr("%1 will download and store a copy of the Bitcoin block chain.").arg(tr(PACKAGE_NAME)) + " " +
+        tr("%1 will download and store a copy of the Globaltoken block chain.").arg(tr(PACKAGE_NAME)) + " " +
         storageRequiresMsg.arg(requiredSpace) + " " +
         tr("The wallet will also be stored in this directory.")
     );
@@ -228,7 +229,7 @@ bool Intro::pickDataDirectory()
     }
     /* Only override -datadir if different from the default, to make it possible to
      * override -datadir in the bitcoin.conf file in the default data directory
-     * (to be consistent with bitcoind behavior)
+     * (to be consistent with globaltokend behavior)
      */
     if(dataDir != getDefaultDataDirectory())
         SoftSetArg("-datadir", GUIUtil::qstringToBoostPath(dataDir).string()); // use OS locale for path setting

@@ -214,8 +214,8 @@
         <translation>&amp;Opsies</translation>
     </message>
     <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -770,7 +770,7 @@
     </message>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     <message>
         <source>Options:</source>
         <translation>Opsies:</translation>

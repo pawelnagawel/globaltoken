@@ -114,8 +114,8 @@
         <translation>Newid y cyfrinymadrodd a ddefnyddiwyd ar gyfer amgryptio'r waled</translation>
     </message>
     <message>
-        <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -478,14 +478,18 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>bitcoin-core</name>
+    <name>globaltoken-core</name>
     <message>
         <source>Options:</source>
         <translation>Opsiynau:</translation>
     </message>
     <message>
+        <source>Globaltoken Core</source>
+        <translation>Craidd Globaltoken</translation>
+    </message>
+	<message>
         <source>Bitcoin Core</source>
-        <translation>Craidd Bitcoin</translation>
+        <translation>Craidd Globaltoken</translation>
     </message>
     <message>
         <source>Information</source>

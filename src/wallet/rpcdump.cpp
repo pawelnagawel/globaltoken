@@ -1,4 +1,5 @@
 // Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2017 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -272,7 +273,7 @@ UniValue importaddress(const JSONRPCRequest& request)
         std::vector<unsigned char> data(ParseHex(request.params[0].get_str()));
         ImportScript(pwallet, CScript(data.begin(), data.end()), strLabel, fP2SH);
     } else {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Bitcoin address or script");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Globaltoken address or script");
     }
 
     if (fRescan)
@@ -573,7 +574,7 @@ UniValue dumpprivkey(const JSONRPCRequest& request)
     std::string strAddress = request.params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Bitcoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Globaltoken address");
     CKeyID keyID;
     if (!address.GetKeyID(keyID))
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
@@ -597,7 +598,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
             "dumpwallet \"filename\"\n"
             "\nDumps all wallet keys in a human-readable format.\n"
             "\nArguments:\n"
-            "1. \"filename\"    (string, required) The filename with path (either absolute or relative to bitcoind)\n"
+            "1. \"filename\"    (string, required) The filename with path (either absolute or relative to globaltokend)\n"
             "\nResult:\n"
             "{                           (json object)\n"
             "  \"filename\" : {        (string) The filename with full absolute path\n"
@@ -634,7 +635,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by Bitcoin %s\n", CLIENT_BUILD);
+    file << strprintf("# Wallet dump created by Globaltoken %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", EncodeDumpTime(GetTime()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
     file << strprintf("#   mined on %s\n", EncodeDumpTime(chainActive.Tip()->GetBlockTime()));
@@ -1147,7 +1148,7 @@ UniValue importmulti(const JSONRPCRequest& mainRequest)
                                       "block from time %d, which is after or within %d seconds of key creation, and "
                                       "could contain transactions pertaining to the key. As a result, transactions "
                                       "and coins using this key may not appear in the wallet. This error could be "
-                                      "caused by pruning or data corruption (see bitcoind log for details) and could "
+                                      "caused by pruning or data corruption (see globaltokend log for details) and could "
                                       "be dealt with by downloading and rescanning the relevant blocks (see -reindex "
                                       "and -rescan options).",
                                 GetImportTimestamp(request, now), scannedTime - TIMESTAMP_WINDOW - 1, TIMESTAMP_WINDOW)));
