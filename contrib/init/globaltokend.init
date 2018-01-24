@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  globaltokend The bitcoin core server.
+#  globaltokend The globaltoken core server.
 #
 #
 # chkconfig: 345 80 20
@@ -19,14 +19,14 @@ fi
 RETVAL=0
 
 prog=globaltokend
-# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/globaltokend
-lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/globaltokend}
+# you can override the lockfile via GLOBALTOKEND_LOCKFILE in /etc/sysconfig/globaltokend
+lockfile=${GLOBALTOKEND_LOCKFILE-/var/lock/subsys/globaltokend}
 
-# globaltokend defaults to /usr/bin/globaltokend, override with BITCOIND_BIN
-globaltokend=${BITCOIND_BIN-/usr/bin/globaltokend}
+# globaltokend defaults to /usr/bin/globaltokend, override with GLOBALTOKEND_BIN
+globaltokend=${GLOBALTOKEND_BIN-/usr/bin/globaltokend}
 
-# globaltokend opts default to -disablewallet, override with BITCOIND_OPTS
-globaltokend_opts=${BITCOIND_OPTS--disablewallet}
+# globaltokend opts default to -disablewallet, override with GLOBALTOKEND_OPTS
+globaltokend_opts=${GLOBALTOKEND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "

@@ -5,7 +5,7 @@ Upstart: globaltokend.conf
 OpenRC:  globaltokend.openrc
          globaltokend.openrcconf
 CentOS:  globaltokend.init
-OS X:    org.bitcoin.globaltokend.plist
+OS X:    org.globaltoken.globaltokend.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

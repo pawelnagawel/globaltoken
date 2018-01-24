@@ -1,33 +1,33 @@
 # /etc/conf.d/globaltokend: config file for /etc/init.d/globaltokend
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/bitcoin/bitcoin.conf"
+#GLOBALTOKEND_CONFIGFILE="/etc/globaltoken/globaltoken.conf"
 
-# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/globaltokend"
+# What directory to write pidfile to?  (created and owned by $GLOBALTOKEND_USER)
+#GLOBALTOKEND_PIDDIR="/var/run/globaltokend"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/globaltokend.pid"
+#GLOBALTOKEND_PIDFILE="${GLOBALTOKEND_PIDDIR}/globaltokend.pid"
 
 # Where to write globaltokend data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/globaltokend"
+#GLOBALTOKEND_DATADIR="/var/lib/globaltokend"
 
 # User and group to own globaltokend process
-#BITCOIND_USER="bitcoin"
-#BITCOIND_GROUP="bitcoin"
+#GLOBALTOKEND_USER="globaltoken"
+#GLOBALTOKEND_GROUP="globaltoken"
 
 # Path to globaltokend executable
-#BITCOIND_BIN="/usr/bin/globaltokend"
+#GLOBALTOKEND_BIN="/usr/bin/globaltokend"
 
 # Nice value to run globaltokend under
-#BITCOIND_NICE=0
+#GLOBALTOKEND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
-#BITCOIND_OPTS=""
+#GLOBALTOKEND_OPTS=""
 
 # The timeout in seconds OpenRC will wait for globaltokend to terminate
 # after a SIGTERM has been raised.
 # Note that this will be mapped as argument to start-stop-daemon's
 # '--retry' option, which means you can specify a retry schedule
 # here. For more information see man 8 start-stop-daemon.
-BITCOIND_SIGTERM_TIMEOUT=60
+GLOBALTOKEND_SIGTERM_TIMEOUT=60
