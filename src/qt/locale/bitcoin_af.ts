@@ -1012,7 +1012,7 @@
     </message>
     </context>
 <context>
-    <name>globaltoken-core</name>
+    <name>bitcoin-core</name>
     <message>
         <source>Bitcoin Core</source>
         <translation>Globaltoken Kern</translation>

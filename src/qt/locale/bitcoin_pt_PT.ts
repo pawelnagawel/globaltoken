@@ -2885,7 +2885,7 @@
     </message>
     </context>
 <context>
-    <name>globaltoken-core</name>
+    <name>bitcoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Opções:</translation>

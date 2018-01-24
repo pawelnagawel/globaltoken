@@ -706,7 +706,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>globaltoken-core</name>
+    <name>bitcoin-core</name>
     <message>
         <source>Globaltoken Core</source>
         <translation>Globaltoken மையம்</translation>

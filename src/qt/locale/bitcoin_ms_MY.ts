@@ -500,6 +500,6 @@ Alihkan fail data ke dalam tab semasa</translation>
     </message>
     </context>
 <context>
-    <name>globaltoken-core</name>
+    <name>bitcoin-core</name>
     </context>
 </TS>

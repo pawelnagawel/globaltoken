@@ -21,7 +21,7 @@ Before every minor and major release:
 
 Before every major release:
 
-* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/globaltoken/globaltoken/pull/7415) for an example.
+* Update hardcoded [seeds](/contrib/seeds/README.md), see [this pull request](https://github.com/bitcoin/bitcoin/pull/7415) for an example.
 * Update [`BLOCK_CHAIN_SIZE`](/src/qt/intro.cpp) to the current size plus some overhead.
 * Update `src/chainparams.cpp` chainTxData with statistics about the transaction count and rate.
 * Update version of `contrib/gitian-descriptors/*.yml`: usually one'd want to do this on master after branching off the release - but be sure to at least do it before a new major release
@@ -38,7 +38,7 @@ Check out the source code in the following directory hierarchy.
     git clone https://github.com/devrandom/gitian-builder.git
     git clone https://github.com/globaltoken/globaltoken.git
 
-### Bitcoin maintainers/release engineers, suggestion for writing release notes
+### Globaltoken maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -111,16 +111,16 @@ The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 ### Build and sign Globaltoken Core for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
-    ./bin/gbuild --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gbuild --num-make 2 --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-linux.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../globaltoken/contrib/gitian-descriptors/gitian-linux.yml
     mv build/out/globaltoken-*.tar.gz build/out/src/globaltoken-*.tar.gz ../
 
-    ./bin/gbuild --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gbuild --num-make 2 --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-win.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../globaltoken/contrib/gitian-descriptors/gitian-win.yml
     mv build/out/globaltoken-*-win-unsigned.tar.gz inputs/globaltoken-win-unsigned.tar.gz
     mv build/out/globaltoken-*.zip build/out/globaltoken-*.exe ../
 
-    ./bin/gbuild --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gbuild --num-make 2 --memory 3000 --commit globaltoken=v${VERSION} ../globaltoken/contrib/gitian-descriptors/gitian-osx.yml
     ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../globaltoken/contrib/gitian-descriptors/gitian-osx.yml
     mv build/out/globaltoken-*-osx-unsigned.tar.gz inputs/globaltoken-osx-unsigned.tar.gz
     mv build/out/globaltoken-*.tar.gz build/out/globaltoken-*.dmg ../
@@ -195,7 +195,7 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [globaltoken-detached-sigs](https://github.com/bitcoin-core/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [bitcoin-detached-sigs](https://github.com/bitcoin-core/bitcoin-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed OS X binary:
 
@@ -261,19 +261,19 @@ rm SHA256SUMS
 (the digest algorithm is forced to sha256 to avoid confusion of the `Hash:` header that GPG adds with the SHA256 used for the files)
 Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spurious/nonsensical entry.
 
-- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the globaltoken.org server
-  into `/var/www/bin/globaltoken-core-${VERSION}`
+- Upload zips and installers, as well as `SHA256SUMS.asc` from last step, to the bitcoin.org server
+  into `/var/www/bin/bitcoin-core-${VERSION}`
 
 - A `.torrent` will appear in the directory after a few minutes. Optionally help seed this torrent. To get the `magnet:` URI use:
 ```bash
 transmission-show -m <torrent file>
 ```
 Insert the magnet URI into the announcement sent to mailing lists. This permits
-people without access to `globaltoken.org` to download the binary distribution.
+people without access to `bitcoin.org` to download the binary distribution.
 Also put it into the `optional_magnetlink:` slot in the YAML file for
-globaltoken.org (see below for globaltoken.org update instructions).
+bitcoin.org (see below for bitcoin.org update instructions).
 
-- Update globaltoken.org version
+- Update bitcoin.org version
 
   - First, check to see if the Bitcoin.org maintainers have prepared a
     release: https://github.com/bitcoin-dot-org/bitcoin.org/labels/Releases
@@ -290,15 +290,15 @@ globaltoken.org (see below for globaltoken.org update instructions).
 
 - Announce the release:
 
-  - globaltoken-dev and globaltoken-core-dev mailing list
+  - bitcoin-dev and bitcoin-core-dev mailing list
 
-  - Globaltoken Core announcements list https://bitcoincore.org/en/list/announcements/join/
+  - Bitcoin Core announcements list https://bitcoincore.org/en/list/announcements/join/
 
   - bitcoincore.org blog post
 
   - Update title of #bitcoin on Freenode IRC
 
-  - Optionally twitter, reddit /r/Globaltoken, ... but this will usually sort out itself
+  - Optionally twitter, reddit /r/Bitcoin, ... but this will usually sort out itself
 
   - Notify BlueMatt so that he can start building [the PPAs](https://launchpad.net/~bitcoin/+archive/ubuntu/bitcoin)
 

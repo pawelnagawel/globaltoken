@@ -154,6 +154,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>globaltoken-core</name>
+    <name>bitcoin-core</name>
     </context>
 </TS>
