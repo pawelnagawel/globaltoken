@@ -125,10 +125,13 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"));
         assert(genesis.hashMerkleRoot == uint256S("0xe217ce769444458c180ca6a5944cbbc22828f377cfd0e1790158034299827ffc"));
 
-        // Note that of those with the service bits flag, most only support a subset of possible options
-
-        vSeeds.emplace_back("134.255.221.7", false); // Globaltoken base node
-		vSeeds.emplace_back("lameserver.de", false); // GlobalToken Node by Astrali
+        // Note that of those which support the service bits prefix, most only support a subset of
+        // possible options.
+        // This is fine at runtime as we'll fall back to using them as a oneshot if they dont support the
+        // service bits we want, but we should get them updated to support all service bits wanted by any
+        // release ASAP to avoid it where possible.
+        vSeeds.emplace_back("134.255.221.7"); // Globaltoken base node
+		vSeeds.emplace_back("lameserver.de"); // GlobalToken Node by Astrali
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,38);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
@@ -222,7 +225,7 @@ public:
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
 
-        vSeeds.emplace_back("134.255.221.7", false);
+        vSeeds.emplace_back("134.255.221.7");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
