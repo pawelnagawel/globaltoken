@@ -4105,7 +4105,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-<<<<<<< HEAD
         <location line="-382"/>
         <source>Globaltoken Core</source>
         <translation type="unfinished">Globaltoken Core</translation>
