@@ -13,7 +13,7 @@
  * for both globaltokend and globaltoken-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Globaltokshi");
+const std::string CLIENT_NAME("GlobalToken");
 
 /**
  * Client version number

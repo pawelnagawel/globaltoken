@@ -13,31 +13,31 @@
 %endif
 %endif
 
-Name:		bitcoin
-Version:	0.12.0
+Name:		globaltoken
+Version:	2.1.0
 Release:	2%{?dist}
 Summary:	Peer to Peer Cryptographic Currency
 
 Group:		Applications/System
 License:	MIT
-URL:		https://bitcoin.org/
-Source0:	https://bitcoin.org/bin/bitcoin-core-%{version}/bitcoin-%{version}.tar.gz
+URL:		https://globaltoken.org/
+Source0:	https://github.com/globaltoken/globaltoken/archive/%{version}.tar.gz
 Source1:	http://download.oracle.com/berkeley-db/db-%{bdbv}.NC.tar.gz
 
-Source10:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/contrib/debian/examples/bitcoin.conf
+Source10:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/contrib/debian/examples/globaltoken.conf
 
 #man pages
-Source20:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/doc/man/globaltokend.1
-Source21:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/doc/man/bitcoin-cli.1
-Source22:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/doc/man/globaltoken-qt.1
+Source20:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/doc/man/globaltokend.1
+Source21:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/doc/man/globaltoken-cli.1
+Source22:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/doc/man/globaltoken-qt.1
 
 #selinux
-Source30:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/contrib/rpm/bitcoin.te
-# Source31 - what about globaltoken-tx and bench_bitcoin ???
-Source31:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/contrib/rpm/bitcoin.fc
-Source32:	https://raw.githubusercontent.com/bitcoin/bitcoin/v%{version}/contrib/rpm/bitcoin.if
+Source30:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/contrib/rpm/globaltoken.te
+# Source31 - what about globaltoken-tx and bench_globaltoken ???
+Source31:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/contrib/rpm/globaltoken.fc
+Source32:	https://raw.githubusercontent.com/globaltoken/globaltoken/v%{version}/contrib/rpm/globaltoken.if
 
-Source100:	https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg
+Source100:	https://globaltoken.org/img/logo.png
 
 %if 0%{?_use_libressl:1}
 BuildRequires:	libressl-devel
@@ -50,13 +50,13 @@ BuildRequires:	autoconf automake libtool
 BuildRequires:	libevent-devel
 
 
-Patch0:		bitcoin-0.12.0-libressl.patch
+Patch0:		globaltoken-0.12.0-libressl.patch
 
 
 %description
-Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
+Globaltoken is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of bitcoins is carried out collectively by the network.
+issuing of globaltokens is carried out collectively by the network.
 
 %if %{_buildqt}
 %package core
@@ -79,42 +79,42 @@ BuildRequires:	%{_bindir}/inkscape
 BuildRequires:	%{_bindir}/convert
 
 %description core
-Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
+Globaltoken is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of bitcoins is carried out collectively by the network.
+issuing of globaltokens is carried out collectively by the network.
 
 This package contains the Qt based graphical client and node. If you are looking
-to run a Bitcoin wallet, this is probably the package you want.
+to run a Globaltoken wallet, this is probably the package you want.
 %endif
 
 
 %package libs
-Summary:	Bitcoin shared libraries
+Summary:	Globaltoken shared libraries
 Group:		System Environment/Libraries
 
 %description libs
-This package provides the bitcoinconsensus shared libraries. These libraries
+This package provides the globaltokenconsensus shared libraries. These libraries
 may be used by third party software to provide consensus verification
 functionality.
 
 Unless you know need this package, you probably do not.
 
 %package devel
-Summary:	Development files for bitcoin
+Summary:	Development files for globaltoken
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 This package contains the header files and static library for the
-bitcoinconsensus shared library. If you are developing or compiling software
+globaltokenconsensus shared library. If you are developing or compiling software
 that wants to link against that library, then you need this package installed.
 
 Most people do not need this package installed.
 
 %package server
-Summary:	The bitcoin daemon
+Summary:	The globaltoken daemon
 Group:		System Environment/Daemons
-Requires:	bitcoin-utils = %{version}-%{release}
+Requires:	globaltoken-utils = %{version}-%{release}
 Requires:	selinux-policy policycoreutils-python
 Requires(pre):	shadow-utils
 Requires(post):	%{_sbindir}/semodule %{_sbindir}/restorecon %{_sbindir}/fixfiles %{_sbindir}/sestatus
@@ -124,34 +124,34 @@ BuildRequires:	checkpolicy
 BuildRequires:	%{_datadir}/selinux/devel/Makefile
 
 %description server
-This package provides a stand-alone bitcoin-core daemon. For most users, this
+This package provides a stand-alone globaltoken-core daemon. For most users, this
 package is only needed if they need a full-node without the graphical client.
 
 Some third party wallet software will want this package to provide the actual
-bitcoin-core node they use to connect to the network.
+globaltoken-core node they use to connect to the network.
 
-If you use the graphical bitcoin-core client then you almost certainly do not
+If you use the graphical globaltoken-core client then you almost certainly do not
 need this package.
 
 %package utils
-Summary:	Bitcoin utilities
+Summary:	Globaltoken utilities
 Group:		Applications/System
 
 %description utils
 This package provides several command line utilities for interacting with a
-bitcoin-core daemon.
+globaltoken-core daemon.
 
-The bitcoin-cli utility allows you to communicate and control a bitcoin daemon
+The globaltoken-cli utility allows you to communicate and control a globaltoken daemon
 over RPC, the globaltoken-tx utility allows you to create a custom transaction, and
-the bench_bitcoin utility can be used to perform some benchmarks.
+the bench_globaltoken utility can be used to perform some benchmarks.
 
-This package contains utilities needed by the bitcoin-server package.
+This package contains utilities needed by the globaltoken-server package.
 
 
 %prep
 %setup -q
 %patch0 -p1 -b .libressl
-cp -p %{SOURCE10} ./bitcoin.conf.example
+cp -p %{SOURCE10} ./globaltoken.conf.example
 tar -zxf %{SOURCE1}
 cp -p db-%{bdbv}.NC/LICENSE ./db-%{bdbv}.NC-LICENSE
 mkdir db4 SELinux
@@ -172,7 +172,7 @@ make %{?_smp_mflags}
 pushd SELinux
 for selinuxvariant in %{selinux_variants}; do
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile
-	mv bitcoin.pp bitcoin.pp.${selinuxvariant}
+	mv globaltoken.pp globaltoken.pp.${selinuxvariant}
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile clean
 done
 popd
@@ -186,38 +186,38 @@ mv %{buildroot}%{_bindir}/globaltokend %{buildroot}%{_sbindir}/globaltokend
 
 # systemd stuff
 mkdir -p %{buildroot}%{_tmpfilesdir}
-cat <<EOF > %{buildroot}%{_tmpfilesdir}/bitcoin.conf
-d /run/globaltokend 0750 bitcoin bitcoin -
+cat <<EOF > %{buildroot}%{_tmpfilesdir}/globaltoken.conf
+d /run/globaltokend 0750 globaltoken globaltoken -
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/bitcoin.conf
+touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/globaltoken.conf
 
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/bitcoin
-# Provide options to the bitcoin daemon here, for example
+cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/globaltoken
+# Provide options to the globaltoken daemon here, for example
 # OPTIONS="-testnet -disable-wallet"
 
 OPTIONS=""
 
 # System service defaults.
 # Don't change these unless you know what you're doing.
-CONFIG_FILE="%{_sysconfdir}/bitcoin/bitcoin.conf"
-DATA_DIR="%{_localstatedir}/lib/bitcoin"
+CONFIG_FILE="%{_sysconfdir}/globaltoken/globaltoken.conf"
+DATA_DIR="%{_localstatedir}/lib/globaltoken"
 PID_FILE="/run/globaltokend/globaltokend.pid"
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/bitcoin
+touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/globaltoken
 
 mkdir -p %{buildroot}%{_unitdir}
-cat <<EOF > %{buildroot}%{_unitdir}/bitcoin.service
+cat <<EOF > %{buildroot}%{_unitdir}/globaltoken.service
 [Unit]
-Description=Bitcoin daemon
+Description=Globaltoken daemon
 After=syslog.target network.target
 
 [Service]
 Type=forking
 ExecStart=%{_sbindir}/globaltokend -daemon -conf=\${CONFIG_FILE} -datadir=\${DATA_DIR} -pid=\${PID_FILE} \$OPTIONS
-EnvironmentFile=%{_sysconfdir}/sysconfig/bitcoin
-User=bitcoin
-Group=bitcoin
+EnvironmentFile=%{_sysconfdir}/sysconfig/globaltoken
+User=globaltoken
+Group=globaltoken
 
 Restart=on-failure
 PrivateTmp=true
@@ -229,16 +229,16 @@ StartLimitBurst=5
 [Install]
 WantedBy=multi-user.target
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/bitcoin.service
+touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/globaltoken.service
 #end systemd stuff
 
-mkdir %{buildroot}%{_sysconfdir}/bitcoin
-mkdir -p %{buildroot}%{_localstatedir}/lib/bitcoin
+mkdir %{buildroot}%{_sysconfdir}/globaltoken
+mkdir -p %{buildroot}%{_localstatedir}/lib/globaltoken
 
 #SELinux
 for selinuxvariant in %{selinux_variants}; do
 	install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
-	install -p -m 644 SELinux/bitcoin.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/bitcoin.pp
+	install -p -m 644 SELinux/globaltoken.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/globaltoken.pp
 done
 
 %if %{_buildqt}
@@ -262,30 +262,30 @@ touch %{buildroot}%{_datadir}/pixmaps/*.xpm -r %{SOURCE100}
 
 # Desktop File - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/applications
-cat <<EOF > %{buildroot}%{_datadir}/applications/bitcoin-core.desktop
+cat <<EOF > %{buildroot}%{_datadir}/applications/globaltoken-core.desktop
 [Desktop Entry]
 Encoding=UTF-8
-Name=Bitcoin
-Comment=Bitcoin P2P Cryptocurrency
-Comment[fr]=Bitcoin, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=Bitcoin, eşten eşe kriptografik sanal para birimi
+Name=Globaltoken
+Comment=Globaltoken P2P Cryptocurrency
+Comment[fr]=Globaltoken, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Globaltoken, eşten eşe kriptografik sanal para birimi
 Exec=globaltoken-qt %u
 Terminal=false
 Type=Application
 Icon=bitcoin128
-MimeType=x-scheme-handler/bitcoin;
+MimeType=x-scheme-handler/globaltoken;
 Categories=Office;Finance;
 EOF
 # change touch date when modifying desktop
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/bitcoin-core.desktop
-%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/bitcoin-core.desktop
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/globaltoken-core.desktop
+%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/globaltoken-core.desktop
 
 # KDE protocol - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/kde4/services
-cat <<EOF > %{buildroot}%{_datadir}/kde4/services/bitcoin-core.protocol
+cat <<EOF > %{buildroot}%{_datadir}/kde4/services/globaltoken-core.protocol
 [Protocol]
 exec=globaltoken-qt '%u'
-protocol=bitcoin
+protocol=globaltoken
 input=none
 output=none
 helper=true
@@ -296,12 +296,12 @@ makedir=false
 deleting=false
 EOF
 # change touch date when modifying protocol
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/bitcoin-core.protocol
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/globaltoken-core.protocol
 %endif
 
 # man pages
 install -D -p %{SOURCE20} %{buildroot}%{_mandir}/man1/globaltokend.1
-install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/bitcoin-cli.1
+install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/globaltoken-cli.1
 %if %{_buildqt}
 install -p %{SOURCE22} %{buildroot}%{_mandir}/man1/globaltoken-qt.1
 %endif
@@ -319,37 +319,37 @@ test/functional/test_runner.py --extended
 %postun libs -p /sbin/ldconfig
 
 %pre server
-getent group bitcoin >/dev/null || groupadd -r bitcoin
-getent passwd bitcoin >/dev/null ||
-	useradd -r -g bitcoin -d /var/lib/bitcoin -s /sbin/nologin \
-	-c "Bitcoin wallet server" bitcoin
+getent group globaltoken >/dev/null || groupadd -r globaltoken
+getent passwd globaltoken >/dev/null ||
+	useradd -r -g globaltoken -d /var/lib/globaltoken -s /sbin/nologin \
+	-c "Globaltoken wallet server" globaltoken
 exit 0
 
 %post server
-%systemd_post bitcoin.service
+%systemd_post globaltoken.service
 # SELinux
 if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
 for selinuxvariant in %{selinux_variants}; do
-	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/bitcoin.pp &> /dev/null || :
+	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/globaltoken.pp &> /dev/null || :
 done
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 8332
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 8333
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 18332
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 18333
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 18443
-%{_sbindir}/semanage port -a -t bitcoin_port_t -p tcp 18444
-%{_sbindir}/fixfiles -R bitcoin-server restore &> /dev/null || :
-%{_sbindir}/restorecon -R %{_localstatedir}/lib/bitcoin || :
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 9319
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 9320
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 19319
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 19320
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 20144
+%{_sbindir}/semanage port -a -t globaltoken_port_t -p tcp 20145
+%{_sbindir}/fixfiles -R globaltoken-server restore &> /dev/null || :
+%{_sbindir}/restorecon -R %{_localstatedir}/lib/globaltoken || :
 fi
 
 %posttrans server
 %{_bindir}/systemd-tmpfiles --create
 
 %preun server
-%systemd_preun bitcoin.service
+%systemd_preun globaltoken.service
 
 %postun server
-%systemd_postun bitcoin.service
+%systemd_postun globaltoken.service
 # SELinux
 if [ $1 -eq 0 ]; then
 	if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
@@ -360,11 +360,11 @@ if [ $1 -eq 0 ]; then
 	%{_sbindir}/semanage port -d -p tcp 18443
 	%{_sbindir}/semanage port -d -p tcp 18444
 	for selinuxvariant in %{selinux_variants}; do
-		%{_sbindir}/semodule -s ${selinuxvariant} -r bitcoin &> /dev/null || :
+		%{_sbindir}/semodule -s ${selinuxvariant} -r globaltoken &> /dev/null || :
 	done
-	%{_sbindir}/fixfiles -R bitcoin-server restore &> /dev/null || :
-	[ -d %{_localstatedir}/lib/bitcoin ] && \
-		%{_sbindir}/restorecon -R %{_localstatedir}/lib/bitcoin &> /dev/null || :
+	%{_sbindir}/fixfiles -R globaltoken-server restore &> /dev/null || :
+	[ -d %{_localstatedir}/lib/globaltoken ] && \
+		%{_sbindir}/restorecon -R %{_localstatedir}/lib/globaltoken &> /dev/null || :
 	fi
 fi
 
@@ -375,10 +375,10 @@ rm -rf %{buildroot}
 %files core
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING bitcoin.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%doc COPYING globaltoken.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
 %attr(0755,root,root) %{_bindir}/globaltoken-qt
-%attr(0644,root,root) %{_datadir}/applications/bitcoin-core.desktop
-%attr(0644,root,root) %{_datadir}/kde4/services/bitcoin-core.protocol
+%attr(0644,root,root) %{_datadir}/applications/globaltoken-core.desktop
+%attr(0644,root,root) %{_datadir}/kde4/services/globaltoken-core.protocol
 %attr(0644,root,root) %{_datadir}/pixmaps/*.ico
 %attr(0644,root,root) %{_datadir}/pixmaps/*.bmp
 %attr(0644,root,root) %{_datadir}/pixmaps/*.svg
@@ -406,30 +406,30 @@ rm -rf %{buildroot}
 %files server
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING bitcoin.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%doc COPYING globaltoken.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
 %attr(0755,root,root) %{_sbindir}/globaltokend
-%attr(0644,root,root) %{_tmpfilesdir}/bitcoin.conf
-%attr(0644,root,root) %{_unitdir}/bitcoin.service
-%dir %attr(0750,bitcoin,bitcoin) %{_sysconfdir}/bitcoin
-%dir %attr(0750,bitcoin,bitcoin) %{_localstatedir}/lib/bitcoin
-%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/bitcoin
+%attr(0644,root,root) %{_tmpfilesdir}/globaltoken.conf
+%attr(0644,root,root) %{_unitdir}/globaltoken.service
+%dir %attr(0750,globaltoken,globaltoken) %{_sysconfdir}/globaltoken
+%dir %attr(0750,globaltoken,globaltoken) %{_localstatedir}/lib/globaltoken
+%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/globaltoken
 %attr(0644,root,root) %{_datadir}/selinux/*/*.pp
 %attr(0644,root,root) %{_mandir}/man1/globaltokend.1*
 
 %files utils
 %defattr(-,root,root,-)
 %license COPYING
-%doc COPYING bitcoin.conf.example doc/README.md
-%attr(0755,root,root) %{_bindir}/bitcoin-cli
+%doc COPYING globaltoken.conf.example doc/README.md
+%attr(0755,root,root) %{_bindir}/globaltoken-cli
 %attr(0755,root,root) %{_bindir}/globaltoken-tx
-%attr(0755,root,root) %{_bindir}/bench_bitcoin
-%attr(0644,root,root) %{_mandir}/man1/bitcoin-cli.1*
+%attr(0755,root,root) %{_bindir}/bench_globaltoken
+%attr(0644,root,root) %{_mandir}/man1/globaltoken-cli.1*
 
 
 
 %changelog
 * Fri Feb 26 2016 Alice Wonder <buildmaster@librelamp.com> - 0.12.0-2
-- Rename Qt package from bitcoin to bitcoin-core
+- Rename Qt package from globaltoken to globaltoken-core
 - Make building of the Qt package optional
 - When building the Qt package, default to Qt5 but allow building
 -  against Qt4

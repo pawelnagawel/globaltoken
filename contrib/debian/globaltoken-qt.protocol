@@ -1,6 +1,6 @@
 [Protocol]
 exec=globaltoken-qt '%u'
-protocol=bitcoin
+protocol=globaltoken
 input=none
 output=none
 helper=true

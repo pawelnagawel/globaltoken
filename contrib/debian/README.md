@@ -4,7 +4,7 @@ Debian
 This directory contains files used to package globaltokend/globaltoken-qt
 for Debian-based Linux systems. If you compile globaltokend/globaltoken-qt yourself, there are some useful files here.
 
-## bitcoin: URI support ##
+## globaltoken: URI support ##
 
 
 globaltoken-qt.desktop  (Gnome / Open Desktop)
