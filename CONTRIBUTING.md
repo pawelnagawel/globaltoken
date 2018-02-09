@@ -273,6 +273,7 @@ Release Policy
 --------------
 
 The project leader is the release manager for each Globaltoken Core release.
+Currently this is globaltokenfirstdev. (globaltoken)
 
 Copyright
 ---------
