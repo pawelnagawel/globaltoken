@@ -25,12 +25,12 @@ python27
 
 Download the source code:
 ```
-git clone https://github.com/bitcoin/bitcoin
+git clone https://github.com/globaltoken/globaltoken
 ```
 
 See [dependencies.md](dependencies.md) for a complete overview.
 
-### Building Bitcoin Core
+### Building Globaltoken Core
 
 **Important**: Use `gmake` (the non-GNU `make` will exit with an error).
 
