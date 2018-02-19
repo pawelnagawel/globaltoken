@@ -172,6 +172,10 @@
         <source>Bitcoin</source>
         <translation>Биткоин</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Биткоин</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>қате</translation>

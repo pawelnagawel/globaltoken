@@ -292,6 +292,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Mali</translation>
@@ -761,7 +765,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Kapilubluban ning Globaltoken</translation>
+        <translation>Kapilubluban ning Bitcoin</translation>
     </message>
     <message>
         <source>Accept connections from outside (default: 1 if no -proxy or -connect)</source>

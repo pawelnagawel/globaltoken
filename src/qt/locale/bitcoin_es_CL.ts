@@ -321,6 +321,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Error</translation>
@@ -781,7 +785,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>globaltoken core</translation>
+        <translation>bitcoin core</translation>
     </message>
     <message>
         <source>Error loading block database</source>

@@ -440,6 +440,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
         <translation>Хато: кўрсатилган "%1" маълумотлар директориясини яратиб бўлмайди.</translation>

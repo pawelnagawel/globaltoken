@@ -516,8 +516,8 @@
         <translation>Inkomende transaksie</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Bitcoin can no longer continue safely and will quit.</source>
-        <translation>'N fatale fout het voorgekom. Bitcoin kan nie meer veilig voortgaan nie en sal nou toemaak.</translation>
+        <source>A fatal error occurred. Globaltoken can no longer continue safely and will quit.</source>
+        <translation>'N fatale fout het voorgekom. Globaltoken kan nie meer veilig voortgaan nie en sal nou toemaak.</translation>
     </message>
 </context>
 <context>
@@ -710,8 +710,8 @@
         <translation>Wysig stuur adres</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Bitcoin address.</source>
-        <translation>Die ingevoerde adres "%1" is nie 'n geldige Bitcoin adres nie.</translation>
+        <source>The entered address "%1" is not a valid Globaltoken address.</source>
+        <translation>Die ingevoerde adres "%1" is nie 'n geldige Globaltoken adres nie.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -825,6 +825,10 @@
     <message>
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
+    </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1188,8 +1192,8 @@
         <translation>Bedrag</translation>
     </message>
     <message>
-        <source>Enter a Bitcoin address (e.g. %1)</source>
-        <translation>Voer in 'n Bitcoin adres (bv. %1)</translation>
+        <source>Enter a Globaltoken address (e.g. %1)</source>
+        <translation>Voer in 'n Globaltoken adres (bv. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1919,7 +1923,7 @@
     </message>
     <message>
         <source>Bitcoin Core</source>
-        <translation>Globaltoken Kern</translation>
+        <translation>Bitcoin Kern</translation>
     </message>
     <message>
         <source>Globaltoken Core</source>

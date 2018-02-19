@@ -10,7 +10,7 @@
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between bitcoin-cli and globaltokend)
+ * CBaseChainParams defines the base parameters (shared between globaltoken-cli and globaltokend)
  * of a given instance of the Bitcoin system.
  */
 class CBaseChainParams

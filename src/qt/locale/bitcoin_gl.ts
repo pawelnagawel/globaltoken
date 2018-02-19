@@ -408,6 +408,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Erro</translation>
@@ -1025,7 +1029,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Core de Globaltoken</translation>
+        <translation>Core de Bitcoin</translation>
     </message>
     <message>
         <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>

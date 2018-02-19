@@ -388,6 +388,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Problem</translation>
@@ -797,7 +801,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Berthama Globaltoken</translation>
+        <translation>Berthama Bitcoin</translation>
     </message>
     <message>
         <source>Information</source>

@@ -236,6 +236,10 @@
         <source>Bitcoin</source>
         <translation>Биткойн</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Биткойн</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Алдаа</translation>

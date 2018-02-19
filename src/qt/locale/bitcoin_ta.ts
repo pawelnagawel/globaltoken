@@ -228,6 +228,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>தவறு</translation>
@@ -713,7 +717,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Globaltoken மையம்</translation>
+        <translation>Bitcoin மையம்</translation>
     </message>
     <message>
         <source>(default: %u)</source>

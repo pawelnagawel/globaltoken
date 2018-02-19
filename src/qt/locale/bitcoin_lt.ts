@@ -386,6 +386,10 @@
         <source>Bitcoin</source>
         <translation>Bitcoin</translation>
     </message>
+	<message>
+        <source>Globaltoken</source>
+        <translation>Globaltoken</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Klaida</translation>
@@ -975,7 +979,7 @@
     </message>
 	<message>
         <source>Bitcoin Core</source>
-        <translation>Globaltoken branduolys</translation>
+        <translation>Bitcoin branduolys</translation>
     </message>
     <message>
         <source>Error opening block database</source>
