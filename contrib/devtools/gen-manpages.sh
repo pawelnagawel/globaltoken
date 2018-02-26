@@ -1,13 +1,15 @@
 #!/bin/bash
 
 TOPDIR=${TOPDIR:-$(git rev-parse --show-toplevel)}
-SRCDIR=${SRCDIR:-$TOPDIR/src}
+BUILDDIR=${BUILDDIR:-$TOPDIR}
+
+BINDIR=${BINDIR:-$BUILDDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-BITCOIND=${BITCOIND:-$SRCDIR/globaltokend}
-BITCOINCLI=${BITCOINCLI:-$SRCDIR/bitcoin-cli}
-BITCOINTX=${BITCOINTX:-$SRCDIR/globaltoken-tx}
-BITCOINQT=${BITCOINQT:-$SRCDIR/qt/globaltoken-qt}
+BITCOIND=${BITCOIND:-$BINDIR/globaltokend}
+BITCOINCLI=${BITCOINCLI:-$BINDIR/globaltoken-cli}
+BITCOINTX=${BITCOINTX:-$BINDIR/globaltoken-tx}
+BITCOINQT=${BITCOINQT:-$BINDIR/qt/globaltoken-qt}
 
 [ ! -x $BITCOIND ] && echo "$GLOBALTOKEND not found or not executable." && exit 1
 
@@ -16,7 +18,7 @@ BTCVER=($($GLOBALTOKENCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'
 
 # Create a footer file with copyright content.
 # This gets autodetected fine for globaltokend if --version-string is not set,
-# but has different outcomes for globaltoken-qt and bitcoin-cli.
+# but has different outcomes for globaltoken-qt and globaltoken-cli.
 echo "[COPYRIGHT]" > footer.h2m
 $BITCOIND --version | sed -n '1!p' >> footer.h2m
 
