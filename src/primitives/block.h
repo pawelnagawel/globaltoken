@@ -10,6 +10,32 @@
 #include <serialize.h>
 #include <uint256.h>
 
+enum { 
+    ALGO_SCRYPT    = 0,
+    ALGO_SHA256D   = 1,
+    ALGO_X11       = 2,
+    ALGO_NEOSCRYPT = 3,
+    ALGO_EQUIHASH  = 4,
+    ALGO_YESCRYPT  = 5,
+	ALGO_HMQ1725   = 6,
+    NUM_ALGOS_IMPL };
+
+const int NUM_ALGOS = 7;
+
+enum {
+    // algo
+    BLOCK_VERSION_ALGO           = (7 << 9),
+    BLOCK_VERSION_SCRYPT         = (1 << 9),
+    BLOCK_VERSION_SHA256D        = (1 << 9),
+    BLOCK_VERSION_X11            = (2 << 9),
+    BLOCK_VERSION_NEOSCRYPT      = (3 << 9),
+    BLOCK_VERSION_EQUIHASH       = (4 << 9),
+    BLOCK_VERSION_YESCRYPT       = (5 << 9),
+    BLOCK_VERSION_HMQ1725        = (6 << 9),
+};
+
+std::string GetAlgoName(int Algo);
+
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
  * requirements.  When they solve the proof-of-work, they broadcast the block
@@ -20,6 +46,7 @@
 class CBlockHeader
 {
 public:
+	static const size_t HEADER_SIZE = 4+32+32+4+4+4;  // Excluding Equihash solution
     // header
     int32_t nVersion;
     uint256 hashPrevBlock;
@@ -27,6 +54,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+	std::vector<unsigned char> nSolution;  // Equihash solution.
 
     CBlockHeader()
     {
@@ -59,8 +87,43 @@ public:
     {
         return (nBits == 0);
     }
+	
+	// Set Algo to use
+    inline void SetAlgo(int algo)
+    {
+        switch(algo)
+        {
+            case ALGO_SHA256D:
+                nVersion |= BLOCK_VERSION_SHA256D;
+                break;
+            case ALGO_SCRYPT:
+                nVersion |= BLOCK_VERSION_SCRYPT;
+                break;
+            case ALGO_X11:
+                nVersion |= BLOCK_VERSION_X11;
+                break;
+            case ALGO_NEOSCRYPT:
+                nVersion |= BLOCK_VERSION_NEOSCRYPT;
+                break;
+            case ALGO_EQUIHASH:
+                nVersion |= BLOCK_VERSION_EQUIHASH;
+                break;
+            case ALGO_YESCRYPT:
+                nVersion |= BLOCK_VERSION_YESCRYPT;
+                break;
+            case ALGO_HMQ1725:
+                nVersion |= BLOCK_VERSION_HMQ1725;
+                break;
+            default:
+                break;
+        }
+    }
+	
+	int GetAlgo() const;
 
     uint256 GetHash() const;
+	
+	uint256 GetPoWHash(int algo) const;
 
     int64_t GetBlockTime() const
     {
@@ -117,6 +180,35 @@ public:
     }
 
     std::string ToString() const;
+};
+
+/**
+ * Custom serializer for CBlockHeader that omits the nonce and solution, for use
+ * as input to Equihash.
+ */
+class CEquihashInput : private CBlockHeader
+{
+public:
+    CEquihashInput(const CBlockHeader &header)
+    {
+        CBlockHeader::SetNull();
+        *((CBlockHeader*)this) = header;
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(this->nVersion);
+        READWRITE(hashPrevBlock);
+        READWRITE(hashMerkleRoot);
+        READWRITE(nHeight);
+        for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
+            READWRITE(nReserved[i]);
+        }
+        READWRITE(nTime);
+        READWRITE(nBits);
+    }
 };
 
 /** Describes a place in the block chain to another node such that if the

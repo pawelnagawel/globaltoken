@@ -294,6 +294,19 @@ public:
     {
         return *phashBlock;
     }
+	
+	uint256 GetBlockPoWHash() const
+    {
+        CBlockHeader block = GetBlockHeader();
+        int algo = block.GetAlgo();
+        return block.GetPoWHash(algo);
+    }
+
+    int GetAlgo() const
+    {
+        CBlockHeader block = GetBlockHeader();
+        return block.GetAlgo();
+    }
 
     int64_t GetBlockTime() const
     {

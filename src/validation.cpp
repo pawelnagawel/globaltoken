@@ -16,6 +16,7 @@
 #include <consensus/tx_verify.h>
 #include <consensus/validation.h>
 #include <cuckoocache.h>
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <init.h>
 #include <policy/fees.h>
@@ -1106,10 +1107,36 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     catch (const std::exception& e) {
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
-
-    // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+	
+    bool hardfork = IsHardForkActivated(block.nHeight);
+	if(hardfork)
+	{
+		int nAlgo = block.GetAlgo();
+		if(nAlgo == ALGO_EQUIHASH)
+		{
+			// Check Equihash solution
+			if (!CheckEquihashSolution(&block, Params())) {
+				return error("ReadBlockFromDisk: Errors in block header at %s (Algo: Equihash - bad Equihash solution)", pos.ToString());
+			}
+			
+			// Check the header
+			// Also check the Block Header after Equihash solution check.
+			if (!CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams))
+				return error("ReadBlockFromDisk: Errors in block header at %s (Algo: %s)", pos.ToString(), GetAlgoName(nAlgo));
+		}
+		else
+		{
+			// Check the header
+			if (!CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams))
+				return error("ReadBlockFromDisk: Errors in block header at %s (Algo: %s)", pos.ToString(), GetAlgoName(nAlgo));
+		}
+	}
+	else
+	{
+		// Check the header
+		if (!CheckProofOfWork(block.GetPoWHash(ALGO_SHA256D), block.nBits, consensusParams))
+			return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+	}
 
     return true;
 }
@@ -1679,7 +1706,7 @@ void ThreadScriptCheck() {
 // Protected by cs_main
 VersionBitsCache versionbitscache;
 
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params)
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, int algo)
 {
     LOCK(cs_main);
     int32_t nVersion = VERSIONBITS_TOP_BITS;
@@ -1690,9 +1717,44 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
             nVersion |= VersionBitsMask(params, static_cast<Consensus::DeploymentPos>(i));
         }
     }
+	
+	switch (algo)
+    {
+        case ALGO_SHA256D:
+			break;
+        case ALGO_SCRYPT:
+			nVersion |= BLOCK_VERSION_SCRYPT;
+			break;
+        case ALGO_X11:
+			nVersion |= BLOCK_VERSION_X11;
+			break;
+        case ALGO_NEOSCRYPT:
+			nVersion |= BLOCK_VERSION_NEOSCRYPT;
+			break;
+        case ALGO_EQUIHASH:
+			nVersion |= BLOCK_VERSION_EQUIHASH;
+			break;
+        case ALGO_YESCRYPT:
+			nVersion |= BLOCK_VERSION_YESCRYPT;
+			break;
+        case ALGO_HMQ1725:
+			nVersion |= BLOCK_VERSION_HMQ1725;
+			break;
+        default:
+			return nVersion;
+    }  
 
     return nVersion;
 }
+
+bool isMultiAlgoVersion(int nVersion)
+{
+     if((nVersion & 0xfffU) == 512 || (nVersion & 0xfffU) == 1024 || (nVersion & 0xfffU) == 1536 || (nVersion & 0xfffU) == 2048 || (nVersion & 0xfffU) == 2560 || (nVersion & 0xfffU) == 3072) 
+	 {
+         return true;
+     }
+     return false;
+ }
 
 /**
  * Threshold condition checker that triggers when unknown versionbits are seen on the network.
@@ -1712,9 +1774,10 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
+		int nAlgo = pindex->GetAlgo();
         return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
                ((pindex->nVersion >> bit) & 1) != 0 &&
-               ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
+               ((ComputeBlockVersion(pindex->pprev, params, nAlgo) >> bit) & 1) == 0;
     }
 };
 
@@ -2163,8 +2226,9 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
+			int nAlgo = pindex->GetAlgo();
+            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus(), nAlgo);
+            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0 && !isMultiAlgoVersion(pindex->nVersion))
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
@@ -2177,8 +2241,9 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
             DoWarning(strWarning);
         }
     }
-    LogPrintf("%s: new best=%s height=%d version=0x%08x log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)", __func__,
+    LogPrintf("%s: new best=%s height=%d version=0x%08x algo=%d (%s) log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)", __func__,
       pindexNew->GetBlockHash().ToString(), pindexNew->nHeight, pindexNew->nVersion,
+	  pindexNew->GetAlgo(), GetAlgoName(pindexNew->GetAlgo()),
       log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx,
       DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindexNew->GetBlockTime()),
       GuessVerificationProgress(chainParams.TxData(), pindexNew), pcoinsTip->DynamicMemoryUsage() * (1.0 / (1<<20)), pcoinsTip->GetCacheSize());
@@ -2949,9 +3014,39 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
-    // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
-        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+    bool hardfork = IsHardForkActivated(block.nHeight);
+	if(hardfork)
+	{
+		int nAlgo = block.GetAlgo();
+		if(nAlgo == ALGO_EQUIHASH)
+		{
+			// Check Equihash solution is valid
+			if (fCheckPOW && !CheckEquihashSolution(&block, Params())) 
+			{
+				LogPrintf("CheckBlockHeader(): Equihash solution invalid at height %d\n", block.nHeight);
+				return state.DoS(100, error("CheckBlockHeader(): Equihash solution invalid"),
+								 REJECT_INVALID, "invalid-solution");
+			}
+			
+			// Check proof of work matches claimed amount
+			// Also check the block POW after Equihash Solution check.
+			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams))
+				return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+			
+		}
+		else
+		{
+			// Check proof of work matches claimed amount	
+			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams))
+				return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+		}
+	}
+	else
+	{
+		// Check proof of work matches claimed amount	
+		if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(ALGO_SHA256D), block.nBits, consensusParams))
+			return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+	}
 
     return true;
 }
@@ -3097,7 +3192,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
+    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams, block.GetAlgo()))
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect proof of work");
 
     // Check against checkpoints

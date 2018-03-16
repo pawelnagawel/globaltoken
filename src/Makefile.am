@@ -96,6 +96,7 @@ BITCOIN_CORE_H = \
   compressor.h \
   consensus/consensus.h \
   consensus/tx_verify.h \
+  globaltoken/hardfork.h \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
@@ -195,6 +196,7 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   consensus/tx_verify.cpp \
+  globaltoken/hardfork.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
@@ -269,6 +271,62 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/hmac_sha512.h \
   crypto/ripemd160.cpp \
   crypto/ripemd160.h \
+  crypto/multihash/aes_helper.c \
+  crypto/multihash/blake.c \
+  crypto/multihash/bmw.c \
+  crypto/multihash/cubehash.c \
+  crypto/multihash/echo.c \
+  crypto/multihash/fugue.c \
+  crypto/multihash/groestl.c \
+  crypto/multihash/hamsi.c \
+  crypto/multihash/hamsi_helper.c \
+  crypto/multihash/haval.c \
+  crypto/multihash/haval_helper.c \
+  crypto/multihash/jh.c \
+  crypto/multihash/keccak.c \
+  crypto/multihash/luffa.c \
+  crypto/multihash/md_helper.c \
+  crypto/multihash/sha2big.c \
+  crypto/multihash/shabal.c \
+  crypto/multihash/shavite.c \
+  crypto/multihash/simd.c \
+  crypto/multihash/skein.c \
+  crypto/multihash/sph_blake.h \
+  crypto/multihash/sph_bmw.h \
+  crypto/multihash/sph_cubehash.h \
+  crypto/multihash/sph_echo.h \
+  crypto/multihash/sph_fugue.h \
+  crypto/multihash/sph_groestl.h \
+  crypto/multihash/sph_hamsi.h \
+  crypto/multihash/sph_haval.h \
+  crypto/multihash/sph_jh.h \
+  crypto/multihash/sph_keccak.h \
+  crypto/multihash/sph_luffa.h \
+  crypto/multihash/sph_sha2.h \
+  crypto/multihash/sph_shabal.h \
+  crypto/multihash/sph_shavite.h \
+  crypto/multihash/sph_simd.h \
+  crypto/multihash/sph_skein.h \
+  crypto/multihash/sph_types.h \
+  crypto/multihash/sph_whirlpool.h \
+  crypto/multihash/whirlpool.c \ 
+  crypto/algos/x11/x11hash.h \
+  crypto/algos/hmq1725/hashblock.h \
+  crypto/algos/scrypt/scrypt.cpp \
+  crypto/algos/scrypt/scrypt-sse2.cpp \
+  crypto/algos/scrypt/scrypt.h \
+  crypto/algos/equihash/equihash.cpp \
+  crypto/algos/equihash/equihash.h \
+  crypto/algos/equihash/equihash.tcc \
+  crypto/algos/yescrypt/sha256_Y.c \
+  crypto/algos/yescrypt/sha256_Y.h \
+  crypto/algos/yescrypt/sysendian.h \
+  crypto/algos/yescrypt/yescrypt.h \
+  crypto/algos/yescrypt/yescrypt-best.c \
+  crypto/algos/yescrypt/yescryptcommon.c
+  crypto/algos/neoscrypt/neoscrypt.c \
+  crypto/algos/neoscrypt/neoscrypt_asm.S \
+  crypto/algos/neoscrypt/neoscrypt.h \
   crypto/sha1.cpp \
   crypto/sha1.h \
   crypto/sha256.cpp \
@@ -402,7 +460,7 @@ globaltokend_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-globaltokend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+globaltokend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(LIBMULTIALGO_LIBS)
 
 # globaltoken-cli binary #
 globaltoken_cli_SOURCES = bitcoin-cli.cpp
@@ -420,7 +478,7 @@ globaltoken_cli_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(LIBMULTIALGO_LIBS)
 #
 
 # globaltoken-tx binary #
@@ -439,7 +497,8 @@ globaltoken_tx_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBSECP256K1)
+  $(LIBSECP256K1) \
+  $(LIBMULTIALGO_LIBS)
 
 globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
@@ -454,7 +513,7 @@ if GLIBC_BACK_COMPAT
 endif
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1)
+libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(LIBMULTIALGO_LIBS)
 libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
 libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
@@ -466,6 +525,10 @@ CTAES_DIST += crypto/ctaes/ctaes.c
 CTAES_DIST += crypto/ctaes/ctaes.h
 CTAES_DIST += crypto/ctaes/README.md
 CTAES_DIST += crypto/ctaes/test.c
+
+YESCRYPT_DIST = crypto/algos/yescrypt/yescrypt-platform.c
+YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-opt.c
+YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-simd.c
 
 CLEANFILES = $(EXTRA_LIBRARIES)
 
@@ -483,7 +546,7 @@ CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += obj/build.h
 
-EXTRA_DIST = $(CTAES_DIST)
+EXTRA_DIST = $(CTAES_DIST) $(YESCRYPT_DIST)
 
 
 config/bitcoin-config.h: config/stamp-h1

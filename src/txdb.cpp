@@ -6,6 +6,7 @@
 #include <txdb.h>
 
 #include <chainparams.h>
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <random.h>
 #include <pow.h>
@@ -286,9 +287,33 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nNonce         = diskindex.nNonce;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
-
-                if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams))
-                    return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
+				
+				bool hardfork = IsHardForkActivated(pindexNew->nHeight);
+				if(hardfork)
+				{
+					auto header = pindexNew->GetBlockHeader();
+					int algo = header.GetAlgo();
+					if(algo == ALGO_EQUIHASH)
+					{
+						if (!CheckEquihashSolution(&header, Params())) {
+							return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());
+						}
+						
+						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams))
+							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
+					}
+					else
+					{
+						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams))
+							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
+					}
+				}
+				else
+				{
+					// Get just BlockHash, it is SHA256D before the fork.
+					if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams))
+						return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
+				}
 
                 pcursor->Next();
             } else {
