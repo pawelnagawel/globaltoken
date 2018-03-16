@@ -271,7 +271,6 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/hmac_sha512.h \
   crypto/ripemd160.cpp \
   crypto/ripemd160.h \
-  crypto/multihash/aes_helper.c \
   crypto/multihash/blake.c \
   crypto/multihash/bmw.c \
   crypto/multihash/cubehash.c \
@@ -279,13 +278,10 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/multihash/fugue.c \
   crypto/multihash/groestl.c \
   crypto/multihash/hamsi.c \
-  crypto/multihash/hamsi_helper.c \
   crypto/multihash/haval.c \
-  crypto/multihash/haval_helper.c \
   crypto/multihash/jh.c \
   crypto/multihash/keccak.c \
   crypto/multihash/luffa.c \
-  crypto/multihash/md_helper.c \
   crypto/multihash/sha2big.c \
   crypto/multihash/shabal.c \
   crypto/multihash/shavite.c \
@@ -310,6 +306,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/multihash/sph_types.h \
   crypto/multihash/sph_whirlpool.h \
   crypto/multihash/whirlpool.c \
+  crypto/multihash/aes_helper.c \
   crypto/algos/x11/x11hash.h \
   crypto/algos/hmq1725/hashblock.h \
   crypto/algos/scrypt/scrypt.cpp \
