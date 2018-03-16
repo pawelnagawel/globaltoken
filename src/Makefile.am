@@ -309,7 +309,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/multihash/sph_skein.h \
   crypto/multihash/sph_types.h \
   crypto/multihash/sph_whirlpool.h \
-  crypto/multihash/whirlpool.c \ 
+  crypto/multihash/whirlpool.c \
   crypto/algos/x11/x11hash.h \
   crypto/algos/hmq1725/hashblock.h \
   crypto/algos/scrypt/scrypt.cpp \
