@@ -9,8 +9,7 @@
 #include <tinyformat.h>
 #include <utilstrencodings.h>
 #include <crypto/common.h>
-#include <crypto/algos/x11/x11hash.h>
-#include <crypto/algos/hmq1725/hashblock.h>
+#include <crypto/algos/hashlib/multihash.h>
 #include <crypto/algos/neoscrypt/neoscrypt.h>
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
