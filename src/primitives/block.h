@@ -17,21 +17,21 @@ enum {
     ALGO_NEOSCRYPT = 3,
     ALGO_EQUIHASH  = 4,
     ALGO_YESCRYPT  = 5,
-	ALGO_HMQ1725   = 6,
+    ALGO_HMQ1725   = 6,
     NUM_ALGOS_IMPL };
 
 const int NUM_ALGOS = 7;
 
 enum {
     // algo
-    BLOCK_VERSION_ALGO           = (7 << 9),
-    BLOCK_VERSION_SCRYPT         = (1 << 9),
-    BLOCK_VERSION_SHA256D        = (8 << 9),
-    BLOCK_VERSION_X11            = (2 << 9),
-    BLOCK_VERSION_NEOSCRYPT      = (3 << 9),
-    BLOCK_VERSION_EQUIHASH       = (4 << 9),
-    BLOCK_VERSION_YESCRYPT       = (5 << 9),
-    BLOCK_VERSION_HMQ1725        = (6 << 9),
+    BLOCK_VERSION_ALGO           = (8 << 9),
+    BLOCK_VERSION_SHA256D        = (1 << 9),
+    BLOCK_VERSION_SCRYPT         = (2 << 9),
+    BLOCK_VERSION_X11            = (3 << 9),
+    BLOCK_VERSION_NEOSCRYPT      = (4 << 9),
+    BLOCK_VERSION_EQUIHASH       = (5 << 9),
+    BLOCK_VERSION_YESCRYPT       = (6 << 9),
+    BLOCK_VERSION_HMQ1725        = (7 << 9),
 };
 
 std::string GetAlgoName(int Algo);
