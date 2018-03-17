@@ -13,6 +13,7 @@
 #include <consensus/tx_verify.h>
 #include <consensus/merkle.h>
 #include <consensus/validation.h>
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <validation.h>
 #include <net.h>
@@ -128,6 +129,12 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     nHeight = pindexPrev->nHeight + 1;
 
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), algo);
+	
+	if (!IsHardForkActivated((pindexPrev->nHeight)+1) && algo != ALGO_SHA256D) {
+        error("MultiAlgo is not yet active. Current block height %d, height multialgo becomes active %d", pindexPrev->nHeight, chainparams.GetConsensus().HardforkHeight);
+        return nullptr;
+    }
+	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())

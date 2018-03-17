@@ -79,10 +79,18 @@ struct Params {
 	uint256 powLimit_HMQ1725;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
+	int64_t nInterval;
+	int64_t nAveragingInterval;
+	int64_t nAveragingTargetTimespan;
     int64_t nPowTargetSpacing;
 	int64_t nPowTargetSpacingV2;
     int64_t nPowTargetTimespan;
     int64_t nPowTargetTimespanV2;
+	int64_t nMaxAdjustDown;
+    int64_t nMaxAdjustUp;
+	int64_t nMinActualTimespan;
+	int64_t nMaxActualTimespan;
+	int64_t nLocalDifficultyAdjustment;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
 	int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
     uint256 nMinimumChainWork;

@@ -26,6 +26,8 @@ arith_uint256 GetAlgoPowLimit(int algo)
 		return UintToArith256(consensusParams.powLimit_YESCRYPT);
 	else if (algo == ALGO_HMQ1725)
 		return UintToArith256(consensusParams.powLimit_HMQ1725);
+	else
+		return UintToArith256(consensusParams.powLimit_SHA256);
 }
 
 bool IsHardForkActivated(uint32_t height)
