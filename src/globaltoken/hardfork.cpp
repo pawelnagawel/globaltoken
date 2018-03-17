@@ -5,7 +5,7 @@
 #include <globaltoken/hardfork.h>
 #include <uint256.h>
 #include <arith_uint256.h>
-#include <consensus/params.h>
+#include <chainparams.h>
 #include <primitives/block.h>
 
 const Consensus::Params& consensusParams = Params().GetConsensus();
@@ -28,7 +28,7 @@ arith_uint256 GetAlgoPowLimit(int algo)
 		return UintToArith256(consensusParams.powLimit_HMQ1725);
 }
 
-bool IsHardForkActivated(int height)
+bool IsHardForkActivated(uint32_t height)
 {
 	if(height >= (uint32_t)consensusParams.HardforkHeight)
 	{
@@ -37,7 +37,7 @@ bool IsHardForkActivated(int height)
 	return false;
 }
 
-int64_t GetPoWTargetTimeSpan(int height)
+int64_t GetPoWTargetTimeSpan(uint32_t height)
 {
 	if(IsHardForkActivated(height))
 	{
@@ -49,7 +49,7 @@ int64_t GetPoWTargetTimeSpan(int height)
 	}
 }
 
-int64_t GetPoWTargetSpacing(int height)
+int64_t GetPoWTargetSpacing(uint32_t height)
 {
 	if(IsHardForkActivated(height))
 	{
