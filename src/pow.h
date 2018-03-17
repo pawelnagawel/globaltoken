@@ -12,6 +12,7 @@
 
 class CBlockHeader;
 class CBlockIndex;
+class CChainParams;
 class uint256;
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&);

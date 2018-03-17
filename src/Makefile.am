@@ -319,7 +319,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/algos/yescrypt/sysendian.h \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
-  crypto/algos/yescrypt/yescryptcommon.c
+  crypto/algos/yescrypt/yescryptcommon.c \
   crypto/algos/neoscrypt/neoscrypt.c \
   crypto/algos/neoscrypt/neoscrypt_asm.S \
   crypto/algos/neoscrypt/neoscrypt.h \
