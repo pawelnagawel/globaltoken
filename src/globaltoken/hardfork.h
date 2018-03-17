@@ -10,5 +10,6 @@
 arith_uint256 GetAlgoPowLimit(int algo);
 bool IsHardForkActivated(int height);
 int64_t GetPoWTargetTimeSpan(int height);
+int64_t GetPoWTargetSpacing(int height);
 
 #endif // GLOBALTOKEN_HARDFORK_PARAMS_H

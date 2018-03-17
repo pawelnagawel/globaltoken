@@ -104,6 +104,7 @@ public:
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just change to faster retargeting (5 minutes)
+		consensus.nPowTargetSpacingV2 = 60; // must be changed
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 8; // 95% of 2016 // Changed to 8 because 9.5 is up to ten.
@@ -218,6 +219,7 @@ public:
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just change to faster retargeting (5 minutes)
+		consensus.nPowTargetSpacingV2 = 60; // must be changed
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 8; // 75% for testchains
@@ -320,6 +322,7 @@ public:
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just change to faster retargeting (5 minutes)
+		consensus.nPowTargetSpacingV2 = 60; // must be changed
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains

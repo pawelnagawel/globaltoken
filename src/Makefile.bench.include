@@ -45,7 +45,7 @@ bench_bench_globaltoken_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1) \
   $(LIBUNIVALUE) \
-  $(LIBMULTIALGO_LIBS)
+  $(LIBEQUIHASH_LIBS)
 
 if ENABLE_ZMQ
 bench_bench_globaltoken_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)

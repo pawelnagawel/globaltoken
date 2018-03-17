@@ -7,8 +7,8 @@
 
 // some parts are from dash's hash.h
 
-#ifndef HASHBLOCK_H
-#define HASHBLOCK_H
+#ifndef MULTIHASH_H
+#define MULTIHASH_H
 
 #include <uint256.h>
 #include <crypto/algos/hashlib/sph_blake.h>
@@ -371,4 +371,4 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     return hash[10].trim256();
 }
 
-#endif // HASHBLOCK_H
+#endif // MULTIHASH_H

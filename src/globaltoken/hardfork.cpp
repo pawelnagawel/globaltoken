@@ -48,3 +48,15 @@ int64_t GetPoWTargetTimeSpan(int height)
 		return consensusParams.nPowTargetTimespan;
 	}
 }
+
+int64_t GetPoWTargetSpacing(int height)
+{
+	if(IsHardForkActivated(height))
+	{
+		return consensusParams.nPowTargetSpacingV2;
+	}
+	else
+	{
+		return consensusParams.nPowTargetSpacing;
+	}
+}
