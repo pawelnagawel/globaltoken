@@ -181,16 +181,16 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 			}
 			else
 			{
-				while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
-					++pblock->nNonce;
+				while (nMaxTries > 0 && (int)pblock->nNonce.GetUint64(0) < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
+					pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
 					--nMaxTries;
 				}
 			}
 		}
 		else
 		{
-			while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(ALGO_SHA256D), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
-				++pblock->nNonce;
+			while (nMaxTries > 0 && (int)pblock->nNonce.GetUint64(0) < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(ALGO_SHA256D), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
+				pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
 				--nMaxTries;
 			}
 		}
@@ -603,7 +603,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     // Update nTime
     UpdateTime(pblock, consensusParams, pindexPrev, currentAlgo);
-    pblock->nNonce = 0;
+    pblock->nNonce = uint256();
+	pblock->nSolution.clear();
 
     // NOTE: If at some point we support pre-segwit miners post-segwit-activation, this needs to take segwit support into consideration
     const bool fPreSegWit = (THRESHOLD_ACTIVE != VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SEGWIT, versionbitscache));

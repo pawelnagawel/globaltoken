@@ -55,7 +55,7 @@ public:
 	uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
-    uint32_t nNonce;
+    uint256 nNonce;
 	std::vector<unsigned char> nSolution;  // Equihash solution.
 
     CBlockHeader()

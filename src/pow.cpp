@@ -186,7 +186,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
     bool isValid;
     EhIsValidSolution(n, k, state, pblock->nSolution, isValid);
     if (!isValid)
-        return error("CheckEquihashSolution(): invalid solution");
+        return false;
 
     return true;
 }

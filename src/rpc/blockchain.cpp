@@ -55,7 +55,7 @@ extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& 
 double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, int algo)
 {
 	unsigned int nBits;
-    unsigned int powLimit = GetAlgoPowLimit(algo);
+    unsigned int powLimit = GetAlgoPowLimit(algo).GetCompact();
 	
 	if (blockindex == nullptr)
     {
@@ -101,10 +101,11 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
 {
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
-	int algo = GetAlgo(blockindex->nVersion);
+	int algo = blockindex->GetAlgo();
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
+	result.pushKV("algopowhash", blockindex->GetPoWHash(algo).GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
     if (chainActive.Contains(blockindex))
@@ -116,7 +117,9 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("merkleroot", blockindex->hashMerkleRoot.GetHex());
     result.pushKV("time", (int64_t)blockindex->nTime);
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
-    result.pushKV("nonce", (uint64_t)blockindex->nNonce);
+    result.pushKV("nonce", blockindex->nNonce.GetHex());
+	result.pushKV("nonce_uint32", (uint64_t)((uint32_t)blockindex->nNonce.GetUint64(0)));
+	result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
@@ -165,7 +168,9 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("tx", txs);
     result.pushKV("time", block.GetBlockTime());
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
-    result.pushKV("nonce", (uint64_t)block.nNonce);
+    result.pushKV("nonce", block.nNonce.GetHex());
+	result.pushKV("nonce_uint32", (uint64_t)((uint32_t)block.nNonce.GetUint64(0)));
+	result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
