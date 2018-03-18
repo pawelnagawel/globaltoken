@@ -20,16 +20,16 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
-    if(IsHardForkActivated((pindexLast->nHeight)+1)) // needs to be coded
-		return GetNextWorkRequiredV2(CBlockIndex* pindexLast, CBlockHeader *pblock, Consensus::Params& params, algo);
+    if(IsHardForkActivated((pindexLast->nHeight)+1))
+		return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
 	else
-		return GetNextWorkRequiredV1(CBlockIndex* pindexLast, CBlockHeader *pblock, Consensus::Params& params, algo);
+		return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
 }
 
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = GetAlgoPowLimit(ALGO_SHA256D).GetCompact();
+    unsigned int nProofOfWorkLimit = GetAlgoPowLimit(ALGO_SHA256D).GetCompact(); // Before the Hardfork starts, there is just SHA256D
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -76,7 +76,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		// Special difficulty rule for testnet:
 		// If the new block's timestamp is more than 2* 10 minutes
 		// then allow mining of a min-difficulty block.
-		if (pblock->nTime > pindexLast->nTime + params.nTargetSpacingV2*2)
+		if (pblock->nTime > pindexLast->nTime + params.nPowTargetSpacingV2*2)
 			return npowWorkLimit;
 		else
 		{
@@ -152,7 +152,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
         nActualTimespan = params.nPowTargetTimespan*4;
 
     // Retarget
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
+    const arith_uint256 bnPowLimit = GetAlgoPowLimit(ALGO_SHA256D);
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
@@ -191,7 +191,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
     return true;
 }
 
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, int algo)
 {
     bool fNegative;
     bool fOverflow;
@@ -200,7 +200,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > GetAlgoPowLimit(algo))
         return false;
 
     // Check proof of work matches claimed amount

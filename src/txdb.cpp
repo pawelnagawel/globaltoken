@@ -299,19 +299,19 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
 							return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());
 						}
 						
-						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams))
+						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams, algo))
 							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 					}
 					else
 					{
-						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams))
+						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams, algo))
 							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 					}
 				}
 				else
 				{
 					// Get just BlockHash, it is SHA256D before the fork.
-					if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams))
+					if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams, ALGO_SHA256D))
 						return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 				}
 

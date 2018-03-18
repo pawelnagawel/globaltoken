@@ -24,7 +24,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&);
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, int algo);
 const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
 const CBlockIndex* GetAlgo();
 
