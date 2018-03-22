@@ -105,7 +105,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
-	result.pushKV("algopowhash", blockindex->GetPoWHash(algo).GetHex());
+	result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
     if (chainActive.Contains(blockindex))
