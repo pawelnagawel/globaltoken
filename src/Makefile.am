@@ -259,6 +259,8 @@ libbitcoin_wallet_a_SOURCES = \
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
 crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libbitcoin_crypto_a_CFLAGS = $(YESCRYPT_FLAGS) $(NEOSCRYPT_FLAGS) -fPIC
+crypto_libbitcoin_crypto_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
@@ -512,8 +514,6 @@ libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS) $(YESC
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(LIBEQUIHASH_LIBS)
 libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
 libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libbitcoinconsensus_la_CFLAGS = $(YESCRYPT_FLAGS) $(NEOSCRYPT_FLAGS) -fPIC
-libbitcoinconsensus_la_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 
 endif
 #
