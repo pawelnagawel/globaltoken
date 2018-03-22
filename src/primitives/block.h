@@ -82,7 +82,7 @@ public:
         hashMerkleRoot.SetNull();
         nTime = 0;
         nBits = 0;
-        nNonce = 0;
+        nNonce.SetNull();
     }
 
     bool IsNull() const
