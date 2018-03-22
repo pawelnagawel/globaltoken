@@ -258,7 +258,7 @@ libbitcoin_wallet_a_SOURCES = \
 
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
-crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
 crypto_libbitcoin_crypto_a_CFLAGS = $(YESCRYPT_FLAGS) $(NEOSCRYPT_FLAGS) -fPIC
 crypto_libbitcoin_crypto_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
@@ -438,7 +438,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 globaltokend_SOURCES = bitcoind.cpp
 globaltokend_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 globaltokend_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(YESCRYPT_FLAGS)
 
 if TARGET_WINDOWS
 globaltokend_SOURCES += bitcoind-res.rc
@@ -510,7 +510,7 @@ if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS) $(YESCRYPT_FLAGS)
+libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(LIBEQUIHASH_LIBS)
 libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
 libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
