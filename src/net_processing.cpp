@@ -916,7 +916,7 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
         connman->WakeMessageHandler();
     }
 	
-	fHardforkSizingActiveAtTip = (VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_HARDFORK_SIZING, versionbitscache) == THRESHOLD_ACTIVE);
+	fHardforkSizingActiveAtTip = (VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_HARDFORK_SIZING, versionbitscache) == THRESHOLD_ACTIVE || VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_HARDFORK_SIZING, versionbitscache) == THRESHOLD_STARTED);
 
     nTimeBestReceived = GetTime();
 }
