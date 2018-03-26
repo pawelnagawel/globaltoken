@@ -133,6 +133,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
+		
+		// Deployment of GlobalToken Hardfork Block Upgrade
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1526342400; // Tue, 15 May 2018
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000006ca5a7a5a45e8f8b9c");
@@ -256,6 +261,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
+		
+		// Deployment of GlobalToken Hardfork Block Upgrade
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1526342400; // Tue, 15 May 2018
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000100010001");
@@ -363,6 +373,9 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
+        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");
