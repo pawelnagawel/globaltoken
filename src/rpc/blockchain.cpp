@@ -1261,7 +1261,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue bip9_softforks(UniValue::VOBJ);
 	UniValue globaltoken_hardfork(UniValue::VARR);
 	UniValue globaltoken_hardfork_id_1(UniValue::VARR);
-	globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(block->nHeight));
+	globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(chainActive.Height()));
 	globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
 	globaltoken_hardfork_id_1.pushKV("activation_height", consensusParams.HardforkHeight);
 	globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
