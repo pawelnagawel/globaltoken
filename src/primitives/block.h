@@ -10,6 +10,8 @@
 #include <serialize.h>
 #include <uint256.h>
 
+static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
+
 enum { 
     ALGO_SCRYPT    = 0,
     ALGO_SHA256D   = 1,
@@ -24,14 +26,14 @@ const int NUM_ALGOS = 7;
 
 enum {
     // algo
-    BLOCK_VERSION_ALGO           = (8 << 9),
+    BLOCK_VERSION_ALGO           = (7 << 9),
     BLOCK_VERSION_SHA256D        = (1 << 9),
     BLOCK_VERSION_SCRYPT         = (2 << 9),
     BLOCK_VERSION_X11            = (3 << 9),
     BLOCK_VERSION_NEOSCRYPT      = (4 << 9),
     BLOCK_VERSION_EQUIHASH       = (5 << 9),
     BLOCK_VERSION_YESCRYPT       = (6 << 9),
-    BLOCK_VERSION_HMQ1725        = (7 << 9),
+    BLOCK_VERSION_HMQ1725        = (8 << 9),
 };
 
 std::string GetAlgoName(int Algo);
@@ -51,12 +53,11 @@ public:
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
-	uint32_t nHeight;
-	uint32_t nReserved[7];
+    uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
     uint256 nNonce;
-	std::vector<unsigned char> nSolution;  // Equihash solution.
+    std::vector<unsigned char> nSolution;  // Equihash solution.
 
     CBlockHeader()
     {
@@ -67,12 +68,25 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
+        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
+        if (new_format) {
+            for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
+                READWRITE(nReserved[i]);
+            }
+        }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nNonce);
+        if (new_format) {
+            READWRITE(nNonce);
+            READWRITE(nSolution);
+        } else {
+            uint32_t legacy_nonce = (uint32_t)nNonce.GetUint64(0);
+            READWRITE(legacy_nonce);
+            nNonce = ArithToUint256(arith_uint256(legacy_nonce));
+        }
     }
 
     void SetNull()
@@ -80,9 +94,11 @@ public:
         nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
+        memset(nReserved, 0, sizeof(nReserved));
         nTime = 0;
         nBits = 0;
         nNonce.SetNull();
+        nSolution.clear();
     }
 
     bool IsNull() const
@@ -121,11 +137,11 @@ public:
         }
     }
 	
-	int GetAlgo() const;
+    int GetAlgo() const;
 
     uint256 GetHash() const;
 	
-	uint256 GetPoWHash(int algo) const;
+    uint256 GetPoWHash(int algo) const;
 
     int64_t GetBlockTime() const
     {
@@ -175,9 +191,11 @@ public:
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;
+        memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
+        block.nSolution      = nSolution;
         return block;
     }
 
@@ -204,7 +222,6 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        READWRITE(nHeight);
         for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
             READWRITE(nReserved[i]);
         }

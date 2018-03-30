@@ -10,7 +10,7 @@
  * network protocol versioning
  */
 
-static const int PROTOCOL_VERSION = 70015;
+static const int PROTOCOL_VERSION = 80000;
 
 //! initial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
@@ -42,5 +42,8 @@ static const int SHORT_IDS_BLOCKS_VERSION = 70001;
 
 //! not banning for invalid compact blocks starts with this version
 static const int INVALID_CB_NO_BAN_VERSION = 70002;
+
+//! after this version the hardfork will become active
+static const int GLOBALTOKEN_HARDFORK_VERSION = 80000;
 
 #endif // BITCOIN_VERSION_H

@@ -3086,7 +3086,11 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // checks that use witness data may be performed here.
 
     // Size limits
-    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)))
+	int serialization_flags = SERIALIZE_TRANSACTION_NO_WITNESS;
+    if (!IsHardForkActivated(block.nHeight)) {
+        serialization_flags |= SERIALIZE_BLOCK_LEGACY;
+    }
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
 
     // First transaction must be coinbase, the rest must not be

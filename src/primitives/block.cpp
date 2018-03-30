@@ -5,6 +5,7 @@
 
 #include <primitives/block.h>
 
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <tinyformat.h>
 #include <utilstrencodings.h>
@@ -14,11 +15,17 @@
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
 
-// equihash not included, because there is no GetHash function this way.
-
 uint256 CBlockHeader::GetHash() const
 {
-    return SerializeHash(*this);
+    int version;
+    if (IsHardForkActivated(nHeight)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
 }
 
 int CBlockHeader::GetAlgo() const
@@ -57,8 +64,11 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
             scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
-        case ALGO_X11:
-            return HashX11(BEGIN(nVersion), END(nNonce));
+        case ALGO_X11
+		{
+			uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
+            return HashX11(BEGIN(nVersion), END(default_nonce));
+		}
         case ALGO_NEOSCRYPT:
 		{
             unsigned int profile = 0x0;
@@ -67,15 +77,18 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
 			return thash;
         }
 		case ALGO_EQUIHASH:
-            return GetHash(); // Equihash seems to have same POW hash, because Equihash will also be additional verified.
+            return GetHash();
         case ALGO_YESCRYPT:
         {
             uint256 thash;
             yescrypt_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
-        case ALGO_HMQ1725:
-            return HMQ1725(BEGIN(nVersion), END(nNonce));
+        case ALGO_HMQ1725
+		{
+			uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
+            return HMQ1725(BEGIN(nVersion), END(default_nonce));
+		}
     }
     return GetHash();
 }

@@ -375,7 +375,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. template_request         (json object, optional) A json object in the following spec\n"
             "     {\n"
-            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), or omitted\n"
+            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\", or omitted\n"
             "       \"capabilities\":[     (array, optional) A list of strings\n"
             "           \"support\"          (string) client side supported feature, 'longpoll', 'coinbasetxn', 'coinbasevalue', 'proposal', 'serverlist', 'workid'\n"
             "           ,...\n"
@@ -458,14 +458,15 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
         lpval = find_value(oparam, "longpollid");
 
-        if (strMode == "proposal")
+        if (strMode == "proposal" || strMode == "proposal_legacy")
         {
             const UniValue& dataval = find_value(oparam, "data");
             if (!dataval.isStr())
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            if (!DecodeHexBlk(block, dataval.get_str()))
+            bool legacy_format = (strMode == "proposal_legacy");
+            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
