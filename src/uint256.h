@@ -18,9 +18,10 @@
 template<unsigned int BITS>
 class base_blob
 {
-public:
+protected:
     static constexpr int WIDTH = BITS / 8;
     uint8_t data[WIDTH];
+public:
     base_blob()
     {
         memset(data, 0, sizeof(data));
@@ -169,8 +170,8 @@ inline uint256 uint256S(const std::string& str)
     return rv;
 }
 
-class uint512 : public base_blob<512>
-{
+/** 512-bit unsigned big integer. */
+class uint512 : public base_blob<512> {
 public:
     uint512() {}
     uint512(const base_blob<512>& b) : base_blob<512>(b) {}
@@ -178,12 +179,9 @@ public:
 
     uint256 trim256() const
     {
-        uint256 ret;
-        for (unsigned int i = 0; i < uint256::WIDTH; i++) {
-            ret.data[i] = data[i];
-        }
-        return ret;
+        uint256 result;
+        memcpy((void*)&result, (void*)data, 32);
+        return result;
     }
-
 };
 #endif // BITCOIN_UINT256_H
