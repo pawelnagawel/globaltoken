@@ -45,7 +45,7 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
             scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
-        case ALGO_X11
+        case ALGO_X11:
 		{
 			uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
             return HashX11(BEGIN(nVersion), END(default_nonce));
