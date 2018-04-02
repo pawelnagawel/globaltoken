@@ -213,6 +213,7 @@ public:
 	uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
+	uint8_t nAlgo;
     uint256 nNonce;
 	std::vector<unsigned char> nSolution;
 
@@ -243,6 +244,7 @@ public:
 		memset(nReserved, 0, sizeof(nReserved));
         nTime          = 0;
         nBits          = 0;
+		nAlgo          = 0;
         nNonce         = uint256();
 		nSolution.clear();
     }
@@ -261,6 +263,7 @@ public:
 		memcpy(nReserved, block.nReserved, sizeof(nReserved));
         nTime          = block.nTime;
         nBits          = block.nBits;
+		nAlgo          = block.nAlgo;
         nNonce         = block.nNonce;
 		nSolution      = block.nSolution;
     }
@@ -293,6 +296,7 @@ public:
 		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime          = nTime;
         block.nBits          = nBits;
+		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
 		block.nSolution      = nSolution;
         return block;
@@ -429,6 +433,7 @@ public:
 		}
         READWRITE(nTime);
         READWRITE(nBits);
+		READWRITE(nAlgo);
         READWRITE(nNonce);
 		READWRITE(nSolution);
     }
@@ -442,6 +447,7 @@ public:
 		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime           = nTime;
         block.nBits           = nBits;
+		block.nAlgo           = nAlgo;
         block.nNonce          = nNonce;
 		block.nSolution       = nSolution;
         return block.GetHash();

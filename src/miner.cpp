@@ -128,12 +128,20 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
 
-    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), algo);
+    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
 	
 	if (!IsHardForkActivated((pindexPrev->nHeight)+1) && algo != ALGO_SHA256D) {
         error("MultiAlgo is not yet active. Current block height %d, height multialgo becomes active %d", pindexPrev->nHeight, chainparams.GetConsensus().HardforkHeight);
         return nullptr;
     }
+	
+	int nAlgo = algo;
+	
+	if (!IsHardForkActivated((pindexPrev->nHeight)+1))
+	{
+		nAlgo = ALGO_SHA256D;
+	}
+	pblock->nAlgo = nAlgo;
 	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
@@ -190,8 +198,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
 	memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
-    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
+    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
+	pblock->nAlgo          = algo;
     pblock->nNonce         = ArithToUint256(nonce);
 	pblock->nSolution.clear();
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);

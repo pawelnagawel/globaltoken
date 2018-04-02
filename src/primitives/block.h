@@ -6,6 +6,7 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
+#include <arith_uint256.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -13,8 +14,8 @@
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
 
 enum { 
-    ALGO_SCRYPT    = 0,
-    ALGO_SHA256D   = 1,
+    ALGO_SHA256D   = 0,
+    ALGO_SCRYPT    = 1,
     ALGO_X11       = 2,
     ALGO_NEOSCRYPT = 3,
     ALGO_EQUIHASH  = 4,
@@ -23,18 +24,6 @@ enum {
     NUM_ALGOS_IMPL };
 
 const int NUM_ALGOS = 7;
-
-enum {
-    // algo
-    BLOCK_VERSION_ALGO           = (7 << 9),
-    BLOCK_VERSION_SHA256D        = (1 << 9),
-    BLOCK_VERSION_SCRYPT         = (2 << 9),
-    BLOCK_VERSION_X11            = (3 << 9),
-    BLOCK_VERSION_NEOSCRYPT      = (4 << 9),
-    BLOCK_VERSION_EQUIHASH       = (5 << 9),
-    BLOCK_VERSION_YESCRYPT       = (6 << 9),
-    BLOCK_VERSION_HMQ1725        = (8 << 9),
-};
 
 std::string GetAlgoName(int Algo);
 
@@ -56,6 +45,7 @@ public:
     uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
+	uint8_t nAlgo;
     uint256 nNonce;
     std::vector<unsigned char> nSolution;  // Equihash solution.
 
@@ -80,6 +70,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         if (new_format) {
+			READWRITE(nAlgo);
             READWRITE(nNonce);
             READWRITE(nSolution);
         } else {
@@ -97,6 +88,7 @@ public:
         memset(nReserved, 0, sizeof(nReserved));
         nTime = 0;
         nBits = 0;
+		nAlgo = 0;
         nNonce.SetNull();
         nSolution.clear();
     }
@@ -109,32 +101,7 @@ public:
 	// Set Algo to use
     inline void SetAlgo(int algo)
     {
-        switch(algo)
-        {
-            case ALGO_SHA256D:
-                nVersion |= BLOCK_VERSION_SHA256D;
-                break;
-            case ALGO_SCRYPT:
-                nVersion |= BLOCK_VERSION_SCRYPT;
-                break;
-            case ALGO_X11:
-                nVersion |= BLOCK_VERSION_X11;
-                break;
-            case ALGO_NEOSCRYPT:
-                nVersion |= BLOCK_VERSION_NEOSCRYPT;
-                break;
-            case ALGO_EQUIHASH:
-                nVersion |= BLOCK_VERSION_EQUIHASH;
-                break;
-            case ALGO_YESCRYPT:
-                nVersion |= BLOCK_VERSION_YESCRYPT;
-                break;
-            case ALGO_HMQ1725:
-                nVersion |= BLOCK_VERSION_HMQ1725;
-                break;
-            default:
-                break;
-        }
+        nAlgo = algo;
     }
 	
     int GetAlgo() const;
@@ -194,6 +161,7 @@ public:
         memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime          = nTime;
         block.nBits          = nBits;
+		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
         block.nSolution      = nSolution;
         return block;
@@ -227,6 +195,7 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
+		READWRITE(nAlgo);
     }
 };
 

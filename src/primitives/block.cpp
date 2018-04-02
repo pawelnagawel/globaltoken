@@ -30,26 +30,7 @@ uint256 CBlockHeader::GetHash() const
 
 int CBlockHeader::GetAlgo() const
 {
-    switch (nVersion & BLOCK_VERSION_ALGO)
-    {
-        case 1:
-            return ALGO_SHA256D;
-        case BLOCK_VERSION_SHA256D:
-            return ALGO_SHA256D;
-        case BLOCK_VERSION_SCRYPT:
-            return ALGO_SCRYPT;
-        case BLOCK_VERSION_X11:
-            return ALGO_X11;
-        case BLOCK_VERSION_NEOSCRYPT:
-            return ALGO_NEOSCRYPT;
-        case BLOCK_VERSION_EQUIHASH:
-            return ALGO_EQUIHASH;
-        case BLOCK_VERSION_YESCRYPT:
-            return ALGO_YESCRYPT;
-		case BLOCK_VERSION_HMQ1725:
-            return ALGO_HMQ1725;
-    }
-    return ALGO_SHA256D;
+    return nAlgo;
 }
 
 uint256 CBlockHeader::GetPoWHash(int algo) const
@@ -96,10 +77,11 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
 std::string CBlock::ToString() const
 {
     std::stringstream s;
-    s << strprintf("CBlock(hash=%s, ver=0x%08x, powalgo=%d, powhash=%s, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
+    s << strprintf("CBlock(hash=%s, ver=0x%08x, powalgo=%u, powalgoname=%s, powhash=%s, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
         GetHash().ToString(),
         nVersion,
 		GetAlgo(),
+		GetAlgoName(GetAlgo()),
 		GetPoWHash(GetAlgo()).ToString(),
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),

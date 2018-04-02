@@ -1708,7 +1708,7 @@ void ThreadScriptCheck() {
 // Protected by cs_main
 VersionBitsCache versionbitscache;
 
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, int algo)
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     LOCK(cs_main);
     int32_t nVersion = VERSIONBITS_TOP_BITS;
@@ -1718,45 +1718,10 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         if (state == THRESHOLD_LOCKED_IN || state == THRESHOLD_STARTED) {
             nVersion |= VersionBitsMask(params, static_cast<Consensus::DeploymentPos>(i));
         }
-    }
-	
-	switch (algo)
-    {
-        case ALGO_SHA256D:
-			break;
-        case ALGO_SCRYPT:
-			nVersion |= BLOCK_VERSION_SCRYPT;
-			break;
-        case ALGO_X11:
-			nVersion |= BLOCK_VERSION_X11;
-			break;
-        case ALGO_NEOSCRYPT:
-			nVersion |= BLOCK_VERSION_NEOSCRYPT;
-			break;
-        case ALGO_EQUIHASH:
-			nVersion |= BLOCK_VERSION_EQUIHASH;
-			break;
-        case ALGO_YESCRYPT:
-			nVersion |= BLOCK_VERSION_YESCRYPT;
-			break;
-        case ALGO_HMQ1725:
-			nVersion |= BLOCK_VERSION_HMQ1725;
-			break;
-        default:
-			return nVersion;
-    }  
+    } 
 
     return nVersion;
 }
-
-bool isMultiAlgoVersion(int nVersion)
-{
-     if((nVersion & 0xfffU) == 512 || (nVersion & 0xfffU) == 1024 || (nVersion & 0xfffU) == 1536 || (nVersion & 0xfffU) == 2048 || (nVersion & 0xfffU) == 2560 || (nVersion & 0xfffU) == 3072) 
-	 {
-         return true;
-     }
-     return false;
- }
 
 /**
  * Threshold condition checker that triggers when unknown versionbits are seen on the network.
@@ -1776,10 +1741,9 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
-		int nAlgo = pindex->GetAlgo();
         return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
                ((pindex->nVersion >> bit) & 1) != 0 &&
-               ((ComputeBlockVersion(pindex->pprev, params, nAlgo) >> bit) & 1) == 0;
+               ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
     }
 };
 
@@ -2234,9 +2198,8 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
-			int nAlgo = pindex->GetAlgo();
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus(), nAlgo);
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0 && !isMultiAlgoVersion(pindex->nVersion))
+            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
+            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
