@@ -1110,7 +1110,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 	
-    bool hardfork = IsHardForkActivated(block.nHeight);
+    bool hardfork = IsHardForkActivated(block.nTime);
 	if(hardfork)
 	{
 		int nAlgo = block.GetAlgo();
@@ -1781,7 +1781,7 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
         flags |= SCRIPT_VERIFY_NULLDUMMY;
     }
 	
-	if (IsHardForkActivated(pindex->nHeight)) {
+	if (IsHardForkActivated(pindex->nTime)) {
         flags |= SCRIPT_VERIFY_STRICTENC;
     } else {
         flags |= SCRIPT_ALLOW_NON_FORKID;
@@ -1971,7 +1971,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         // * p2sh (when P2SH enabled in flags and excludes coinbase)
         // * witness (when witness enabled in flags and excludes coinbase)
         nSigOpsCost += GetTransactionSigOpCost(tx, view, flags);
-        if (nSigOpsCost > MaxBlockSigOps(IsHardForkActivated(pindex->nHeight)))
+        if (nSigOpsCost > MaxBlockSigOps(IsHardForkActivated(pindex->nTime)))
             return state.DoS(100, error("ConnectBlock(): too many sigops"),
                              REJECT_INVALID, "bad-blk-sigops");
 
@@ -2985,7 +2985,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
-    bool hardfork = IsHardForkActivated(block.nHeight);
+    bool hardfork = IsHardForkActivated(block.nTime);
 	if(hardfork)
 	{
 		int nAlgo = block.GetAlgo();
@@ -3056,10 +3056,10 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
     // Size limits
 	int serialization_flags = SERIALIZE_TRANSACTION_NO_WITNESS;
-    if (!IsHardForkActivated(block.nHeight)) {
+    if (!IsHardForkActivated(block.nTime)) {
         serialization_flags |= SERIALIZE_BLOCK_LEGACY;
     }
-    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nHeight)))
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
 
     // First transaction must be coinbase, the rest must not be
@@ -3080,7 +3080,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     {
         nSigOps += GetLegacySigOpCount(*tx);
     }
-    if (nSigOps * WITNESS_SCALE_FACTOR > MaxBlockSigOps(IsHardForkActivated(block.nHeight)))
+    if (nSigOps * WITNESS_SCALE_FACTOR > MaxBlockSigOps(IsHardForkActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-sigops", false, "out-of-bounds SigOpCount");
 
     if (fCheckPOW && fCheckMerkleRoot)
@@ -3279,7 +3279,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     // large by filling up the coinbase witness, which doesn't change
     // the block hash, so we couldn't mark the block as permanently
     // failed).
-    if (GetBlockWeight(block) > MaxBlockWeight(IsHardForkActivated(block.nHeight))) {
+    if (GetBlockWeight(block) > MaxBlockWeight(IsHardForkActivated(block.nTime))) {
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-weight", false, strprintf("%s : weight limit failed", __func__));
     }
 

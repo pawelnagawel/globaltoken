@@ -130,14 +130,14 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
 	
-	if (!IsHardForkActivated((pindexPrev->nHeight)+1) && algo != ALGO_SHA256D) {
+	if (!IsHardForkActivated(pindexPrev->nTime) && algo != ALGO_SHA256D) {
         error("MultiAlgo is not yet active. Current block height %d, height multialgo becomes active %d", pindexPrev->nHeight, chainparams.GetConsensus().HardforkHeight);
         return nullptr;
     }
 	
 	int nAlgo = algo;
 	
-	if (!IsHardForkActivated((pindexPrev->nHeight)+1))
+	if (!IsHardForkActivated(pindexPrev->nTime))
 	{
 		nAlgo = ALGO_SHA256D;
 	}
@@ -187,7 +187,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
 	arith_uint256 nonce;
-	if (IsHardForkActivated(nHeight) && algo == ALGO_EQUIHASH) {
+	if (IsHardForkActivated(pindexPrev->nTime) && algo == ALGO_EQUIHASH) {
 		// Randomise nonce for new block foramt.
 		nonce = UintToArith256(GetRandHash());
 		// Clear the top and bottom 16 bits (for local use as thread flags and counters)

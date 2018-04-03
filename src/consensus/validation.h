@@ -9,6 +9,7 @@
 #include <string>
 #include <version.h>
 #include <consensus/consensus.h>
+#include <globaltoken/hardfork.h>
 #include <primitives/transaction.h>
 #include <primitives/block.h>
 
@@ -99,7 +100,7 @@ static inline int64_t GetTransactionWeight(const CTransaction& tx)
 }
 static inline int64_t GetBlockWeight(const CBlock& block)
 {
-    int ser_flag = (IsHardForkActivated(block.nHeight)) ? 0 : SERIALIZE_BLOCK_LEGACY;
+    int ser_flag = (IsHardForkActivated(block.nTime)) ? 0 : SERIALIZE_BLOCK_LEGACY;
     return ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS | ser_flag) * (WITNESS_SCALE_FACTOR - 1) + ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | ser_flag);
 }
 

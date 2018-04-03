@@ -18,7 +18,7 @@
 uint256 CBlockHeader::GetHash() const
 {
     int version;
-    if (IsHardForkActivated(nHeight)) {
+    if (IsHardForkActivated(nTime)) {
         version = PROTOCOL_VERSION;
     } else {
         version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;

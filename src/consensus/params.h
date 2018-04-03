@@ -67,6 +67,7 @@ struct Params {
 	/** Block height at which BIP66 becomes active */
     int HardforkHeight;
 	uint256 HardforkHash;
+	uint32_t HardforkTime;
     uint32_t nRuleChangeActivationThreshold;
     uint32_t nMinerConfirmationWindow;
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];

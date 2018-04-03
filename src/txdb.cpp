@@ -291,7 +291,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 				
-				bool hardfork = IsHardForkActivated(pindexNew->nHeight);
+				bool hardfork = IsHardForkActivated(pindexNew->nTime);
 				if(hardfork)
 				{
 					auto header = pindexNew->GetBlockHeader();

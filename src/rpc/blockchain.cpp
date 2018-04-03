@@ -143,7 +143,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     if (chainActive.Contains(blockindex))
         confirmations = chainActive.Height() - blockindex->nHeight + 1;
     result.pushKV("confirmations", confirmations);
-	int ser_flags = (IsHardForkActivated(blockindex->nHeight)) ? 0 : SERIALIZE_BLOCK_LEGACY;
+	int ser_flags = (IsHardForkActivated(blockindex->nTime)) ? 0 : SERIALIZE_BLOCK_LEGACY;
     result.pushKV("strippedsize", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS | ser_flags));
     result.pushKV("size", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | ser_flags));
     result.pushKV("weight", (int)::GetBlockWeight(block));
@@ -1276,9 +1276,9 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue bip9_softforks(UniValue::VOBJ);
 	UniValue globaltoken_hardfork(UniValue::VARR);
 	UniValue globaltoken_hardfork_id_1(UniValue::VARR);
-	globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(chainActive.Height()));
+	globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
 	globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
-	globaltoken_hardfork_id_1.pushKV("activation_height", consensusParams.HardforkHeight);
+	globaltoken_hardfork_id_1.pushKV("activation_time", consensusParams.HardforkTime);
 	globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
@@ -1587,7 +1587,6 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
         );
 
     const CBlockIndex* pindex;
-    int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
 
     if (request.params[1].isNull()) {
         LOCK(cs_main);
@@ -1606,6 +1605,7 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
     }
 
     assert(pindex != nullptr);
+	int blockcount = 30 * 24 * 60 * 60 / GetPoWTargetSpacing(pindex->nTime); // By default: 1 month
 
     if (request.params[0].isNull()) {
         blockcount = std::max(0, std::min(blockcount, pindex->nHeight - 1));

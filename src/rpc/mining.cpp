@@ -137,7 +137,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
         }
-		if(IsHardForkActivated((pblock->nHeight) +1))
+		if(IsHardForkActivated(pblock->nTime))
 		{
 			if(currentAlgo == ALGO_EQUIHASH)
 			{
@@ -736,8 +736,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
     result.pushKV("mutable", aMutable);
     result.pushKV("noncerange", "00000000ffffffff");
-    int64_t nSigOpLimit = MaxBlockSigOps(IsHardForkActivated(pindexPrev->nHeight+1));
-    int64_t nSizeLimit = MaxBlockSerializedSize(IsHardForkActivated(pindexPrev->nHeight+1));
+    int64_t nSigOpLimit = MaxBlockSigOps(IsHardForkActivated(pindexPrev->nTime));
+    int64_t nSizeLimit = MaxBlockSerializedSize(IsHardForkActivated(pindexPrev->nTime));
     if (fPreSegWit) {
         assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
         nSigOpLimit /= WITNESS_SCALE_FACTOR;
@@ -747,7 +747,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("sigoplimit", nSigOpLimit);
     result.pushKV("sizelimit", nSizeLimit);
     if (!fPreSegWit) {
-        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(IsHardForkActivated(pindexPrev->nHeight+1)));
+        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(IsHardForkActivated(pindexPrev->nTime)));
     }
     result.pushKV("curtime", pblock->GetBlockTime());
     result.pushKV("bits", strprintf("%08x", pblock->nBits));

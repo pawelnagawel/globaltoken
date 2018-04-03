@@ -30,18 +30,18 @@ arith_uint256 GetAlgoPowLimit(int algo)
 		return UintToArith256(consensusParams.powLimit_SHA256);
 }
 
-bool IsHardForkActivated(uint32_t height)
+bool IsHardForkActivated(uint32_t blocktime)
 {
-	if(height >= (uint32_t)consensusParams.HardforkHeight)
+	if(blocktime >= consensusParams.HardforkTime)
 	{
 		return true;
 	}
 	return false;
 }
 
-int64_t GetPoWTargetTimeSpan(uint32_t height)
+int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
 {
-	if(IsHardForkActivated(height))
+	if(IsHardForkActivated(blocktime))
 	{
 		return consensusParams.nPowTargetTimespanV2;
 	}
@@ -51,9 +51,9 @@ int64_t GetPoWTargetTimeSpan(uint32_t height)
 	}
 }
 
-int64_t GetPoWTargetSpacing(uint32_t height)
+int64_t GetPoWTargetSpacing(uint32_t blocktime)
 {
-	if(IsHardForkActivated(height))
+	if(IsHardForkActivated(blocktime))
 	{
 		return consensusParams.nPowTargetSpacingV2;
 	}
