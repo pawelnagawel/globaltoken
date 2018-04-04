@@ -46,18 +46,18 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
             return thash;
         }
         case ALGO_X11:
-		{
-			uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
+        {
+            uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
             return HashX11(BEGIN(nVersion), END(default_nonce));
-		}
-        case ALGO_NEOSCRYPT:
-		{
-            unsigned int profile = 0x0;
-			uint256 thash;
-			neoscrypt((unsigned char *) &nVersion, (unsigned char *) &thash, profile);				
-			return thash;
         }
-		case ALGO_EQUIHASH:
+        case ALGO_NEOSCRYPT:
+        {
+            unsigned int profile = 0x0;
+            uint256 thash;
+            neoscrypt((unsigned char *) &nVersion, (unsigned char *) &thash, profile);				
+            return thash;
+        }
+        case ALGO_EQUIHASH:
             return GetHash();
         case ALGO_YESCRYPT:
         {
@@ -65,11 +65,11 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
             yescrypt_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
-        case ALGO_HMQ1725
-		{
-			uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
+        case ALGO_HMQ1725:
+        {
+            uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
             return HMQ1725(BEGIN(nVersion), END(default_nonce));
-		}
+        }
     }
     return GetHash();
 }
@@ -80,9 +80,9 @@ std::string CBlock::ToString() const
     s << strprintf("CBlock(hash=%s, ver=0x%08x, powalgo=%u, powalgoname=%s, powhash=%s, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
         GetHash().ToString(),
         nVersion,
-		GetAlgo(),
-		GetAlgoName(GetAlgo()),
-		GetPoWHash(GetAlgo()).ToString(),
+        GetAlgo(),
+        GetAlgoName(GetAlgo()),
+        GetPoWHash(GetAlgo()).ToString(),
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),
         nTime, nBits, nNonce.GetHex(),
@@ -109,7 +109,7 @@ std::string GetAlgoName(int Algo)
             return std::string("yescrypt");
         case ALGO_EQUIHASH:
             return std::string("equihash");
-		case ALGO_HMQ1725:
+	case ALGO_HMQ1725:
             return std::string("hmq1725");
     }
     return std::string("unknown");       
