@@ -135,14 +135,6 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         return nullptr;
     }
 	
-	int nAlgo = algo;
-	
-	if (!IsHardForkActivated(pindexPrev->nTime))
-	{
-		nAlgo = ALGO_SHA256D;
-	}
-	pblock->nAlgo = nAlgo;
-	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
@@ -186,23 +178,29 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
-	arith_uint256 nonce;
-	if (IsHardForkActivated(pindexPrev->nTime) && algo == ALGO_EQUIHASH) {
-		// Randomise nonce for new block foramt.
-		nonce = UintToArith256(GetRandHash());
-		// Clear the top and bottom 16 bits (for local use as thread flags and counters)
-		nonce <<= 32;
-		nonce >>= 16;
-	}
+   arith_uint256 nonce;
+   if (IsHardForkActivated(pindexPrev->nTime) && algo == ALGO_EQUIHASH) {
+	 // Randomise nonce for new block foramt.
+	 nonce = UintToArith256(GetRandHash());
+	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)
+	 nonce <<= 32;
+	 nonce >>= 16;
+    }
 	
     // Fill in header
+    int nAlgo = algo;
+	
+    if (!IsHardForkActivated(pindexPrev->nTime))
+    {
+	 nAlgo = ALGO_SHA256D;
+    }
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-	memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
-    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
+    memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
+    UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
-	pblock->nAlgo          = algo;
+    pblock->nAlgo          = nAlgo;
     pblock->nNonce         = ArithToUint256(nonce);
-	pblock->nSolution.clear();
+    pblock->nSolution.clear();
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
 
     CValidationState state;
