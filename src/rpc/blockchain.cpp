@@ -1274,12 +1274,12 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     CBlockIndex* tip = chainActive.Tip();
     UniValue softforks(UniValue::VARR);
     UniValue bip9_softforks(UniValue::VOBJ);
-	UniValue globaltoken_hardfork(UniValue::VARR);
-	UniValue globaltoken_hardfork_id_1(UniValue::VARR);
-	globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
-	globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
-	globaltoken_hardfork_id_1.pushKV("activation_time", consensusParams.HardforkTime);
-	globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
+    UniValue globaltoken_hardfork(UniValue::VARR);
+    UniValue globaltoken_hardfork_id_1(UniValue::VOBJ);
+    globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
+    globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
+    globaltoken_hardfork_id_1.pushKV("activation_time", (int64_t)consensusParams.HardforkTime);
+    globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip65", 4, tip, consensusParams));
@@ -1288,7 +1288,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     }
     obj.pushKV("softforks",             softforks);
     obj.pushKV("bip9_softforks", bip9_softforks);
-	obj.pushKV("hardforks", globaltoken_hardfork);
+    obj.pushKV("hardforks", globaltoken_hardfork);
 
     obj.pushKV("warnings", GetWarnings("statusbar"));
     return obj;
