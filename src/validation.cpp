@@ -2994,7 +2994,6 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
 			// Check Equihash solution is valid
 			if (fCheckPOW && !CheckEquihashSolution(&block, Params())) 
 			{
-				LogPrintf("CheckBlockHeader(): Equihash solution invalid at height %d\n", block.nHeight);
 				return state.DoS(100, error("CheckBlockHeader(): Equihash solution invalid"),
 								 REJECT_INVALID, "invalid-solution");
 			}
