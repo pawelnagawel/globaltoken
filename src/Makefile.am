@@ -341,6 +341,8 @@ libbitcoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_consensus_a_SOURCES = \
   amount.h \
+  globaltoken/hardfork.cpp \
+  globaltoken/hardfork.h \
   arith_uint256.cpp \
   arith_uint256.h \
   consensus/merkle.cpp \
