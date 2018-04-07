@@ -29,6 +29,7 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
+LIBBITCOIN_CRYPTO_SECONDARY=crypto/libbitcoin_crypto_secondary.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -49,6 +50,7 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_CRYPTO_SECONDARY) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_CONSENSUS) \
@@ -259,8 +261,7 @@ libbitcoin_wallet_a_SOURCES = \
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
 crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
-crypto_libbitcoin_crypto_a_CFLAGS = $(YESCRYPT_FLAGS) $(NEOSCRYPT_FLAGS) -fPIC
-crypto_libbitcoin_crypto_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
+crypto_libbitcoin_crypto_a_CFLAGS = $(YESCRYPT_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
@@ -322,9 +323,6 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c \
-  crypto/algos/neoscrypt/neoscrypt.c \
-  crypto/algos/neoscrypt/neoscrypt_asm.S \
-  crypto/algos/neoscrypt/neoscrypt.h \
   crypto/sha1.cpp \
   crypto/sha1.h \
   crypto/sha256.cpp \
@@ -334,6 +332,19 @@ crypto_libbitcoin_crypto_a_SOURCES = \
 
 if USE_ASM
 crypto_libbitcoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
+endif
+
+# crypto secondary library (with asm)
+crypto_libbitcoin_crypto_secondary_a_CPPFLAGS = $(AM_CPPFLAGS)
+crypto_libbitcoin_crypto_secondary_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libbitcoin_crypto_secondary_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(NEOSCRYPT_FPIC_FLAGS)
+crypto_libbitcoin_crypto_secondary_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
+crypto_libbitcoin_crypto_secondary_a_SOURCES = \
+  crypto/algos/neoscrypt/neoscrypt.c \
+  crypto/algos/neoscrypt/neoscrypt.h
+
+if USE_ASM
+crypto_libbitcoin_crypto_secondary_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
@@ -455,6 +466,7 @@ globaltokend_LDADD = \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_CRYPTO_SECONDARY) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
@@ -476,7 +488,8 @@ globaltoken_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO)
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_CRYPTO_SECONDARY)
 
 globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(LIBEQUIHASH_LIBS)
 #
@@ -497,6 +510,7 @@ globaltoken_tx_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_CRYPTO_SECONDARY) \
   $(LIBSECP256K1) \
   $(LIBEQUIHASH_LIBS)
 
@@ -506,7 +520,7 @@ globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_libbitcoin_crypto_secondary_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp

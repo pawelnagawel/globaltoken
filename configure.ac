@@ -586,7 +586,11 @@ if test x$use_hardening != xno; then
   AX_CHECK_LINK_FLAG([[-Wl,-z,now]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,now"])
 
   if test x$TARGET_OS != xwindows; then
-    AX_CHECK_COMPILE_FLAG([-fPIE],[PIE_FLAGS="-fPIE"])
+    if test "$use_asm" = "yes"; then
+        AX_CHECK_COMPILE_FLAG([-fPIC],[NEOSCRYPT_FPIC_FLAGS="$NEOSCRYPT_FPIC_FLAGS -fPIC"])
+    else
+        AX_CHECK_COMPILE_FLAG([-fPIE],[PIE_FLAGS="-fPIE"])
+    fi
     AX_CHECK_LINK_FLAG([[-pie]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pie"])
   fi
 
@@ -1294,6 +1298,7 @@ AC_SUBST(ZMQ_LIBS)
 AC_SUBST(LIBEQUIHASH_LIBS)
 AC_SUBST(YESCRYPT_FLAGS)
 AC_SUBST(NEOSCRYPT_FLAGS)
+AC_SUBST(NEOSCRYPT_FPIC_FLAGS)
 AC_SUBST(PROTOBUF_LIBS)
 AC_SUBST(QR_LIBS)
 AC_CONFIG_FILES([Makefile src/Makefile doc/man/Makefile share/setup.nsi share/qt/Info.plist test/config.ini])
