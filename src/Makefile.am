@@ -336,7 +336,7 @@ endif
 
 # crypto secondary library (with asm)
 crypto_libbitcoin_crypto_secondary_a_CPPFLAGS = $(AM_CPPFLAGS)
-crypto_libbitcoin_crypto_secondary_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+crypto_libbitcoin_crypto_secondary_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(NEOSCRYPT_FPIC_FLAGS)
 crypto_libbitcoin_crypto_secondary_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(NEOSCRYPT_FPIC_FLAGS)
 crypto_libbitcoin_crypto_secondary_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 crypto_libbitcoin_crypto_secondary_a_SOURCES = \
