@@ -98,7 +98,6 @@ BITCOIN_CORE_H = \
   compressor.h \
   consensus/consensus.h \
   consensus/tx_verify.h \
-  globaltoken/hardfork.h \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
@@ -198,7 +197,6 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   consensus/tx_verify.cpp \
-  globaltoken/hardfork.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
@@ -351,14 +349,14 @@ libbitcoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_consensus_a_SOURCES = \
   amount.h \
-  globaltoken/hardfork.cpp \
-  globaltoken/hardfork.h \
   arith_uint256.cpp \
   arith_uint256.h \
   consensus/merkle.cpp \
   consensus/merkle.h \
   consensus/params.h \
   consensus/validation.h \
+  globaltoken/hardfork.cpp \
+  globaltoken/hardfork.h \
   hash.cpp \
   hash.h \
   prevector.h \
