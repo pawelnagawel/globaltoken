@@ -260,8 +260,7 @@ libbitcoin_wallet_a_SOURCES = \
 
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
-crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
-crypto_libbitcoin_crypto_a_CFLAGS = $(YESCRYPT_FLAGS)
+crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/aes.cpp \
   crypto/aes.h \
@@ -285,10 +284,10 @@ if USE_ASM
 crypto_libbitcoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
-# crypto secondary library (with asm)
+# crypto algos library
 crypto_libbitcoin_algos_a_CPPFLAGS = $(AM_CPPFLAGS)
-crypto_libbitcoin_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-crypto_libbitcoin_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS)
+crypto_libbitcoin_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
+crypto_libbitcoin_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
 crypto_libbitcoin_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 crypto_libbitcoin_algos_a_SOURCES = \
   crypto/algos/hashlib/blake.c \
