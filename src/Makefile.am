@@ -517,7 +517,18 @@ globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_libbitcoin_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = \
+  chainparams.cpp \
+  chainparams.h \
+  chainparamsbase.cpp \
+  chainparamsbase.h \
+  util.cpp \
+  util.h \
+  utiltime.cpp \
+  utiltime.h \
+  $(crypto_libbitcoin_crypto_a_SOURCES) \
+  $(crypto_libbitcoin_algos_a_SOURCES) \ 
+  $(libbitcoin_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
@@ -547,6 +558,7 @@ CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += globaltoken/*.gcda globaltoken/*.gcno
 CLEANFILES += policy/*.gcda policy/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
 CLEANFILES += script/*.gcda script/*.gcno
