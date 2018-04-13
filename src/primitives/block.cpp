@@ -5,7 +5,11 @@
 
 #include <primitives/block.h>
 
+#ifndef NO_GLOBALTOKEN_HARDFORK
 #include <globaltoken/hardfork.h>
+#else
+#define IsHardForkActivated(nTime) (((nTime) >= (1527811200)) ? true : false)
+#endif
 #include <hash.h>
 #include <tinyformat.h>
 #include <utilstrencodings.h>
