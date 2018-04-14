@@ -16,8 +16,6 @@
 #include <streams.h>
 #include <crypto/algos/equihash/equihash.h>
 
-#include <globaltoken/hardfork.h>
-
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
     if(IsHardForkActivated(pindexLast->nTime))
