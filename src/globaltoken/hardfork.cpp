@@ -31,7 +31,7 @@ arith_uint256 GetAlgoPowLimit(int algo, const Consensus::Params& consensusParams
 arith_uint256 GetAlgoPowLimit(int algo)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
-	GetAlgoPowLimit(algo, consensusParams);
+	return GetAlgoPowLimit(algo, consensusParams);
 }
 
 bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusParams)
@@ -46,7 +46,7 @@ bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusP
 bool IsHardForkActivated(uint32_t blocktime)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
-	IsHardForkActivated(blocktime, consensusParams);
+	return IsHardForkActivated(blocktime, consensusParams);
 }
 
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams)
@@ -64,7 +64,7 @@ int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consen
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
-	GetPoWTargetTimeSpan(blocktime, consensusParams);
+	return GetPoWTargetTimeSpan(blocktime, consensusParams);
 }
 
 int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consensusParams)
@@ -82,5 +82,5 @@ int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consens
 int64_t GetPoWTargetSpacing(uint32_t blocktime)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
-	GetPoWTargetSpacing(blocktime, consensusParams);
+	return GetPoWTargetSpacing(blocktime, consensusParams);
 }
