@@ -1231,7 +1231,14 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "           \"possible\": xx       (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
             "        }\n"
             "     }\n"
-            "  }\n"
+            "  },\n"
+			"  \"hardforks\": {                     (object) status hardforks\n"
+            "     \"xx\" : {                        (numeric) number of the hardfork (ID)\n"
+            "        \"activated\": \"xx\",           (boolean) returns if hardfork is activated \"true\" (activated) or \"false\" (deactivated)\n"
+            "        \"softfork_activated\": xx,    (boolean) returns if a softfork of this hardfork is activated  \"true\" (activated) or \"false\" (deactivated)\n"
+            "        \"activation_time\": xx,       (numeric) the activation time of this hardfork ID\n"
+            "     }\n"
+            "  },\n"
             "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
             "}\n"
             "\nExamples:\n"
@@ -1274,7 +1281,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     CBlockIndex* tip = chainActive.Tip();
     UniValue softforks(UniValue::VARR);
     UniValue bip9_softforks(UniValue::VOBJ);
-    UniValue globaltoken_hardfork(UniValue::VARR);
+    UniValue globaltoken_hardfork(UniValue::VOBJ);
     UniValue globaltoken_hardfork_id_1(UniValue::VOBJ);
     globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
     globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
