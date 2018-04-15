@@ -19,6 +19,26 @@
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
 
+#ifndef NO_GLOBALTOKEN_HARDFORK
+uint256 CBlockHeader::GetHash(const Consensus::Params& params) const
+{
+    int version;
+    if (IsHardForkActivated(nTime, params)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
+}
+
+uint256 CBlockHeader::GetHash() const
+{
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    return GetHash(consensusParams);
+}
+#else
 uint256 CBlockHeader::GetHash() const
 {
     int version;
@@ -31,10 +51,14 @@ uint256 CBlockHeader::GetHash() const
     ::Serialize(writer, *this);
     return writer.GetHash();
 }
-
+#endif
 int CBlockHeader::GetAlgo() const
 {
-    return nAlgo;
+	if (IsHardForkActivated(nTime)) 
+	{
+		return nAlgo;
+	}
+	return ALGO_SHA256D;
 }
 
 uint256 CBlockHeader::GetPoWHash(int algo) const

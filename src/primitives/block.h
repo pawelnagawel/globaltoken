@@ -11,6 +11,10 @@
 #include <serialize.h>
 #include <uint256.h>
 
+namespace Consensus {
+    struct Params;
+};
+
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
 
 enum { 
@@ -107,6 +111,7 @@ public:
     int GetAlgo() const;
 
     uint256 GetHash() const;
+	uint256 GetHash(const Consensus::Params& params) const;
 	
     uint256 GetPoWHash(int algo) const;
 

@@ -8,9 +8,7 @@
 #include <chainparams.h>
 #include <primitives/block.h>
 
-const Consensus::Params& consensusParams = Params().GetConsensus();
-
-arith_uint256 GetAlgoPowLimit(int algo)
+arith_uint256 GetAlgoPowLimit(int algo, const Consensus::Params& consensusParams)
 {
 	if (algo == ALGO_SHA256D)
 		return UintToArith256(consensusParams.powLimit_SHA256);
@@ -30,7 +28,13 @@ arith_uint256 GetAlgoPowLimit(int algo)
 		return UintToArith256(consensusParams.powLimit_SHA256);
 }
 
-bool IsHardForkActivated(uint32_t blocktime)
+arith_uint256 GetAlgoPowLimit(int algo)
+{
+	const Consensus::Params& consensusParams = Params().GetConsensus();
+	GetAlgoPowLimit(algo, consensusParams);
+}
+
+bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusParams)
 {
 	if(blocktime >= consensusParams.HardforkTime)
 	{
@@ -39,7 +43,13 @@ bool IsHardForkActivated(uint32_t blocktime)
 	return false;
 }
 
-int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
+bool IsHardForkActivated(uint32_t blocktime)
+{
+	const Consensus::Params& consensusParams = Params().GetConsensus();
+	IsHardForkActivated(blocktime, consensusParams);
+}
+
+int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams)
 {
 	if(IsHardForkActivated(blocktime))
 	{
@@ -51,7 +61,13 @@ int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
 	}
 }
 
-int64_t GetPoWTargetSpacing(uint32_t blocktime)
+int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
+{
+	const Consensus::Params& consensusParams = Params().GetConsensus();
+	GetPoWTargetTimeSpan(blocktime, consensusParams);
+}
+
+int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consensusParams)
 {
 	if(IsHardForkActivated(blocktime))
 	{
@@ -61,4 +77,10 @@ int64_t GetPoWTargetSpacing(uint32_t blocktime)
 	{
 		return consensusParams.nPowTargetSpacing;
 	}
+}
+
+int64_t GetPoWTargetSpacing(uint32_t blocktime)
+{
+	const Consensus::Params& consensusParams = Params().GetConsensus();
+	GetPoWTargetSpacing(blocktime, consensusParams);
 }
