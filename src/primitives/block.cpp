@@ -13,6 +13,7 @@
 #include <hash.h>
 #include <tinyformat.h>
 #include <utilstrencodings.h>
+#include <chainparams.h>
 #include <crypto/common.h>
 #include <crypto/algos/hashlib/multihash.h>
 #include <crypto/algos/neoscrypt/neoscrypt.h>
