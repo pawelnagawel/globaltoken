@@ -131,7 +131,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
 	
 	if (!IsHardForkActivated(pindexPrev->nTime) && algo != ALGO_SHA256D) {
-        error("MultiAlgo is not yet active. Current block height %d, height multialgo becomes active %d", pindexPrev->nHeight, chainparams.GetConsensus().HardforkHeight);
+        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pindexPrev->nTime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
 	
