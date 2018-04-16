@@ -28,7 +28,7 @@ enum {
     ALGO_XEVAN     = 7,
     NUM_ALGOS_IMPL };
 
-const int NUM_ALGOS = 7;
+const int NUM_ALGOS = 8;
 
 std::string GetAlgoName(int Algo);
 
