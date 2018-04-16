@@ -99,6 +99,11 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
             uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
             return HMQ1725(BEGIN(nVersion), END(default_nonce));
         }
+	case ALGO_XEVAN:
+	{
+	    uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
+	    return XEVAN(BEGIN(nVersion), END(default_nonce));	    
+	}
     }
     return GetHash();
 }
@@ -140,6 +145,8 @@ std::string GetAlgoName(int Algo)
             return std::string("equihash");
 	case ALGO_HMQ1725:
             return std::string("hmq1725");
+	case ALGO_XEVAN:
+            return std::string("xevan");
     }
     return std::string("unknown");       
 }
