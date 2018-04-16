@@ -498,7 +498,7 @@ std::string HelpMessage(HelpMessageMode mode)
     if (showDebug)
         strUsage += HelpMessageOpt("-blockversion=<n>", "Override block version to test forking scenarios");
 		
-	strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithm: sha256d, scrypt, x11, neoscrypt, equihash, yescrypt, hmq1725"));
+	strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithm: sha256d, scrypt, x11, neoscrypt, equihash, yescrypt, hmq1725, xevan"));
     strUsage += HelpMessageGroup(_("RPC server options:"));
     strUsage += HelpMessageOpt("-rest", strprintf(_("Accept public REST requests (default: %u)"), DEFAULT_REST_ENABLE));
     strUsage += HelpMessageOpt("-rpcallowip=<ip>", _("Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"));
@@ -1386,6 +1386,8 @@ bool AppInitMain()
         currentAlgo = ALGO_YESCRYPT;
 	else if (strAlgo == "hmq1725")
         currentAlgo = ALGO_HMQ1725;
+	else if (strAlgo == "xevan")
+        currentAlgo = ALGO_XEVAN;
     else
         currentAlgo = ALGO_SHA256D;
 

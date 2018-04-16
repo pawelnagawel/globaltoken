@@ -105,6 +105,7 @@ public:
 		consensus.powLimit_EQUIHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
@@ -234,6 +235,7 @@ public:
 		consensus.powLimit_EQUIHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
@@ -351,6 +353,7 @@ public:
 		consensus.powLimit_EQUIHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
 		consensus.powLimit_YESCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_XEVAN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
 		consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)

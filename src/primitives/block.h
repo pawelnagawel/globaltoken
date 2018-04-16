@@ -25,6 +25,7 @@ enum {
     ALGO_EQUIHASH  = 4,
     ALGO_YESCRYPT  = 5,
     ALGO_HMQ1725   = 6,
+    ALGO_XEVAN     = 7,
     NUM_ALGOS_IMPL };
 
 const int NUM_ALGOS = 7;
