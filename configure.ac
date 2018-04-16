@@ -1090,8 +1090,12 @@ AC_SUBST(UNIVALUE_LIBS)
 BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
 LIBEQUIHASH_LIBS="-lcrypto -lsodium"
-YESCRYPT_FLAGS="-fopenmp"
 NEOSCRYPT_FLAGS="-DSHA256 -DOPT"
+if test x$TARGET_OS = xdarwin; then
+  YESCRYPT_FLAGS=""
+else
+  YESCRYPT_FLAGS="-fopenmp"
+fi
 
 AC_MSG_CHECKING([whether to build globaltokend])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
