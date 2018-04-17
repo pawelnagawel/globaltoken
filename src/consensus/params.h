@@ -82,6 +82,8 @@ struct Params {
 	uint256 powLimit_XEVAN;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
+	int64_t nTargetTimespan;
+    int64_t nTargetSpacing;
 	int64_t nInterval;
 	int64_t nAveragingInterval;
 	int64_t nAveragingTargetTimespan;
@@ -93,7 +95,7 @@ struct Params {
     int64_t nMaxAdjustUp;
 	int64_t nMinActualTimespan;
 	int64_t nMaxActualTimespan;
-	int64_t nLocalDifficultyAdjustment;
+	int64_t nLocalTargetAdjustment;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
 	int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
     uint256 nMinimumChainWork;

@@ -62,19 +62,24 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
 
 unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
-
 	unsigned int npowWorkLimit = GetAlgoPowLimit(algo).GetCompact();
 
 	// Genesis block
 	if (pindexLast == nullptr)
 		return npowWorkLimit;
+		
+	if (params.fPowNoRetargeting)
+	{
+		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
+        return pindexLastAlgo->nBits;
+	}
 
-	if (Params().NetworkIDString() == CBaseChainParams::TESTNET)
+	if (params.fPowAllowMinDifficultyBlocks)
 	{
 		// Special difficulty rule for testnet:
 		// If the new block's timestamp is more than 2* 10 minutes
 		// then allow mining of a min-difficulty block.
-		if (pblock->nTime > pindexLast->nTime + params.nPowTargetSpacingV2*2)
+		if (pblock->nTime > pindexLast->nTime + params.nTargetSpacing*2)
 			return npowWorkLimit;
 		else
 		{
@@ -93,46 +98,53 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	{
 		pindexFirst = pindexFirst->pprev;
 	}
+
 	const CBlockIndex* pindexPrevAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
 	if (pindexPrevAlgo == nullptr || pindexFirst == nullptr)
-		return npowWorkLimit; // not enough blocks available
+	{
+		return npowWorkLimit;
+	}
 
 	// Limit adjustment step
 	// Use medians to prevent time-warp attacks
-	int64_t nActualTimespan = pindexLast->GetMedianTimePast() - pindexFirst->GetMedianTimePast();
-	nActualTimespan = params.nAveragingTargetTimespan + (nActualTimespan - params.nAveragingTargetTimespan)/6;
+	int64_t nActualTimespan = pindexLast-> GetMedianTimePast() - pindexFirst->GetMedianTimePast();
+	nActualTimespan = params.nAveragingTargetTimespan + (nActualTimespan - params.nAveragingTargetTimespan)/4;
+
 	if (nActualTimespan < params.nMinActualTimespan)
 		nActualTimespan = params.nMinActualTimespan;
 	if (nActualTimespan > params.nMaxActualTimespan)
 		nActualTimespan = params.nMaxActualTimespan;
 
-	// Global retarget
+	//Global retarget
 	arith_uint256 bnNew;
 	bnNew.SetCompact(pindexPrevAlgo->nBits);
-	bnNew *= nActualTimespan;
-	bnNew /= params.nAveragingTargetTimespan;
 
-	// Per-algo retarget
-	int nAdjustments = pindexPrevAlgo->nHeight - pindexLast->nHeight + NUM_ALGOS - 1;
+	bnNew *= nActualTimespan;
+	bnNew /= params.nAveragingTargetTimespanV4;
+
+	//Per-algo retarget
+	int nAdjustments = pindexPrevAlgo->nHeight + NUM_ALGOS - 1 - pindexLast->nHeight;
 	if (nAdjustments > 0)
 	{
 		for (int i = 0; i < nAdjustments; i++)
 		{
 			bnNew *= 100;
-			bnNew /= 100 + params.nLocalDifficultyAdjustment;
+			bnNew /= (100 + params.nLocalTargetAdjustment);
 		}
 	}
-	if (nAdjustments < 0)
+	else if (nAdjustments < 0)//make it easier
 	{
 		for (int i = 0; i < -nAdjustments; i++)
 		{
-			bnNew *= 100 + params.nLocalDifficultyAdjustment;
+			bnNew *= (100 + params.nLocalTargetAdjustment);
 			bnNew /= 100;
 		}
 	}
 
 	if (bnNew > GetAlgoPowLimit(algo))
+	{
 		bnNew = GetAlgoPowLimit(algo);
+	}
 
 	return bnNew.GetCompact();
 }
