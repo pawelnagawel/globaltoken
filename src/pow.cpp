@@ -120,7 +120,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	bnNew.SetCompact(pindexPrevAlgo->nBits);
 
 	bnNew *= nActualTimespan;
-	bnNew /= params.nAveragingTargetTimespanV4;
+	bnNew /= params.nAveragingTargetTimespan;
 
 	//Per-algo retarget
 	int nAdjustments = pindexPrevAlgo->nHeight + NUM_ALGOS - 1 - pindexLast->nHeight;
