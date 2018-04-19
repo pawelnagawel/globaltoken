@@ -19,9 +19,9 @@
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
     if(IsHardForkActivated(pindexLast->nTime))
-		return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
-	else
-		return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
+       return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
+    else
+       return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
 }
 
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
@@ -71,7 +71,14 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	if (params.fPowNoRetargeting)
 	{
 		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
-        return pindexLastAlgo->nBits;
+		if(pindexLastAlgo == nullptr)
+		{
+		    return npowWorkLimit;
+		}
+		else
+		{
+		    return pindexLastAlgo->nBits;	
+		}
 	}
 
 	if (params.fPowAllowMinDifficultyBlocks)
