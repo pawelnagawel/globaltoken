@@ -264,7 +264,8 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, i
         }
 	else if(retargettype == RETARGETING_NEXT)
 	{
-	    const CBlockIndex* pindexone = nullptr, pindextwo = nullptr;
+	    const CBlockIndex* pindexone = nullptr;
+	    const CBlockIndex* pindextwo = nullptr;
             int blockdifference = 0, runtimes = 0, round = 0, blockssinceret = 0;
             bool blockcount = false;
 	    // Calculate last 2 block heights to calculate retargeting
