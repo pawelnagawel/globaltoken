@@ -319,7 +319,8 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, i
                     pindexAlgo = pindexLastAlgo;
                     pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
                 }
-		return -3;
+	    }
+	    return -3;
         }
 	else
 	{
