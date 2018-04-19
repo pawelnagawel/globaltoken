@@ -13,7 +13,7 @@
 enum {
     RETARGETING_LAST = 0,
     RETARGETING_NEXT = 1
-}
+};
 
 class CBlockHeader;
 class CBlockIndex;
