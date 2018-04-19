@@ -298,10 +298,79 @@ UniValue getmininginfo(const JSONRPCRequest& request)
 	obj.pushKV("difficulty_YESCRYPT",       (double)GetDifficulty(NULL, ALGO_YESCRYPT));
 	obj.pushKV("difficulty_HMQ1725",       (double)GetDifficulty(NULL, ALGO_HMQ1725));
 	obj.pushKV("difficulty_XEVAN",       (double)GetDifficulty(NULL, ALGO_XEVAN));
-    // obj.pushKV("networkhashps",    getnetworkhashps(request)); currently not usable with multialgo
+    obj.pushKV("networkhashps",    getnetworkhashps(request));
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));
+    return obj;
+}
+
+UniValue getalgoinfo(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+            "getalgoinfo\n"
+            "Returns an object containing informations about all mining algorithms.\n"
+            "\nResult:\n"
+            "{\n"
+			"  \"blocks\": xxxxxx,             (numeric) the current number of blocks processed in the server\n"
+            "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
+			"  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
+			"  \"algos\": \"xx\",              (numeric) the number of total algos implemented\n"
+			"  \"lastblockalgo\": \"xxxx\"     (string) the name of the algorithm from the last block that has been mined\n"
+			"  \"lastblockalgoid\": \"xx\"     (numeric) the ID of the algorithm from the last block that has been mined\n"
+			"  \"localalgo\": \"xxxx\"         (string) the name of the current algorithm that is activated to mine blocks\n"
+			"  \"localalgoid\": \"xx\"         (numeric) the ID of the current algorithm that is activated to mine blocks\n"
+            "  \"algo_details\": {             (object) details of the algo such like difficulty, last block and so on ..\n"
+            "     \"xxxx\" : {                 (string) name of the algorithm\n"
+			"        \"algoid\": xx,           (numeric) the ID of this algo\n"
+            "        \"lastblock\": xx,        (numeric) the last block height mined by this algorithm. If it returns (-1) it means algo has not been seen yet.\n"
+            "        \"difficulty\": xxxxxx,   (numeric) the current mining difficulty for this algo\n"
+            "        \"nethashrate\": xx       (numeric) total nethashrate of this algo\n"
+			"        \"lastdiffret\": xxxxxx,  (numeric) the last diff retargeting height from this algo\n"
+			"        \"nextdiffret\": xxxxxx,  (numeric) the next diff retargeting height from this algo\n"
+            "     }\n"
+            "  }\n"
+            "}\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getalgoinfo", "")
+            + HelpExampleRpc("getalgoinfo", "")
+        );
+
+    LOCK(cs_main);
+	
+	CBlockIndex* tip = chainActive.Tip();
+
+    UniValue obj(UniValue::VOBJ);
+	UniValue algos(UniValue::VOBJ);
+    UniValue algo_description(UniValue::VOBJ);
+	
+    obj.pushKV("blocks",                (int)chainActive.Height());
+    obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
+    obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
+    obj.pushKV("algos",                 NUM_ALGOS);
+    obj.pushKV("lastblockalgo",         GetAlgoName(tip->GetAlgo()));
+	obj.pushKV("lastblockalgoid",       tip->GetAlgo());
+    obj.pushKV("localalgo",             GetAlgoName(currentAlgo));
+    obj.pushKV("localalgoid",           currentAlgo);
+
+	for(int i = 0; i < NUM_ALGOS; i++)
+	{
+		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);
+		int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
+	
+		algo_description.pushKV("algoid",      i);
+		algo_description.pushKV("lastblock",   lastblock);
+		algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, i));
+		algo_description.pushKV("nethashrate", GetNetworkHashPS(request));
+		algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i));
+		algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i));
+		algos.pushKV(GetAlgoName(i), algo_description);
+		algo_description.setNull();
+	}
+
+    obj.pushKV("algo_details", algos);
+
     return obj;
 }
 
@@ -1027,6 +1096,7 @@ UniValue estimaterawfee(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
+    { "mining",             "getalgoinfo",            &getalgoinfo             {} }
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },

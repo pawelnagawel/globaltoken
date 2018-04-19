@@ -10,6 +10,11 @@
 
 #include <stdint.h>
 
+enum {
+    RETARGETING_LAST = 0,
+    RETARGETING_NEXT = 1
+}
+
 class CBlockHeader;
 class CBlockIndex;
 class CChainParams;
@@ -27,5 +32,8 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, int algo);
 const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
 const CBlockIndex* GetAlgo();
+
+/** Calculations */
+int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo);
 
 #endif // BITCOIN_POW_H
