@@ -339,10 +339,10 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 	
-	CBlockIndex* tip = chainActive.Tip();
+    CBlockIndex* tip = chainActive.Tip();
 
     UniValue obj(UniValue::VOBJ);
-	UniValue algos(UniValue::VOBJ);
+    UniValue algos(UniValue::VOBJ);
     UniValue algo_description(UniValue::VOBJ);
 	
     obj.pushKV("blocks",                (int)chainActive.Height());
@@ -350,27 +350,26 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
     obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
     obj.pushKV("algos",                 NUM_ALGOS);
     obj.pushKV("lastblockalgo",         GetAlgoName(tip->GetAlgo()));
-	obj.pushKV("lastblockalgoid",       tip->GetAlgo());
+    obj.pushKV("lastblockalgoid",       tip->GetAlgo());
     obj.pushKV("localalgo",             GetAlgoName(currentAlgo));
     obj.pushKV("localalgoid",           currentAlgo);
 
-	for(int i = 0; i < NUM_ALGOS; i++)
-	{
-		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);
-		int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
+    for(int i = 0; i < NUM_ALGOS; i++)
+    {
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);
+        int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
 	
-		algo_description.pushKV("algoid",      i);
-		algo_description.pushKV("lastblock",   lastblock);
-		algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, i));
-		algo_description.pushKV("nethashrate", GetNetworkHashPS(request));
-		algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i));
-		algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i));
-		algos.pushKV(GetAlgoName(i), algo_description);
-		algo_description.setNull();
-	}
-
+        algo_description.pushKV("algoid",      i);
+        algo_description.pushKV("lastblock",   lastblock);
+        algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, i));
+        algo_description.pushKV("nethashrate", getnetworkhashps(request));
+        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i));
+        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i));
+        algos.pushKV(GetAlgoName(i), algo_description);
+        algo_description.setNull();
+    }
+	
     obj.pushKV("algo_details", algos);
-
     return obj;
 }
 
@@ -1096,7 +1095,7 @@ UniValue estimaterawfee(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "mining",             "getalgoinfo",            &getalgoinfo             {} }
+    { "mining",             "getalgoinfo",            &getalgoinfo             {} },
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },
