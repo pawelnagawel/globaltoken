@@ -76,8 +76,7 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
         }
         case ALGO_X11:
         {
-            uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
-            return HashX11(BEGIN(nVersion), END(default_nonce));
+            return HashX11(BEGIN(nVersion), END(nNonce));
         }
         case ALGO_NEOSCRYPT:
         {
@@ -96,13 +95,11 @@ uint256 CBlockHeader::GetPoWHash(int algo) const
         }
         case ALGO_HMQ1725:
         {
-            uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
-            return HMQ1725(BEGIN(nVersion), END(default_nonce));
+            return HMQ1725(BEGIN(nVersion), END(nNonce));
         }
 	case ALGO_XEVAN:
 	{
-	    uint32_t default_nonce = (uint32_t)nNonce.GetUint64(0);
-	    return XEVAN(BEGIN(nVersion), END(default_nonce));	    
+	    return XEVAN(BEGIN(nVersion), END(nNonce));	    
 	}
     }
     return GetHash();
