@@ -243,92 +243,83 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo)
 {
     const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
-	const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+    const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
     if(retargettype == RETARGETING_LAST)
-	{
-		for(;;)
-		{
-		    if(pindexAlgo == nullptr)
-		        return -1;
+    {
+        for(;;)
+        {
+            if(pindexAlgo == nullptr)
+                return -1;
 			
-			if(pindexLastAlgo == nullptr)
-			{
-				return pindexAlgo->nHeight; 
-			}
+            if(pindexLastAlgo == nullptr)
+                return pindexAlgo->nHeight; 
 				
-			if(pindexAlgo->nBits != pindexLastAlgo->nBits)
-			    return pindexAlgo->nHeight;	
+            if(pindexAlgo->nBits != pindexLastAlgo->nBits)
+                return pindexAlgo->nHeight;	
 			
-			pindexAlgo = pindexLastAlgo;
-			pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-		}
-		return -3;
-	}
+            pindexAlgo = pindexLastAlgo;
+            pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+            }
+            return -3;
+        }
 	else if(retargettype == RETARGETING_NEXT)
 	{
 	    const CBlockIndex* pindexone = nullptr, pindextwo = nullptr;
-		int blockdifference = 0, runtimes = 0, round = 0, blockssinceret = 0;
-		bool blockcount = false;
+            int blockdifference = 0, runtimes = 0, round = 0, blockssinceret = 0;
+            bool blockcount = false;
 	    // Calculate last 2 block heights to calculate retargeting
-		for(;;)
-		{
-		    if(pindexAlgo == nullptr)
-		    {
-			    if(pindex != nullptr && pindex)
-				{
-				    return pindex->nHeight;
-				}
-				else
-				{
-				    return -1;
-				}
-			}
+            for(;;)
+            {
+                if(pindexAlgo == nullptr)
+                {
+                    if(pindex != nullptr && pindex)
+                        return pindex->nHeight;
+                    else
+                        return -1;
 			
-			if(pindexLastAlgo == nullptr)
-			{
-				return -1; 
-			}
+                    if(pindexLastAlgo == nullptr)
+                        return -1; 
 				
-			if(pindexAlgo->nBits != pindexLastAlgo->nBits)
-			{
-			    if(pindexone == nullptr && pindextwo == nullptr)
-				{
-			        pindexone = pindexAlgo;
-					blockcount = true;
-					round = 1;
-				}
-				else if(pindexone != nullptr && pindextwo == nullptr)
-				{
-			        pindextwo = pindexAlgo;
-					blockcount = false;
-					round = 2;
-				}
-				else if(pindexone != nullptr && pindextwo != nullptr)
-				    blockdifference = pindexone->nHeight - pindextwo->nHeight;
-				else
-				    return -2;
-			}
+                    if(pindexAlgo->nBits != pindexLastAlgo->nBits)
+                    {
+                        if(pindexone == nullptr && pindextwo == nullptr)
+                        {
+                            pindexone = pindexAlgo;
+                            blockcount = true;
+                            round = 1;
+                        }
+                        else if(pindexone != nullptr && pindextwo == nullptr)
+                        {
+                            pindextwo = pindexAlgo;
+                            blockcount = false;
+                            round = 2;
+                        }
+                        else if(pindexone != nullptr && pindextwo != nullptr)
+                            blockdifference = pindexone->nHeight - pindextwo->nHeight;
+                        else
+                            return -2;
+                    }
 			
-			if(pindexAlgo->nBits == pindexLastAlgo->nBits && blockcount)
-			{
-			    runtimes++;
-				if(round == 0)
-				{
-				    blockssinceret++;
-				}
-			}
+                    if(pindexAlgo->nBits == pindexLastAlgo->nBits && blockcount)
+                    {
+                        runtimes++;
+                        if(round == 0)
+                        {
+                            blockssinceret++;
+                        }
+                    }
 			
-			if(blockdifference != 0)
-			{
-				int nextheight = runtimes-blockssinceret;
-				return pindex->nHeight + nextheight;
-			}
+                    if(blockdifference != 0)
+                    {
+                        int nextheight = runtimes-blockssinceret;
+                        return pindex->nHeight + nextheight;
+                    }
 			
-			pindexAlgo = pindexLastAlgo;
-			pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-		}
+                    pindexAlgo = pindexLastAlgo;
+                    pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+                }
 		return -3;
-	}
+        }
 	else
 	{
 	    return -4; // function error
