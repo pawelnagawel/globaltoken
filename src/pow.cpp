@@ -242,23 +242,23 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 
 int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo)
 {
-    const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
-    const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-    if(retargettype == RETARGETING_LAST)
-    {
-        for(;;)
+        const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+        if(retargettype == RETARGETING_LAST)
         {
-            if(pindexAlgo == nullptr)
-                return -1;
+            for(;;)
+            {
+                if(pindexAlgo == nullptr)
+                    return -1;
 			
-            if(pindexLastAlgo == nullptr)
-                return pindexAlgo->nHeight; 
+                if(pindexLastAlgo == nullptr)
+                    return pindexAlgo->nHeight; 
 				
-            if(pindexAlgo->nBits != pindexLastAlgo->nBits)
-                return pindexAlgo->nHeight;	
+                if(pindexAlgo->nBits != pindexLastAlgo->nBits)
+                    return pindexAlgo->nHeight;	
 			
-            pindexAlgo = pindexLastAlgo;
-            pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+                pindexAlgo = pindexLastAlgo;
+                pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
             }
             return -3;
         }
