@@ -62,7 +62,7 @@ int CBlockHeader::GetAlgo() const
 	return ALGO_SHA256D;
 }
 
-uint256 CBlockHeader::GetPoWHash(int algo) const
+uint256 CBlockHeader::GetPoWHash(uint8_t algo) const
 {
     switch (algo)
     {
@@ -124,7 +124,7 @@ std::string CBlock::ToString() const
     return s.str();
 }
 
-std::string GetAlgoName(int Algo)
+std::string GetAlgoName(uint8_t Algo)
 {
     switch (Algo)
     {

@@ -295,7 +295,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
 				if(hardfork)
 				{
 					auto header = pindexNew->GetBlockHeader();
-					int algo = header.GetAlgo();
+					uint8_t algo = header.GetAlgo();
 					if(algo == ALGO_EQUIHASH)
 					{
 						if (!CheckEquihashSolution(&header, Params())) {

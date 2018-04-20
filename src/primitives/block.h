@@ -17,7 +17,7 @@ namespace Consensus {
 
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
 
-enum { 
+enum : uint8_t { 
     ALGO_SHA256D   = 0,
     ALGO_SCRYPT    = 1,
     ALGO_X11       = 2,
@@ -30,7 +30,7 @@ enum {
 
 const int NUM_ALGOS = 8;
 
-std::string GetAlgoName(int Algo);
+std::string GetAlgoName(uint8_t Algo);
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -104,7 +104,7 @@ public:
     }
 	
 	// Set Algo to use
-    inline void SetAlgo(int algo)
+    inline void SetAlgo(uint8_t algo)
     {
         nAlgo = algo;
     }
@@ -114,7 +114,7 @@ public:
     uint256 GetHash() const;
 	uint256 GetHash(const Consensus::Params& params) const;
 	
-    uint256 GetPoWHash(int algo) const;
+    uint256 GetPoWHash(uint8_t algo) const;
 
     int64_t GetBlockTime() const
     {

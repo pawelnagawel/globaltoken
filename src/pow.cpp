@@ -17,7 +17,7 @@
 #include <crypto/algos/equihash/equihash.h>
 #include <validation.h>
 
-unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
+unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
     if(IsHardForkActivated(pindexLast->nTime))
        return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
@@ -25,7 +25,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
        return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
 }
 
-unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
+unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
     assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = GetAlgoPowLimit(ALGO_SHA256D).GetCompact(); // Before the Hardfork starts, there is just SHA256D
@@ -61,7 +61,7 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
     return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params);
 }
 
-unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
+unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
 	unsigned int npowWorkLimit = GetAlgoPowLimit(algo).GetCompact();
 
@@ -209,7 +209,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
     return true;
 }
 
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, int algo)
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
 {
     bool fNegative;
     bool fOverflow;
@@ -228,7 +228,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     return true;
 }
 
-const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
+const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo)
 {
 	for (;;)
 	{
@@ -241,7 +241,7 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 	return nullptr;
 }
 
-const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
+const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo)
 {
     AssertLockHeld(cs_main);
 	for (;;)
@@ -255,7 +255,7 @@ const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 	return nullptr;
 }
 
-int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo, const Consensus::Params& params)
+int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, uint8_t algo, const Consensus::Params& params)
 {
     if (params.fPowNoRetargeting)
 	    return 0;

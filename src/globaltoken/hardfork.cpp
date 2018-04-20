@@ -8,7 +8,7 @@
 #include <chainparams.h>
 #include <primitives/block.h>
 
-arith_uint256 GetAlgoPowLimit(int algo, const Consensus::Params& consensusParams)
+arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusParams)
 {
 	if (algo == ALGO_SHA256D)
 		return UintToArith256(consensusParams.powLimit_SHA256);
@@ -30,7 +30,7 @@ arith_uint256 GetAlgoPowLimit(int algo, const Consensus::Params& consensusParams
 		return UintToArith256(consensusParams.powLimit_SHA256);
 }
 
-arith_uint256 GetAlgoPowLimit(int algo)
+arith_uint256 GetAlgoPowLimit(uint8_t algo)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
 	return GetAlgoPowLimit(algo, consensusParams);

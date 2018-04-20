@@ -40,7 +40,7 @@ void RejectDifficultyMismatch(double difficulty, double expected_difficulty) {
 /* Given a BlockIndex with the provided nbits,
  * verify that the expected difficulty results.
  */
-void TestDifficulty(uint32_t nbits, double expected_difficulty, int algo)
+void TestDifficulty(uint32_t nbits, double expected_difficulty, uint8_t algo)
 {
     CBlockIndex* block_index = CreateBlockIndexWithNbits(nbits);
     /* Since we are passing in block index explicitly,

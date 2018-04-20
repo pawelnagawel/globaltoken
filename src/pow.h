@@ -20,21 +20,21 @@ class CBlockIndex;
 class CChainParams;
 class uint256;
 
-unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, int algo);
-unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, int algo);
-unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, int algo);
+unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, uint8_t algo);
+unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, uint8_t algo);
+unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, uint8_t algo);
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params&);
 
 /** Check whether the Equihash solution in a block header is valid */
 bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, int algo);
-const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
-const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, uint8_t algo);
+const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
+const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
 const CBlockIndex* GetAlgo();
 
 /** Calculations */
-int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo, const Consensus::Params&);
+int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, uint8_t algo, const Consensus::Params&);
 
 #endif // BITCOIN_POW_H

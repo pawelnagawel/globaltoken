@@ -52,7 +52,7 @@ extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& 
 /* Calculate the difficulty for a given block index,
  * or the block index of the given chain.
  */
-double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, int algo)
+double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, uint8_t algo)
 {
     unsigned int nBits;
     unsigned int powLimit = GetAlgoPowLimit(algo).GetCompact();
@@ -92,7 +92,7 @@ double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, int alg
     return dDiff;
 }
 
-double GetDifficulty(const CBlockIndex* blockindex, int algo)
+double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 {
     return GetDifficulty(chainActive, blockindex, algo);
 }
@@ -101,7 +101,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
 {
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
-	int algo = blockindex->GetAlgo();
+	uint8_t algo = blockindex->GetAlgo();
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
@@ -142,7 +142,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
 {
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
-	int algo = block.GetAlgo();
+	uint8_t algo = block.GetAlgo();
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);

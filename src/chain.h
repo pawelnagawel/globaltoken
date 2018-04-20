@@ -310,11 +310,11 @@ public:
 	uint256 GetBlockPoWHash() const
     {
         CBlockHeader block = GetBlockHeader();
-        int algo = block.GetAlgo();
+        uint8_t algo = block.GetAlgo();
         return block.GetPoWHash(algo);
     }
 
-    int GetAlgo() const
+    uint8_t GetAlgo() const
     {
         CBlockHeader block = GetBlockHeader();
         return block.GetAlgo();
