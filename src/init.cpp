@@ -1389,9 +1389,12 @@ bool AppInitMain()
 	else if (strAlgo == "xevan")
         currentAlgo = ALGO_XEVAN;
     else
+	{
         currentAlgo = ALGO_SHA256D;
+		LogPrintf("Unknown mining algorithm: (%s) ~ Auto choosing (%s) instead\n", strAlgo, GetAlgoName(currentAlgo));
+	}
 
-    LogPrintf("POW Algo %s selected.\n", strAlgo);
+    LogPrintf("Mining Algorithm %s (ID : %d) selected\n", GetAlgoName(currentAlgo), currentAlgo);
 
     // see Step 2: parameter interactions for more information about these
     fListen = gArgs.GetBoolArg("-listen", DEFAULT_LISTEN);

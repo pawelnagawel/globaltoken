@@ -31,9 +31,10 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, int algo);
 const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
+const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, int algo);
 const CBlockIndex* GetAlgo();
 
 /** Calculations */
-int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo);
+int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo, const Consensus::Params&);
 
 #endif // BITCOIN_POW_H

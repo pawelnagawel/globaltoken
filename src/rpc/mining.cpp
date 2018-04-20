@@ -313,9 +313,9 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
             "Returns an object containing informations about all mining algorithms.\n"
             "\nResult:\n"
             "{\n"
-			"  \"blocks\": xxxxxx,             (numeric) the current number of blocks processed in the server\n"
-            "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
-			"  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
+			"  \"blocks\": xxxxxx,           (numeric) the current number of blocks processed in the server\n"
+            "  \"headers\": xxxxxx,          (numeric) the current number of headers we have validated\n"
+			"  \"bestblockhash\": \"...\",     (string) the hash of the currently best block\n"
 			"  \"algos\": \"xx\",              (numeric) the number of total algos implemented\n"
 			"  \"lastblockalgo\": \"xxxx\"     (string) the name of the algorithm from the last block that has been mined\n"
 			"  \"lastblockalgoid\": \"xx\"     (numeric) the ID of the algorithm from the last block that has been mined\n"
@@ -343,7 +343,6 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
 
     UniValue obj(UniValue::VOBJ);
     UniValue algos(UniValue::VOBJ);
-    UniValue algo_description(UniValue::VOBJ);
 	
     obj.pushKV("blocks",                (int)chainActive.Height());
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
@@ -356,6 +355,7 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
 
     for(int i = 0; i < NUM_ALGOS; i++)
     {
+	    UniValue algo_description(UniValue::VOBJ);
         const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);
         int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
 	
@@ -363,10 +363,9 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
         algo_description.pushKV("lastblock",   lastblock);
         algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, i));
         algo_description.pushKV("nethashrate", getnetworkhashps(request));
-        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i));
-        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i));
+        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i, Params().GetConsensus()));
+        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i, Params().GetConsensus()));
         algos.pushKV(GetAlgoName(i), algo_description);
-        algo_description.setNull();
     }
 	
     obj.pushKV("algo_details", algos);

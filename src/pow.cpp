@@ -15,6 +15,7 @@
 #include <uint256.h>
 #include <streams.h>
 #include <crypto/algos/equihash/equihash.h>
+#include <validation.h>
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
@@ -240,28 +241,45 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 	return nullptr;
 }
 
-int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo)
+const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
 {
-        const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-        if(retargettype == RETARGETING_LAST)
-        {
-            for(;;)
-            {
-                if(pindexAlgo == nullptr)
-                    return -1;
+    AssertLockHeld(cs_main);
+	for (;;)
+	{
+		if (!pindex)
+			return nullptr;
+		if (pindex->GetAlgo() == algo)
+			return pindex;
+		pindex = chainActive.Next(pindex);
+	}
+	return nullptr;
+}
+
+int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, int algo, const Consensus::Params& params)
+{
+    if (params.fPowNoRetargeting)
+	    return 0;
+		
+	const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
+	const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+	if(retargettype == RETARGETING_LAST)
+	{
+		for(;;)
+		{
+			if(pindexAlgo == nullptr)
+				return -1;
+		
+			if(pindexLastAlgo == nullptr)
+				return pindexAlgo->nHeight; 
 			
-                if(pindexLastAlgo == nullptr)
-                    return pindexAlgo->nHeight; 
-				
-                if(pindexAlgo->nBits != pindexLastAlgo->nBits)
-                    return pindexAlgo->nHeight;	
-			
-                pindexAlgo = pindexLastAlgo;
-                pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-            }
-            return -3;
-        }
+			if(pindexAlgo->nBits != pindexLastAlgo->nBits)
+				return pindexAlgo->nHeight;	
+		
+			pindexAlgo = pindexLastAlgo;
+			pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+		}
+		return -3;
+	}
 	else if(retargettype == RETARGETING_NEXT)
 	{
 	    const CBlockIndex* pindexone = nullptr;
@@ -279,6 +297,11 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, i
                         return -1;
 			
                     if(pindexLastAlgo == nullptr)
+                        return -1; 
+                }
+				else
+				{
+				    if(pindexLastAlgo == nullptr)
                         return -1; 
 				
                     if(pindexAlgo->nBits != pindexLastAlgo->nBits)
@@ -315,15 +338,11 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, i
                         int nextheight = runtimes-blockssinceret;
                         return pindex->nHeight + nextheight;
                     }
-			
-                    pindexAlgo = pindexLastAlgo;
-                    pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
-                }
+				}
+				pindexAlgo = pindexLastAlgo;
+                pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
 	    }
 	    return -3;
-        }
-	else
-	{
-	    return -4; // function error
-	}
+    }
+    return -4; // function error
 }

@@ -102,6 +102,9 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	int algo = blockindex->GetAlgo();
+	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
@@ -126,9 +129,12 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
-    CBlockIndex *pnext = chainActive.Next(blockindex);
+	if (plastAlgo != nullptr)
+		result.pushKV("previousalgohash", plastAlgo->GetBlockHash().GetHex());
     if (pnext)
         result.pushKV("nextblockhash", pnext->GetBlockHash().GetHex());
+	if (pnextAlgo != nullptr)
+		result.pushKV("nextalgohash", pnextAlgo->GetBlockHash().GetHex());
     return result;
 }
 
@@ -137,6 +143,9 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	int algo = block.GetAlgo();
+	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
@@ -178,9 +187,12 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
-    CBlockIndex *pnext = chainActive.Next(blockindex);
+	if (plastAlgo != nullptr)
+		result.pushKV("previousalgohash", plastAlgo->GetBlockHash().GetHex());
     if (pnext)
         result.pushKV("nextblockhash", pnext->GetBlockHash().GetHex());
+	if (pnextAlgo != nullptr)
+		result.pushKV("nextalgohash", pnextAlgo->GetBlockHash().GetHex());
     return result;
 }
 
@@ -706,7 +718,9 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"0000...1f3\"     (string) Expected number of hashes required to produce the current chain (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
+			"  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\",      (string) The hash of the next block\n"
+			"  \"nextalgohash\" : \"hash\",       (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbose=false):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
@@ -782,7 +796,9 @@ UniValue getblock(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"xxxx\",  (string) Expected number of hashes required to produce the chain up to this block (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
+			"  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
+			"  \"nextalgohash\" : \"hash\"        (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbosity = 2):\n"
             "{\n"
