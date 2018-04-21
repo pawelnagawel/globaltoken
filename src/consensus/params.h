@@ -18,7 +18,7 @@ enum DeploymentPos
     DEPLOYMENT_TESTDUMMY,
     DEPLOYMENT_CSV, // Deployment of BIP68, BIP112, and BIP113.
     DEPLOYMENT_SEGWIT, // Deployment of BIP141, BIP143, and BIP147.
-	DEPLOYMENT_HARDFORK_SIZING, // Deployment of GlobalToken Hardfork Block Upgrade
+    DEPLOYMENT_HARDFORK_SIZING, // Deployment of GlobalToken Hardfork Block Upgrade
     // NOTE: Also add new deployments to VersionBitsDeploymentInfo in versionbits.cpp
     MAX_VERSION_BITS_DEPLOYMENTS
 };
@@ -66,39 +66,39 @@ struct Params {
      */
 	/** Block height at which BIP66 becomes active */
     int HardforkHeight;
-	uint256 HardforkHash;
-	uint32_t HardforkTime;
+    uint256 HardforkHash;
+    uint32_t HardforkTime;
     uint32_t nRuleChangeActivationThreshold;
     uint32_t nMinerConfirmationWindow;
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     uint256 powLimit_SHA256;
-	uint256 powLimit_SCRYPT;
-	uint256 powLimit_X11;
-	uint256 powLimit_NEOSCRYPT;
-	uint256 powLimit_EQUIHASH;
-	uint256 powLimit_YESCRYPT;
-	uint256 powLimit_HMQ1725;
-	uint256 powLimit_XEVAN;
-	uint256 powLimit_NIST5;
+    uint256 powLimit_SCRYPT;
+    uint256 powLimit_X11;
+    uint256 powLimit_NEOSCRYPT;
+    uint256 powLimit_EQUIHASH;
+    uint256 powLimit_YESCRYPT;
+    uint256 powLimit_HMQ1725;
+    uint256 powLimit_XEVAN;
+    uint256 powLimit_NIST5;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
-	int64_t nTargetTimespan;
+    int64_t nTargetTimespan;
     int64_t nTargetSpacing;
-	int64_t nInterval;
-	int64_t nAveragingInterval;
-	int64_t nAveragingTargetTimespan;
+    int64_t nInterval;
+    int64_t nAveragingInterval;
+    int64_t nAveragingTargetTimespan;
     int64_t nPowTargetSpacing;
-	int64_t nPowTargetSpacingV2;
+    int64_t nPowTargetSpacingV2;
     int64_t nPowTargetTimespan;
     int64_t nPowTargetTimespanV2;
-	int64_t nMaxAdjustDown;
+    int64_t nMaxAdjustDown;
     int64_t nMaxAdjustUp;
-	int64_t nMinActualTimespan;
-	int64_t nMaxActualTimespan;
-	int64_t nLocalTargetAdjustment;
+    int64_t nMinActualTimespan;
+    int64_t nMaxActualTimespan;
+    int64_t nLocalTargetAdjustment;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
-	int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
+    int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
 };
