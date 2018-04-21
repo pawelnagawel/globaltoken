@@ -80,6 +80,7 @@ struct Params {
 	uint256 powLimit_YESCRYPT;
 	uint256 powLimit_HMQ1725;
 	uint256 powLimit_XEVAN;
+	uint256 powLimit_NIST5;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
 	int64_t nTargetTimespan;

@@ -106,6 +106,7 @@ public:
 		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.nTargetSpacing = 60; // 1 minute
 		consensus.nTargetTimespan =  60 * 20; // 20 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
@@ -238,6 +239,7 @@ public:
 		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.nTargetSpacing = 60; // 1 minute
 		consensus.nTargetTimespan =  60 * 20; // 20 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
@@ -358,6 +360,7 @@ public:
 		consensus.powLimit_YESCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_HMQ1725 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 		consensus.powLimit_XEVAN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+		consensus.powLimit_NIST5 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;

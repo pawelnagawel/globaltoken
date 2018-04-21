@@ -101,6 +101,10 @@ uint256 CBlockHeader::GetPoWHash(uint8_t algo) const
 	{
 	    return XEVAN(BEGIN(nVersion), END(nNonce));	    
 	}
+	case ALGO_NIST5:
+	{
+	    return NIST5(BEGIN(nVersion), END(nNonce));	    
+	}
     }
     return GetHash();
 }
@@ -144,6 +148,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("hmq1725");
 	case ALGO_XEVAN:
             return std::string("xevan");
+	case ALGO_NIST5:
+            return std::string("nist5");
     }
     return std::string("unknown");       
 }

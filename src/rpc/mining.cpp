@@ -298,6 +298,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
 	obj.pushKV("difficulty_YESCRYPT",       (double)GetDifficulty(NULL, ALGO_YESCRYPT));
 	obj.pushKV("difficulty_HMQ1725",       (double)GetDifficulty(NULL, ALGO_HMQ1725));
 	obj.pushKV("difficulty_XEVAN",       (double)GetDifficulty(NULL, ALGO_XEVAN));
+	obj.pushKV("difficulty_NIST5",       (double)GetDifficulty(NULL, ALGO_NIST5));
     obj.pushKV("networkhashps",    getnetworkhashps(request));
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
