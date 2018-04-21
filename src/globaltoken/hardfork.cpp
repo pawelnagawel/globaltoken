@@ -26,6 +26,8 @@ arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusPa
 		return UintToArith256(consensusParams.powLimit_HMQ1725);
 	else if (algo == ALGO_XEVAN)
 		return UintToArith256(consensusParams.powLimit_XEVAN);
+	else if (algo == ALGO_NIST5)
+		return UintToArith256(consensusParams.powLimit_NIST5);
 	else
 		return UintToArith256(consensusParams.powLimit_SHA256);
 }
