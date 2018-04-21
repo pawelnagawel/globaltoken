@@ -1090,7 +1090,12 @@ AC_SUBST(UNIVALUE_LIBS)
 BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
 LIBEQUIHASH_LIBS="-lcrypto -lsodium"
-NEOSCRYPT_FLAGS="-DSHA256 -DOPT"
+if test x$use_asm = xyes
+	NEOSCRYPT_FLAGS="-DSHA256 -DOPT -DASM -DMINER_4WAY"
+else
+	NEOSCRYPT_FLAGS="-DSHA256 -DOPT"
+fi
+
 if test x$TARGET_OS = xdarwin; then
   YESCRYPT_FLAGS=""
 else

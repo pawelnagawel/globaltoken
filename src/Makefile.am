@@ -345,7 +345,7 @@ crypto_libbitcoin_algos_a_SOURCES = \
 if USE_ASM
 crypto_libbitcoin_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
 crypto_libbitcoin_algos_a_CPPFLAGS += -DUSE_SSE2
-crypto_libbitcoin_algos_a_CFLAGS += -D__SSE4_1__ -DASM
+crypto_libbitcoin_algos_a_CFLAGS += -D__SSE4_1__
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
