@@ -92,34 +92,32 @@ public:
         // not hashed yet ... consensus.BIP34Hash = uint256S("0x00");
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
-		consensus.HardforkHeight = 300000; // not final
-		consensus.HardforkTime = 1527811200;
-        // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
-		
-		// Algo PoW Stuff
-		
+	consensus.HardforkHeight = 300000; // not final
+	consensus.HardforkTime = 1527811200;
+        // not hashed yet ... consensus.HardforkHash = uint256S("0x00");	
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-		consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_EQUIHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.nTargetSpacing = 60; // 1 minute
-		consensus.nTargetTimespan =  60 * 20; // 20 minutes
+	consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+	consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_EQUIHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.nTargetSpacing = 60; // 1 minute
+	consensus.nTargetTimespan =  60 * 20; // 20 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-		consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
-		consensus.nPowTargetSpacingV2 = 60 * 8; // NUM_ALGOS * 60
-		consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
-		consensus.nAveragingInterval = 5; // 5 blocks
-		consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
-		consensus.nMaxAdjustDown = 16; // 16% adjustment down
+	consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
+	consensus.nPowTargetSpacingV2 = 60 * 8; // NUM_ALGOS * 60
+	consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
+	consensus.nAveragingInterval = 5; // 5 blocks
+	consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
+	consensus.nMaxAdjustDown = 16; // 16% adjustment down
         consensus.nMaxAdjustUp = 8; // 8% adjustment up
-		consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
-		consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
-		consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
+	consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
+	consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
+	consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 8; // 95% of 2016 // Changed to 8 because 9.5 is up to ten.
@@ -138,7 +136,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
 		
-		// Deployment of GlobalToken Hardfork Block Upgrade
+	// Deployment of GlobalToken Hardfork Block Upgrade
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1527811200; // Fri, 01 Jun 2018
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
@@ -160,9 +158,9 @@ public:
         pchMessageStart[3] = 0x2d;
         nDefaultPort = 9319;
         nPruneAfterHeight = 750000;
-		const size_t N = 200, K = 9;
+	const size_t N = 200, K = 9;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
-		nEquihashN = N;
+	nEquihashN = N;
         nEquihashK = K;
 
         genesis = CreateGenesisBlock(1480961109, 2864352084, 0x1d00ffff, 1, 100 * COIN);
@@ -176,7 +174,7 @@ public:
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
         vSeeds.emplace_back("134.255.221.7"); // Globaltoken base node
-		vSeeds.emplace_back("lameserver.de"); // GlobalToken Node by Astrali
+	vSeeds.emplace_back("lameserver.de"); // GlobalToken Node by Astrali
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,38);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
@@ -227,31 +225,32 @@ public:
         // consensus.BIP34Hash = uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"); // not hashed
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
-		consensus.HardforkHeight = 2999; // not final
-		consensus.HardforkTime = 1527811200;
+	consensus.HardforkHeight = 2999; // not final
+	consensus.HardforkTime = 1527811200;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
-		consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-		consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_EQUIHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.nTargetSpacing = 60; // 1 minute
-		consensus.nTargetTimespan =  60 * 20; // 20 minutes
+	consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+	consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_EQUIHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.nTargetSpacing = 60; // 1 minute
+	consensus.nTargetTimespan =  60 * 20; // 20 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-		consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
-		consensus.nPowTargetSpacingV2 = 60 * 8;
-		consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
-		consensus.nAveragingInterval = 5; // 5 blocks
-		consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
-		consensus.nMaxAdjustDown = 16; // 16% adjustment down
+	consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
+	consensus.nPowTargetSpacingV2 = 60 * 8;
+	consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
+	consensus.nAveragingInterval = 5; // 5 blocks
+	consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
+	consensus.nMaxAdjustDown = 16; // 16% adjustment down
         consensus.nMaxAdjustUp = 8; // 8% adjustment up
-		consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
-		consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
-		consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
+	consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
+	consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
+	consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 8; // 75% for testchains
@@ -270,7 +269,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
 		
-		// Deployment of GlobalToken Hardfork Block Upgrade
+	// Deployment of GlobalToken Hardfork Block Upgrade
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1527811200; // Fri, 01 Jun 2018
         consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
@@ -287,7 +286,7 @@ public:
         pchMessageStart[3] = 0x5b;
         nDefaultPort = 19319;
         nPruneAfterHeight = 1000;
-		const size_t N = 200, K = 9;  // Same as mainchain.
+	const size_t N = 200, K = 9;  // Same as mainchain.
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
         nEquihashN = N;
         nEquihashK = K;
@@ -347,17 +346,18 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
-		consensus.HardforkHeight = 15; // not final
-		consensus.HardforkTime = 1527811200;
+	consensus.HardforkHeight = 15; // not final
+	consensus.HardforkTime = 1527811200;
         consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated after height
-		consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_X11 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_NEOSCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_EQUIHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
-		consensus.powLimit_YESCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_HMQ1725 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-		consensus.powLimit_XEVAN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_X11 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_NEOSCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_EQUIHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
+	consensus.powLimit_YESCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_HMQ1725 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_XEVAN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+	consensus.powLimit_NIST5 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
@@ -389,7 +389,7 @@ public:
         pchMessageStart[3] = 0xd6;
         nDefaultPort = 20144;
         nPruneAfterHeight = 1000;
-		const size_t N = 48, K = 5;
+	const size_t N = 48, K = 5;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
         nEquihashN = N;
         nEquihashK = K;
