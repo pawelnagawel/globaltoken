@@ -1240,12 +1240,13 @@ fi
 
 AC_MSG_CHECKING([whether to disable sse2 instructions])
 if test x$use_sse2 != xyes; then
-  AC_MSG_RESULT(yes)
+  AC_MSG_RESULT(no)
+  AX_CHECK_COMPILE_FLAG([-msse2],[SCRYPT_FLAGS="$SCRYPT_FLAGS -msse2"])
   AC_DEFINE([USE_SSE2],[1],[Define if SSE2 support should be compiled in])
   use_sse2=no
   SCRYPT_FLAGS="$SCRYPT_FLAGS -DUSE_SSE2=1"
 else
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT(yes)
 fi
 
 AC_MSG_CHECKING([whether to reduce exports])
