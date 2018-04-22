@@ -18,7 +18,6 @@
 #include <crypto/algos/hashlib/sph_jh.h>
 #include <crypto/algos/hashlib/sph_keccak.h>
 #include <crypto/algos/hashlib/sph_skein.h>
-/** ADDED FOR HMQ1725 */
 #include <crypto/algos/hashlib/sph_luffa.h>
 #include <crypto/algos/hashlib/sph_cubehash.h>
 #include <crypto/algos/hashlib/sph_shavite.h>
@@ -30,11 +29,6 @@
 #include <crypto/algos/hashlib/sph_whirlpool.h>
 #include <crypto/algos/hashlib/sph_sha2.h>
 #include <crypto/algos/hashlib/sph_haval.h>
-
-#ifndef QT_NO_DEBUG
-#include <string>
-
-#endif
 
 #ifdef GLOBALDEFINED
 #define GLOBAL
@@ -48,7 +42,6 @@ GLOBAL sph_groestl512_context   z_groestl;
 GLOBAL sph_jh512_context        z_jh;
 GLOBAL sph_keccak512_context    z_keccak;
 GLOBAL sph_skein512_context     z_skein;
-/** ADDED FOR HMQ1725 */
 GLOBAL sph_luffa512_context     z_luffa;
 GLOBAL sph_cubehash512_context  z_cubehash;
 GLOBAL sph_shavite512_context   z_shavite;
@@ -87,7 +80,6 @@ GLOBAL sph_haval256_5_context   z_haval;
 #define ZJH (memcpy(&ctx_jh, &z_jh, sizeof(z_jh)))
 #define ZKECCAK (memcpy(&ctx_keccak, &z_keccak, sizeof(z_keccak)))
 #define ZSKEIN (memcpy(&ctx_skein, &z_skein, sizeof(z_skein)))
-/** ADDED FOR HMQ1725 */
 #define ZWHIRLPOOL (memcpy(&ctx_whirlpool, &z_whirlpool, sizeof(z_whirlpool)))
 #define ZFUGUE (memcpy(&ctx_fugue, &z_fugue, sizeof(z_fugue)))
 #define ZHAMSI (memcpy(&ctx_hamsi, &z_hamsi, sizeof(z_hamsi)))
@@ -105,7 +97,6 @@ inline uint256 HMQ1725(const T1 pbegin, const T1 pend)
     sph_jh512_context        ctx_jh;
     sph_keccak512_context    ctx_keccak;
     sph_skein512_context     ctx_skein;
-        /** added for HMQ1725 */
     sph_luffa512_context      ctx_luffa;
     sph_cubehash512_context   ctx_cubehash;
     sph_shavite512_context    ctx_shavite;
@@ -119,12 +110,6 @@ inline uint256 HMQ1725(const T1 pbegin, const T1 pend)
     sph_haval256_5_context    ctx_haval;
     
     static unsigned char pblank[1];
-
-#ifndef QT_NO_DEBUG
-    //std::string strhash;
-    //strhash = "";
-#endif
-//------------------initial integration of HMQ1725
     uint32_t mask = 24;
     uint32_t zero = 0;
     
@@ -305,7 +290,7 @@ inline uint256 HMQ1725(const T1 pbegin, const T1 pend)
 
     uint256 hash;
 
-	hash.convert32To256(hashA, hashB, 16);
+    hash.convert32To256(hashA, hashB, 16);
 
     return hash;
 }
@@ -328,7 +313,6 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     static unsigned char pblank[1];
 
     uint512 hash[11];
-    //uint256 hash[11];
 
     sph_blake512_init(&ctx_blake);
     sph_blake512 (&ctx_blake, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
@@ -552,31 +536,28 @@ inline uint256 NIST5(const T1 pbegin, const T1 pend)
     sph_skein512_context     ctx_skein;
 
     static unsigned char pblank[1];
-    uint512 hash;
+    uint512 hash[5];
 
-    // Blake512
     sph_blake512_init(&ctx_blake);
     sph_blake512(&ctx_blake, (pbegin == pend ? pblank : (unsigned char*)&pbegin[0]), (pend - pbegin) * sizeof(pbegin[0]));
-    sph_blake512_close(&ctx_blake, (unsigned char*)&hash);
-    // Groestl512
+    sph_blake512_close(&ctx_blake, static_cast<const void*>(&hash[0]));
+
     sph_groestl512_init(&ctx_groestl);
-    sph_groestl512(&ctx_groestl, (unsigned char*)&hash, sizeof(hash));
-    sph_groestl512_close(&ctx_groestl, (unsigned char*)&hash);
-    // Jh512
+    sph_groestl512(&ctx_groestl, static_cast<const void*>(&hash[0]), 80);
+    sph_groestl512_close(&ctx_groestl, static_cast<const void*>(&hash[1]));
+
     sph_jh512_init(&ctx_jh);
-    sph_jh512(&ctx_jh, (unsigned char*)&hash, sizeof(hash));
-    sph_jh512_close(&ctx_jh, (unsigned char*)&hash);
-    // Keccak512
+    sph_jh512(&ctx_jh, static_cast<const void*>(&hash[1]), 64);
+    sph_jh512_close(&ctx_jh, static_cast<const void*>(&hash[2]));
+
     sph_keccak512_init(&ctx_keccak);
-    sph_keccak512(&ctx_keccak, (unsigned char*)&hash, sizeof(hash));
-    sph_keccak512_close(&ctx_keccak, (unsigned char*)&hash);
-    // Skein512
+    sph_keccak512(&ctx_keccak, static_cast<const void*>(&hash[2]), 64);
+    sph_keccak512_close(&ctx_keccak, static_cast<const void*>(&hash[3]));
+
     sph_skein512_init(&ctx_skein);
-    sph_skein512(&ctx_skein, (unsigned char*)&hash, sizeof(hash));
-    sph_skein512_close(&ctx_skein, (unsigned char*)&hash);
+    sph_skein512(&ctx_skein, static_cast<const void*>(&hash[3]), 64);
+    sph_skein512_close(&ctx_skein, static_cast<const void*>(&hash[4]));
 
-    //printf("\nhash: %s\n", hash.ToString().c_str());
-
-    return hash.trim256();
+    return hash[4].trim256();
 }
 #endif // MULTIHASH_H
