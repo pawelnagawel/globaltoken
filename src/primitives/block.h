@@ -26,9 +26,10 @@ enum : uint8_t {
     ALGO_YESCRYPT  = 5,
     ALGO_HMQ1725   = 6,
     ALGO_XEVAN     = 7,
+    ALGO_NIST5     = 8,
     NUM_ALGOS_IMPL };
 
-const int NUM_ALGOS = 8;
+const int NUM_ALGOS = 9;
 
 std::string GetAlgoName(uint8_t Algo);
 
