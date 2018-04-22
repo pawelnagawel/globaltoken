@@ -156,17 +156,17 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 				crypto_generichash_blake2b_update(&eh_state, (unsigned char*)&ss[0], ss.size());
 
 				while (nMaxTries > 0 &&
-					   ((int)pblock->nNonce.GetUint64(0) & nInnerLoopEquihashMask) < nInnerLoopCount) {
+					   ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopEquihashMask) < nInnerLoopCount) {
 					// Yes, there is a chance every nonce could fail to satisfy the -regtest
 					// target -- 1 in 2^(2^256). That ain't gonna happen
-					pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
+					pblock->nBigNonce = ArithToUint256(UintToArith256(pblock->nBigNonce) + 1);
 
 					// H(I||V||...
 					crypto_generichash_blake2b_state curr_state;
 					curr_state = eh_state;
 					crypto_generichash_blake2b_update(&curr_state,
-													  pblock->nNonce.begin(),
-													  pblock->nNonce.size());
+													  pblock->nBigNonce.begin(),
+													  pblock->nBigNonce.size());
 
 					// (x_1, x_2, ...) = A(I, V, n, k)
 					std::function<bool(std::vector<unsigned char>)> validBlock =
@@ -188,8 +188,8 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 			{
 				nInnerLoopMask = nInnerLoopGlobalTokenMask;
 				nInnerLoopCount = nInnerLoopGlobalTokenCount;
-				while (nMaxTries > 0 && (int)pblock->nNonce.GetUint64(0) < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
-					pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
+				while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
+					++pblock->nNonce;
 					--nMaxTries;
 				}
 			}
@@ -198,15 +198,18 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 		{
 			nInnerLoopMask = nInnerLoopGlobalTokenMask;
 			nInnerLoopCount = nInnerLoopGlobalTokenCount;
-			while (nMaxTries > 0 && (int)pblock->nNonce.GetUint64(0) < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(ALGO_SHA256D), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
-				pblock->nNonce = ArithToUint256(UintToArith256(pblock->nNonce) + 1);
+			while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(ALGO_SHA256D), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
+				++pblock->nNonce;
 				--nMaxTries;
 			}
 		}
         if (nMaxTries == 0) {
             break;
         }
-        if (((int)pblock->nNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
+        if (pblock->nAlgo == ALGO_EQUIHASH && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
+            continue;
+        }
+        if (pblock->nAlgo != ALGO_EQUIHASH && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
@@ -682,7 +685,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     // Update nTime
     UpdateTime(pblock, consensusParams, pindexPrev, currentAlgo);
-    pblock->nNonce = uint256();
+    pblock->nNonce = 0;
+    pblock->nBigNonce = uint256();
 	pblock->nSolution.clear();
 
     // NOTE: If at some point we support pre-segwit miners post-segwit-activation, this needs to take segwit support into consideration

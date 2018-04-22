@@ -51,8 +51,9 @@ public:
     uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
+    uint32_t nNonce;
 	uint8_t nAlgo;
-    uint256 nNonce;
+    uint256 nBigNonce;
     std::vector<unsigned char> nSolution;  // Equihash solution.
 
     CBlockHeader()
@@ -75,14 +76,11 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
+        READWRITE(nNonce);
         if (new_format) {
-			READWRITE(nAlgo);
-            READWRITE(nNonce);
+            READWRITE(nBigNonce);
+            READWRITE(nAlgo);
             READWRITE(nSolution);
-        } else {
-            uint32_t legacy_nonce = (uint32_t)nNonce.GetUint64(0);
-            READWRITE(legacy_nonce);
-            nNonce = ArithToUint256(arith_uint256(legacy_nonce));
         }
     }
 
@@ -95,7 +93,8 @@ public:
         nTime = 0;
         nBits = 0;
 		nAlgo = 0;
-        nNonce.SetNull();
+        nNonce = 0;
+        nBigNonce.SetNull();
         nSolution.clear();
     }
 
@@ -170,6 +169,7 @@ public:
         block.nBits          = nBits;
 		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
+        block.nBigNonce      = nBigNonce;
         block.nSolution      = nSolution;
         return block;
     }
@@ -178,7 +178,7 @@ public:
 };
 
 /**
- * Custom serializer for CBlockHeader that omits the nonce and solution, for use
+ * Custom serializer for CBlockHeader that omits the bignonce and solution, for use
  * as input to Equihash.
  */
 class CEquihashInput : private CBlockHeader
@@ -203,6 +203,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
 		READWRITE(nAlgo);
+        READWRITE(nNonce);
     }
 };
 

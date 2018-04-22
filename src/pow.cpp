@@ -196,7 +196,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
     // I||V
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << I;
-    ss << pblock->nNonce;
+    ss << pblock->nBigNonce;
 
     // H(I||V||...
     crypto_generichash_blake2b_update(&state, (unsigned char*)&ss[0], ss.size());

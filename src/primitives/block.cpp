@@ -112,7 +112,7 @@ uint256 CBlockHeader::GetPoWHash(uint8_t algo) const
 std::string CBlock::ToString() const
 {
     std::stringstream s;
-    s << strprintf("CBlock(hash=%s, ver=0x%08x, powalgo=%u, powalgoname=%s, powhash=%s, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
+    s << strprintf("CBlock(hash=%s, ver=0x%08x, powalgo=%u, powalgoname=%s, powhash=%s, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, nBigNonce=%s, vtx=%u)\n",
         GetHash().ToString(),
         nVersion,
         GetAlgo(),
@@ -120,7 +120,7 @@ std::string CBlock::ToString() const
         GetPoWHash(GetAlgo()).ToString(),
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),
-        nTime, nBits, nNonce.GetHex(),
+        nTime, nBits, nNonce, nBigNonce.GetHex(),
         vtx.size());
     for (const auto& tx : vtx) {
         s << "  " << tx->ToString() << "\n";

@@ -213,8 +213,9 @@ public:
 	uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
+    uint32_t nNonce;
 	uint8_t nAlgo;
-    uint256 nNonce;
+    uint256 nBigNonce;
 	std::vector<unsigned char> nSolution;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
@@ -245,7 +246,8 @@ public:
         nTime          = 0;
         nBits          = 0;
 		nAlgo          = 0;
-        nNonce         = uint256();
+        nNonce         = 0;
+        nBigNonce      = uint256();
 		nSolution.clear();
     }
 
@@ -265,6 +267,7 @@ public:
         nBits          = block.nBits;
 		nAlgo          = block.nAlgo;
         nNonce         = block.nNonce;
+        nBigNonce      = block.nBigNonce;
 		nSolution      = block.nSolution;
     }
 
@@ -298,6 +301,7 @@ public:
         block.nBits          = nBits;
 		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
+        block.nBigNonce      = nBigNonce;
 		block.nSolution      = nSolution;
         return block;
     }
@@ -435,6 +439,7 @@ public:
         READWRITE(nBits);
 		READWRITE(nAlgo);
         READWRITE(nNonce);
+        READWRITE(nBigNonce);
 		READWRITE(nSolution);
     }
 
@@ -449,6 +454,7 @@ public:
         block.nBits           = nBits;
 		block.nAlgo           = nAlgo;
         block.nNonce          = nNonce;
+        block.nBigNonce       = nBigNonce;
 		block.nSolution       = nSolution;
         return block.GetHash();
     }
