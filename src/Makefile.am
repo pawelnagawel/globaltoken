@@ -285,7 +285,7 @@ crypto_libbitcoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
 # crypto algos library
-crypto_libbitcoin_algos_a_CPPFLAGS = $(AM_CPPFLAGS)
+crypto_libbitcoin_algos_a_CPPFLAGS = $(AM_CPPFLAGS) $(SCRYPT_FLAGS)
 crypto_libbitcoin_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
 crypto_libbitcoin_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
 crypto_libbitcoin_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
@@ -344,8 +344,6 @@ crypto_libbitcoin_algos_a_SOURCES = \
 
 if USE_ASM
 crypto_libbitcoin_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
-crypto_libbitcoin_algos_a_CPPFLAGS += -DUSE_SSE2
-crypto_libbitcoin_algos_a_CFLAGS += -D__SSE4_1__
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
@@ -537,8 +535,10 @@ endif
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS) $(LIBEQUIHASH_LIBS)
-libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG -DNO_GLOBALTOKEN_HARDFORK
-libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbitcoinconsensus_la_CPPFLAGS =  $(AM_CPPFLAGS) $(SCRYPT_FLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG -DNO_GLOBALTOKEN_HARDFORK
+libbitcoinconsensus_la_CXXFLAGS =  $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
+libbitcoinconsensus_la_CFLAGS =    $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
+libbitcoinconsensus_la_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 
 endif
 #
