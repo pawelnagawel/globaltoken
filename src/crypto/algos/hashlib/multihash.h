@@ -539,7 +539,7 @@ inline uint256 NIST5(const T1 pbegin, const T1 pend)
     uint512 hash[5];
 
     sph_blake512_init(&ctx_blake);
-    sph_blake512(&ctx_blake, (pbegin == pend ? pblank : (unsigned char*)&pbegin[0]), (pend - pbegin) * sizeof(pbegin[0]));
+    sph_blake512(&ctx_blake, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
     sph_blake512_close(&ctx_blake, static_cast<const void*>(&hash[0]));
 
     sph_groestl512_init(&ctx_groestl);
