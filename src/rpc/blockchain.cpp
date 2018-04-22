@@ -121,7 +121,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("time", (int64_t)blockindex->nTime);
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)blockindex->nNonce);
-    result.pushKV("bignonce", blockindex->nNonce.GetHex());
+    result.pushKV("bignonce", blockindex->nBigNonce.GetHex());
 	result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
@@ -179,7 +179,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("time", block.GetBlockTime());
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)block.nNonce);
-    result.pushKV("bignonce", block.nNonce.GetHex());
+    result.pushKV("bignonce", block.nBigNonce.GetHex());
 	result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
