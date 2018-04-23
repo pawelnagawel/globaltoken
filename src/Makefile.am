@@ -558,7 +558,6 @@ CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
-CLEANFILES += crypto/algos/*.gcda crypto/algos/*.gcno
 CLEANFILES += globaltoken/*.gcda globaltoken/*.gcno
 CLEANFILES += policy/*.gcda policy/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
