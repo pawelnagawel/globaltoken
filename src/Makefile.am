@@ -30,7 +30,7 @@ LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
 LIBBITCOIN_ALGOS=crypto/algos/libbitcoin_algos.a
-LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libglobaltoken_hardfork.a
+LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libbitcoin_globaltoken_hardfork.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -382,9 +382,9 @@ libbitcoin_consensus_a_SOURCES = \
   version.h
   
 # hardfork: shared between all executables
-libglobaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libglobaltoken_hardfork_a_SOURCES = \
+libbitcoin_globaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libbitcoin_globaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbitcoin_globaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
   globaltoken/hardfork.h 
 
