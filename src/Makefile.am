@@ -29,8 +29,8 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
-LIBBITCOIN_ALGOS=crypto/libbitcoin_algos.a
-LIBBITCOIN_GLOBALTOKEN_HARDFORK=libbitcoin_globaltoken_hardfork.a
+LIBBITCOIN_ALGOS=crypto/algos/libbitcoin_algos.a
+LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libglobaltoken_hardfork.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -382,10 +382,9 @@ libbitcoin_consensus_a_SOURCES = \
   version.h
   
 # hardfork: shared between all executables
-
-libbitcoin_globaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libbitcoin_globaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libbitcoin_globaltoken_hardfork_a_SOURCES = \
+libglobaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libglobaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
   globaltoken/hardfork.h 
 
@@ -559,6 +558,7 @@ CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += crypto/algos/*.gcda crypto/algos/*.gcno
 CLEANFILES += globaltoken/*.gcda globaltoken/*.gcno
 CLEANFILES += policy/*.gcda policy/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
