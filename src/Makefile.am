@@ -29,8 +29,8 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
-LIBBITCOIN_ALGOS=crypto/algos/libbitcoin_algos.a
-LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libbitcoin_globaltoken_hardfork.a
+LIBBITCOIN_ALGOS=crypto/algos/libglobaltoken_algos.a
+LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libglobaltoken_hardfork.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -285,11 +285,11 @@ crypto_libbitcoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
 # crypto algos library
-crypto_libbitcoin_algos_a_CPPFLAGS = $(AM_CPPFLAGS) $(SCRYPT_FLAGS)
-crypto_libbitcoin_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
-crypto_libbitcoin_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
-crypto_libbitcoin_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
-crypto_libbitcoin_algos_a_SOURCES = \
+crypto_algos_libglobaltoken_algos_a_CPPFLAGS = $(AM_CPPFLAGS) $(SCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/blake.c \
   crypto/algos/hashlib/bmw.c \
   crypto/algos/hashlib/cubehash.c \
@@ -343,7 +343,7 @@ crypto_libbitcoin_algos_a_SOURCES = \
   crypto/algos/yescrypt/yescryptcommon.c
 
 if USE_ASM
-crypto_libbitcoin_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
+crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
 endif
 
 # consensus: shared between all executables that validate any consensus rules.
@@ -381,10 +381,10 @@ libbitcoin_consensus_a_SOURCES = \
   utilstrencodings.h \
   version.h
   
-# hardfork: shared between all executables
-libbitcoin_globaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-libbitcoin_globaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libbitcoin_globaltoken_hardfork_a_SOURCES = \
+# hardfork library
+globaltoken_libglobaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+globaltoken_libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+globaltoken_libglobaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
   globaltoken/hardfork.h 
 
@@ -526,7 +526,7 @@ globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_libbitcoin_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_algos_libglobaltoken_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
