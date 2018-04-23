@@ -52,7 +52,7 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
-	uint8_t nAlgo;
+    uint8_t nAlgo;
     uint256 nBigNonce;
     std::vector<unsigned char> nSolution;  // Equihash solution.
 
@@ -76,11 +76,15 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nNonce);
         if (new_format) {
-            READWRITE(nBigNonce);
+            READWRITE(nNonce);
             READWRITE(nAlgo);
+            READWRITE(nBigNonce);
             READWRITE(nSolution);
+        }
+        else
+        {
+            READWRITE(nNonce);
         }
     }
 
@@ -92,8 +96,8 @@ public:
         memset(nReserved, 0, sizeof(nReserved));
         nTime = 0;
         nBits = 0;
-		nAlgo = 0;
         nNonce = 0;
+        nAlgo = 0;
         nBigNonce.SetNull();
         nSolution.clear();
     }
@@ -167,8 +171,8 @@ public:
         memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime          = nTime;
         block.nBits          = nBits;
-		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
+        block.nAlgo          = nAlgo;
         block.nBigNonce      = nBigNonce;
         block.nSolution      = nSolution;
         return block;
@@ -202,8 +206,8 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
-		READWRITE(nAlgo);
         READWRITE(nNonce);
+        READWRITE(nAlgo);
     }
 };
 

@@ -245,8 +245,8 @@ public:
 		memset(nReserved, 0, sizeof(nReserved));
         nTime          = 0;
         nBits          = 0;
-		nAlgo          = 0;
         nNonce         = 0;
+        nAlgo          = 0;
         nBigNonce      = uint256();
 		nSolution.clear();
     }
@@ -265,8 +265,8 @@ public:
 		memcpy(nReserved, block.nReserved, sizeof(nReserved));
         nTime          = block.nTime;
         nBits          = block.nBits;
-		nAlgo          = block.nAlgo;
         nNonce         = block.nNonce;
+        nAlgo          = block.nAlgo;
         nBigNonce      = block.nBigNonce;
 		nSolution      = block.nSolution;
     }
@@ -299,8 +299,8 @@ public:
 		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime          = nTime;
         block.nBits          = nBits;
-		block.nAlgo          = nAlgo;
         block.nNonce         = nNonce;
+        block.nAlgo          = nAlgo;
         block.nBigNonce      = nBigNonce;
 		block.nSolution      = nSolution;
         return block;
@@ -437,8 +437,8 @@ public:
 		}
         READWRITE(nTime);
         READWRITE(nBits);
-		READWRITE(nAlgo);
         READWRITE(nNonce);
+        READWRITE(nAlgo);
         READWRITE(nBigNonce);
 		READWRITE(nSolution);
     }
@@ -452,8 +452,8 @@ public:
 		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
         block.nTime           = nTime;
         block.nBits           = nBits;
-		block.nAlgo           = nAlgo;
         block.nNonce          = nNonce;
+        block.nAlgo           = nAlgo;
         block.nBigNonce       = nBigNonce;
 		block.nSolution       = nSolution;
         return block.GetHash();

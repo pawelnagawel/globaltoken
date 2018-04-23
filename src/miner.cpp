@@ -198,8 +198,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
-    pblock->nAlgo          = nAlgo;
     pblock->nNonce         = 0;
+    pblock->nAlgo          = nAlgo;
     pblock->nBigNonce      = ArithToUint256(nonce);
     pblock->nSolution.clear();
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
