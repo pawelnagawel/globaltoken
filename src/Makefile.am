@@ -386,7 +386,11 @@ globaltoken_libglobaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUD
 globaltoken_libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 globaltoken_libglobaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
-  globaltoken/hardfork.h 
+  globaltoken/hardfork.h \
+  arith_uint256.cpp \
+  arith_uint256.h \
+  uint256.cpp \
+  uint256.h
 
 # common: shared between globaltokend, and globaltoken-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
