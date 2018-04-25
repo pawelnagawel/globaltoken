@@ -279,8 +279,9 @@ fi
 # Check for optional instruction set support. Enabling these does _not_ imply that all code will
 # be compiled with them, rather that specific objects/libs may use them after checking for runtime
 # compatibility.
-AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_MSSE4_1="-msse4.1"]],,[[$CXXFLAG_WERROR]])
-AX_CHECK_COMPILE_FLAG([-msse4.2],[[SSE42_CXXFLAGS="-msse4.2"]],,[[$CXXFLAG_WERROR]])
+AX_CHECK_COMPILE_FLAG([-msse2],[[YESCRYPT_MSSE="$YESCRYPT_MSSE -msse2"]],,[[$CXXFLAG_WERROR]])
+AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_MSSE="$YESCRYPT_MSSE -msse4.1"]],,[[$CXXFLAG_WERROR]])
+AX_CHECK_COMPILE_FLAG([-msse4.2],[[SSE42_CXXFLAGS="$SSE42_CXXFLAGS -msse4.2"]],,[[$CXXFLAG_WERROR]])
 
 TEMP_CXXFLAGS="$CXXFLAGS"
 CXXFLAGS="$CXXFLAGS $SSE42_CXXFLAGS"
@@ -1108,9 +1109,9 @@ else
 fi
 
 if test x$TARGET_OS = xdarwin; then
-  YESCRYPT_FLAGS="$YESCRYPT_MSSE4_1"
+  YESCRYPT_FLAGS="$YESCRYPT_MSSE"
 else
-  YESCRYPT_FLAGS="-fopenmp $YESCRYPT_MSSE4_1"
+  YESCRYPT_FLAGS="-fopenmp $YESCRYPT_MSSE"
 fi
 
 AC_MSG_CHECKING([whether to build globaltokend])
