@@ -188,18 +188,18 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     }
 	
     // Fill in header
-    uint8_t nAlgo = algo;
+    uint8_t nBlockAlgo = algo;
 	
     if (!IsHardForkActivated(pindexPrev->nTime))
     {
-	 nAlgo = ALGO_SHA256D;
+	 nBlockAlgo = ALGO_SHA256D;
     }
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
     memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
     pblock->nNonce         = 0;
-    pblock->nAlgo          = nAlgo;
+    pblock->SetAlgo(nBlockAlgo);
     pblock->nBigNonce      = ArithToUint256(nonce);
     pblock->nSolution.clear();
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);

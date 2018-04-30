@@ -286,8 +286,8 @@ endif
 
 # crypto algos library
 crypto_algos_libglobaltoken_algos_a_CPPFLAGS = $(AM_CPPFLAGS) $(SCRYPT_FLAGS)
-crypto_algos_libglobaltoken_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
-crypto_algos_libglobaltoken_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 crypto_algos_libglobaltoken_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/blake.c \
@@ -459,7 +459,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 globaltokend_SOURCES = bitcoind.cpp
 globaltokend_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 globaltokend_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(YESCRYPT_FLAGS)
+globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(YESCRYPT_LDFLAGS)
 
 if TARGET_WINDOWS
 globaltokend_SOURCES += bitcoind-res.rc
@@ -505,8 +505,8 @@ globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) 
 
 # globaltoken-tx binary #
 globaltoken_tx_SOURCES = bitcoin-tx.cpp
-globaltoken_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(YESCRYPT_FLAGS)
-globaltoken_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
+globaltoken_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(YESCRYPT_COMPILE_FLAGS)
+globaltoken_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 globaltoken_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
@@ -539,8 +539,8 @@ endif
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS) $(LIBEQUIHASH_LIBS)
 libbitcoinconsensus_la_CPPFLAGS =  $(AM_CPPFLAGS) $(SCRYPT_FLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG -DNO_GLOBALTOKEN_HARDFORK
-libbitcoinconsensus_la_CXXFLAGS =  $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_FLAGS)
-libbitcoinconsensus_la_CFLAGS =    $(NEOSCRYPT_FLAGS) $(YESCRYPT_FLAGS)
+libbitcoinconsensus_la_CXXFLAGS =  $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+libbitcoinconsensus_la_CFLAGS =    $(NEOSCRYPT_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 libbitcoinconsensus_la_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 
 endif

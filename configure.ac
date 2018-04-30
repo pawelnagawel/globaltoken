@@ -1107,15 +1107,18 @@ BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
 LIBEQUIHASH_LIBS="-lcrypto -lsodium"
 if test x$use_asm = xyes; then
-	NEOSCRYPT_FLAGS="-DSHA256 -DOPT -DASM -DMINER_4WAY"
+	NEOSCRYPT_FLAGS="$NEOSCRYPT_FLAGS -DSHA256 -DOPT"
+    # -DASM -DMINER_4WAY deleted temporary, because ASM mode does not support neoscrypt()
 else
-	NEOSCRYPT_FLAGS="-DSHA256 -DOPT"
+	NEOSCRYPT_FLAGS="$NEOSCRYPT_FLAGS -DSHA256 -DOPT"
 fi
 
 if test x$TARGET_OS = xdarwin; then
-  YESCRYPT_FLAGS=""
+  YESCRYPT_LDFLAGS=""
+  YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS"
 else
-  YESCRYPT_FLAGS="-fopenmp"
+  YESCRYPT_LDFLAGS="-fopenmp"
+  YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -fopenmp"
 fi
 
 AC_MSG_CHECKING([whether to build globaltokend])
@@ -1246,7 +1249,7 @@ fi
 AC_MSG_CHECKING([whether to enable sse2 instructions])
 if test x$use_sse2 != xno; then
   AC_MSG_RESULT(yes)
-  AX_CHECK_COMPILE_FLAG([-msse2],[[YESCRYPT_FLAGS="$YESCRYPT_FLAGS -msse2"]],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-msse2],[[YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -msse2"]],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-msse2],[[SCRYPT_FLAGS="$SCRYPT_FLAGS -msse2 -DUSE_SSE2=1"]],,[[$CXXFLAG_WERROR]])
   AC_DEFINE([USE_SSE2],[1],[Define if SSE2 support should be compiled in])
   use_sse2=yes
@@ -1257,7 +1260,7 @@ fi
 AC_MSG_CHECKING([whether to enable sse4.1 instructions])
 if test x$use_sse4_1 != xno; then
   AC_MSG_RESULT(yes)
-  AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_FLAGS="$YESCRYPT_FLAGS -msse4.1"]],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -msse4.1"]],,[[$CXXFLAG_WERROR]])
   AC_DEFINE([USE_SSE4_1],[1],[Define if SSE4.1 support should be compiled in])
   use_sse4_1=yes
 else
@@ -1346,7 +1349,8 @@ AC_SUBST(EVENT_LIBS)
 AC_SUBST(EVENT_PTHREADS_LIBS)
 AC_SUBST(ZMQ_LIBS)
 AC_SUBST(LIBEQUIHASH_LIBS)
-AC_SUBST(YESCRYPT_FLAGS)
+AC_SUBST(YESCRYPT_LDFLAGS)
+AC_SUBST(YESCRYPT_COMPILE_FLAGS)
 AC_SUBST(NEOSCRYPT_FLAGS)
 AC_SUBST(SCRYPT_FLAGS)
 AC_SUBST(PROTOBUF_LIBS)
