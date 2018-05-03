@@ -16,7 +16,6 @@ namespace Consensus {
 };
 
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
-static const int SERIALIZE_BLOCK_EQUIHASH = 0x00400000;
 
 enum : uint8_t { 
     ALGO_SHA256D   = 0,
@@ -46,6 +45,7 @@ class CBlockHeader
 public:
 	static const size_t HEADER_SIZE = 4+32+32+32+4+4+1+32;  // Excluding Equihash solution
     // header
+    uint8_t nAlgo;
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -53,7 +53,6 @@ public:
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
-    uint8_t nAlgo;
     uint256 nBigNonce;
     std::vector<unsigned char> nSolution;  // Equihash solution.
 
@@ -67,29 +66,31 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        bool equihash_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY & SERIALIZE_BLOCK_EQUIHASH);
+        if(new_format)
+        {
+           READWRITE(nAlgo); 
+        }
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        if (equihash_format) {
+        if (new_format && nAlgo == ALGO_EQUIHASH) {
             for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
                 READWRITE(nReserved[i]);
             }
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format)
+        if (new_format && nAlgo != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
-            READWRITE(nAlgo);
         }
-        if (equihash_format)
+        if (new_format && nAlgo == ALGO_EQUIHASH)
         {
             READWRITE(nAlgo);
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!new_format && !equihash_format)
+        if(!new_format)
         {
             READWRITE(nNonce);
         }
@@ -97,6 +98,7 @@ public:
 
     void SetNull()
     {
+        nAlgo = 0;
         nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
@@ -104,7 +106,6 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
-        nAlgo = 0;
         nBigNonce.SetNull();
         nSolution.clear();
     }
@@ -172,6 +173,7 @@ public:
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
+        block.nAlgo          = nAlgo;
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;
@@ -179,7 +181,6 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        block.nAlgo          = nAlgo;
         block.nBigNonce      = nBigNonce;
         block.nSolution      = nSolution;
         return block;
@@ -205,6 +206,7 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(nAlgo);
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
@@ -213,7 +215,6 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nAlgo);
     }
 };
 

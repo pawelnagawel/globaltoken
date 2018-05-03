@@ -133,22 +133,17 @@ static bool rest_headers(HTTPRequest* req,
 
     if (path.size() != 2 && (path.size() != 3 || path[0] != "legacy")) {
         return RESTERR(req, HTTP_BAD_REQUEST, "No header count specified. Use /rest/headers/<count>/<hash>.<ext> or /rest/headers/legacy/<count>/<hash>.<ext>.");
-    }                           //use old rule if URI=/legacy/equihash/<COUNT>/<BLOCK-HASH>
+    }                           //use old rule if URI=/legacy/<COUNT>/<BLOCK-HASH>
 	std::string headerCount,hashStr;
-    int legacy_format = 1, ser_flags;
+    bool legacy_format = false;
     if (path.size() == 2) {
         headerCount = path[0];
         hashStr = path[1];
     }
-    else if(path.size() == 3) {
+    else {
         headerCount = path[1];
         hashStr = path[2];
-        legacy_format = 0;
-    }
-    else {
-        headerCount = path[2];
-        hashStr = path[3];
-        legacy_format = 2; 
+        legacy_format = true;
     }
 
     long count = strtol(headerCount.c_str(), nullptr, 10);
@@ -173,15 +168,7 @@ static bool rest_headers(HTTPRequest* req,
         }
     }
 
-	switch(legacy_format)
-    {
-        case 0:
-            ser_flags = SERIALIZE_BLOCK_LEGACY;
-        case 1:
-            ser_flags = 0;
-        case 2:
-            ser_flags = SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
-    }
+	int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
     CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION | ser_flags);
     for (const CBlockIndex *pindex : headers) {
         ssHeader << pindex->GetBlockHeader();
@@ -230,17 +217,13 @@ static bool rest_block(HTTPRequest* req,
     const RetFormat rf = ParseDataFormat(param, strURIPart);
     std::vector<std::string> path;
     boost::split(path, param, boost::is_any_of("/"));
-    int legacy_format = 1, ser_flags;
+    bool legacy_format = false;
     if (path.size() == 1) {          
         hashStr = path[0];
     }
-    else if (path.size() == 2){
-        legacy_format = 0;  //use old rule if URI=/legacy/equihash/<BLOCK-HASH>
-        hashStr = path[1];
-    }
     else {
-        legacy_format = 2;  //use old rule if URI=/legacy/equihash/<BLOCK-HASH>
-        hashStr = path[2];
+        legacy_format = true;  //use old rule if URI=/legacy/<BLOCK-HASH>
+        hashStr = path[1];
     }
 
     uint256 hash;
@@ -262,15 +245,7 @@ static bool rest_block(HTTPRequest* req,
             return RESTERR(req, HTTP_NOT_FOUND, hashStr + " not found");
     }
 
-	switch(legacy_format)
-    {
-        case 0:
-            ser_flags = SERIALIZE_BLOCK_LEGACY;
-        case 1:
-            ser_flags = 0;
-        case 2:
-            ser_flags = SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
-    }
+	int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
     CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags() | ser_flags);
     ssBlock << block;
 

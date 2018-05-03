@@ -27,7 +27,7 @@ uint256 CBlockHeader::GetHash(const Consensus::Params& params) const
     if (IsHardForkActivated(nTime, params)) {
         version = PROTOCOL_VERSION;
     } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
     }
     CHashWriter writer(SER_GETHASH, version);
     ::Serialize(writer, *this);
@@ -46,7 +46,7 @@ uint256 CBlockHeader::GetHash() const
     if (IsHardForkActivated(nTime)) {
         version = PROTOCOL_VERSION;
     } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
     }
     CHashWriter writer(SER_GETHASH, version);
     ::Serialize(writer, *this);

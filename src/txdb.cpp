@@ -280,20 +280,19 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nFile          = diskindex.nFile;
                 pindexNew->nDataPos       = diskindex.nDataPos;
                 pindexNew->nUndoPos       = diskindex.nUndoPos;
+                pindexNew->nAlgo          = diskindex.nAlgo;
                 pindexNew->nVersion       = diskindex.nVersion;
                 pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
 				memcpy(pindexNew->nReserved, diskindex.nReserved, sizeof(pindexNew->nReserved));
                 pindexNew->nTime          = diskindex.nTime;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
-                pindexNew->nAlgo          = diskindex.nAlgo;
                 pindexNew->nBigNonce      = diskindex.nBigNonce;
 				pindexNew->nSolution      = diskindex.nSolution;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 				
-				bool hardfork = IsHardForkActivated(pindexNew->nTime);
-				if(hardfork)
+				if(IsHardForkActivated(pindexNew->nTime))
 				{
 					auto header = pindexNew->GetBlockHeader();
 					uint8_t algo = header.GetAlgo();

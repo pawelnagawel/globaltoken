@@ -3057,8 +3057,6 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 	int serialization_flags = SERIALIZE_TRANSACTION_NO_WITNESS;
     if (!IsHardForkActivated(block.nTime)) {
         serialization_flags |= SERIALIZE_BLOCK_LEGACY;
-        if(block.GetAlgo() == ALGO_EQUIHASH)
-            serialization_flags |= SERIALIZE_BLOCK_EQUIHASH;
     }
     if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");

@@ -208,13 +208,13 @@ public:
     uint32_t nStatus;
 
     //! block header
+    uint8_t nAlgo;
     int32_t nVersion;
     uint256 hashMerkleRoot;
 	uint32_t nReserved[7];
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
-	uint8_t nAlgo;
     uint256 nBigNonce;
 	std::vector<unsigned char> nSolution;
 
@@ -240,13 +240,13 @@ public:
         nSequenceId = 0;
         nTimeMax = 0;
 
+        nAlgo          = 0;
         nVersion       = 0;
         hashMerkleRoot = uint256();
 		memset(nReserved, 0, sizeof(nReserved));
         nTime          = 0;
         nBits          = 0;
         nNonce         = 0;
-        nAlgo          = 0;
         nBigNonce      = uint256();
 		nSolution.clear();
     }
@@ -260,13 +260,13 @@ public:
     {
         SetNull();
 
+        nAlgo          = block.nAlgo;
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
 		memcpy(nReserved, block.nReserved, sizeof(nReserved));
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
-        nAlgo          = block.nAlgo;
         nBigNonce      = block.nBigNonce;
 		nSolution      = block.nSolution;
     }
@@ -292,6 +292,7 @@ public:
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
+        block.nAlgo          = nAlgo;
         block.nVersion       = nVersion;
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
@@ -300,7 +301,6 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        block.nAlgo          = nAlgo;
         block.nBigNonce      = nBigNonce;
 		block.nSolution      = nSolution;
         return block;
@@ -430,29 +430,31 @@ public:
 
         // block header
         bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        bool equihash_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY & SERIALIZE_BLOCK_EQUIHASH);
+        if(new_format)
+        {
+           READWRITE(nAlgo); 
+        }
         READWRITE(this->nVersion);
-        READWRITE(hashPrev);
+        READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        if (equihash_format) {
+        if (new_format && nAlgo == ALGO_EQUIHASH) {
             for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
                 READWRITE(nReserved[i]);
             }
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format)
+        if (new_format && nAlgo != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
-            READWRITE(nAlgo);
         }
-        if (equihash_format)
+        if (new_format && nAlgo == ALGO_EQUIHASH)
         {
-            READWRITE(nBigNonce);
             READWRITE(nAlgo);
+            READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!new_format && !equihash_format)
+        if(!new_format)
         {
             READWRITE(nNonce);
         }
@@ -461,6 +463,7 @@ public:
     uint256 GetBlockHash() const
     {
         CBlockHeader block;
+        block.nAlgo           = nAlgo;
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;
@@ -468,7 +471,6 @@ public:
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
-        block.nAlgo           = nAlgo;
         block.nBigNonce       = nBigNonce;
 		block.nSolution       = nSolution;
         return block.GetHash();

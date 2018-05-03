@@ -153,16 +153,14 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
         confirmations = chainActive.Height() - blockindex->nHeight + 1;
     result.pushKV("confirmations", confirmations);
 	int ser_flags = (IsHardForkActivated(block.nTime)) ? 0 : SERIALIZE_BLOCK_LEGACY;
-    if(block.GetAlgo() == ALGO_EQUIHASH)
-        ser_flags |= SERIALIZE_BLOCK_EQUIHASH;
     result.pushKV("strippedsize", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS | ser_flags));
     result.pushKV("size", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | ser_flags));
     result.pushKV("weight", (int)::GetBlockWeight(block));
     result.pushKV("height", blockindex->nHeight);
+    result.pushKV("algo", GetAlgoName(algo));
+	result.pushKV("algoid", algo);
     result.pushKV("version", block.nVersion);
     result.pushKV("versionHex", strprintf("%08x", block.nVersion));
-	result.pushKV("algo", GetAlgoName(algo));
-	result.pushKV("algoid", algo);
     result.pushKV("algopowhash", block.GetPoWHash(algo).GetHex());
     result.pushKV("merkleroot", block.hashMerkleRoot.GetHex());
     UniValue txs(UniValue::VARR);
@@ -704,7 +702,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. \"hash\"          (string, required) The block hash\n"
             "2. verbose           (boolean, optional, default=true) true for a json object, false for the hex encoded data\n"
-			"3. blockformat       (numeric, optional, default=automatic) indicates if the block should be in another format (0 = legacy, 1 = new, 2 = equihash)\n"
+			"3. \"legacy\"        (boolean, optional, default=(automatic choose)) indicates if the block should be in legacy format\n"
             "\nResult (for verbose = true):\n"
             "{\n"
             "  \"hash\" : \"hash\",     (string) the block hash (same as provided)\n"
@@ -741,21 +739,13 @@ UniValue getblockheader(const JSONRPCRequest& request)
         fVerbose = request.params[1].get_bool();
 		
     CBlockIndex* currentchain = chainActive.Tip();
-    int legacy_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0, ser_flags;
-    
-    if (request.params.size() == 3 && request.params[2].get_int() >= 0 && request.params[2].get_int() <= 2) {
-        legacy_format = request.params[2].get_int();
+    bool legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
+
+    if (request.params.size() == 3) {
+        legacy_format = request.params[2].get_bool();
     }
     
-    switch(legacy_format)
-    {
-        case 0:
-            ser_flags = SERIALIZE_BLOCK_LEGACY;
-        case 1:
-            ser_flags = 0;
-        case 2:
-            ser_flags = SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
-    }
+    int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
 
     if (mapBlockIndex.count(hash) == 0)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block not found");
@@ -784,7 +774,7 @@ UniValue getblock(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. \"blockhash\"          (string, required) The block hash\n"
             "2. verbosity              (numeric, optional, default=1) 0 for hex encoded data, 1 for a json object, and 2 for json object with transaction data\n"
-            "3. blockformat       (numeric, optional, default=automatic) indicates if the block should be in another format (0 = legacy, 1 = new, 2 = equihash)\n"
+            "3. \"legacy\"             (boolean, optional, default=(automatic choose)) indicates if the block should be in legacy format\n"
 			"\nResult (for verbosity = 0):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
             "\nResult (for verbosity = 1):\n"
@@ -840,20 +830,9 @@ UniValue getblock(const JSONRPCRequest& request)
     }
 	
 	CBlockIndex* currentchain = chainActive.Tip();
-    int legacy_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0, ser_flags;
-    
-    if (request.params.size() == 3 && request.params[2].get_int() >= 0 && request.params[2].get_int() <= 2) {
-        legacy_format = request.params[2].get_int();
-    }
-    
-    switch(legacy_format)
-    {
-        case 0:
-            ser_flags = SERIALIZE_BLOCK_LEGACY;
-        case 1:
-            ser_flags = 0;
-        case 2:
-            ser_flags = SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
+    bool legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
+    if (request.params.size() == 3) {
+        legacy_format = request.params[2].get_bool();
     }
 
     if (mapBlockIndex.count(hash) == 0)
@@ -875,6 +854,7 @@ UniValue getblock(const JSONRPCRequest& request)
 
     if (verbosity <= 0)
     {
+        int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
         CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | ser_flags | RPCSerializationFlags());
         ssBlock << block;
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());

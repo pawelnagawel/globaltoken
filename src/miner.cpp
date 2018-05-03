@@ -127,7 +127,15 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     CBlockIndex* pindexPrev = chainActive.Tip();
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
+    
+    uint8_t nBlockAlgo = algo;
+	
+    if (!IsHardForkActivated(pindexPrev->nTime))
+    {
+        nBlockAlgo = ALGO_SHA256D;
+    }
 
+    pblock->SetAlgo(nBlockAlgo);
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
 	
 	if (!IsHardForkActivated(pindexPrev->nTime) && algo != ALGO_SHA256D) {
@@ -188,18 +196,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     }
 	
     // Fill in header
-    uint8_t nBlockAlgo = algo;
-	
-    if (!IsHardForkActivated(pindexPrev->nTime))
-    {
-	 nBlockAlgo = ALGO_SHA256D;
-    }
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
     memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
     pblock->nNonce         = 0;
-    pblock->SetAlgo(nBlockAlgo);
     pblock->nBigNonce      = ArithToUint256(nonce);
     pblock->nSolution.clear();
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);

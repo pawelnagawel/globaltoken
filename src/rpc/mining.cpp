@@ -206,10 +206,10 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         if (nMaxTries == 0) {
             break;
         }
-        if (pblock->nAlgo == ALGO_EQUIHASH && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
+        if (pblock->GetAlgo() == ALGO_EQUIHASH && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
-        if (pblock->nAlgo != ALGO_EQUIHASH && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
+        if (pblock->GetAlgo() != ALGO_EQUIHASH && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
@@ -456,7 +456,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. template_request         (json object, optional) A json object in the following spec\n"
             "     {\n"
-            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\", \"proposal_equihash\",or omitted\n"
+            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\",or omitted\n"
             "       \"capabilities\":[     (array, optional) A list of strings\n"
             "           \"support\"          (string) client side supported feature, 'longpoll', 'coinbasetxn', 'coinbasevalue', 'proposal', 'serverlist', 'workid'\n"
             "           ,...\n"
@@ -546,14 +546,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            int block_format = 0;
-            if(strMode == "proposal_legacy")
-                block_format = 0;
-            if(strMode == "proposal")
-                block_format = 1;
-            if(strMode == "proposal_equihash")
-                block_format = 2;
-            if (!DecodeHexBlk(block, dataval.get_str(), block_format))
+            bool legacy_format = (strMode == "proposal_legacy");
+            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -869,7 +863,7 @@ UniValue submitblock(const JSONRPCRequest& request)
             "\nArguments\n"
             "1. \"hexdata\"        (string, required) the hex-encoded block data to submit\n"
             "2. \"dummy\"          (optional) dummy value, for compatibility with BIP22. This value is ignored.\n"
-			"3. \"blockformat\"    (numeric, optional) indicates block format. (0 = legacy, 1 = newformat, 2 = equihash) default: automatically (1 or 0, equihash not automatically choosed.)\n"
+			"3. \"legacy\"         (boolean, optional) indicates if the block is in legacy foramt. default: automatically calculated.\n"
             "\nResult:\n"
             "\nExamples:\n"
             + HelpExampleCli("submitblock", "\"mydata\"")
@@ -877,20 +871,20 @@ UniValue submitblock(const JSONRPCRequest& request)
         );
     }
     
-    int block_format;
+    bool legacy_format;
     
     {
         LOCK(cs_main);
         CBlockIndex* currentchain = chainActive.Tip();
-        block_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0;
+        legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
     }
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
-    if (request.params.size() == 3 && request.params[2].get_int() >= 0 && request.params[2].get_int() <= 2) {
-        block_format = request.params[2].get_int();
+    if (request.params.size() == 3) {
+        legacy_format = request.params[2].get_bool();
     }
-    if (!DecodeHexBlk(block, request.params[0].get_str(), block_format)) {
+    if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
 
