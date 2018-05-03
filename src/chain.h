@@ -435,7 +435,7 @@ public:
            READWRITE(nAlgo); 
         }
         READWRITE(this->nVersion);
-        READWRITE(hashPrevBlock);
+        READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
         if (new_format && nAlgo == ALGO_EQUIHASH) {
             for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
