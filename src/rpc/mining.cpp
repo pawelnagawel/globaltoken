@@ -546,14 +546,14 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            int legacy_format = 0;
+            int block_format = 0;
             if(strMode == "proposal_legacy")
-                legacy_format = 0;
+                block_format = 0;
             if(strMode == "proposal")
-                legacy_format = 1;
+                block_format = 1;
             if(strMode == "proposal_equihash")
-                legacy_format = 2;
-            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format))
+                block_format = 2;
+            if (!DecodeHexBlk(block, dataval.get_str(), block_format))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -877,18 +877,20 @@ UniValue submitblock(const JSONRPCRequest& request)
         );
     }
     
+    int block_format;
+    
     {
         LOCK(cs_main);
         CBlockIndex* currentchain = chainActive.Tip();
-        int legacy_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0;
+        block_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0;
     }
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
     if (request.params.size() == 3 && request.params[2].get_int() >= 0 && request.params[2].get_int() <= 2) {
-        legacy_format = request.params[2].get_int();
+        block_format = request.params[2].get_int();
     }
-    if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format)) {
+    if (!DecodeHexBlk(block, request.params[0].get_str(), block_format)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
 
