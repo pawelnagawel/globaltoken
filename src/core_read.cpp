@@ -149,7 +149,6 @@ bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyForma
         return false;
 
     std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-	int ser_flags = 0;
     int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
     try {
