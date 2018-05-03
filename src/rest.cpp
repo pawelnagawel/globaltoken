@@ -140,7 +140,7 @@ static bool rest_headers(HTTPRequest* req,
         headerCount = path[0];
         hashStr = path[1];
     }
-    else (path.size() == 3) {
+    else if(path.size() == 3) {
         headerCount = path[1];
         hashStr = path[2];
         legacy_format = 0;
@@ -234,7 +234,7 @@ static bool rest_block(HTTPRequest* req,
     if (path.size() == 1) {          
         hashStr = path[0];
     }
-    else (path.size() == 2){
+    else if (path.size() == 2){
         legacy_format = 0;  //use old rule if URI=/legacy/equihash/<BLOCK-HASH>
         hashStr = path[1];
     }
