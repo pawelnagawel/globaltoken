@@ -218,6 +218,12 @@ AC_ARG_ENABLE([sse4],
     [enable SSE4.1 instructions in the yescrypt library. (default is disabled)])],
     [use_sse4_1=$enableval],
     [use_sse4_1=no])
+    
+AC_ARG_ENABLE([openmp],
+    [AS_HELP_STRING([--enable-openmp],
+    [enable OpenMP while linking. (default is disabled)])],
+    [use_openmp=$enableval],
+    [use_openmp=no])
   
 AC_ARG_WITH([protoc-bindir],[AS_HELP_STRING([--with-protoc-bindir=BIN_DIR],[specify protoc bin path])], [protoc_bin_path=$withval], [])
 
@@ -1113,14 +1119,6 @@ else
 	NEOSCRYPT_FLAGS="$NEOSCRYPT_FLAGS -DSHA256 -DOPT"
 fi
 
-if test x$TARGET_OS = xdarwin; then
-  YESCRYPT_LDFLAGS=""
-  YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS"
-else
-  YESCRYPT_LDFLAGS="-fopenmp"
-  YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -fopenmp"
-fi
-
 AC_MSG_CHECKING([whether to build globaltokend])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
@@ -1263,6 +1261,15 @@ if test x$use_sse4_1 != xno; then
   AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -msse4.1"]],,[[$CXXFLAG_WERROR]])
   AC_DEFINE([USE_SSE4_1],[1],[Define if SSE4.1 support should be compiled in])
   use_sse4_1=yes
+else
+  AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to enable OpenMP])
+if test x$use_openmp != xno; then
+  AC_MSG_RESULT(yes)
+  AX_CHECK_LINK_FLAG([[-fopenmp]],[YESCRYPT_LDFLAGS="$YESCRYPT_LDFLAGS -fopenmp"])
+  use_openmp=yes
 else
   AC_MSG_RESULT(no)
 fi

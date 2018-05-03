@@ -16,6 +16,7 @@ namespace Consensus {
 };
 
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
+static const int SERIALIZE_BLOCK_EQUIHASH = 0x00400000;
 
 enum : uint8_t { 
     ALGO_SHA256D   = 0,
@@ -43,7 +44,7 @@ std::string GetAlgoName(uint8_t Algo);
 class CBlockHeader
 {
 public:
-	static const size_t HEADER_SIZE = 4+32+32+4+4+4;  // Excluding Equihash solution
+	static const size_t HEADER_SIZE = 4+32+32+32+4+4+1+32;  // Excluding Equihash solution
     // header
     int32_t nVersion;
     uint256 hashPrevBlock;
@@ -66,23 +67,29 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
+        bool equihash_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY & SERIALIZE_BLOCK_EQUIHASH);
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        if (new_format) {
+        if (equihash_format) {
             for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
                 READWRITE(nReserved[i]);
             }
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format) {
+        if (new_format)
+        {
             READWRITE(nNonce);
+            READWRITE(nAlgo);
+        }
+        if (equihash_format)
+        {
             READWRITE(nAlgo);
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        else
+        if(!new_format && !equihash_format)
         {
             READWRITE(nNonce);
         }
@@ -206,7 +213,6 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nNonce);
         READWRITE(nAlgo);
     }
 };

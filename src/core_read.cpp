@@ -143,13 +143,22 @@ bool DecodeHexTx(CMutableTransaction& tx, const std::string& hex_tx, bool try_no
     return false;
 }
 
-bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyFormat)
+bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, int nBlockformat)
 {
     if (!IsHex(strHexBlk))
         return false;
 
     std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-	int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
+	int ser_flags = 0;
+    switch(nBlockformat)
+    {
+        case 0:
+            ser_flags = SERIALIZE_BLOCK_LEGACY;
+        case 1:
+            ser_flags = 0;
+        case 2:
+            ser_flags = SERIALIZE_BLOCK_LEGACY | SERIALIZE_BLOCK_EQUIHASH;
+    }
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
     try {
         ssBlock >> block;

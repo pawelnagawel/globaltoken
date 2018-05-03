@@ -429,18 +429,33 @@ public:
             READWRITE(VARINT(nUndoPos));
 
         // block header
+        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
+        bool equihash_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY & SERIALIZE_BLOCK_EQUIHASH);
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-		for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
-            READWRITE(nReserved[i]);
-		}
+        if (equihash_format) {
+            for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
+                READWRITE(nReserved[i]);
+            }
+        }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nNonce);
-        READWRITE(nAlgo);
-        READWRITE(nBigNonce);
-		READWRITE(nSolution);
+        if (new_format)
+        {
+            READWRITE(nNonce);
+            READWRITE(nAlgo);
+        }
+        if (equihash_format)
+        {
+            READWRITE(nBigNonce);
+            READWRITE(nAlgo);
+            READWRITE(nSolution);
+        }
+        if(!new_format && !equihash_format)
+        {
+            READWRITE(nNonce);
+        }
     }
 
     uint256 GetBlockHash() const

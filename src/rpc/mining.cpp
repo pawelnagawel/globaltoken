@@ -456,7 +456,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. template_request         (json object, optional) A json object in the following spec\n"
             "     {\n"
-            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\", or omitted\n"
+            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\", \"proposal_equihash\",or omitted\n"
             "       \"capabilities\":[     (array, optional) A list of strings\n"
             "           \"support\"          (string) client side supported feature, 'longpoll', 'coinbasetxn', 'coinbasevalue', 'proposal', 'serverlist', 'workid'\n"
             "           ,...\n"
@@ -546,7 +546,13 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            bool legacy_format = (strMode == "proposal_legacy");
+            int legacy_format = 0;
+            if(strMode == "proposal_legacy")
+                legacy_format = 0;
+            if(strMode == "proposal")
+                legacy_format = 1;
+            if(strMode == "proposal_equihash")
+                legacy_format = 2;
             if (!DecodeHexBlk(block, dataval.get_str(), legacy_format))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
@@ -856,26 +862,31 @@ UniValue submitblock(const JSONRPCRequest& request)
     // We allow 2 arguments for compliance with BIP22. Argument 2 is ignored.
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3) {
         throw std::runtime_error(
-            "submitblock \"hexdata\"  ( \"dummy\" )\n"
+            "submitblock \"hexdata\"  ( \"dummy\" ) \"blockformat\"\n"
             "\nAttempts to submit new block to network.\n"
             "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n"
 
             "\nArguments\n"
             "1. \"hexdata\"        (string, required) the hex-encoded block data to submit\n"
             "2. \"dummy\"          (optional) dummy value, for compatibility with BIP22. This value is ignored.\n"
-			"3. \"legacy\"         (boolean, optional) indicates if the block is in legacy format. default: false.\n"
+			"3. \"blockformat\"    (numeric, optional) indicates block format. (0 = legacy, 1 = newformat, 2 = equihash) default: automatically (1 or 0, equihash not automatically choosed.)\n"
             "\nResult:\n"
             "\nExamples:\n"
             + HelpExampleCli("submitblock", "\"mydata\"")
             + HelpExampleRpc("submitblock", "\"mydata\"")
         );
     }
+    
+    {
+        LOCK(cs_main);
+        CBlockIndex* currentchain = chainActive.Tip();
+        int legacy_format = IsHardForkActivated(currentchain->nTime) ? 1 : 0;
+    }
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
-	bool legacy_format = false;
-    if (request.params.size() == 3 && request.params[2].get_bool() == true) {
-        legacy_format = true;
+    if (request.params.size() == 3 && request.params[2].get_int() >= 0 && request.params[2].get_int() <= 2) {
+        legacy_format = request.params[2].get_int();
     }
     if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
