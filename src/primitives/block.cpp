@@ -106,10 +106,10 @@ uint256 CEquihashBlockHeader::GetHash() const
     return GetHash(consensusParams);
 }
 #else
-uint256 CEquihashBlockHeader::GetHash(const Consensus::Params& params) const
+uint256 CEquihashBlockHeader::GetHash() const
 {
     int version;
-    if (IsHardForkActivated(nTime, params)) {
+    if (IsHardForkActivated(nTime)) {
         version = PROTOCOL_VERSION;
     } else {
         version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
@@ -134,16 +134,16 @@ uint256 CBlockHeader::GetPoWHash() const
     if(algo == ALGO_EQUIHASH)
     {
         CEquihashBlockHeader block;
-        block = ::GetEquihashBlockHeader();
+        block = CBlockHeader::GetEquihashBlockHeader();
         return block.GetHash();
     }
     else
     {
         CDefaultBlockHeader block;
-        block = ::GetDefaultBlockHeader();
+        block = CBlockHeader::GetDefaultBlockHeader();
         return block.GetPoWHash(algo);
     }
-    return ::GetHash();
+    return CBlockHeader::GetHash();
 }
 
 uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
@@ -201,7 +201,7 @@ std::string CBlock::ToString() const
         nVersion,
         GetAlgo(),
         GetAlgoName(GetAlgo()),
-        GetPoWHash(GetAlgo()).ToString(),
+        GetPoWHash().ToString(),
         hashPrevBlock.ToString(),
         hashMerkleRoot.ToString(),
         nTime, nBits, nNonce, nBigNonce.GetHex(),
@@ -235,7 +235,7 @@ std::string GetAlgoName(uint8_t Algo)
         case ALGO_NIST5:
             return std::string("nist5");
     }
-return std::string("unknown");       
+    return std::string("unknown");       
 }
 
 std::string CDefaultBlock::ToString() const
