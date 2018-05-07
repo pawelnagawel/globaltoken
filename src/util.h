@@ -59,7 +59,7 @@ extern CTranslationInterface translationInterface;
 extern const char * const BITCOIN_CONF_FILENAME;
 extern const char * const BITCOIN_PID_FILENAME;
 
-extern int currentAlgo;
+extern uint8_t currentAlgo;
 extern std::atomic<uint32_t> logCategories;
 
 /**

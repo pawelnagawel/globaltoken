@@ -357,7 +357,7 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
     obj.pushKV("localalgo",             GetAlgoName(currentAlgo));
     obj.pushKV("localalgoid",           currentAlgo);
 
-    for(int i = 0; i < NUM_ALGOS; i++)
+    for(uint8_t i = 0; i < (uint8_t)NUM_ALGOS; i++)
     {
 	    UniValue algo_description(UniValue::VOBJ);
         const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);

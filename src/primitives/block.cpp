@@ -53,7 +53,7 @@ uint256 CBlockHeader::GetHash() const
     return writer.GetHash();
 }
 #endif
-int CBlockHeader::GetAlgo() const
+uint8_t CBlockHeader::GetAlgo() const
 {
 	if (IsHardForkActivated(nTime)) 
 	{

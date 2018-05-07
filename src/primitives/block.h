@@ -121,7 +121,7 @@ public:
         nAlgo = algo;
     }
 	
-    int GetAlgo() const;
+    uint8_t GetAlgo() const;
 
     uint256 GetHash() const;
 	uint256 GetHash(const Consensus::Params& params) const;

@@ -1113,7 +1113,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     bool hardfork = IsHardForkActivated(block.nTime);
 	if(hardfork)
 	{
-		int nAlgo = block.GetAlgo();
+		uint8_t nAlgo = block.GetAlgo();
 		if(nAlgo == ALGO_EQUIHASH)
 		{
 			// Check Equihash solution
@@ -2212,7 +2212,7 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
             DoWarning(strWarning);
         }
     }
-    LogPrintf("%s: new best=%s height=%d version=0x%08x algo=%d (%s) log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)", __func__,
+    LogPrintf("%s: new best=%s height=%d version=0x%08x algo=%u (%s) log2_work=%.8g tx=%lu date='%s' progress=%f cache=%.1fMiB(%utxo)", __func__,
       pindexNew->GetBlockHash().ToString(), pindexNew->nHeight, pindexNew->nVersion,
 	  pindexNew->GetAlgo(), GetAlgoName(pindexNew->GetAlgo()),
       log(pindexNew->nChainWork.getdouble())/log(2.0), (unsigned long)pindexNew->nChainTx,
@@ -2988,7 +2988,7 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     bool hardfork = IsHardForkActivated(block.nTime);
 	if(hardfork)
 	{
-		int nAlgo = block.GetAlgo();
+		uint8_t nAlgo = block.GetAlgo();
 		if(nAlgo == ALGO_EQUIHASH)
 		{
 			// Check Equihash solution is valid
