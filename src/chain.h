@@ -314,8 +314,7 @@ public:
 	uint256 GetBlockPoWHash() const
     {
         CBlockHeader block = GetBlockHeader();
-        uint8_t algo = block.GetAlgo();
-        return block.GetPoWHash(algo);
+        return block.GetPoWHash();
     }
 
     uint8_t GetAlgo() const

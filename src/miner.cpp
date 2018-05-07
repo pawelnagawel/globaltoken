@@ -129,26 +129,26 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     nHeight = pindexPrev->nHeight + 1;
     
     uint8_t nBlockAlgo = algo;
+    int32_t currenttime = GetAdjustedTime();
 	
-    if (!IsHardForkActivated(pindexPrev->nTime))
+    if (!IsHardForkActivated(currenttime))
     {
         nBlockAlgo = ALGO_SHA256D;
     }
-
-    pblock->SetAlgo(nBlockAlgo);
-    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
-	
-	if (!IsHardForkActivated(pindexPrev->nTime) && algo != ALGO_SHA256D) {
-        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pindexPrev->nTime, chainparams.GetConsensus().HardforkTime);
+    
+    if (!IsHardForkActivated(currenttime) && algo != ALGO_SHA256D) {
+        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pblock->nTime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
+    pblock->SetAlgo(nBlockAlgo);
+    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
 	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
         pblock->nVersion = gArgs.GetArg("-blockversion", pblock->nVersion);
 
-    pblock->nTime = GetAdjustedTime();
+    pblock->nTime = currenttime;
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
 
     nLockTimeCutoff = (STANDARD_LOCKTIME_VERIFY_FLAGS & LOCKTIME_MEDIAN_TIME_PAST)
@@ -187,7 +187,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
    arith_uint256 nonce;
-   if (IsHardForkActivated(pindexPrev->nTime) && algo == ALGO_EQUIHASH) {
+   if (IsHardForkActivated(pblock->nTime) && algo == ALGO_EQUIHASH) {
 	 // Randomise nonce for new block foramt.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)

@@ -53,6 +53,72 @@ uint256 CBlockHeader::GetHash() const
     return writer.GetHash();
 }
 #endif
+#ifndef NO_GLOBALTOKEN_HARDFORK
+uint256 CDefaultBlockHeader::GetHash(const Consensus::Params& params) const
+{
+    int version;
+    if (IsHardForkActivated(nTime, params)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
+}
+
+uint256 CDefaultBlockHeader::GetHash() const
+{
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    return GetHash(consensusParams);
+}
+#else
+uint256 CDefaultBlockHeader::GetHash() const
+{
+    int version;
+    if (IsHardForkActivated(nTime)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
+}
+#endif
+#ifndef NO_GLOBALTOKEN_HARDFORK
+uint256 CEquihashBlockHeader::GetHash(const Consensus::Params& params) const
+{
+    int version;
+    if (IsHardForkActivated(nTime, params)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
+}
+
+uint256 CEquihashBlockHeader::GetHash() const
+{
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    return GetHash(consensusParams);
+}
+#else
+uint256 CEquihashBlockHeader::GetHash(const Consensus::Params& params) const
+{
+    int version;
+    if (IsHardForkActivated(nTime, params)) {
+        version = PROTOCOL_VERSION;
+    } else {
+        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
+    }
+    CHashWriter writer(SER_GETHASH, version);
+    ::Serialize(writer, *this);
+    return writer.GetHash();
+}
+#endif
 uint8_t CBlockHeader::GetAlgo() const
 {
 	if (IsHardForkActivated(nTime)) 
@@ -62,7 +128,25 @@ uint8_t CBlockHeader::GetAlgo() const
 	return ALGO_SHA256D;
 }
 
-uint256 CBlockHeader::GetPoWHash(uint8_t algo) const
+uint256 CBlockHeader::GetPoWHash() const
+{
+    uint8_t algo = GetAlgo();
+    if(algo == ALGO_EQUIHASH)
+    {
+        CEquihashBlockHeader block;
+        block = ::GetEquihashBlockHeader();
+        return block.GetHash();
+    }
+    else
+    {
+        CDefaultBlockHeader block;
+        block = ::GetDefaultBlockHeader();
+        return block.GetPoWHash(algo);
+    }
+    return ::GetHash();
+}
+
+uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
 {
     switch (algo)
     {
@@ -97,14 +181,14 @@ uint256 CBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return HMQ1725(BEGIN(nVersion), END(nNonce));
         }
-	case ALGO_XEVAN:
-	{
-	    return XEVAN(BEGIN(nVersion), END(nNonce));	    
-	}
-	case ALGO_NIST5:
-	{
-	    return NIST5(BEGIN(nVersion), END(nNonce));	    
-	}
+        case ALGO_XEVAN:
+        {
+            return XEVAN(BEGIN(nVersion), END(nNonce));	    
+        }
+        case ALGO_NIST5:
+        {
+            return NIST5(BEGIN(nVersion), END(nNonce));	    
+        }
     }
     return GetHash();
 }
@@ -144,12 +228,44 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("yescrypt");
         case ALGO_EQUIHASH:
             return std::string("equihash");
-	case ALGO_HMQ1725:
+        case ALGO_HMQ1725:
             return std::string("hmq1725");
-	case ALGO_XEVAN:
+        case ALGO_XEVAN:
             return std::string("xevan");
-	case ALGO_NIST5:
+        case ALGO_NIST5:
             return std::string("nist5");
     }
-    return std::string("unknown");       
+return std::string("unknown");       
+}
+
+std::string CDefaultBlock::ToString() const
+{
+    std::stringstream s;
+    s << strprintf("CDefaultBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u)\n",
+        GetHash().ToString(),
+        nVersion,
+        hashPrevBlock.ToString(),
+        hashMerkleRoot.ToString(),
+        nTime, nBits, nNonce,
+        vtx.size());
+    for (const auto& tx : vtx) {
+        s << "  " << tx->ToString() << "\n";
+    }
+    return s.str();
+}
+
+std::string CEquihashBlock::ToString() const
+{
+    std::stringstream s;
+    s << strprintf("CEquihashBlock(hash=%s, ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%s, vtx=%u)\n",
+        GetHash().ToString(),
+        nVersion,
+        hashPrevBlock.ToString(),
+        hashMerkleRoot.ToString(),
+        nTime, nBits, nNonce.GetHex(),
+        vtx.size());
+    for (const auto& tx : vtx) {
+        s << "  " << tx->ToString() << "\n";
+    }
+    return s.str();
 }

@@ -32,7 +32,6 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, uint8_t algo);
 const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
 const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
-const CBlockIndex* GetAlgo();
 
 /** Calculations */
 int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, uint8_t algo, const Consensus::Params&);

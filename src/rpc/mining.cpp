@@ -174,7 +174,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 						pblock->nSolution = soln;
 						// TODO(h4x3rotab): Add metrics counter like Zcash? `solutionTargetChecks.increment();`
 						// TODO(h4x3rotab): Maybe switch to EhBasicSolve and better deal with `nMaxTries`?
-						return CheckProofOfWork(pblock->GetHash(), pblock->nBits, Params().GetConsensus(), currentAlgo);
+						return CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
 					--nMaxTries;
@@ -188,7 +188,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 			{
 				nInnerLoopMask = nInnerLoopGlobalTokenMask;
 				nInnerLoopCount = nInnerLoopGlobalTokenCount;
-				while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
+				while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
 					++pblock->nNonce;
 					--nMaxTries;
 				}
@@ -198,7 +198,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 		{
 			nInnerLoopMask = nInnerLoopGlobalTokenMask;
 			nInnerLoopCount = nInnerLoopGlobalTokenCount;
-			while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(ALGO_SHA256D), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
+			while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
 				++pblock->nNonce;
 				--nMaxTries;
 			}

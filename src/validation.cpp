@@ -1123,20 +1123,20 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
 			
 			// Check the header
 			// Also check the Block Header after Equihash solution check.
-			if (!CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams, nAlgo))
+			if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, nAlgo))
 				return error("ReadBlockFromDisk: Errors in block header at %s (Algo: %s)", pos.ToString(), GetAlgoName(nAlgo));
 		}
 		else
 		{
 			// Check the header
-			if (!CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams, nAlgo))
+			if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, nAlgo))
 				return error("ReadBlockFromDisk: Errors in block header at %s (Algo: %s)", pos.ToString(), GetAlgoName(nAlgo));
 		}
 	}
 	else
 	{
 		// Check the header
-		if (!CheckProofOfWork(block.GetPoWHash(ALGO_SHA256D), block.nBits, consensusParams, ALGO_SHA256D))
+		if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, ALGO_SHA256D))
 			return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 	}
 
@@ -3000,21 +3000,21 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
 			
 			// Check proof of work matches claimed amount
 			// Also check the block POW after Equihash Solution check.
-			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams, nAlgo))
+			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, nAlgo))
 				return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 			
 		}
 		else
 		{
 			// Check proof of work matches claimed amount	
-			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(nAlgo), block.nBits, consensusParams, nAlgo))
+			if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, nAlgo))
 				return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 		}
 	}
 	else
 	{
 		// Check proof of work matches claimed amount	
-		if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(ALGO_SHA256D), block.nBits, consensusParams, ALGO_SHA256D))
+		if (fCheckPOW && !CheckProofOfWork(block.GetPoWHash(), block.nBits, consensusParams, ALGO_SHA256D))
 			return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 	}
 
