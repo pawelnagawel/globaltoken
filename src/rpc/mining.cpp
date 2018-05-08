@@ -547,7 +547,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
             CBlock block;
             bool legacy_format = (strMode == "proposal_legacy");
-            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format))
+            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format, currentAlgo))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -884,7 +884,7 @@ UniValue submitblock(const JSONRPCRequest& request)
     if (request.params.size() == 3) {
         legacy_format = request.params[2].get_bool();
     }
-    if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format)) {
+    if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format, currentAlgo)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
 

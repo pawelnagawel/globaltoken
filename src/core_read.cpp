@@ -5,6 +5,7 @@
 #include <core_io.h>
 
 #include <primitives/block.h>
+#include <primitives/mining_block.h>
 #include <primitives/transaction.h>
 #include <script/script.h>
 #include <serialize.h>
@@ -143,21 +144,41 @@ bool DecodeHexTx(CMutableTransaction& tx, const std::string& hex_tx, bool try_no
     return false;
 }
 
-bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyFormat)
+bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyFormat, uint8_t nAlgo)
 {
     if (!IsHex(strHexBlk))
         return false;
-
-    std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-    int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
-    CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
-    try {
-        ssBlock >> block;
+    
+    if(nAlgo == ALGO_EQUIHASH)
+    {
+        CEquihashBlock equihashblock;
+        std::vector<unsigned char> blockData(ParseHex(strHexBlk));
+        int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
+        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+        try {
+            ssBlock >> equihashblock;
+        }
+        catch (const std::exception&) {
+            return false;
+        }
+        block = equihashblock.GetBlock();
+        block.SetAlgo(nAlgo);
     }
-    catch (const std::exception&) {
-        return false;
+    else
+    {
+        CDefaultBlock defaultblock;
+        std::vector<unsigned char> blockData(ParseHex(strHexBlk));
+        int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
+        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+        try {
+            ssBlock >> defaultblock;
+        }
+        catch (const std::exception&) {
+            return false;
+        }
+        block = defaultblock.GetBlock();
+        block.SetAlgo(nAlgo);
     }
-
     return true;
 }
 
