@@ -133,20 +133,6 @@ public:
     {
         return ReadLE64(data);
     }
-
-	// convert the contents of two arrays x1 and x2 to 256
-	uint256 convert32To256(uint32_t *x1, uint32_t *x2, int size) const
-    {
-        uint256 ret;
-		int x = 0;
-        for (x = 0; x < size; x++) {
-            ret.data[x] = x1[x];
-        }
-		for (; x < size*2; x++) {
-			ret.data[x] = x2[x];
-		}
-        return ret;
-    }
 };
 
 /* uint256 from const char *.

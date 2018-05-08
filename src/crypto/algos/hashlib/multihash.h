@@ -11,7 +11,6 @@
 #define MULTIHASH_H
 
 #include <uint256.h>
-#include <arith_uint256.h>
 #include <crypto/algos/hashlib/sph_blake.h>
 #include <crypto/algos/hashlib/sph_bmw.h>
 #include <crypto/algos/hashlib/sph_groestl.h>
@@ -289,9 +288,8 @@ inline uint256 HMQ1725(const T1 pbegin, const T1 pend)
     sph_bmw512_close(&ctx_bmw, hashA); // 24
 
     uint256 hash;
-
-    hash.convert32To256(hashA, hashB, 16);
-
+    memcpy((void*)&hash, (void*)static_cast<void*>(&hashA), 32);
+    
     return hash;
 }
 
