@@ -14,10 +14,6 @@
 
 class CBlock;
 
-namespace Consensus {
-    struct Params;
-};
-
 /** 2 Different Block classes for Equihash & normal blocks.
  */
 class CDefaultBlockHeader
@@ -64,7 +60,6 @@ public:
     }
     
     uint256 GetHash() const;
-	uint256 GetHash(const Consensus::Params& params) const;
 	
     uint256 GetPoWHash(uint8_t algo) const;
 
@@ -178,7 +173,6 @@ public:
     }
 
     uint256 GetHash() const;
-    uint256 GetHash(const Consensus::Params& params) const;
 
     int64_t GetBlockTime() const
     {
