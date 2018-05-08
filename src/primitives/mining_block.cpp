@@ -7,11 +7,6 @@
 #include <primitives/mining_block.h>
 #include <primitives/block.h>
 
-#ifndef NO_GLOBALTOKEN_HARDFORK
-#include <globaltoken/hardfork.h>
-#else
-#define IsHardForkActivated(nTime) (((nTime) >= (1527811200)) ? true : false)
-#endif
 #include <hash.h>
 #include <tinyformat.h>
 #include <utilstrencodings.h>
@@ -22,71 +17,15 @@
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
 
-#ifndef NO_GLOBALTOKEN_HARDFORK
-uint256 CDefaultBlockHeader::GetHash(const Consensus::Params& params) const
-{
-    int version;
-    if (IsHardForkActivated(nTime, params)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-
 uint256 CDefaultBlockHeader::GetHash() const
 {
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    return GetHash(consensusParams);
-}
-
-uint256 CEquihashBlockHeader::GetHash(const Consensus::Params& params) const
-{
-    int version;
-    if (IsHardForkActivated(nTime, params)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
+    return SerializeHash(*this);
 }
 
 uint256 CEquihashBlockHeader::GetHash() const
 {
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    return GetHash(consensusParams);
+    return SerializeHash(*this);
 }
-#else
-uint256 CDefaultBlockHeader::GetHash() const
-{
-    int version;
-    if (IsHardForkActivated(nTime)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-
-uint256 CEquihashBlockHeader::GetHash() const
-{
-    int version;
-    if (IsHardForkActivated(nTime)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-#endif
 
 uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
 {
