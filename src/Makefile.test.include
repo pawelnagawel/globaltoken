@@ -109,7 +109,7 @@ test_test_globaltoken_LDADD += $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCO
 test_test_globaltoken_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 test_test_globaltoken_LDADD += $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_ALGOS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS)
-test_test_globaltoken_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static $(YESCRYPT_LDFLAGS)
+test_test_globaltoken_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(YESCRYPT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) -static
 
 if ENABLE_ZMQ
 test_test_globaltoken_LDADD += $(ZMQ_LIBS)
