@@ -19,7 +19,7 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-    if(IsHardForkActivated(pindexLast->nTime))
+    if(IsHardForkActivated(pblock->nTime))
        return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
     else
        return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);

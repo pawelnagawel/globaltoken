@@ -129,14 +129,14 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     nHeight = pindexPrev->nHeight + 1;
     
     uint8_t nBlockAlgo = algo;
-    int32_t currenttime = GetAdjustedTime();
+    int64_t currenttime = GetAdjustedTime();
 	
-    if (!IsHardForkActivated(currenttime))
+    if (!IsHardForkActivated((uint32_t)currenttime))
     {
         nBlockAlgo = ALGO_SHA256D;
     }
     
-    if (!IsHardForkActivated(currenttime) && algo != ALGO_SHA256D) {
+    if (!IsHardForkActivated((uint32_t)currenttime) && algo != ALGO_SHA256D) {
         error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pblock->nTime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }

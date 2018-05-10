@@ -23,6 +23,7 @@
 #include <rpc/blockchain.h>
 #include <rpc/mining.h>
 #include <rpc/server.h>
+#include <timedata.h>
 #include <txmempool.h>
 #include <util.h>
 #include <utilstrencodings.h>
@@ -236,7 +237,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
             "2. address      (string, required) The address to send the newly generated globaltoken to.\n"
-            "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000).\n"
+            "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000 or 50000 for scrypt, neoscrypt and yescrypt).\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
             "\nExamples:\n"
@@ -245,7 +246,11 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
         );
 
     int nGenerate = request.params[0].get_int();
-    uint64_t nMaxTries = 1000000;
+    uint64_t nMaxTries;
+    if(currentAlgo == ALGO_NEOSCRYPT || ALGO_YESCRYPT || ALGO_SCRYPT)
+        nMaxTries = 50000;
+    else
+        nMaxTries = 1000000;
     if (!request.params[2].isNull()) {
         nMaxTries = request.params[2].get_int();
     }
@@ -809,8 +814,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
     result.pushKV("mutable", aMutable);
     result.pushKV("noncerange", "00000000ffffffff");
-    int64_t nSigOpLimit = MaxBlockSigOps(IsHardForkActivated(pindexPrev->nTime));
-    int64_t nSizeLimit = MaxBlockSerializedSize(IsHardForkActivated(pindexPrev->nTime));
+    int64_t nSigOpLimit = MaxBlockSigOps(IsHardForkActivated(pblock->nTime));
+    int64_t nSizeLimit = MaxBlockSerializedSize(IsHardForkActivated(pblock->nTime));
     if (fPreSegWit) {
         assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
         nSigOpLimit /= WITNESS_SCALE_FACTOR;
@@ -820,7 +825,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("sigoplimit", nSigOpLimit);
     result.pushKV("sizelimit", nSizeLimit);
     if (!fPreSegWit) {
-        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(IsHardForkActivated(pindexPrev->nTime)));
+        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(IsHardForkActivated(pblock->nTime)));
     }
     result.pushKV("curtime", pblock->GetBlockTime());
     result.pushKV("bits", strprintf("%08x", pblock->nBits));
@@ -871,13 +876,7 @@ UniValue submitblock(const JSONRPCRequest& request)
         );
     }
     
-    bool legacy_format;
-    
-    {
-        LOCK(cs_main);
-        CBlockIndex* currentchain = chainActive.Tip();
-        legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
-    }
+    bool legacy_format = IsHardForkActivated((uint32_t)GetAdjustedTime()) ? false : true;
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
