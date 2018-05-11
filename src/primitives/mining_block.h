@@ -125,6 +125,7 @@ class CEquihashBlockHeader
 {
 public:
     // header
+    static const size_t HEADER_SIZE=4+32+32+32+4+4+32; // excluding Equihash solution
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -232,6 +233,34 @@ public:
 
     CBlock GetBlock() const;
     std::string ToString() const;
+};
+
+/**
+ * Custom serializer for CBlockHeader that omits the bignonce and solution, for use
+ * as input to Equihash.
+ */
+class CEquihashInput : private CEquihashBlockHeader
+{
+public:
+    CEquihashInput(const CEquihashBlockHeader &header)
+    {
+        CEquihashBlockHeader::SetNull();
+        *((CEquihashBlockHeader*)this) = header;
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(this->nVersion);
+        READWRITE(hashPrevBlock);
+        READWRITE(hashMerkleRoot);
+        for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
+            READWRITE(nReserved[i]);
+        }
+        READWRITE(nTime);
+        READWRITE(nBits);
+    }
 };
 
 #endif // GLOBALTOKEN_MINING_BLOCK_H

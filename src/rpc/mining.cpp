@@ -20,10 +20,10 @@
 #include <net.h>
 #include <policy/fees.h>
 #include <pow.h>
+#include <primitives/mining_block.h>
 #include <rpc/blockchain.h>
 #include <rpc/mining.h>
 #include <rpc/server.h>
-#include <timedata.h>
 #include <txmempool.h>
 #include <util.h>
 #include <utilstrencodings.h>
@@ -142,6 +142,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 		{
 			if(currentAlgo == ALGO_EQUIHASH)
 			{
+                CEquihashBlockHeader equihashblock = pblock->GetEquihashBlockHeader();
 				nInnerLoopMask = nInnerLoopEquihashMask;
 				nInnerLoopCount = nInnerLoopEquihashCount;
 				// Solve Equihash.
@@ -149,7 +150,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 				EhInitialiseState(n, k, eh_state);
 
 				// I = the block header minus nonce and solution.
-				CEquihashInput I{*pblock};
+				CEquihashInput I{equihashblock};
 				CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
 				ss << I;
 
@@ -157,25 +158,25 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 				crypto_generichash_blake2b_update(&eh_state, (unsigned char*)&ss[0], ss.size());
 
 				while (nMaxTries > 0 &&
-					   ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopEquihashMask) < nInnerLoopCount) {
+					   ((int)equihashblock.nNonce.GetUint64(0) & nInnerLoopEquihashMask) < nInnerLoopCount) {
 					// Yes, there is a chance every nonce could fail to satisfy the -regtest
 					// target -- 1 in 2^(2^256). That ain't gonna happen
-					pblock->nBigNonce = ArithToUint256(UintToArith256(pblock->nBigNonce) + 1);
+					equihashblock.nNonce = ArithToUint256(UintToArith256(equihashblock.nNonce) + 1);
 
 					// H(I||V||...
 					crypto_generichash_blake2b_state curr_state;
 					curr_state = eh_state;
 					crypto_generichash_blake2b_update(&curr_state,
-													  pblock->nBigNonce.begin(),
-													  pblock->nBigNonce.size());
+													  equihashblock.nNonce.begin(),
+													  equihashblock.nNonce.size());
 
 					// (x_1, x_2, ...) = A(I, V, n, k)
 					std::function<bool(std::vector<unsigned char>)> validBlock =
-							[&pblock](std::vector<unsigned char> soln) {
-						pblock->nSolution = soln;
+							[&equihashblock](std::vector<unsigned char> soln) {
+						equihashblock.nSolution = soln;
 						// TODO(h4x3rotab): Add metrics counter like Zcash? `solutionTargetChecks.increment();`
 						// TODO(h4x3rotab): Maybe switch to EhBasicSolve and better deal with `nMaxTries`?
-						return CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), currentAlgo);
+						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
 					--nMaxTries;
@@ -184,25 +185,40 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 						break;
 					}
 				}
+                
+                // If Block is found convert CEquihashBlockHeader calculated stuff to pblock
+                
+                pblock->nBigNonce = equihashblock.nNonce;
+                pblock->nSolution = equihashblock.nSolution;
 			}
 			else
 			{
+                CDefaultBlockHeader defaultblockheader = pblock->GetDefaultBlockHeader();
 				nInnerLoopMask = nInnerLoopGlobalTokenMask;
 				nInnerLoopCount = nInnerLoopGlobalTokenCount;
-				while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), currentAlgo)) {
-					++pblock->nNonce;
+				while (nMaxTries > 0 && defaultblockheader.nNonce < nInnerLoopCount && !CheckProofOfWork(defaultblockheader.GetPoWHash(currentAlgo), defaultblockheader.nBits, Params().GetConsensus(), currentAlgo)) {
+					++defaultblockheader.nNonce;
 					--nMaxTries;
 				}
+                
+                // If Block is found convert CDefaultBlockHeader calculated stuff to pblock
+                
+                pblock->nNonce = defaultblockheader.nNonce;
 			}
 		}
 		else
 		{
+            CDefaultBlockHeader defaultblockheader = pblock->GetDefaultBlockHeader();
 			nInnerLoopMask = nInnerLoopGlobalTokenMask;
 			nInnerLoopCount = nInnerLoopGlobalTokenCount;
-			while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetPoWHash(), pblock->nBits, Params().GetConsensus(), ALGO_SHA256D)) {
-				++pblock->nNonce;
+			while (nMaxTries > 0 && defaultblockheader.nNonce < nInnerLoopCount && !CheckProofOfWork(defaultblockheader.GetPoWHash(ALGO_SHA256D), defaultblockheader.nBits, Params().GetConsensus(), ALGO_SHA256D)) {
+				++defaultblockheader.nNonce;
 				--nMaxTries;
 			}
+            
+            // If Block is found convert CDefaultBlockHeader calculated stuff to pblock
+                
+            pblock->nNonce = defaultblockheader.nNonce;
 		}
         if (nMaxTries == 0) {
             break;
@@ -461,7 +477,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. template_request         (json object, optional) A json object in the following spec\n"
             "     {\n"
-            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23), \"proposal_legacy\",or omitted\n"
+            "       \"mode\":\"template\"    (string, optional) This must be set to \"template\", \"proposal\" (see BIP 23),or omitted\n"
             "       \"capabilities\":[     (array, optional) A list of strings\n"
             "           \"support\"          (string) client side supported feature, 'longpoll', 'coinbasetxn', 'coinbasevalue', 'proposal', 'serverlist', 'workid'\n"
             "           ,...\n"
@@ -551,8 +567,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            bool legacy_format = (strMode == "proposal_legacy");
-            if (!DecodeHexBlk(block, dataval.get_str(), legacy_format, currentAlgo))
+            if (!DecodeHexBlk(block, dataval.get_str(), currentAlgo))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -859,7 +874,7 @@ protected:
 UniValue submitblock(const JSONRPCRequest& request)
 {
     // We allow 2 arguments for compliance with BIP22. Argument 2 is ignored.
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 3) {
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2) {
         throw std::runtime_error(
             "submitblock \"hexdata\"  ( \"dummy\" ) \"blockformat\"\n"
             "\nAttempts to submit new block to network.\n"
@@ -868,22 +883,16 @@ UniValue submitblock(const JSONRPCRequest& request)
             "\nArguments\n"
             "1. \"hexdata\"        (string, required) the hex-encoded block data to submit\n"
             "2. \"dummy\"          (optional) dummy value, for compatibility with BIP22. This value is ignored.\n"
-			"3. \"legacy\"         (boolean, optional) indicates if the block is in legacy foramt. default: automatically calculated.\n"
             "\nResult:\n"
             "\nExamples:\n"
             + HelpExampleCli("submitblock", "\"mydata\"")
             + HelpExampleRpc("submitblock", "\"mydata\"")
         );
     }
-    
-    bool legacy_format = IsHardForkActivated((uint32_t)GetAdjustedTime()) ? false : true;
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
-    if (request.params.size() == 3) {
-        legacy_format = request.params[2].get_bool();
-    }
-    if (!DecodeHexBlk(block, request.params[0].get_str(), legacy_format, currentAlgo)) {
+    if (!DecodeHexBlk(block, request.params[0].get_str(), currentAlgo)) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
 

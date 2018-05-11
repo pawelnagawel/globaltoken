@@ -144,17 +144,17 @@ bool DecodeHexTx(CMutableTransaction& tx, const std::string& hex_tx, bool try_no
     return false;
 }
 
-bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyFormat, uint8_t nAlgo)
+bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, uint8_t nAlgo)
 {
     if (!IsHex(strHexBlk))
         return false;
     
+    std::vector<unsigned char> blockData(ParseHex(strHexBlk));
+    
     if(nAlgo == ALGO_EQUIHASH)
     {
         CEquihashBlock equihashblock;
-        std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-        int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
-        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
         try {
             ssBlock >> equihashblock;
         }
@@ -167,9 +167,7 @@ bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, bool fLegacyForma
     else
     {
         CDefaultBlock defaultblock;
-        std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-        int ser_flags = fLegacyFormat ? SERIALIZE_BLOCK_LEGACY : 0;
-        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
         try {
             ssBlock >> defaultblock;
         }

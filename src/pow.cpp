@@ -12,6 +12,7 @@
 #include <chainparams.h>
 #include <globaltoken/hardfork.h>
 #include <primitives/block.h>
+#include <primitives/mining_block.h>
 #include <uint256.h>
 #include <streams.h>
 #include <crypto/algos/equihash/equihash.h>
@@ -184,6 +185,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& params)
 {
+    CEquihashBlockHeader pequihashblock;
+    pequihashblock = pblock->GetEquihashBlockHeader();
     unsigned int n = params.EquihashN();
     unsigned int k = params.EquihashK();
 
@@ -192,17 +195,17 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
     EhInitialiseState(n, k, state);
 
     // I = the block header minus nonce and solution.
-    CEquihashInput I{*pblock};
+    CEquihashInput I{pequihashblock};
     // I||V
     CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
     ss << I;
-    ss << pblock->nBigNonce;
+    ss << pequihashblock.nNonce;
 
     // H(I||V||...
     crypto_generichash_blake2b_update(&state, (unsigned char*)&ss[0], ss.size());
 
     bool isValid;
-    EhIsValidSolution(n, k, state, pblock->nSolution, isValid);
+    EhIsValidSolution(n, k, state, pequihashblock.nSolution, isValid);
     if (!isValid)
         return false;
 

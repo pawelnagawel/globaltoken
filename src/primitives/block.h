@@ -46,7 +46,6 @@ std::string GetAlgoName(uint8_t Algo);
 class CBlockHeader
 {
 public:
-	static const size_t HEADER_SIZE = 4+32+32+32+4+4+1+32;  // Excluding Equihash solution
     // header
     uint8_t nAlgo;
     int32_t nVersion;
@@ -83,17 +82,12 @@ public:
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format && nAlgo != ALGO_EQUIHASH)
-        {
-            READWRITE(nNonce);
-        }
         if (new_format && nAlgo == ALGO_EQUIHASH)
         {
-            READWRITE(nAlgo);
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!new_format)
+        if(!new_format || nAlgo != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
         }
@@ -193,35 +187,6 @@ public:
     }
 
     std::string ToString() const;
-};
-
-/**
- * Custom serializer for CBlockHeader that omits the bignonce and solution, for use
- * as input to Equihash.
- */
-class CEquihashInput : private CBlockHeader
-{
-public:
-    CEquihashInput(const CBlockHeader &header)
-    {
-        CBlockHeader::SetNull();
-        *((CBlockHeader*)this) = header;
-    }
-
-    ADD_SERIALIZE_METHODS;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(nAlgo);
-        READWRITE(this->nVersion);
-        READWRITE(hashPrevBlock);
-        READWRITE(hashMerkleRoot);
-        for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
-            READWRITE(nReserved[i]);
-        }
-        READWRITE(nTime);
-        READWRITE(nBits);
-    }
 };
 
 /** Describes a place in the block chain to another node such that if the
