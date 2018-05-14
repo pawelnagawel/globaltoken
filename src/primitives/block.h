@@ -6,6 +6,7 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
+#include <primitives/mining_block.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -13,9 +14,6 @@
 namespace Consensus {
     struct Params;
 };
-
-class CDefaultBlockHeader;
-class CEquihashBlockHeader;
 
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
 

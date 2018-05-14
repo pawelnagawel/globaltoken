@@ -5,7 +5,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <primitives/mining_block.h>
-#include <primitives/block.h>
 
 #include <hash.h>
 #include <tinyformat.h>

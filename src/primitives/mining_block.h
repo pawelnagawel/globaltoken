@@ -11,8 +11,6 @@
 #include <serialize.h>
 #include <uint256.h>
 
-class CBlock;
-
 /** 2 Different Block classes for Equihash & normal blocks.
  */
 class CDefaultBlockHeader
