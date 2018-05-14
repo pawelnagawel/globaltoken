@@ -541,7 +541,7 @@ inline uint256 NIST5(const T1 pbegin, const T1 pend)
     sph_blake512_close(&ctx_blake, static_cast<void*>(&hash[0]));
 
     sph_groestl512_init(&ctx_groestl);
-    sph_groestl512(&ctx_groestl, static_cast<const void*>(&hash[0]), 80);
+    sph_groestl512(&ctx_groestl, static_cast<const void*>(&hash[0]), 64);
     sph_groestl512_close(&ctx_groestl, static_cast<void*>(&hash[1]));
 
     sph_jh512_init(&ctx_jh);
