@@ -7,7 +7,6 @@
 #ifndef GLOBALTOKEN_MINING_BLOCK_H
 #define GLOBALTOKEN_MINING_BLOCK_H
 
-#include <arith_uint256.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -117,7 +116,6 @@ public:
         return block;
     }
     
-    CBlock GetBlock() const;
     std::string ToString() const;
 };
 
@@ -129,7 +127,7 @@ public:
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
-    uint32_t nReserved[7];
+    uint256 hashReserved;
     uint32_t nTime;
     uint32_t nBits;
     uint256 nNonce;
@@ -147,9 +145,7 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
-            READWRITE(nReserved[i]);
-        }
+        READWRITE(hashReserved);
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nNonce);
@@ -161,7 +157,7 @@ public:
         nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
-        memset(nReserved, 0, sizeof(nReserved));
+        hashReserved.SetNull();
         nTime = 0;
         nBits = 0;
         nNonce.SetNull();
@@ -223,15 +219,14 @@ public:
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;
-        memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
+        block.hashReserved   = hashReserved;
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        block.nSolution = nSolution;
+        block.nSolution      = nSolution;
         return block;
     }
 
-    CBlock GetBlock() const;
     std::string ToString() const;
 };
 
@@ -255,9 +250,7 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
-            READWRITE(nReserved[i]);
-        }
+        READWRITE(hashReserved);
         READWRITE(nTime);
         READWRITE(nBits);
     }

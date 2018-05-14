@@ -211,7 +211,7 @@ public:
     uint8_t nAlgo;
     int32_t nVersion;
     uint256 hashMerkleRoot;
-	uint32_t nReserved[7];
+	uint256 hashReserved;
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
@@ -243,7 +243,7 @@ public:
         nAlgo          = 0;
         nVersion       = 0;
         hashMerkleRoot = uint256();
-		memset(nReserved, 0, sizeof(nReserved));
+		hashReserved   = uint256();
         nTime          = 0;
         nBits          = 0;
         nNonce         = 0;
@@ -263,7 +263,7 @@ public:
         nAlgo          = block.nAlgo;
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
-		memcpy(nReserved, block.nReserved, sizeof(nReserved));
+		hashReserved   = block.hashReserved;
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
@@ -297,7 +297,7 @@ public:
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
         block.hashMerkleRoot = hashMerkleRoot;
-		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
+        block.hashReserved   = hashReserved;
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
@@ -428,32 +428,21 @@ public:
             READWRITE(VARINT(nUndoPos));
 
         // block header
-        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        if(new_format)
-        {
-           READWRITE(nAlgo); 
-        }
+        READWRITE(nAlgo); 
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-        if (new_format && nAlgo == ALGO_EQUIHASH) {
-            for(size_t i = 0; i < (sizeof(nReserved) / sizeof(nReserved[0])); i++) {
-                READWRITE(nReserved[i]);
-            }
+        if (nAlgo == ALGO_EQUIHASH) {
+            READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format && nAlgo != ALGO_EQUIHASH)
+        if (nAlgo == ALGO_EQUIHASH)
         {
-            READWRITE(nNonce);
-        }
-        if (new_format && nAlgo == ALGO_EQUIHASH)
-        {
-            READWRITE(nAlgo);
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!new_format)
+        if(nAlgo != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
         }
@@ -466,7 +455,7 @@ public:
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;
-		memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
+		block.hashReserved    = hashReserved;
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;

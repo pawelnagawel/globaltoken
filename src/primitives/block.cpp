@@ -128,7 +128,7 @@ CEquihashBlockHeader CBlockHeader::GetEquihashBlockHeader() const
     block.nVersion       = nVersion;
     block.hashPrevBlock  = hashPrevBlock;
     block.hashMerkleRoot = hashMerkleRoot;
-    memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
+    block.hashReserved   = hashReserved;
     block.nTime          = nTime;
     block.nBits          = nBits;
     block.nNonce         = nBigNonce;

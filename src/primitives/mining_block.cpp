@@ -74,36 +74,6 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
     return GetHash();
 }
 
-CBlock CDefaultBlock::GetBlock() const
-{
-    CBlock block;
-    block.nVersion       = nVersion;
-    block.hashPrevBlock  = hashPrevBlock;
-    block.hashMerkleRoot = hashMerkleRoot;
-    block.nTime          = nTime;
-    block.nBits          = nBits;
-    block.nNonce         = nNonce;
-    block.vtx            = vtx;
-    block.fChecked       = fChecked;
-    return block;
-}
-
-CBlock CEquihashBlock::GetBlock() const
-{
-    CBlock block;
-    block.nVersion       = nVersion;
-    block.hashPrevBlock  = hashPrevBlock;
-    block.hashMerkleRoot = hashMerkleRoot;
-    memcpy(block.nReserved, nReserved, sizeof(block.nReserved));
-    block.nTime          = nTime;
-    block.nBits          = nBits;
-    block.nBigNonce      = nNonce;
-    block.nSolution      = nSolution;
-    block.vtx            = vtx;
-    block.fChecked       = fChecked;
-    return block;
-}
-
 std::string CDefaultBlock::ToString() const
 {
     std::stringstream s;

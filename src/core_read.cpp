@@ -146,36 +146,18 @@ bool DecodeHexTx(CMutableTransaction& tx, const std::string& hex_tx, bool try_no
 
 bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, uint8_t nAlgo)
 {
-    if (!IsHex(strHexBlk))
+    std::string strFinalBlock = strprintf("%02x%s", nAlgo, strHexBlk);
+    if (!IsHex(strFinalBlock))
         return false;
+
+    std::vector<unsigned char> blockData(ParseHex(strFinalBlock));
     
-    std::vector<unsigned char> blockData(ParseHex(strHexBlk));
-    
-    if(nAlgo == ALGO_EQUIHASH)
-    {
-        CEquihashBlock equihashblock;
-        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
-        try {
-            ssBlock >> equihashblock;
-        }
-        catch (const std::exception&) {
-            return false;
-        }
-        block = equihashblock.GetBlock();
-        block.SetAlgo(nAlgo);
+    CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
+    try {
+        ssBlock >> block;
     }
-    else
-    {
-        CDefaultBlock defaultblock;
-        CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
-        try {
-            ssBlock >> defaultblock;
-        }
-        catch (const std::exception&) {
-            return false;
-        }
-        block = defaultblock.GetBlock();
-        block.SetAlgo(nAlgo);
+    catch (const std::exception&) {
+        return false;
     }
     return true;
 }

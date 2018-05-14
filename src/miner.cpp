@@ -197,7 +197,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 	
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-    memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
+    pblock->hashReserved   = uint256();
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev, algo);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus(), algo);
     pblock->nNonce         = 0;
