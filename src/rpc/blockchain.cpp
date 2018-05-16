@@ -1304,7 +1304,6 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue globaltoken_hardfork(UniValue::VOBJ);
     UniValue globaltoken_hardfork_id_1(UniValue::VOBJ);
     globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
-    globaltoken_hardfork_id_1.pushKV("softfork_activated", fHardforkSizingActiveAtTip);
     globaltoken_hardfork_id_1.pushKV("activation_time", (int64_t)consensusParams.HardforkTime);
     globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));

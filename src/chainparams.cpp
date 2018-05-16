@@ -91,7 +91,7 @@ public:
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
         consensus.HardforkHeight = 300000; // not final
-        consensus.HardforkTime = 1527811200;
+        consensus.HardforkTime = 1533081600;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");	
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -133,11 +133,6 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
-		
-        // Deployment of GlobalToken Hardfork Block Upgrade
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1527811200; // Fri, 01 Jun 2018
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000006ca5a7a5a45e8f8b9c");
@@ -224,7 +219,7 @@ public:
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
         consensus.HardforkHeight = 2999; // not final
-        consensus.HardforkTime = 1527811200;
+        consensus.HardforkTime = 1533081600;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -266,11 +261,6 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1509494400; // Wed, 01 Nov 2017
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
-		
-        // Deployment of GlobalToken Hardfork Block Upgrade
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = 1527811200; // Fri, 01 Jun 2018
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = 1530403200; // Sun, 01 Jul 2018.
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000100010001");
@@ -345,7 +335,7 @@ public:
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.HardforkHeight = 15; // not final
-        consensus.HardforkTime = 1527811200;
+        consensus.HardforkTime = 1533081600;
         consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated after height
         consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -371,9 +361,6 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 1;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].bit = 2;
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nStartTime = Consensus::BIP9Deployment::ALWAYS_ACTIVE;
-        consensus.vDeployments[Consensus::DEPLOYMENT_HARDFORK_SIZING].nTimeout = Consensus::BIP9Deployment::NO_TIMEOUT;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");

@@ -221,8 +221,6 @@ uint64_t nPruneTarget = 0;
 int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 bool fEnableReplacement = DEFAULT_ENABLE_REPLACEMENT;
 
-std::atomic<bool> fHardforkSizingActiveAtTip{false};
-
 uint256 hashAssumeValid;
 arith_uint256 nMinimumChainWork;
 
@@ -710,7 +708,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         // itself can contain sigops MAX_STANDARD_TX_SIGOPS is less than
         // MAX_BLOCK_SIGOPS; we still consider this an invalid rather than
         // merely non-standard transaction.
-        if (nSigOpsCost > MaxStandardTransactionSigOps(fHardforkSizingActiveAtTip))
+        if (nSigOpsCost > MaxStandardTransactionSigOps(CheckCurrentHardforkState()))
             return state.DoS(0, false, REJECT_NONSTANDARD, "bad-txns-too-many-sigops", false,
                 strprintf("%d", nSigOpsCost));
 
@@ -4726,6 +4724,13 @@ bool DumpMempool(void)
         return false;
     }
     return true;
+}
+
+bool CheckCurrentHardforkState()
+{
+    LOCK(cs_main);
+    CBlockIndex* pblockindex = chainActive.Tip();
+    return IsHardForkActivated(pblockindex->nTime);
 }
 
 //! Guess how far we are in the verification process at the given block index

@@ -658,7 +658,7 @@ bool AddOrphanTx(const CTransactionRef& tx, NodeId peer) EXCLUSIVE_LOCKS_REQUIRE
     // 100 orphans, each of which is at most 99,999 bytes big is
     // at most 10 megabytes of orphans and somewhat more byprev index (in the worst case):
     unsigned int sz = GetTransactionWeight(*tx);
-    if (sz >= MaxStandardTransactionWeight(fHardforkSizingActiveAtTip))
+    if (sz >= MaxStandardTransactionWeight(CheckCurrentHardforkState()))
     {
         LogPrint(BCLog::MEMPOOL, "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
         return false;
@@ -916,9 +916,7 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
         });
         connman->WakeMessageHandler();
     }
-	
-	fHardforkSizingActiveAtTip = (VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_HARDFORK_SIZING, versionbitscache) == THRESHOLD_ACTIVE || VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_HARDFORK_SIZING, versionbitscache) == THRESHOLD_STARTED);
-
+    
     nTimeBestReceived = GetTime();
 }
 

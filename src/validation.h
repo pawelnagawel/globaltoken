@@ -182,8 +182,6 @@ extern CAmount maxTxFee;
 extern int64_t nMaxTipAge;
 extern bool fEnableReplacement;
 
-extern std::atomic<bool> fHardforkSizingActiveAtTip;
-
 /** Block hash whose ancestors we will assume to have valid scripts without checking them. */
 extern uint256 hashAssumeValid;
 
@@ -484,5 +482,8 @@ bool DumpMempool();
 
 /** Load the mempool from disk. */
 bool LoadMempool();
+
+/** Checks if Hardfork is activated at current tip */
+bool CheckCurrentHardforkState();
 
 #endif // BITCOIN_VALIDATION_H
