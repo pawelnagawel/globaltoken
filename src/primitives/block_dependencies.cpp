@@ -14,11 +14,7 @@ void CPureBlockVersion::SetBaseVersion(int32_t nBaseVersion, int32_t nChainId)
 
 uint8_t CBlockAlgo::GetAlgo() const
 {
-	if (IsHardForkActivated(nTime)) 
-	{
-		return nAlgo;
-	}
-	return ALGO_SHA256D;
+	return nAlgo;
 }
 
 std::string GetAlgoName(uint8_t Algo)
