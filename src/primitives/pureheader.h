@@ -7,7 +7,7 @@
 #define BITCOIN_PRIMITIVES_PUREHEADER_H
 
 #include <primitives/mining_block.h>
-#include <primitives/pure_auxpow.h>
+#include <primitives/block_dependencies.h>
 
 #include <serialize.h>
 #include <uint256.h>
@@ -18,23 +18,6 @@ namespace Consensus {
 
 static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
 
-/** Algos */
-enum : uint8_t { 
-    ALGO_SHA256D   = 0,
-    ALGO_SCRYPT    = 1,
-    ALGO_X11       = 2,
-    ALGO_NEOSCRYPT = 3,
-    ALGO_EQUIHASH  = 4,
-    ALGO_YESCRYPT  = 5,
-    ALGO_HMQ1725   = 6,
-    ALGO_XEVAN     = 7,
-    ALGO_NIST5     = 8,
-    NUM_ALGOS_IMPL };
-
-const int NUM_ALGOS = 9;
-
-std::string GetAlgoName(uint8_t Algo);
-
 /**
  * A block header without auxpow information.  This "intermediate step"
  * in constructing the full header is useful, because it breaks the cyclic
@@ -42,12 +25,10 @@ std::string GetAlgoName(uint8_t Algo);
  * the block header (referencing an auxpow).  The parent block header
  * does not have auxpow itself, so it is a pure header.
  */
-class CPureBlockHeader
+class CPureBlockHeader : public CBlockAlgo, public CPureBlockVersion
 {
 public:
     // header
-    uint8_t nAlgo;
-    CPureBlockVersion nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint256 hashReserved;
@@ -69,9 +50,9 @@ public:
         bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
         if(new_format)
         {
-           READWRITE(nAlgo); 
+           READWRITE(*(CBlockAlgo*)this);
         }
-        READWRITE(this->nVersion);
+        READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
         if (new_format && nAlgo == ALGO_EQUIHASH) {
@@ -92,8 +73,8 @@ public:
 
     void SetNull()
     {
-        nAlgo = 0;
-        nVersion.SetNull();
+        CBlockAlgo::SetNull();
+        CPureBlockVersion::SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         hashReserved.SetNull();
@@ -109,18 +90,11 @@ public:
         return (nBits == 0);
     }
 
-    // Set Algo to use
-    inline void SetAlgo(uint8_t algo)
-    {
-        nAlgo = algo;
-    }
-	
-    uint8_t GetAlgo() const;
-
     uint256 GetHash() const;
-	uint256 GetHash(const Consensus::Params& params) const;
-	
+    uint256 GetHash(const Consensus::Params& params) const;
+
     uint256 GetPoWHash() const;
+    uint256 GetPoWHash(uint8_t nAlgo) const;
     
     CDefaultBlockHeader GetDefaultBlockHeader() const;    
     CEquihashBlockHeader GetEquihashBlockHeader() const;

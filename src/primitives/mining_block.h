@@ -7,18 +7,17 @@
 #ifndef GLOBALTOKEN_MINING_BLOCK_H
 #define GLOBALTOKEN_MINING_BLOCK_H
 
-#include <primitives/pure_auxpow.h>
+#include <primitives/block_dependencies.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
 
 /** 2 Different Block classes for Equihash & normal blocks.
  */
-class CDefaultBlockHeader
+class CDefaultBlockHeader : public CPureBlockVersion
 {
 public:
     // header
-    CPureBlockVersion nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint32_t nTime;
@@ -34,7 +33,7 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(this->nVersion);
+        READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
@@ -44,7 +43,7 @@ public:
 
     void SetNull()
     {
-        nVersion.SetNull();
+        CPureBlockVersion::SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         nTime = 0;
@@ -118,12 +117,11 @@ public:
     std::string ToString() const;
 };
 
-class CEquihashBlockHeader
+class CEquihashBlockHeader : public CPureBlockVersion
 {
 public:
     // header
     static const size_t HEADER_SIZE=4+32+32+32+4+4+32; // excluding Equihash solution
-    CPureBlockVersion nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint256 hashReserved;
@@ -141,7 +139,7 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(this->nVersion);
+        READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
         READWRITE(hashReserved);
@@ -153,7 +151,7 @@ public:
 
     void SetNull()
     {
-        nVersion.SetNull();
+        CPureBlockVersion::SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         hashReserved.SetNull();

@@ -84,7 +84,7 @@ uint8_t CPureBlockHeader::GetAlgo() const
 
 uint256 CPureBlockHeader::GetPoWHash() const
 {
-    return CPureBlockHeader::GetPoWHash(GetAlgo());
+    return GetPoWHash(GetAlgo());
 }
 
 uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
@@ -98,30 +98,4 @@ uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
     CDefaultBlockHeader block;
     block = CPureBlockHeader::GetDefaultBlockHeader();
     return block.GetPoWHash(nAlgo);
-}
-
-std::string GetAlgoName(uint8_t Algo)
-{
-    switch (Algo)
-    {
-        case ALGO_SHA256D:
-            return std::string("sha256d");
-        case ALGO_SCRYPT:
-            return std::string("scrypt");
-        case ALGO_X11:
-            return std::string("x11");
-        case ALGO_NEOSCRYPT:
-            return std::string("neoscrypt");
-        case ALGO_YESCRYPT:
-            return std::string("yescrypt");
-        case ALGO_EQUIHASH:
-            return std::string("equihash");
-        case ALGO_HMQ1725:
-            return std::string("hmq1725");
-        case ALGO_XEVAN:
-            return std::string("xevan");
-        case ALGO_NIST5:
-            return std::string("nist5");
-    }
-    return std::string("unknown");       
 }

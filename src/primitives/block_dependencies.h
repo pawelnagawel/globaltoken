@@ -9,6 +9,58 @@
 #include <serialize.h>
 #include <uint256.h>
 
+/** Algos */
+enum : uint8_t { 
+    ALGO_SHA256D   = 0,
+    ALGO_SCRYPT    = 1,
+    ALGO_X11       = 2,
+    ALGO_NEOSCRYPT = 3,
+    ALGO_EQUIHASH  = 4,
+    ALGO_YESCRYPT  = 5,
+    ALGO_HMQ1725   = 6,
+    ALGO_XEVAN     = 7,
+    ALGO_NIST5     = 8,
+    NUM_ALGOS_IMPL };
+
+const int NUM_ALGOS = 9;
+
+std::string GetAlgoName(uint8_t Algo);
+
+/**
+ * Pure nAlgo extracted into a seperate class.
+ */
+class CBlockAlgo
+{
+public:
+
+    uint8_t nAlgo;
+
+    CBlockAlgo()
+    {
+        SetNull();
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(nAlgo);
+    }
+
+    void SetNull()
+    {
+        nAlgo = 0;
+    }
+    
+    // Set Algo to use
+    inline void SetAlgo(uint8_t algo)
+    {
+        nAlgo = algo;
+    }
+	
+    uint8_t GetAlgo() const;
+};
+
 /**
  * Pure Version that will inherit to all other Block classes
  * Includes nVersion and AuxPow stuff.
@@ -120,15 +172,6 @@ public:
     inline bool IsLegacy() const
     {
         return (nVersion == 1 || nVersion == 2 || nVersion == 0x20000000);
-    }
-    
-    /**
-     * Set the normal block Version
-     * @param True iff it is.
-     */
-    inline void SetBlockVersion(int32_t nBlockVersion) const
-    {
-        nVersion = nBlockVersion;
     }
 };
 

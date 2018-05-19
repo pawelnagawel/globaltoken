@@ -363,10 +363,10 @@ libbitcoin_consensus_a_SOURCES = \
   prevector.h \
   primitives/block.cpp \
   primitives/block.h \
+  primitives/block_dependencies.cpp \
+  primitives/block_dependencies.h \
   primitives/mining_block.cpp \
   primitives/mining_block.h \
-  primitives/pure_auxpow.cpp \
-  primitives/pure_auxpow.h \
   primitives/pureheader.cpp \
   primitives/pureheader.h \
   primitives/transaction.cpp \
