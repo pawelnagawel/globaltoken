@@ -5,6 +5,32 @@
 
 #include <chain.h>
 #include <globaltoken/hardfork.h>
+#include <validation.h>
+
+CBlockHeader CBlockIndex::GetBlockHeader(const Consensus::Params& consensusParams) const
+{
+    CBlockHeader block;
+    block.nAlgo          = nAlgo;
+    block.nVersion       = nVersion;
+    /* The CBlockIndex object's block header is missing the auxpow.
+       So if this is an auxpow block, read it from disk instead.  We only
+       have to read the actual *header*, not the full block.  */
+    if (block.IsAuxpow())
+    {
+        ReadBlockHeaderFromDisk(block, this, consensusParams);
+        return block;
+    }
+    if (pprev)
+        block.hashPrevBlock = pprev->GetBlockHash();
+    block.hashMerkleRoot = hashMerkleRoot;
+    block.hashReserved   = hashReserved;
+    block.nTime          = nTime;
+    block.nBits          = nBits;
+    block.nNonce         = nNonce;
+    block.nBigNonce      = nBigNonce;
+    block.nSolution      = nSolution;
+    return block;
+}
 
 /**
  * CChain implementation

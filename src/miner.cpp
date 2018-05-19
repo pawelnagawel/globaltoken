@@ -140,8 +140,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pblock->nTime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
+    const int32_t nChainId = chainparams.GetConsensus().nAuxpowChainId;
+    
     pblock->SetAlgo(nBlockAlgo);
     pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    pblock->SetBaseVersion(nVersion, nChainId);
 	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios

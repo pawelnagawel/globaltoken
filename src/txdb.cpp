@@ -292,31 +292,15 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 				
-				if(IsHardForkActivated(pindexNew->nTime))
-				{
-					auto header = pindexNew->GetBlockHeader();
-					uint8_t algo = header.GetAlgo();
-					if(algo == ALGO_EQUIHASH)
-					{
-						if (!CheckEquihashSolution(&header, Params())) {
-							return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());
-						}
-						
-						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams, algo))
-							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
-					}
-					else
-					{
-						if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits, consensusParams, algo))
-							return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
-					}
-				}
-				else
-				{
-					// Get just BlockHash, it is SHA256D before the fork.
-					if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams, ALGO_SHA256D))
-						return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
-				}
+                bool equihashvalidator;
+                bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(), consensusParams, equihashvalidator);
+                
+                if (pindexNew->nAlgo == ALGO_EQUIHASH && !equihashvalidator) {
+                    return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());
+                }
+
+                if (!checkresult)
+                    return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 
                 pcursor->Next();
             } else {

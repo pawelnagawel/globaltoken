@@ -7,6 +7,7 @@
 
 #include <pow.h>
 
+#include <auxpow.h>
 #include <arith_uint256.h>
 #include <chain.h>
 #include <chainparams.h>
@@ -227,6 +228,114 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     // Check proof of work matches claimed amount
     if (UintToArith256(hash) > bnTarget)
         return false;
+
+    return true;
+}
+
+bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
+{
+    bool equihashvalidator;
+    return CheckProofOfWork(block, params, equihashvalidator);
+}
+
+bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params, bool &ehsolutionvalid)
+{
+    /* Except for legacy blocks with full version 1, ensure that
+       the chain ID is correct.  Legacy blocks are not allowed since
+       the merge-mining start, which is checked in AcceptBlockHeader
+       where the height is known.  */
+    if (!block.IsLegacy() && params.fStrictChainId
+        && block.GetChainId() != params.nAuxpowChainId)
+        return error("%s : block does not have our chain ID"
+                     " (got %d, expected %d, full nVersion %d)",
+                     __func__, block.GetChainId(),
+                     params.nAuxpowChainId, block.nVersion);
+                     
+    bool hardfork = IsHardForkActivated(block.nTime);
+    uint8_t nAlgo = block.GetAlgo();
+    ehsolutionvalid = true;
+
+    /* If there is no auxpow, just check the block hash.  */
+    if (!block.auxpow)
+    {
+        if (block.IsAuxpow())
+            return error("%s : no auxpow on block with auxpow version",
+                         __func__);
+        
+        if(hardfork)
+        {
+            if(nAlgo == ALGO_EQUIHASH)
+            {
+                // Check Equihash solution
+                if (!CheckEquihashSolution(&block, Params())) {
+                    ehsolutionvalid = false;
+                    return error("%s: non-AUXPOW : bad Equihash solution", __func__);
+                }
+                
+                // Check the header
+                // Also check the Block Header after Equihash solution check.
+                if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, nAlgo))
+                    return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+            }
+            else
+            {
+                // Check the header
+                if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, nAlgo))
+                    return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+            }
+        }
+        else
+        {
+            // Check the header
+            if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, ALGO_SHA256D))
+                return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+        }
+
+        return true;
+    }
+
+    /* We have auxpow.  Check it.  */
+
+    if (!block.IsAuxpow())
+        return error("%s : auxpow on block with non-auxpow version", __func__);
+
+    /* Temporary check:  Disallow parent blocks with auxpow version.  This is
+       for compatibility with the old client.  */
+    /* FIXME: Remove this check with a hardfork later on.  */
+    if (block.auxpow->getParentBlock().IsAuxpow())
+        return error("%s : auxpow parent block has auxpow version", __func__);
+
+    if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
+        return error("%s : AUX POW is not valid", __func__);
+
+    if(hardfork)
+    {
+        if(nAlgo == ALGO_EQUIHASH)
+        {
+            // Check Equihash solution
+            if (!CheckEquihashSolution(&block.auxpow->getParentBlock(), Params())) {
+                ehsolutionvalid = false;
+                return error("%s: AUX proof of work - Equihash solution failed. (bad Equihash solution)", __func__);
+            }
+            
+            // Check the header
+            // Also check the Block Header after Equihash solution check.
+            if (!CheckProofOfWork(block.auxpow->getParentBlockPoWHash(nAlgo), block.nBits, params, nAlgo))
+                return error("%s : AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+        }
+        else
+        {
+            // Check the header
+            if (!CheckProofOfWork(block.auxpow->getParentBlockPoWHash(nAlgo), block.nBits, params, nAlgo))
+                return error("%s : AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+        }
+    }
+    else
+    {
+        // Check the header
+        if (!CheckProofOfWork(block.auxpow->getParentBlockPoWHash(ALGO_SHA256D), block.nBits, params, ALGO_SHA256D))
+                return error("%s : AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(ALGO_SHA256D));
+    }
 
     return true;
 }

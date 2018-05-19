@@ -33,6 +33,16 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
 const CBlockIndex* GetNextBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo);
 
+/**
+ * Check proof-of-work of a block header, taking auxpow into account.
+ * @param block The block header.
+ * @param params Consensus parameters.
+ * @param ehsolutionvalid boolean set to false if equihash solution fails
+ * @return True iff the PoW is correct.
+ */
+bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params);
+bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params, bool &ehsolutionvalid);
+
 /** Calculations */
 int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, uint8_t algo, const Consensus::Params&);
 

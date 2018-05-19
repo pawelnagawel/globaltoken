@@ -100,6 +100,10 @@ struct Params {
     int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
+    
+    /** Auxpow parameters */
+    int32_t nAuxpowChainId;
+    bool fStrictChainId;
 };
 } // namespace Consensus
 

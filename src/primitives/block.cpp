@@ -17,64 +17,17 @@
 #include <chainparams.h>
 #include <crypto/common.h>
 
-#ifndef NO_GLOBALTOKEN_HARDFORK
-uint256 CBlockHeader::GetHash(const Consensus::Params& params) const
+void CBlockHeader::SetAuxpow (CAuxPow* apow)
 {
-    int version;
-    if (IsHardForkActivated(nTime, params)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-
-uint256 CBlockHeader::GetHash() const
-{
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    return GetHash(consensusParams);
-}
-#else
-uint256 CBlockHeader::GetHash() const
-{
-    int version;
-    if (IsHardForkActivated(nTime)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-#endif
-uint8_t CBlockHeader::GetAlgo() const
-{
-	if (IsHardForkActivated(nTime)) 
-	{
-		return nAlgo;
-	}
-	return ALGO_SHA256D;
-}
-
-uint256 CBlockHeader::GetPoWHash() const
-{
-    uint8_t algo = GetAlgo();
-    if(algo == ALGO_EQUIHASH)
+    if (apow)
     {
-        CEquihashBlockHeader block;
-        block = CBlockHeader::GetEquihashBlockHeader();
-        return block.GetHash();
-    }
-    else
+        auxpow.reset(apow);
+        SetAuxpowVersion(true);
+    } else
     {
-        CDefaultBlockHeader block;
-        block = CBlockHeader::GetDefaultBlockHeader();
-        return block.GetPoWHash(algo);
+        auxpow.reset();
+        SetAuxpowVersion(false);
     }
-    return CBlockHeader::GetHash();
 }
 
 std::string CBlock::ToString() const
@@ -94,56 +47,4 @@ std::string CBlock::ToString() const
         s << "  " << tx->ToString() << "\n";
     }
     return s.str();
-}
-
-std::string GetAlgoName(uint8_t Algo)
-{
-    switch (Algo)
-    {
-        case ALGO_SHA256D:
-            return std::string("sha256d");
-        case ALGO_SCRYPT:
-            return std::string("scrypt");
-        case ALGO_X11:
-            return std::string("x11");
-        case ALGO_NEOSCRYPT:
-            return std::string("neoscrypt");
-        case ALGO_YESCRYPT:
-            return std::string("yescrypt");
-        case ALGO_EQUIHASH:
-            return std::string("equihash");
-        case ALGO_HMQ1725:
-            return std::string("hmq1725");
-        case ALGO_XEVAN:
-            return std::string("xevan");
-        case ALGO_NIST5:
-            return std::string("nist5");
-    }
-    return std::string("unknown");       
-}
-
-CEquihashBlockHeader CBlockHeader::GetEquihashBlockHeader() const
-{
-    CEquihashBlockHeader block;
-    block.nVersion       = nVersion;
-    block.hashPrevBlock  = hashPrevBlock;
-    block.hashMerkleRoot = hashMerkleRoot;
-    block.hashReserved   = hashReserved;
-    block.nTime          = nTime;
-    block.nBits          = nBits;
-    block.nNonce         = nBigNonce;
-    block.nSolution      = nSolution;
-    return block;
-}
-
-CDefaultBlockHeader CBlockHeader::GetDefaultBlockHeader() const
-{
-    CDefaultBlockHeader block;
-    block.nVersion       = nVersion;
-    block.hashPrevBlock  = hashPrevBlock;
-    block.hashMerkleRoot = hashMerkleRoot;
-    block.nTime          = nTime;
-    block.nBits          = nBits;
-    block.nNonce         = nNonce;
-    return block;
 }

@@ -6,32 +6,13 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
-#include <primitives/mining_block.h>
+#include <primitives/pureheader.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
+#include <version.h>
 
-namespace Consensus {
-    struct Params;
-};
-
-static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
-
-enum : uint8_t { 
-    ALGO_SHA256D   = 0,
-    ALGO_SCRYPT    = 1,
-    ALGO_X11       = 2,
-    ALGO_NEOSCRYPT = 3,
-    ALGO_EQUIHASH  = 4,
-    ALGO_YESCRYPT  = 5,
-    ALGO_HMQ1725   = 6,
-    ALGO_XEVAN     = 7,
-    ALGO_NIST5     = 8,
-    NUM_ALGOS_IMPL };
-
-const int NUM_ALGOS = 9;
-
-std::string GetAlgoName(uint8_t Algo);
+#include <boost/shared_ptr.hpp>
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -40,20 +21,12 @@ std::string GetAlgoName(uint8_t Algo);
  * in the block is a special one that creates a new coin owned by the creator
  * of the block.
  */
-class CBlockHeader
+class CBlockHeader : public CPureBlockHeader
 {
 public:
-    // header
-    uint8_t nAlgo;
-    int32_t nVersion;
-    uint256 hashPrevBlock;
-    uint256 hashMerkleRoot;
-    uint256 hashReserved;
-    uint32_t nTime;
-    uint32_t nBits;
-    uint32_t nNonce;
-    uint256 nBigNonce;
-    std::vector<unsigned char> nSolution;  // Equihash solution.
+
+    // auxpow (if this is a merge-minded block)
+    boost::shared_ptr<CAuxPow> auxpow;
 
     CBlockHeader()
     {
@@ -64,69 +37,35 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*(CPureBlockHeader*)this);
         bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        if(new_format)
+        if(new_format && nAlgo == ALGO_EQUIHASH)
+            s.SetVersion(PROTOCOL_VERSION | SERIALIZE_AUX_EQUIHASH);
+        else
+            s.SetVersion(PROTOCOL_VERSION | 0);
+
+        if (this->IsAuxpow())
         {
-           READWRITE(nAlgo); 
-        }
-        READWRITE(this->nVersion);
-        READWRITE(hashPrevBlock);
-        READWRITE(hashMerkleRoot);
-        if (new_format && nAlgo == ALGO_EQUIHASH) {
-            READWRITE(hashReserved);
-        }
-        READWRITE(nTime);
-        READWRITE(nBits);
-        if (new_format && nAlgo == ALGO_EQUIHASH)
-        {
-            READWRITE(nBigNonce);
-            READWRITE(nSolution);
-        }
-        if(!new_format || nAlgo != ALGO_EQUIHASH)
-        {
-            READWRITE(nNonce);
-        }
+            if (ser_action.ForRead())
+                auxpow.reset (new CAuxPow());
+            assert(auxpow);
+            READWRITE(*auxpow);
+        } else if (ser_action.ForRead())
+            auxpow.reset();
     }
 
     void SetNull()
     {
-        nAlgo = 0;
-        nVersion = 0;
-        hashPrevBlock.SetNull();
-        hashMerkleRoot.SetNull();
-        hashReserved.SetNull();
-        nTime = 0;
-        nBits = 0;
-        nNonce = 0;
-        nBigNonce.SetNull();
-        nSolution.clear();
+        CPureBlockHeader::SetNull();
+        auxpow.reset();
     }
 
-    bool IsNull() const
-    {
-        return (nBits == 0);
-    }
-	
-	// Set Algo to use
-    inline void SetAlgo(uint8_t algo)
-    {
-        nAlgo = algo;
-    }
-	
-    uint8_t GetAlgo() const;
-
-    uint256 GetHash() const;
-	uint256 GetHash(const Consensus::Params& params) const;
-	
-    uint256 GetPoWHash() const;
-
-    int64_t GetBlockTime() const
-    {
-        return (int64_t)nTime;
-    }
-    
-    CDefaultBlockHeader GetDefaultBlockHeader() const;    
-    CEquihashBlockHeader GetEquihashBlockHeader() const;
+    /**
+     * Set the block's auxpow (or unset it).  This takes care of updating
+     * the version accordingly.
+     * @param apow Pointer to the auxpow to use or NULL.
+     */
+    void SetAuxpow (CAuxPow* apow);
 };
 
 
@@ -178,6 +117,7 @@ public:
         block.nNonce         = nNonce;
         block.nBigNonce      = nBigNonce;
         block.nSolution      = nSolution;
+        block.auxpow         = auxpow;
         return block;
     }
 

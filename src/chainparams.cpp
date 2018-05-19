@@ -139,6 +139,9 @@ public:
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x000000000000014cf4dc216dcc925bf0c6d7096aa6ab82e1af64e946d876df7d"); //200000
+        
+        consensus.nAuxpowChainId = 0x002f; 
+        consensus.fStrictChainId = true;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -267,6 +270,9 @@ public:
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"); //0
+        
+        consensus.nAuxpowChainId = 0x002f; 
+        consensus.fStrictChainId = false;
 
         pchMessageStart[0] = 0x3a;
         pchMessageStart[1] = 0x6f;
@@ -367,6 +373,9 @@ public:
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00");
+        
+        consensus.nAuxpowChainId = 0x002f; 
+        consensus.fStrictChainId = true;
 
         pchMessageStart[0] = 0x14;
         pchMessageStart[1] = 0x76;
