@@ -17,16 +17,29 @@
 #include <chainparams.h>
 #include <crypto/common.h>
 
-void CBlockHeader::SetAuxpow (CAuxPow* apow)
+void CBlockHeader::SetAuxpow (CDefaultAuxPow* apow)
 {
     if (apow)
     {
-        auxpow.reset(apow);
-        SetAuxpowVersion(true);
+        auxpowdefault.reset(apow);
+        nVersion.SetAuxpowVersion(true);
     } else
     {
-        auxpow.reset();
-        SetAuxpowVersion(false);
+        auxpowdefault.reset();
+        nVersion.SetAuxpowVersion(false);
+    }
+}
+
+void CBlockHeader::SetAuxpow (CEquihashAuxPow* apow)
+{
+    if (apow)
+    {
+        auxpowequihash.reset(apow);
+        nVersion.SetAuxpowVersion(true);
+    } else
+    {
+        auxpowequihash.reset();
+        nVersion.SetAuxpowVersion(false);
     }
 }
 

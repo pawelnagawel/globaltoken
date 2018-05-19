@@ -7,6 +7,7 @@
 #ifndef GLOBALTOKEN_MINING_BLOCK_H
 #define GLOBALTOKEN_MINING_BLOCK_H
 
+#include <primitives/pure_auxpow.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
@@ -17,7 +18,7 @@ class CDefaultBlockHeader
 {
 public:
     // header
-    int32_t nVersion;
+    CPureBlockVersion nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint32_t nTime;
@@ -43,7 +44,7 @@ public:
 
     void SetNull()
     {
-        nVersion = 0;
+        nVersion.SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         nTime = 0;
@@ -122,7 +123,7 @@ class CEquihashBlockHeader
 public:
     // header
     static const size_t HEADER_SIZE=4+32+32+32+4+4+32; // excluding Equihash solution
-    int32_t nVersion;
+    CPureBlockVersion nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint256 hashReserved;
@@ -152,7 +153,7 @@ public:
 
     void SetNull()
     {
-        nVersion = 0;
+        nVersion.SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
         hashReserved.SetNull();

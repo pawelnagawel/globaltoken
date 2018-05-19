@@ -47,27 +47,7 @@ uint256 CPureBlockHeader::GetHash() const
 }
 #endif
 
-uint256 CPureAuxHeader::GetHash(bool equihash) const
-{
-    int version;
-    if (equihash) {
-        version = PROTOCOL_VERSION | SERIALIZE_AUX_EQUIHASH;
-    } else {
-        version = PROTOCOL_VERSION;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-
-void CPureBlockHeader::SetBaseVersion(int32_t nBaseVersion, int32_t nChainId)
-{
-    //assert(nBaseVersion >= 1 && nBaseVersion < VERSION_AUXPOW);
-    assert(!IsAuxpow());
-    nVersion = nBaseVersion | (nChainId * VERSION_CHAIN_START);
-}
-
-CEquihashBlockHeader CPureAuxHeader::GetEquihashBlockHeader() const
+CEquihashBlockHeader CPureBlockHeader::GetEquihashBlockHeader() const
 {
     CEquihashBlockHeader block;
     block.nVersion       = nVersion;
@@ -81,7 +61,7 @@ CEquihashBlockHeader CPureAuxHeader::GetEquihashBlockHeader() const
     return block;
 }
 
-CDefaultBlockHeader CPureAuxHeader::GetDefaultBlockHeader() const
+CDefaultBlockHeader CPureBlockHeader::GetDefaultBlockHeader() const
 {
     CDefaultBlockHeader block;
     block.nVersion       = nVersion;
@@ -93,7 +73,7 @@ CDefaultBlockHeader CPureAuxHeader::GetDefaultBlockHeader() const
     return block;
 }
 
-uint8_t CBlockHeader::GetAlgo() const
+uint8_t CPureBlockHeader::GetAlgo() const
 {
 	if (IsHardForkActivated(nTime)) 
 	{
@@ -104,10 +84,10 @@ uint8_t CBlockHeader::GetAlgo() const
 
 uint256 CPureBlockHeader::GetPoWHash() const
 {
-    return CPureAuxHeader::GetPoWHash(GetAlgo());
+    return CPureBlockHeader::GetPoWHash(GetAlgo());
 }
 
-uint256 CPureAuxHeader::GetPoWHash(uint8_t nAlgo) const
+uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
 {
     if(nAlgo == ALGO_EQUIHASH)
     {

@@ -71,7 +71,7 @@ public:
    * set accordingly.  This has to be done before constructing the coinbase
    * itself (which must contain the root merkle hash).  When we have the
    * coinbase afterwards, the member variables can be used to initialise
-   * the CAuxPow object from it.
+   * the CDefaultAuxPow object from it.
    * @param hashAux The merge-mined chain's block hash.
    * @param h Height of the merkle tree to build.
    * @param index Index to use in the merkle tree.
@@ -80,19 +80,19 @@ public:
   valtype buildAuxpowChain (const uint256& hashAux, unsigned h, int index);
 
   /**
-   * Build the finished CAuxPow object.  We assume that the auxpowChain
+   * Build the finished CDefaultAuxPow object.  We assume that the auxpowChain
    * member variables are already set.  We use the passed in transaction
    * as the base.  It should (probably) be the parent block's coinbase.
    * @param tx The base tx to use.
-   * @return The constructed CAuxPow object.
+   * @return The constructed CDefaultAuxPow object.
    */
-  CAuxPow get (const CTransactionRef tx) const;
+  CDefaultAuxPow get (const CTransactionRef tx) const;
 
   /**
-   * Build the finished CAuxPow object from the parent block's coinbase.
-   * @return The constructed CAuxPow object.
+   * Build the finished CDefaultAuxPow object from the parent block's coinbase.
+   * @return The constructed CDefaultAuxPow object.
    */
-  inline CAuxPow
+  inline CDefaultAuxPow
   get () const
   {
     assert (!parentBlock.vtx.empty ());
@@ -144,7 +144,7 @@ CAuxpowBuilder::buildAuxpowChain (const uint256& hashAux, unsigned h, int index)
     auxpowChainMerkleBranch.push_back (ArithToUint256 (arith_uint256 (i)));
 
   const uint256 hash
-    = CAuxPow::CheckMerkleBranch (hashAux, auxpowChainMerkleBranch, index);
+    = CDefaultAuxPow::CheckMerkleBranch (hashAux, auxpowChainMerkleBranch, index);
 
   valtype res = ToByteVector (hash);
   std::reverse (res.begin (), res.end ());
@@ -152,11 +152,11 @@ CAuxpowBuilder::buildAuxpowChain (const uint256& hashAux, unsigned h, int index)
   return res;
 }
 
-CAuxPow
+CDefaultAuxPow
 CAuxpowBuilder::get (const CTransactionRef tx) const
 {
   LOCK(cs_main);
-  CAuxPow res(tx);
+  CDefaultAuxPow res(tx);
   res.InitMerkleBranch (parentBlock, 0);
 
   res.vChainMerkleBranch = auxpowChainMerkleBranch;
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
 {
   const Consensus::Params& params = Params ().GetConsensus ();
   CAuxpowBuilder builder(5, 42);
-  CAuxPow auxpow;
+  CDefaultAuxPow auxpow;
 
   const uint256 hashAux = ArithToUint256 (arith_uint256(12345));
   const int32_t ourChainId = params.nAuxpowChainId;
@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
   CScript scr;
 
   /* Build a correct auxpow.  The height is the maximally allowed one.  */
-  index = CAuxPow::getExpectedIndex (nonce, ourChainId, height);
+  index = CDefaultAuxPow::getExpectedIndex (nonce, ourChainId, height);
   auxRoot = builder.buildAuxpowChain (hashAux, height, index);
   data = CAuxpowBuilder::buildCoinbaseData (true, auxRoot, height, nonce);
   scr = (CScript () << 2809 << 2013) + COINBASE_FLAGS;
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
 
   /* Disallow too long merkle branches.  */
   builder2 = builder;
-  index = CAuxPow::getExpectedIndex (nonce, ourChainId, height + 1);
+  index = CDefaultAuxPow::getExpectedIndex (nonce, ourChainId, height + 1);
   auxRoot = builder2.buildAuxpowChain (hashAux, height + 1, index);
   data = CAuxpowBuilder::buildCoinbaseData (true, auxRoot, height + 1, nonce);
   scr = (CScript () << 2809 << 2013) + COINBASE_FLAGS;
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
 
   /* Build a non-header legacy version and check that it is also accepted.  */
   builder2 = builder;
-  index = CAuxPow::getExpectedIndex (nonce, ourChainId, height);
+  index = CDefaultAuxPow::getExpectedIndex (nonce, ourChainId, height);
   auxRoot = builder2.buildAuxpowChain (hashAux, height, index);
   data = CAuxpowBuilder::buildCoinbaseData (false, auxRoot, height, nonce);
   scr = (CScript () << 2809 << 2013) + COINBASE_FLAGS;
@@ -402,11 +402,11 @@ BOOST_AUTO_TEST_CASE (auxpow_pow)
   /* Check the case that the block has auxpow.  */
 
   CAuxpowBuilder builder(5, 42);
-  CAuxPow auxpow;
+  CDefaultAuxPow auxpow;
   const int32_t ourChainId = params.nAuxpowChainId;
   const unsigned height = 3;
   const int nonce = 7;
-  const int index = CAuxPow::getExpectedIndex (nonce, ourChainId, height);
+  const int index = CDefaultAuxPow::getExpectedIndex (nonce, ourChainId, height);
   valtype auxRoot, data;
 
   /* Valid auxpow, PoW check of parent block.  */
@@ -415,10 +415,10 @@ BOOST_AUTO_TEST_CASE (auxpow_pow)
   data = CAuxpowBuilder::buildCoinbaseData (true, auxRoot, height, nonce);
   builder.setCoinbase (CScript () << data);
   mineBlock (builder.parentBlock, false, block.nBits);
-  block.SetAuxpow (new CAuxPow (builder.get ()));
+  block.SetAuxpow (new CDefaultAuxPow (builder.get ()));
   BOOST_CHECK (!CheckProofOfWork (block, params));
   mineBlock (builder.parentBlock, true, block.nBits);
-  block.SetAuxpow (new CAuxPow (builder.get ()));
+  block.SetAuxpow (new CDefaultAuxPow (builder.get ()));
   BOOST_CHECK (CheckProofOfWork (block, params));
 
   /* Mismatch between auxpow being present and block.nVersion.  Note that
@@ -431,7 +431,7 @@ BOOST_AUTO_TEST_CASE (auxpow_pow)
   data = CAuxpowBuilder::buildCoinbaseData (true, auxRoot, height, nonce);
   builder.setCoinbase (CScript () << data);
   mineBlock (builder.parentBlock, true, block.nBits);
-  block.SetAuxpow (new CAuxPow (builder.get ()));
+  block.SetAuxpow (new CDefaultAuxPow (builder.get ()));
   BOOST_CHECK (hashAux != block.GetHash ());
   block.SetAuxpowVersion (false);
   BOOST_CHECK (hashAux == block.GetHash ());
@@ -443,7 +443,7 @@ BOOST_AUTO_TEST_CASE (auxpow_pow)
   data = CAuxpowBuilder::buildCoinbaseData (true, auxRoot, height, nonce);
   builder.setCoinbase (CScript () << data);
   mineBlock (builder.parentBlock, true, block.nBits);
-  block.SetAuxpow (new CAuxPow (builder.get ()));
+  block.SetAuxpow (new CDefaultAuxPow (builder.get ()));
   BOOST_CHECK (CheckProofOfWork (block, params));
   tamperWith (block.hashMerkleRoot);
   BOOST_CHECK (!CheckProofOfWork (block, params));

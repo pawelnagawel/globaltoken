@@ -99,7 +99,43 @@ double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 
 namespace
 {
-UniValue AuxpowToJSON(const CAuxPow& auxpow)
+UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow)
+{
+    UniValue result(UniValue::VOBJ);
+
+    {
+        UniValue tx(UniValue::VOBJ);
+        tx.push_back(Pair("hex", EncodeHexTx(*auxpow.tx)));
+        TxToJSON(*auxpow.tx, auxpow.parentBlock.GetHash(), tx);
+        result.push_back(Pair("tx", tx));
+    }
+
+    result.push_back(Pair("index", auxpow.nIndex));
+    result.push_back(Pair("chainindex", auxpow.nChainIndex));
+
+    {
+        UniValue branch(UniValue::VARR);
+        for (const auto& node : auxpow.vMerkleBranch)
+            branch.push_back(node.GetHex());
+        result.push_back(Pair("merklebranch", branch));
+    }
+
+    {
+        UniValue branch(UniValue::VARR);
+        for (const auto& node : auxpow.vChainMerkleBranch)
+            branch.push_back(node.GetHex());
+        result.push_back(Pair("chainmerklebranch", branch));
+    }
+
+    CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
+    ssParent << auxpow.parentBlock;
+    const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
+    result.push_back(Pair("parentblock", strHex));
+
+    return result;
+}
+
+UniValue AuxpowToJSON(const CEquihashAuxPow& auxpow)
 {
     UniValue result(UniValue::VOBJ);
 

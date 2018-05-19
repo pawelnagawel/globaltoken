@@ -6,11 +6,11 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
+#include <auxpow.h>
 #include <primitives/pureheader.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
 #include <uint256.h>
-#include <version.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -26,7 +26,8 @@ class CBlockHeader : public CPureBlockHeader
 public:
 
     // auxpow (if this is a merge-minded block)
-    boost::shared_ptr<CAuxPow> auxpow;
+    boost::shared_ptr<CDefaultAuxPow> auxpowdefault;
+    boost::shared_ptr<CEquihashAuxPow> auxpowequihash;
 
     CBlockHeader()
     {
@@ -38,26 +39,36 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(*(CPureBlockHeader*)this);
-        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        if(new_format && nAlgo == ALGO_EQUIHASH)
-            s.SetVersion(PROTOCOL_VERSION | SERIALIZE_AUX_EQUIHASH);
-        else
-            s.SetVersion(PROTOCOL_VERSION | 0);
-
-        if (this->IsAuxpow())
+        
+        if(this->GetAlgo() == ALGO_EQUIHASH)
         {
-            if (ser_action.ForRead())
-                auxpow.reset (new CAuxPow());
-            assert(auxpow);
-            READWRITE(*auxpow);
-        } else if (ser_action.ForRead())
-            auxpow.reset();
+            if (this->nVersion.IsAuxpow())
+            {
+                if (ser_action.ForRead())
+                    auxpowequihash.reset (new CEquihashAuxPow());
+                assert(auxpowequihash);
+                READWRITE(*auxpowequihash);
+            } else if (ser_action.ForRead())
+                auxpowequihash.reset(); 
+        }
+        else
+        {
+            if (this->nVersion.IsAuxpow())
+            {
+                if (ser_action.ForRead())
+                    auxpowdefault.reset (new CDefaultAuxPow());
+                assert(auxpowdefault);
+                READWRITE(*auxpowdefault);
+            } else if (ser_action.ForRead())
+                auxpowdefault.reset(); 
+        }
     }
 
     void SetNull()
     {
         CPureBlockHeader::SetNull();
-        auxpow.reset();
+        auxpowdefault.reset();
+        auxpowequihash.reset();
     }
 
     /**
@@ -65,7 +76,8 @@ public:
      * the version accordingly.
      * @param apow Pointer to the auxpow to use or NULL.
      */
-    void SetAuxpow (CAuxPow* apow);
+    void SetAuxpow (CDefaultAuxPow* apow);
+    void SetAuxpow (CEquihashAuxPow* apow);
 };
 
 
@@ -117,7 +129,8 @@ public:
         block.nNonce         = nNonce;
         block.nBigNonce      = nBigNonce;
         block.nSolution      = nSolution;
-        block.auxpow         = auxpow;
+        block.auxpowdefault  = auxpowdefault;
+        block.auxpowequihash = auxpowequihash;
         return block;
     }
 

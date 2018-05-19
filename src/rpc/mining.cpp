@@ -1257,16 +1257,23 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
         throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
     CBlock& block = *mit->second;
 
-    int ser_flags;
-    if(currentAlgo == ALGO_EQUIHASH)
-        ser_flags = SERIALIZE_AUX_EQUIHASH;
-    else
-        ser_flags = 0;
+    CEquihashAuxPow equihashauxpow;
+    CDefaultAuxPow defaultauxpow;
+    
     const std::vector<unsigned char> vchAuxPow = ParseHex(auxpowHex);
-    CDataStream ss(vchAuxPow, SER_GETHASH, PROTOCOL_VERSION | ser_flags);
-    CAuxPow pow;
-    ss >> pow;
-    block.SetAuxpow(new CAuxPow(pow));
+    CDataStream ss(vchAuxPow, SER_GETHASH, PROTOCOL_VERSION);
+    
+    if(currentAlgo == ALGO_EQUIHASH)
+    {
+        ss >> equihashauxpow;
+        block.SetAuxpow(new CEquihashAuxPow(equihashauxpow));
+    }
+    else
+    {
+        ss >> defaultauxpow;
+        block.SetAuxpow(new CDefaultAuxPow(defaultauxpow));
+    }
+    
     assert(block.GetHash() == hash);
 
     submitblock_StateCatcher sc(block.GetHash());
