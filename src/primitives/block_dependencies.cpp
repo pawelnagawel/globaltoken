@@ -12,7 +12,7 @@ void CPureBlockVersion::SetBaseVersion(int32_t nBaseVersion, int32_t nChainId)
     nVersion = nBaseVersion | (nChainId * VERSION_CHAIN_START);
 }
 
-uint8_t CPureBlockHeader::GetAlgo() const
+uint8_t CBlockAlgo::GetAlgo() const
 {
 	if (IsHardForkActivated(nTime)) 
 	{
