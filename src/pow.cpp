@@ -263,7 +263,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     /* If there is no auxpow, just check the block hash.  */
     if (nAlgo == ALGO_EQUIHASH && !block.auxpowequihash || nAlgo != ALGO_EQUIHASH && !block.auxpowdefault)
     {
-        if (block.nVersion.IsAuxpow())
+        if (block.IsAuxpow())
             return error("%s : no auxpow on block with auxpow version",
                          __func__);
         
@@ -303,13 +303,13 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 
     if(nAlgo == ALGO_EQUIHASH)
     {
-        if (!block.nVersion.IsAuxpow())
+        if (!block.IsAuxpow())
         return error("%s : auxpow on block with non-auxpow version", __func__);
 
         /* Temporary check:  Disallow parent blocks with auxpow version.  This is
            for compatibility with the old client.  */
         /* FIXME: Remove this check with a hardfork later on.  */
-        if (block.auxpowequihash->getParentBlock().nVersion.IsAuxpow())
+        if (block.auxpowequihash->getParentBlock().IsAuxpow())
             return error("%s : auxpow parent block has auxpow version", __func__);
 
         if (!block.auxpowequihash->check(block.GetHash(), block.GetChainId(), params))
@@ -336,13 +336,13 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     }
     else
     {
-        if (!block.nVersion.IsAuxpow())
+        if (!block.IsAuxpow())
         return error("%s : auxpow on block with non-auxpow version", __func__);
 
         /* Temporary check:  Disallow parent blocks with auxpow version.  This is
            for compatibility with the old client.  */
         /* FIXME: Remove this check with a hardfork later on.  */
-        if (block.auxpowdefault->getParentBlock().nVersion.IsAuxpow())
+        if (block.auxpowdefault->getParentBlock().IsAuxpow())
             return error("%s : auxpow parent block has auxpow version", __func__);
 
         if (!block.auxpowdefault->check(block.GetHash(), block.GetChainId(), params))

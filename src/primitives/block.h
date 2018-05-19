@@ -42,7 +42,7 @@ public:
         
         if(this->GetAlgo() == ALGO_EQUIHASH)
         {
-            if (this->nVersion.IsAuxpow())
+            if (this->IsAuxpow())
             {
                 if (ser_action.ForRead())
                     auxpowequihash.reset (new CEquihashAuxPow());
@@ -53,7 +53,7 @@ public:
         }
         else
         {
-            if (this->nVersion.IsAuxpow())
+            if (this->IsAuxpow())
             {
                 if (ser_action.ForRead())
                     auxpowdefault.reset (new CDefaultAuxPow());
