@@ -87,7 +87,7 @@ CDefaultAuxPow::check (const uint256& hashAuxBlock, int nChainId,
     // Check that the chain merkle root is in the coinbase
     const uint256 nRootHash
       = CheckMerkleBranch (hashAuxBlock, vChainMerkleBranch, nChainIndex);
-    valtype vchRootHash(nRootHash.begin (), nRootHash.end ());
+    std::vector<unsigned char> vchRootHash(nRootHash.begin (), nRootHash.end ());
     std::reverse (vchRootHash.begin (), vchRootHash.end ()); // correct endian
 
     // Check that we are in the parent block merkle tree
@@ -203,7 +203,7 @@ CDefaultAuxPow::initAuxPow (CBlockHeader& header)
 
   /* Build a minimal coinbase script input for merge-mining.  */
   const uint256 blockHash = header.GetHash ();
-  valtype inputData(blockHash.begin (), blockHash.end ());
+  std::vector<unsigned char> inputData(blockHash.begin (), blockHash.end ());
   std::reverse (inputData.begin (), inputData.end ());
   inputData.push_back (1);
   inputData.insert (inputData.end (), 7, 0);
@@ -218,11 +218,17 @@ CDefaultAuxPow::initAuxPow (CBlockHeader& header)
   CTransactionRef coinbaseRef = MakeTransactionRef (coinbase);
 
   /* Build a fake parent block with the coinbase.  */
-  CDefaultBlock parent;
+  CBlock parent;
   parent.nVersion = 1;
   parent.vtx.resize (1);
   parent.vtx[0] = coinbaseRef;
   parent.hashMerkleRoot = BlockMerkleRoot (parent);
+  
+  /* Convert parent Block now into CDefaultBlock */
+  CDefaultBlock defaultblock;
+  defaultblock.nVersion = parent.nVersion;
+  defaultblock.vtx = parent.vtx;
+  defaultblock.hashMerkleRoot = parent.hashMerkleRoot;
 
   /* Construct the auxpow object.  */
   header.SetAuxpow (new CDefaultAuxPow (coinbaseRef));
@@ -230,7 +236,7 @@ CDefaultAuxPow::initAuxPow (CBlockHeader& header)
   header.auxpowdefault->nChainIndex = 0;
   assert (header.auxpowdefault->vMerkleBranch.empty ());
   header.auxpowdefault->nIndex = 0;
-  header.auxpowdefault->parentBlock = parent;
+  header.auxpowdefault->parentBlock = defaultblock;
 }
 
 /* ************************************************************************** */
@@ -253,7 +259,7 @@ CEquihashAuxPow::check (const uint256& hashAuxBlock, int nChainId,
     // Check that the chain merkle root is in the coinbase
     const uint256 nRootHash
       = CheckMerkleBranch (hashAuxBlock, vChainMerkleBranch, nChainIndex);
-    valtype vchRootHash(nRootHash.begin (), nRootHash.end ());
+    std::vector<unsigned char> vchRootHash(nRootHash.begin (), nRootHash.end ());
     std::reverse (vchRootHash.begin (), vchRootHash.end ()); // correct endian
 
     // Check that we are in the parent block merkle tree
@@ -369,7 +375,7 @@ CEquihashAuxPow::initAuxPow (CBlockHeader& header)
 
   /* Build a minimal coinbase script input for merge-mining.  */
   const uint256 blockHash = header.GetHash ();
-  valtype inputData(blockHash.begin (), blockHash.end ());
+  std::vector<unsigned char> inputData(blockHash.begin (), blockHash.end ());
   std::reverse (inputData.begin (), inputData.end ());
   inputData.push_back (1);
   inputData.insert (inputData.end (), 7, 0);
@@ -384,11 +390,17 @@ CEquihashAuxPow::initAuxPow (CBlockHeader& header)
   CTransactionRef coinbaseRef = MakeTransactionRef (coinbase);
 
   /* Build a fake parent block with the coinbase.  */
-  CEquihashBlock parent;
+  CBlock parent;
   parent.nVersion = 1;
   parent.vtx.resize (1);
   parent.vtx[0] = coinbaseRef;
   parent.hashMerkleRoot = BlockMerkleRoot (parent);
+  
+  /* Convert parent Block now into CEquihashBlock */
+  CEquihashBlock equihashblock;
+  equihashblock.nVersion = parent.nVersion;
+  equihashblock.vtx = parent.vtx;
+  equihashblock.hashMerkleRoot = parent.hashMerkleRoot;
 
   /* Construct the auxpow object.  */
   header.SetAuxpow (new CEquihashAuxPow (coinbaseRef));
@@ -396,5 +408,5 @@ CEquihashAuxPow::initAuxPow (CBlockHeader& header)
   header.auxpowequihash->nChainIndex = 0;
   assert (header.auxpowequihash->vMerkleBranch.empty ());
   header.auxpowequihash->nIndex = 0;
-  header.auxpowequihash->parentBlock = parent;
+  header.auxpowequihash->parentBlock = equihashblock;
 }

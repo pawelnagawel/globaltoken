@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLOBALTOKEN_PURE_AUXPOW_H
-#define GLOBALTOKEN_PURE_AUXPOW_H
+#ifndef GLOBALTOKEN_BLOCK_DEPENDENCIES_H
+#define GLOBALTOKEN_BLOCK_DEPENDENCIES_H
 
 #include <serialize.h>
 #include <uint256.h>
@@ -175,4 +175,4 @@ public:
     }
 };
 
-#endif // GLOBALTOKEN_PURE_AUXPOW_H
+#endif // GLOBALTOKEN_BLOCK_DEPENDENCIES_H

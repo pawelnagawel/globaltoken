@@ -7,6 +7,7 @@
 
 #include <hash.h>
 #include <utilstrencodings.h>
+#include <chainparams.h>
 #ifndef NO_GLOBALTOKEN_HARDFORK
 #include <globaltoken/hardfork.h>
 #else
@@ -71,15 +72,6 @@ CDefaultBlockHeader CPureBlockHeader::GetDefaultBlockHeader() const
     block.nBits          = nBits;
     block.nNonce         = nNonce;
     return block;
-}
-
-uint8_t CPureBlockHeader::GetAlgo() const
-{
-	if (IsHardForkActivated(nTime)) 
-	{
-		return nAlgo;
-	}
-	return ALGO_SHA256D;
 }
 
 uint256 CPureBlockHeader::GetPoWHash() const

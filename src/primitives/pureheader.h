@@ -98,6 +98,9 @@ public:
     
     CDefaultBlockHeader GetDefaultBlockHeader() const;    
     CEquihashBlockHeader GetEquihashBlockHeader() const;
+    
+    CDefaultBlock GetDefaultBlock() const;    
+    CEquihashBlock GetEquihashBlock() const;
 
     int64_t GetBlockTime() const
     {

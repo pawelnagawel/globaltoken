@@ -293,7 +293,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nTx            = diskindex.nTx;
 				
                 bool equihashvalidator;
-                bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(), consensusParams, equihashvalidator);
+                bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);
                 
                 if (pindexNew->nAlgo == ALGO_EQUIHASH && !equihashvalidator) {
                     return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());

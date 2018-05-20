@@ -171,7 +171,7 @@ static bool rest_headers(HTTPRequest* req,
 	int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
     CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION | ser_flags);
     for (const CBlockIndex *pindex : headers) {
-        ssHeader << pindex->GetBlockHeader();
+        ssHeader << pindex->GetBlockHeader(Params().GetConsensus());
     }
 
     switch (rf) {

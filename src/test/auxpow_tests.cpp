@@ -77,7 +77,7 @@ public:
    * @param index Index to use in the merkle tree.
    * @return The root hash, with reversed endian.
    */
-  valtype buildAuxpowChain (const uint256& hashAux, unsigned h, int index);
+  std::vector<unsigned char> buildAuxpowChain (const uint256& hashAux, unsigned h, int index);
 
   /**
    * Build the finished CDefaultAuxPow object.  We assume that the auxpowChain
@@ -109,7 +109,7 @@ public:
    * @param nonce The nonce value to use.
    * @return The constructed data.
    */
-  static valtype buildCoinbaseData (bool header, const valtype& auxRoot,
+  static std::vector<unsigned char> buildCoinbaseData (bool header, const std::vector<unsigned char>& auxRoot,
                                     unsigned h, int nonce);
 
 };
@@ -133,7 +133,7 @@ CAuxpowBuilder::setCoinbase (const CScript& scr)
   parentBlock.hashMerkleRoot = BlockMerkleRoot (parentBlock);
 }
 
-valtype
+std::vector<unsigned char>
 CAuxpowBuilder::buildAuxpowChain (const uint256& hashAux, unsigned h, int index)
 {
   auxpowChainIndex = index;
@@ -146,7 +146,7 @@ CAuxpowBuilder::buildAuxpowChain (const uint256& hashAux, unsigned h, int index)
   const uint256 hash
     = CDefaultAuxPow::CheckMerkleBranch (hashAux, auxpowChainMerkleBranch, index);
 
-  valtype res = ToByteVector (hash);
+  std::vector<unsigned char> res = ToByteVector (hash);
   std::reverse (res.begin (), res.end ());
 
   return res;
@@ -156,21 +156,25 @@ CDefaultAuxPow
 CAuxpowBuilder::get (const CTransactionRef tx) const
 {
   LOCK(cs_main);
+  CDefaultBlock defaultblock;
   CDefaultAuxPow res(tx);
   res.InitMerkleBranch (parentBlock, 0);
+  
+  defaultblock     = parentBlock.GetDefaultBlockHeader();
+  defaultblock.vtx = parentBlock.vtx;
 
   res.vChainMerkleBranch = auxpowChainMerkleBranch;
-  res.nChainIndex = auxpowChainIndex;
-  res.parentBlock = parentBlock;
+  res.nChainIndex     = auxpowChainIndex;
+  res.parentBlock     = defaultblock;
 
   return res;
 }
 
-valtype
-CAuxpowBuilder::buildCoinbaseData (bool header, const valtype& auxRoot,
+std::vector<unsigned char>
+CAuxpowBuilder::buildCoinbaseData (bool header, const std::vector<unsigned char>& auxRoot,
                                    unsigned h, int nonce)
 {
-  valtype res;
+  std::vector<unsigned char> res;
 
   if (header)
     res.insert (res.end (), UBEGIN (pchMergedMiningHeader),
@@ -198,7 +202,7 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
   const int nonce = 7;
   int index;
 
-  valtype auxRoot, data;
+  std::vector<unsigned char> auxRoot, data;
   CScript scr;
 
   /* Build a correct auxpow.  The height is the maximally allowed one.  */
@@ -263,9 +267,9 @@ BOOST_AUTO_TEST_CASE (check_auxpow)
 
   /* However, various attempts at smuggling two roots in should be detected.  */
 
-  const valtype wrongAuxRoot
+  const std::vector<unsigned char> wrongAuxRoot
     = builder2.buildAuxpowChain (modifiedAux, height, index);
-  valtype data2
+  std::vector<unsigned char> data2
     = CAuxpowBuilder::buildCoinbaseData (false, wrongAuxRoot, height, nonce);
   builder2.setCoinbase (CScript () << data << data2);
   BOOST_CHECK (builder2.get ().check (hashAux, ourChainId, params));
@@ -341,6 +345,7 @@ mineBlock (CBlockHeader& block, bool ok, int nBits = -1)
   target.SetCompact (nBits);
 
   block.nNonce = 0;
+  const uint8_t algo = block.GetAlgo();
   while (true)
     {
       const bool nowOk = (UintToArith256 (block.GetHash ()) <= target);
@@ -351,9 +356,9 @@ mineBlock (CBlockHeader& block, bool ok, int nBits = -1)
     }
 
   if (ok)
-    BOOST_CHECK (CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus()));
+    BOOST_CHECK (CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus(), algo));
   else
-    BOOST_CHECK (!CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus()));
+    BOOST_CHECK (!CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus(), algo));
 }
 
 BOOST_AUTO_TEST_CASE (auxpow_pow)
@@ -407,7 +412,7 @@ BOOST_AUTO_TEST_CASE (auxpow_pow)
   const unsigned height = 3;
   const int nonce = 7;
   const int index = CDefaultAuxPow::getExpectedIndex (nonce, ourChainId, height);
-  valtype auxRoot, data;
+  std::vector<unsigned char> auxRoot, data;
 
   /* Valid auxpow, PoW check of parent block.  */
   block.SetAuxpowVersion (true);

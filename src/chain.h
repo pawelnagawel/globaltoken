@@ -305,7 +305,7 @@ public:
 
     uint8_t GetAlgo() const
     {
-        CBlockHeader block = GetBlockHeader();
+        CBlockHeader block = GetBlockHeader(Params().GetConsensus());
         return block.GetAlgo();
     }
 

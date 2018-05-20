@@ -260,8 +260,16 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
     
-    if (block.auxpow)
-        result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpow)));
+    if(algo == ALGO_EQUIHASH)
+    {
+        if (block.auxpowequihash)
+            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowequihash)));
+    }
+    else
+    {
+        if (block.auxpowdefault)
+            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault)));
+    }
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
@@ -833,7 +841,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
     if (!fVerbose)
     {
         CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | ser_flags);
-        ssBlock << pblockindex->GetBlockHeader();
+        ssBlock << pblockindex->GetBlockHeader(Params().GetConsensus());
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());
         return strHex;
     }

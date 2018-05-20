@@ -14,8 +14,6 @@
 #include <hash.h>
 #include <tinyformat.h>
 #include <utilstrencodings.h>
-#include <chainparams.h>
-#include <crypto/common.h>
 
 void CBlockHeader::SetAuxpow (CDefaultAuxPow* apow)
 {

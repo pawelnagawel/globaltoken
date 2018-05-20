@@ -15,6 +15,7 @@
 #include <primitives/block.h>
 #include <primitives/mining_block.h>
 #include <uint256.h>
+#include <util.h>
 #include <streams.h>
 #include <crypto/algos/equihash/equihash.h>
 #include <validation.h>
@@ -215,7 +216,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
 {
     CEquihashBlockHeader pequihashblock;
     pequihashblock = pblock->GetEquihashBlockHeader();
-    return CheckEquihashSolution(pequihashblock, params);
+    return CheckEquihashSolution(&pequihashblock, params);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
@@ -325,7 +326,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
             
             // Check the header
             // Also check the Block Header after Equihash solution check.
-            if (!CheckProofOfWork(block.auxpowequihash->getParentBlockHash(nAlgo), block.nBits, params, nAlgo))
+            if (!CheckProofOfWork(block.auxpowequihash->getParentBlockHash(), block.nBits, params, nAlgo))
                 return error("%s : AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
         }
         else
