@@ -164,15 +164,6 @@ public:
         else
             nVersion &= ~VERSION_AUXPOW;
     }
-
-    /**
-     * Check whether this is a "legacy" block without chain ID.
-     * @return True iff it is.
-     */
-    inline bool IsLegacy() const
-    {
-        return (nVersion == 1 || nVersion == 2 || nVersion == 0x20000000);
-    }
 };
 
 #endif // GLOBALTOKEN_BLOCK_DEPENDENCIES_H
