@@ -106,14 +106,15 @@ public:
      * Extract the base version (without modifiers and chain ID).
      * @return The base version./
      */
-    inline int32_t GetBaseVersion() const
+    inline int32_t GetBaseVersion(int32_t nChainId) const
     {
-        return GetBaseVersion(nVersion);
+        return GetBaseVersion(nVersion, nChainId);
     }
-    static inline int32_t GetBaseVersion(int32_t ver)
+    
+    static inline int32_t GetBaseVersion(int32_t ver, int32_t nChainId)
     {
         //return ver % VERSION_AUXPOW;
-        return (ver & 0x000000ff);
+        return ver ^ (nChainId * VERSION_CHAIN_START);
     }
 
     /**
