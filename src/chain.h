@@ -209,7 +209,6 @@ public:
     uint32_t nStatus;
 
     //! block header
-    uint8_t nAlgo;
     int32_t nVersion;
     uint256 hashMerkleRoot;
 	uint256 hashReserved;
@@ -241,7 +240,6 @@ public:
         nSequenceId = 0;
         nTimeMax = 0;
 
-        nAlgo          = 0;
         nVersion       = 0;
         hashMerkleRoot = uint256();
 		hashReserved   = uint256();
@@ -261,7 +259,6 @@ public:
     {
         SetNull();
 
-        nAlgo          = block.nAlgo;
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
 		hashReserved   = block.hashReserved;
@@ -414,21 +411,20 @@ public:
             READWRITE(VARINT(nUndoPos));
 
         // block header
-        READWRITE(nAlgo); 
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-        if (nAlgo == ALGO_EQUIHASH) {
+        if (GetAlgo() == ALGO_EQUIHASH) {
             READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (nAlgo == ALGO_EQUIHASH)
+        if (GetAlgo() == ALGO_EQUIHASH)
         {
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(nAlgo != ALGO_EQUIHASH)
+        if(GetAlgo() != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
         }
@@ -437,7 +433,6 @@ public:
     uint256 GetBlockHash() const
     {
         CBlockHeader block;
-        block.nAlgo           = nAlgo;
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;

@@ -793,9 +793,12 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 // Not exposed to GBT at all
                 break;
             case THRESHOLD_LOCKED_IN:
+            {
                 // Ensure bit is set in block version
                 pblock->nVersion |= VersionBitsMask(consensusParams, pos);
+                pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion);
                 // FALL THROUGH to get vbavailable set...
+            }
             case THRESHOLD_STARTED:
             {
                 const struct VBDeploymentInfo& vbinfo = VersionBitsDeploymentInfo[pos];
@@ -804,6 +807,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                     if (!vbinfo.gbt_force) {
                         // If the client doesn't support this, don't indicate it in the [default] version
                         pblock->nVersion &= ~VersionBitsMask(consensusParams, pos);
+                        pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion);
                     }
                 }
                 break;

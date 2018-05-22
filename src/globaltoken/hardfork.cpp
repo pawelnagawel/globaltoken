@@ -53,6 +53,22 @@ bool IsHardForkActivated(uint32_t blocktime)
 	return IsHardForkActivated(blocktime, consensusParams);
 }
 
+bool IsAlgoBasicVersionAcceptable(int32_t nVersion)
+{
+    return (nVersion % 100 == 0 || nVersion % 100 == 20 || nVersion % 100 == 40 || nVersion % 100 == 60 || nVersion % 100 == 80);
+}
+
+int32_t GetNextBestBlockVersion (int32_t nVersion)
+{
+    for(;;)
+    {
+        if(IsAlgoBasicVersionAcceptable(nVersion))
+            break;
+        nVersion++;
+    }
+    return nVersion;
+}
+
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams)
 {
 	if(IsHardForkActivated(blocktime))

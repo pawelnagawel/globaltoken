@@ -119,7 +119,6 @@ public:
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
-        block.nAlgo          = nAlgo;
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;

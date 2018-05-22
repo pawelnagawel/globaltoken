@@ -144,14 +144,12 @@ bool DecodeHexTx(CMutableTransaction& tx, const std::string& hex_tx, bool try_no
     return false;
 }
 
-bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, uint8_t nAlgo)
+bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk)
 {
-    std::string strFinalBlock = strprintf("%02x%s", nAlgo, strHexBlk);
-    if (!IsHex(strFinalBlock))
+    if (!IsHex(strHexBlk))
         return false;
 
-    std::vector<unsigned char> blockData(ParseHex(strFinalBlock));
-    
+    std::vector<unsigned char> blockData(ParseHex(strHexBlk));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
     try {
         ssBlock >> block;
@@ -159,6 +157,7 @@ bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk, uint8_t nAlgo)
     catch (const std::exception&) {
         return false;
     }
+
     return true;
 }
 

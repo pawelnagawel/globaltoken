@@ -15,6 +15,8 @@ arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusPa
 arith_uint256 GetAlgoPowLimit(uint8_t algo);
 bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusParams);
 bool IsHardForkActivated(uint32_t blocktime);
+bool IsAlgoBasicVersionAcceptable(int32_t nVersion);
+int32_t GetNextBestBlockVersion (int32_t nVersion);
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams);
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime);
 int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consensusParams);

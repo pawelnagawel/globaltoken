@@ -9,6 +9,8 @@
 #include <serialize.h>
 #include <uint256.h>
 
+#include <globaltoken/hardfork.h>
+
 /** Algos */
 enum : uint8_t { 
     ALGO_SHA256D   = 0,
@@ -25,41 +27,6 @@ enum : uint8_t {
 const int NUM_ALGOS = 9;
 
 std::string GetAlgoName(uint8_t Algo);
-
-/**
- * Pure nAlgo extracted into a seperate class.
- */
-class CBlockAlgo
-{
-public:
-
-    uint8_t nAlgo;
-
-    CBlockAlgo()
-    {
-        SetNull();
-    }
-
-    ADD_SERIALIZE_METHODS;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(nAlgo);
-    }
-
-    void SetNull()
-    {
-        nAlgo = 0;
-    }
-    
-    // Set Algo to use
-    inline void SetAlgo(uint8_t algo)
-    {
-        nAlgo = algo;
-    }
-	
-    uint8_t GetAlgo() const;
-};
 
 /**
  * Pure Version that will inherit to all other Block classes

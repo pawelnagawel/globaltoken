@@ -1706,10 +1706,11 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         ThresholdState state = VersionBitsState(pindexPrev, params, static_cast<Consensus::DeploymentPos>(i), versionbitscache);
         if (state == THRESHOLD_LOCKED_IN || state == THRESHOLD_STARTED) {
             nVersion |= VersionBitsMask(params, static_cast<Consensus::DeploymentPos>(i));
+            nVersion = GetNextBestBlockVersion(nVersion);
         }
     } 
 
-    return nVersion;
+    return GetNextBestBlockVersion(nVersion);
 }
 
 /**

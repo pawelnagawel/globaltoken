@@ -12,11 +12,6 @@ void CPureBlockVersion::SetBaseVersion(int32_t nBaseVersion, int32_t nChainId)
     nVersion = nBaseVersion | (nChainId * VERSION_CHAIN_START);
 }
 
-uint8_t CBlockAlgo::GetAlgo() const
-{
-	return nAlgo;
-}
-
 std::string GetAlgoName(uint8_t Algo)
 {
     switch (Algo)
