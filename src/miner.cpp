@@ -137,7 +137,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     }
     
     if (!IsHardForkActivated((uint32_t)currenttime) && algo != ALGO_SHA256D) {
-        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pblock->nTime, chainparams.GetConsensus().HardforkTime);
+        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", currenttime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
     const int32_t nChainId = chainparams.GetConsensus().nAuxpowChainId;
@@ -148,7 +148,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
-        pblock->SetBaseVersion(GetNextBestBlockVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion())), nChainId);
+        pblock->SetBaseVersion(GetNextBestBlockVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId), nChainId);
 
     pblock->nTime = currenttime;
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();

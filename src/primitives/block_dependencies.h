@@ -132,6 +132,16 @@ public:
         else
             nVersion &= ~VERSION_AUXPOW;
     }
+    
+    /**
+     * Extract the normal version from an Auxpow block.
+     * It is needed to validate the algo.
+     * @return The basic Version without auxpow.
+     */
+    inline int32_t GetAuxpowVersion() const
+    {
+        return nVersion ^ VERSION_AUXPOW;
+    }
 };
 
 #endif // GLOBALTOKEN_BLOCK_DEPENDENCIES_H

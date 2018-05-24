@@ -141,7 +141,7 @@ public:
         consensus.defaultAssumeValid = uint256S("0x000000000000014cf4dc216dcc925bf0c6d7096aa6ab82e1af64e946d876df7d"); //200000
         
         consensus.nAuxpowChainId = 0x003c; 
-        consensus.fStrictChainId = true;
+        consensus.fStrictChainId = false;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -375,7 +375,7 @@ public:
         consensus.defaultAssumeValid = uint256S("0x00");
         
         consensus.nAuxpowChainId = 0x00b4; 
-        consensus.fStrictChainId = true;
+        consensus.fStrictChainId = false;
 
         pchMessageStart[0] = 0x14;
         pchMessageStart[1] = 0x76;

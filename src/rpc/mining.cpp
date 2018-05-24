@@ -584,7 +584,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            if (!DecodeHexBlk(block, dataval.get_str(), currentAlgo))
+            if (!DecodeHexBlk(block, dataval.get_str()))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -796,7 +796,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             {
                 // Ensure bit is set in block version
                 pblock->nVersion |= VersionBitsMask(consensusParams, pos);
-                pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion);
+                pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
                 // FALL THROUGH to get vbavailable set...
             }
             case THRESHOLD_STARTED:
@@ -807,7 +807,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                     if (!vbinfo.gbt_force) {
                         // If the client doesn't support this, don't indicate it in the [default] version
                         pblock->nVersion &= ~VersionBitsMask(consensusParams, pos);
-                        pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion);
+                        pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
                     }
                 }
                 break;

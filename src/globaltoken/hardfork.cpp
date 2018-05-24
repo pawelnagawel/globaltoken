@@ -58,11 +58,18 @@ bool IsAlgoBasicVersionAcceptable(int32_t nVersion)
     return (nVersion % 100 == 0 || nVersion % 100 == 20 || nVersion % 100 == 40 || nVersion % 100 == 60 || nVersion % 100 == 80);
 }
 
-int32_t GetNextBestBlockVersion (int32_t nVersion)
+bool IsAlgoExtendedVersionAcceptable(int32_t nVersion, int32_t chainId)
+{
+    // Check if the extended Version is a AuxPow Version, what should not be by default.
+    int32_t newversion = nVersion | (chainId * (1 << 16));
+    return !(newversion & (1 << 8));
+}
+
+int32_t GetNextBestBlockVersion (int32_t nVersion, int32_t chainId)
 {
     for(;;)
     {
-        if(IsAlgoBasicVersionAcceptable(nVersion))
+        if(IsAlgoBasicVersionAcceptable(nVersion) && IsAlgoExtendedVersionAcceptable(nVersion, chainId))
             break;
         nVersion++;
     }
