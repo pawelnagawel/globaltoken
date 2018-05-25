@@ -143,12 +143,13 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     const int32_t nChainId = chainparams.GetConsensus().nAuxpowChainId;
     
     pblock->SetBaseVersion(ComputeBlockVersion(pindexPrev, chainparams.GetConsensus()), nChainId);
-    pblock->SetAlgo(nBlockAlgo);
 	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
-        pblock->SetBaseVersion(GetNextBestBlockVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId), nChainId);
+        pblock->SetBaseVersion(GetNextBaseBlockVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId), nChainId);
+    
+    pblock->SetAlgo(nBlockAlgo);
 
     pblock->nTime = currenttime;
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();

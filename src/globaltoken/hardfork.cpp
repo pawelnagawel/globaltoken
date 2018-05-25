@@ -65,7 +65,7 @@ bool IsAlgoExtendedVersionAcceptable(int32_t nVersion, int32_t chainId)
     return !(newversion & (1 << 8));
 }
 
-int32_t GetNextBestBlockVersion (int32_t nVersion, int32_t chainId)
+int32_t GetNextBaseBlockVersion (int32_t nVersion, int32_t chainId)
 {
     for(;;)
     {

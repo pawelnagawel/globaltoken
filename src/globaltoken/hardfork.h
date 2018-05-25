@@ -17,7 +17,7 @@ bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusP
 bool IsHardForkActivated(uint32_t blocktime);
 bool IsAlgoBasicVersionAcceptable(int32_t nVersion);
 bool IsAlgoExtendedVersionAcceptable(int32_t nVersion, int32_t chainId);
-int32_t GetNextBestBlockVersion (int32_t nVersion, int32_t chainId);
+int32_t GetNextBaseBlockVersion (int32_t nVersion, int32_t chainId);
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams);
 int64_t GetPoWTargetTimeSpan(uint32_t blocktime);
 int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consensusParams);

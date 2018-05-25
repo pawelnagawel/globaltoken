@@ -8,48 +8,11 @@
 #include <hash.h>
 #include <utilstrencodings.h>
 #include <chainparams.h>
-#ifndef NO_GLOBALTOKEN_HARDFORK
-#include <globaltoken/hardfork.h>
-#else
-#define IsHardForkActivated(nTime) (((nTime) >= (1533081600)) ? true : false)
-#endif
-
-#ifndef NO_GLOBALTOKEN_HARDFORK
-uint256 CPureBlockHeader::GetHash(const Consensus::Params& params) const
-{
-    /*int version;
-    if (IsHardForkActivated(nTime, params)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();*/
-    return SerializeHash(*this);
-}
 
 uint256 CPureBlockHeader::GetHash() const
 {
-    /*const Consensus::Params& consensusParams = Params().GetConsensus();
-    return GetHash(consensusParams);*/
     return SerializeHash(*this);
 }
-#else
-uint256 CPureBlockHeader::GetHash() const
-{
-    /*int version;
-    if (IsHardForkActivated(nTime)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();*/
-    return SerializeHash(*this);
-}
-#endif
 
 CEquihashBlockHeader CPureBlockHeader::GetEquihashBlockHeader() const
 {

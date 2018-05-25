@@ -795,8 +795,10 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             case THRESHOLD_LOCKED_IN:
             {
                 // Ensure bit is set in block version
+                uint8_t nBlockAlgo = pblock->GetAlgo();
                 pblock->nVersion |= VersionBitsMask(consensusParams, pos);
-                pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
+                pblock->nVersion = GetNextBaseBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
+                pblock->SetAlgo(nBlockAlgo);
                 // FALL THROUGH to get vbavailable set...
             }
             case THRESHOLD_STARTED:
@@ -806,8 +808,10 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 if (setClientRules.find(vbinfo.name) == setClientRules.end()) {
                     if (!vbinfo.gbt_force) {
                         // If the client doesn't support this, don't indicate it in the [default] version
+                        uint8_t nBlockAlgo = pblock->GetAlgo();
                         pblock->nVersion &= ~VersionBitsMask(consensusParams, pos);
-                        pblock->nVersion = GetNextBestBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
+                        pblock->nVersion = GetNextBaseBlockVersion(pblock->nVersion, consensusParams.nAuxpowChainId);
+                        pblock->SetAlgo(nBlockAlgo);
                     }
                 }
                 break;

@@ -86,7 +86,6 @@ public:
     }
 
     uint256 GetHash() const;
-    uint256 GetHash(const Consensus::Params& params) const;
 
     uint256 GetPoWHash() const;
     uint256 GetPoWHash(uint8_t nAlgo) const;
