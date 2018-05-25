@@ -9,8 +9,6 @@
 #include <serialize.h>
 #include <uint256.h>
 
-#include <globaltoken/hardfork.h>
-
 /** Algos */
 enum : uint8_t { 
     ALGO_SHA256D   = 0,
