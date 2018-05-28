@@ -1213,6 +1213,10 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
         pindexPrev = chainActive.Tip();
         nStart = GetTime();
+	    
+        // If new block is an Equihash block, set the nNonce to null, because it is randomized by default.
+        if(currentAlgo == ALGO_EQUIHASH)
+            newBlock->block.nBigNonce.SetNull();
 
         // Finalise it by setting the version and building the merkle root
         IncrementExtraNonce(&newBlock->block, pindexPrev, nExtraNonce);
