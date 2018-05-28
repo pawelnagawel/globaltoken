@@ -2976,7 +2976,10 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     bool equihashvalidator;
-    bool checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
+    bool checkresult;
+    
+    if (fCheckPOW)
+        checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
     
     if (fCheckPOW && block.GetAlgo() == ALGO_EQUIHASH && !equihashvalidator) 
     {
