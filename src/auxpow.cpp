@@ -370,8 +370,11 @@ CEquihashAuxPow::CheckMerkleBranch (uint256 hash,
 void
 CEquihashAuxPow::initAuxPow (CBlockHeader& header)
 {
+  uint256 bignonce = header.nBigNonce;  
+    
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
+  header.nBigNonce.SetNull();
 
   /* Build a minimal coinbase script input for merge-mining.  */
   const uint256 blockHash = header.GetHash ();
@@ -401,6 +404,7 @@ CEquihashAuxPow::initAuxPow (CBlockHeader& header)
   equihashblock.nVersion = parent.nVersion;
   equihashblock.vtx = parent.vtx;
   equihashblock.hashMerkleRoot = parent.hashMerkleRoot;
+  equihashblock.nNonce = bignonce;
 
   /* Construct the auxpow object.  */
   header.SetAuxpow (new CEquihashAuxPow (coinbaseRef));

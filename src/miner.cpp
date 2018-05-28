@@ -191,7 +191,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
    arith_uint256 nonce;
    if (IsHardForkActivated(pblock->nTime) && algo == ALGO_EQUIHASH) {
-	 // Randomise nonce for new block foramt.
+	 // Randomise nonce for new block format.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)
 	 nonce <<= 32;

@@ -99,9 +99,10 @@ double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 
 namespace
 {
-UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow)
+UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
 {
     UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex()));
 
     {
         UniValue tx(UniValue::VOBJ);
@@ -138,6 +139,8 @@ UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow)
 UniValue AuxpowToJSON(const CEquihashAuxPow& auxpow)
 {
     UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("powhash", auxpow.getParentBlockHash().GetHex()));
+    result.push_back(Pair("solution", HexStr(auxpow.getParentBlock().nSolution)));
 
     {
         UniValue tx(UniValue::VOBJ);
@@ -177,13 +180,17 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = blockindex->GetAlgo();
+    CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
+    bool isauxpow = (header.auxpowequihash || header.auxpowdefault);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
-	result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
+    result.pushKV("isauxpow", isauxpow);
+    if(!isauxpow)
+        result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
     if (chainActive.Contains(blockindex))
@@ -197,7 +204,8 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)blockindex->nNonce);
     result.pushKV("bignonce", blockindex->nBigNonce.GetHex());
-	result.pushKV("solution", HexStr(blockindex->nSolution));
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
@@ -218,6 +226,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = block.GetAlgo();
+    bool isauxpow = (block.auxpowequihash || block.auxpowdefault);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
@@ -234,9 +243,10 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("height", blockindex->nHeight);
     result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
+    if(!isauxpow)
+        result.pushKV("algopowhash", block.GetPoWHash().GetHex());
     result.pushKV("version", block.nVersion);
     result.pushKV("versionHex", strprintf("%08x", block.nVersion));
-    result.pushKV("algopowhash", block.GetPoWHash().GetHex());
     result.pushKV("merkleroot", block.hashMerkleRoot.GetHex());
     UniValue txs(UniValue::VARR);
     for(const auto& tx : block.vtx)
@@ -255,7 +265,8 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)block.nNonce);
     result.pushKV("bignonce", block.nBigNonce.GetHex());
-	result.pushKV("solution", HexStr(blockindex->nSolution));
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
@@ -268,7 +279,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     else
     {
         if (block.auxpowdefault)
-            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault)));
+            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault, algo)));
     }
 
     if (blockindex->pprev)
