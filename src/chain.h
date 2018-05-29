@@ -302,7 +302,13 @@ public:
 
     uint8_t GetAlgo() const
     {
-        CBlockHeader block = GetBlockHeader(Params().GetConsensus());
+        /* create a dummy blockheader and set the nVersion known from CBlockIndex into the block version.
+         * nVersion is required because we need the block algo, which is calculated through nVersion.
+         * So we don't need the full GetBlockHeader Command, because it will fail while linking and 
+         * the LoadBlockIndex will fail if it tries to get a BlockHeader with consensusParams.
+         */ 
+        CBlockHeader block;
+        block.nVersion = nVersion;
         return block.GetAlgo();
     }
 
