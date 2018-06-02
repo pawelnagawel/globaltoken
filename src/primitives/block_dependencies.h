@@ -142,6 +142,16 @@ public:
     }
     
     /**
+     * Checks if the Blockversion is a legacy version (non-hardfork).
+     * @param nVersion the block version to check.
+     * @return true if it is legacy, false if not.
+     */
+    inline bool IsLegacyVersion(int32_t blockversion) const
+    {
+        return (blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913);
+    }
+    
+    /**
      * Extract the start acceptable Version 
      * It is needed to validate current version once instead 20 times (for all algos.)
      * @param nChainId The auxpow chain ID.
@@ -151,10 +161,12 @@ public:
     inline int32_t GetBlockStartVersion(int32_t nChainId, uint8_t nAlgo) const
     {
         int32_t startversion = nVersion;
+        if(IsLegacyVersion(startversion))
+            return startversion;
+        
         if (IsAuxpow())
-        {
             startversion = GetAuxpowVersion();
-        }
+        
         return GetBaseVersion(startversion, nChainId) - nAlgo;
     }
 };

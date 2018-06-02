@@ -2190,7 +2190,8 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
             int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
+            int32_t blockversion = pindex->GetBlockHeader(chainParams.GetConsensus()).GetBlockStartVersion(chainParams.GetConsensus().nAuxpowChainId, pindex->GetAlgo());
+            if (blockversion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (blockversion & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }

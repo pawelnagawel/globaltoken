@@ -66,7 +66,7 @@ uint8_t CPureBlockHeader::GetAlgo() const
         blockversion = GetAuxpowVersion();
     }
     
-    if(blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913 || blockversion % 100 == 0 || blockversion % 100 == 20 || blockversion % 100 == 40 || blockversion % 100 == 60 || blockversion % 100 == 80)
+    if(IsLegacyVersion(blockversion) || blockversion % 100 == 0 || blockversion % 100 == 20 || blockversion % 100 == 40 || blockversion % 100 == 60 || blockversion % 100 == 80)
     {
         return ALGO_SHA256D;
     }
