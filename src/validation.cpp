@@ -1706,11 +1706,10 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         ThresholdState state = VersionBitsState(pindexPrev, params, static_cast<Consensus::DeploymentPos>(i), versionbitscache);
         if (state == THRESHOLD_LOCKED_IN || state == THRESHOLD_STARTED) {
             nVersion |= VersionBitsMask(params, static_cast<Consensus::DeploymentPos>(i));
-            nVersion = GetNextBaseBlockVersion(nVersion, params.nAuxpowChainId);
         }
-    }
+    } 
 
-    return GetNextBaseBlockVersion(nVersion, params.nAuxpowChainId);
+    return nVersion;
 }
 
 /**
@@ -1731,10 +1730,12 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
-        int32_t blockbaseversion = pindex->GetBlockHeader(params).GetBlockStartVersion(params.nAuxpowChainId, pindex->GetAlgo());
-        return ((blockbaseversion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
-               ((blockbaseversion >> bit) & 1) != 0 &&
-               ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
+        CBlockHeader versionverifier;
+        versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, params), params.nAuxpowChainId);
+        versionverifier.SetAlgo(pindex->GetAlgo());
+        return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
+               ((pindex->nVersion >> bit) & 1) != 0 &&
+               ((versionverifier.nVersion >> bit) & 1) == 0;
     }
 };
 
@@ -2164,6 +2165,9 @@ static void DoWarning(const std::string& strWarning)
 
 /** Check warning conditions and do some notifications on new chain tip set. */
 void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainParams) {
+    // Create a Test BlockHeader to verifiy the expected version.
+    CBlockHeader versionverifier;
+    
     // New best block
     mempool.AddTransactionsUpdated(1);
 
@@ -2189,9 +2193,10 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
-            int32_t blockversion = pindex->GetBlockHeader(chainParams.GetConsensus()).GetBlockStartVersion(chainParams.GetConsensus().nAuxpowChainId, pindex->GetAlgo());
-            if (blockversion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (blockversion & ~nExpectedVersion) != 0)
+            versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus()), chainParams.GetConsensus().nAuxpowChainId);
+            versionverifier.SetAlgo(pindex->GetAlgo());
+            int32_t nExpectedVersion = versionverifier.nVersion;
+            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }

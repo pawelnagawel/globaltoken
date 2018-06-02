@@ -147,7 +147,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
-        pblock->SetBaseVersion(GetNextBaseBlockVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId), nChainId);
+        pblock->SetBaseVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion()), nChainId);
     
     pblock->SetAlgo(nBlockAlgo);
 

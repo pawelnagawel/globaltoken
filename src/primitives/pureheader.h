@@ -93,7 +93,38 @@ public:
     // Set Algo to use
     inline void SetAlgo(uint8_t algo)
     {
-        nVersion += algo;
+        switch(algo)
+        {
+            case ALGO_SHA256D:
+                nVersion |= BLOCK_VERSION_SHA256D;
+                break;
+            case ALGO_SCRYPT:
+                nVersion |= BLOCK_VERSION_SCRYPT;
+                break;
+            case ALGO_X11:
+                nVersion |= BLOCK_VERSION_X11;
+                break;
+            case ALGO_NEOSCRYPT:
+                nVersion |= BLOCK_VERSION_NEOSCRYPT;
+                break;
+            case ALGO_EQUIHASH:
+                nVersion |= BLOCK_VERSION_EQUIHASH;
+                break;
+            case ALGO_YESCRYPT:
+                nVersion |= BLOCK_VERSION_YESCRYPT;
+                break;
+            case ALGO_HMQ1725:
+                nVersion |= BLOCK_VERSION_HMQ1725;
+                break;
+            case ALGO_XEVAN:
+                nVersion |= BLOCK_VERSION_XEVAN;
+                break;
+            case ALGO_NIST5:
+                nVersion |= BLOCK_VERSION_NIST5;
+                break;             
+            default:
+                break;
+        }
     }
 	
     uint8_t GetAlgo() const;

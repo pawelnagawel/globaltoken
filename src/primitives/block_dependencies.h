@@ -22,6 +22,19 @@ enum : uint8_t {
     ALGO_NIST5     = 8,
     NUM_ALGOS_IMPL };
 
+enum {
+    BLOCK_VERSION_ALGO           = 0x3E00,
+    BLOCK_VERSION_SHA256D        = (1 << 9),
+    BLOCK_VERSION_SCRYPT         = (2 << 9),
+    BLOCK_VERSION_X11            = (3 << 9),
+    BLOCK_VERSION_NEOSCRYPT      = (4 << 9),
+    BLOCK_VERSION_EQUIHASH       = (5 << 9),
+    BLOCK_VERSION_YESCRYPT       = (6 << 9),
+    BLOCK_VERSION_HMQ1725        = (7 << 9),
+    BLOCK_VERSION_XEVAN          = (8 << 9),
+    BLOCK_VERSION_NIST5          = (9 << 9),
+}    
+    
 const int NUM_ALGOS = 9;
 
 std::string GetAlgoName(uint8_t Algo);
@@ -78,8 +91,12 @@ public:
     
     static inline int32_t GetBaseVersion(int32_t ver, int32_t nChainId)
     {
+        int32_t version = ver;
         //return ver % VERSION_AUXPOW;
-        return ver ^ (nChainId * VERSION_CHAIN_START);
+        if(IsAuxpow())
+            version = GetAuxpowVersion();
+        
+        return version ^ (nChainId * VERSION_CHAIN_START);
     }
 
     /**
@@ -149,25 +166,6 @@ public:
     inline bool IsLegacyVersion(int32_t blockversion) const
     {
         return (blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913);
-    }
-    
-    /**
-     * Extract the start acceptable Version 
-     * It is needed to validate current version once instead 20 times (for all algos.)
-     * @param nChainId The auxpow chain ID.
-     * @param nAlgo The algo ID, that this version includes.
-     * @return The basic start Version
-     */
-    inline int32_t GetBlockStartVersion(int32_t nChainId, uint8_t nAlgo) const
-    {
-        int32_t startversion = nVersion;
-        if(IsLegacyVersion(startversion))
-            return startversion;
-        
-        if (IsAuxpow())
-            startversion = GetAuxpowVersion();
-        
-        return GetBaseVersion(startversion, nChainId) - nAlgo;
     }
 };
 
