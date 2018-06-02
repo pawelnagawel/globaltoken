@@ -151,7 +151,7 @@ public:
     inline int32_t GetBlockStartVersion(int32_t nChainId, uint8_t nAlgo) const
     {
         int32_t startversion = nVersion;
-        if IsAuxpow()
+        if (IsAuxpow())
         {
             startversion = GetAuxpowVersion();
         }
