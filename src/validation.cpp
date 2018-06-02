@@ -1731,8 +1731,9 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
-        return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
-               ((pindex->nVersion >> bit) & 1) != 0 &&
+        int32_t blockbaseversion = pindex->GetBlockHeader(params).GetBlockStartVersion(params.nAuxpowChainId, pindex->GetAlgo());
+        return ((blockbaseversion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
+               ((blockbaseversion >> bit) & 1) != 0 &&
                ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
     }
 };

@@ -140,6 +140,23 @@ public:
     {
         return nVersion ^ VERSION_AUXPOW;
     }
+    
+    /**
+     * Extract the start acceptable Version 
+     * It is needed to validate current version once instead 20 times (for all algos.)
+     * @param nChainId The auxpow chain ID.
+     * @param nAlgo The algo ID, that this version includes.
+     * @return The basic start Version
+     */
+    inline int32_t GetBlockStartVersion(int32_t nChainId, uint8_t nAlgo) const
+    {
+        int32_t startversion = nVersion;
+        if IsAuxpow()
+        {
+            startversion = GetAuxpowVersion();
+        }
+        return GetBaseVersion(startversion, nChainId) - nAlgo;
+    }
 };
 
 #endif // GLOBALTOKEN_BLOCK_DEPENDENCIES_H

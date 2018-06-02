@@ -179,6 +179,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 					// Yes, there is a chance every nonce could fail to satisfy the -regtest
 					// target -- 1 in 2^(2^256). That ain't gonna happen
 					equihashblock.nNonce = ArithToUint256(UintToArith256(equihashblock.nNonce) + 1);
+                    --nMaxTries;
 
 					// H(I||V||...
 					crypto_generichash_blake2b_state curr_state;
@@ -196,7 +197,6 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
-					--nMaxTries;
 					// TODO(h4x3rotab): Add metrics counter like Zcash? `ehSolverRuns.increment();`
 					if (found) {
 						break;
