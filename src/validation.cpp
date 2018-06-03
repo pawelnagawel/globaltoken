@@ -1772,12 +1772,6 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
         flags |= SCRIPT_VERIFY_WITNESS;
         flags |= SCRIPT_VERIFY_NULLDUMMY;
     }
-	
-	if (IsHardForkActivated(pindex->nTime)) {
-        flags |= SCRIPT_VERIFY_STRICTENC;
-    } else {
-        flags |= SCRIPT_ALLOW_NON_FORKID;
-    }
 
     return flags;
 }
