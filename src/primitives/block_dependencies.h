@@ -33,7 +33,7 @@ enum {
     BLOCK_VERSION_HMQ1725        = (7 << 9),
     BLOCK_VERSION_XEVAN          = (8 << 9),
     BLOCK_VERSION_NIST5          = (9 << 9),
-}    
+};
     
 const int NUM_ALGOS = 9;
 
@@ -93,8 +93,8 @@ public:
     {
         int32_t version = ver;
         //return ver % VERSION_AUXPOW;
-        if(IsAuxpow())
-            version = GetAuxpowVersion();
+        if(version & VERSION_AUXPOW)
+            version = version ^ VERSION_AUXPOW;
         
         return version ^ (nChainId * VERSION_CHAIN_START);
     }
