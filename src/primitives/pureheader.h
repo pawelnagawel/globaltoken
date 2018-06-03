@@ -12,12 +12,6 @@
 #include <serialize.h>
 #include <uint256.h>
 
-namespace Consensus {
-    struct Params;
-};
-
-static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
-
 /**
  * A block header without auxpow information.  This "intermediate step"
  * in constructing the full header is useful, because it breaks the cyclic
@@ -47,7 +41,6 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
-        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
         READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
