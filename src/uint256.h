@@ -170,4 +170,12 @@ public:
         return result;
     }
 };
+
+inline uint512 uint512S(const std::string& str)
+{
+    uint512 rv;
+    rv.SetHex(str);
+    return rv;
+}
+
 #endif // BITCOIN_UINT256_H
