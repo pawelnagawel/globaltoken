@@ -179,6 +179,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 					// Yes, there is a chance every nonce could fail to satisfy the -regtest
 					// target -- 1 in 2^(2^256). That ain't gonna happen
 					equihashblock.nNonce = ArithToUint256(UintToArith256(equihashblock.nNonce) + 1);
+                    --nMaxTries;
 
 					// H(I||V||...
 					crypto_generichash_blake2b_state curr_state;
@@ -196,7 +197,6 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
-					--nMaxTries;
 					// TODO(h4x3rotab): Add metrics counter like Zcash? `ehSolverRuns.increment();`
 					if (found) {
 						break;
@@ -584,7 +584,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_TYPE_ERROR, "Missing data String key for proposal");
 
             CBlock block;
-            if (!DecodeHexBlk(block, dataval.get_str(), currentAlgo))
+            if (!DecodeHexBlk(block, dataval.get_str()))
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
 
             uint256 hash = block.GetHash();
@@ -793,9 +793,11 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
                 // Not exposed to GBT at all
                 break;
             case THRESHOLD_LOCKED_IN:
+            {
                 // Ensure bit is set in block version
                 pblock->nVersion |= VersionBitsMask(consensusParams, pos);
                 // FALL THROUGH to get vbavailable set...
+            }
             case THRESHOLD_STARTED:
             {
                 const struct VBDeploymentInfo& vbinfo = VersionBitsDeploymentInfo[pos];
@@ -909,7 +911,7 @@ UniValue submitblock(const JSONRPCRequest& request)
 
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
-    if (!DecodeHexBlk(block, request.params[0].get_str(), currentAlgo)) {
+    if (!DecodeHexBlk(block, request.params[0].get_str())) {
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Block decode failed");
     }
 
@@ -1205,6 +1207,10 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
         pindexPrev = chainActive.Tip();
         nStart = GetTime();
+	    
+        // If new block is an Equihash block, set the nNonce to null, because it is randomized by default.
+        if(currentAlgo == ALGO_EQUIHASH)
+            newBlock->block.nBigNonce.SetNull();
 
         // Finalise it by setting the version and building the merkle root
         IncrementExtraNonce(&newBlock->block, pindexPrev, nExtraNonce);

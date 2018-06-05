@@ -254,7 +254,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
        the chain ID is correct.  Legacy blocks are not allowed since
        the merge-mining start, which is checked in AcceptBlockHeader
        where the height is known.  */
-    if (!hardfork && params.fStrictChainId
+    if (hardfork && params.fStrictChainId
         && block.GetChainId() != params.nAuxpowChainId)
         return error("%s : block does not have our chain ID"
                      " (got %d, expected %d, full nVersion %d)",
@@ -262,7 +262,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
                      params.nAuxpowChainId, block.nVersion);
 
     /* If there is no auxpow, just check the block hash.  */
-    if ((nAlgo == ALGO_EQUIHASH && !block.auxpowequihash) || (nAlgo != ALGO_EQUIHASH && !block.auxpowdefault))
+    if (!block.auxpowequihash && !block.auxpowdefault)
     {
         if (block.IsAuxpow())
             return error("%s : no auxpow on block with auxpow version",
@@ -275,37 +275,50 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
                 // Check Equihash solution
                 if (!CheckEquihashSolution(&block, Params())) {
                     ehsolutionvalid = false;
-                    return error("%s: non-AUXPOW : bad Equihash solution", __func__);
+                    return error("%s: non-AUX proof of work : bad Equihash solution", __func__);
                 }
                 
                 // Check the header
                 // Also check the Block Header after Equihash solution check.
                 if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, nAlgo))
-                    return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+                    return error("%s : non-AUX proof of work failed - hash=%s, algo=%d (%s), nVersion=%d, PoWHash=%s", __func__, block.GetHash().ToString(), nAlgo, GetAlgoName(nAlgo), block.nVersion, block.GetPoWHash().ToString());
             }
             else
             {
                 // Check the header
                 if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, nAlgo))
-                    return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+                    return error("%s : non-AUX proof of work failed - hash=%s, algo=%d (%s), nVersion=%d, PoWHash=%s", __func__, block.GetHash().ToString(), nAlgo, GetAlgoName(nAlgo), block.nVersion, block.GetPoWHash().ToString());
             }
         }
         else
         {
-            // Check the header
-            if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, ALGO_SHA256D))
-                return error("%s : non-AUX proof of work failed (Algo : %s)", __func__, GetAlgoName(nAlgo));
+            if(nAlgo == ALGO_SHA256D)
+            {
+                // Check the header
+                if (!CheckProofOfWork(block.GetPoWHash(), block.nBits, params, ALGO_SHA256D))
+                    return error("%s : non-AUX proof of work failed - hash=%s, algo=%d (%s), nVersion=%d, PoWHash=%s", __func__, block.GetHash().ToString(), nAlgo, GetAlgoName(nAlgo), block.nVersion, block.GetPoWHash().ToString());
+            }
+            else
+            {
+                return error("%s : Algo %s not allowed because Hardfork is not activated.", __func__, GetAlgoName(nAlgo));
+            }
         }
 
         return true;
     }
     
     /* We have auxpow.  Check it.  */
+    
+    if(!hardfork)
+        return error("%s : Found AuxPOW! - AuxPOW not valid yet, It will be activated with the Hardfork.", __func__);
 
     if(nAlgo == ALGO_EQUIHASH)
     {
         if (!block.IsAuxpow())
-        return error("%s : auxpow on block with non-auxpow version", __func__);
+            return error("%s : auxpow on block with non-auxpow version", __func__);
+        
+        if (block.auxpowdefault)
+            return error("%s : wrong auxpow configuration. Expected auxpowequihash, got defaultauxpow", __func__);
 
         /* Temporary check:  Disallow parent blocks with auxpow version.  This is
            for compatibility with the old client.  */
@@ -338,7 +351,10 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     else
     {
         if (!block.IsAuxpow())
-        return error("%s : auxpow on block with non-auxpow version", __func__);
+            return error("%s : auxpow on block with non-auxpow version", __func__);
+        
+        if (block.auxpowequihash)
+            return error("%s : wrong auxpow configuration. Expected defaultauxpow, got auxpowequihash", __func__);
 
         /* Temporary check:  Disallow parent blocks with auxpow version.  This is
            for compatibility with the old client.  */
@@ -365,7 +381,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
             }
             else
             {
-                return error("%s : Algo %s not allowed because Hardfork is not activated.", __func__, GetAlgoName(ALGO_SHA256D));
+                return error("%s : Algo %s not allowed because Hardfork is not activated.", __func__, GetAlgoName(nAlgo));
             }
         }
     }

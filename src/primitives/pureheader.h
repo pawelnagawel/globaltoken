@@ -12,12 +12,6 @@
 #include <serialize.h>
 #include <uint256.h>
 
-namespace Consensus {
-    struct Params;
-};
-
-static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
-
 /**
  * A block header without auxpow information.  This "intermediate step"
  * in constructing the full header is useful, because it breaks the cyclic
@@ -25,7 +19,7 @@ static const int SERIALIZE_BLOCK_LEGACY = 0x04000000;
  * the block header (referencing an auxpow).  The parent block header
  * does not have auxpow itself, so it is a pure header.
  */
-class CPureBlockHeader : public CBlockAlgo, public CPureBlockVersion
+class CPureBlockHeader : public CPureBlockVersion
 {
 public:
     // header
@@ -47,25 +41,20 @@ public:
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
-        bool new_format = !(s.GetVersion() & SERIALIZE_BLOCK_LEGACY);
-        if(new_format)
-        {
-           READWRITE(*(CBlockAlgo*)this);
-        }
         READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        if (new_format && nAlgo == ALGO_EQUIHASH) {
+        if (GetAlgo() == ALGO_EQUIHASH) {
             READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (new_format && nAlgo == ALGO_EQUIHASH)
+        if (GetAlgo() == ALGO_EQUIHASH)
         {
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!new_format || nAlgo != ALGO_EQUIHASH)
+        if(GetAlgo() != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
         }
@@ -73,7 +62,6 @@ public:
 
     void SetNull()
     {
-        CBlockAlgo::SetNull();
         CPureBlockVersion::SetNull();
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
@@ -91,10 +79,48 @@ public:
     }
 
     uint256 GetHash() const;
-    uint256 GetHash(const Consensus::Params& params) const;
 
     uint256 GetPoWHash() const;
     uint256 GetPoWHash(uint8_t nAlgo) const;
+    
+    // Set Algo to use
+    inline void SetAlgo(uint8_t algo)
+    {
+        switch(algo)
+        {
+            case ALGO_SHA256D:
+                nVersion |= BLOCK_VERSION_SHA256D;
+                break;
+            case ALGO_SCRYPT:
+                nVersion |= BLOCK_VERSION_SCRYPT;
+                break;
+            case ALGO_X11:
+                nVersion |= BLOCK_VERSION_X11;
+                break;
+            case ALGO_NEOSCRYPT:
+                nVersion |= BLOCK_VERSION_NEOSCRYPT;
+                break;
+            case ALGO_EQUIHASH:
+                nVersion |= BLOCK_VERSION_EQUIHASH;
+                break;
+            case ALGO_YESCRYPT:
+                nVersion |= BLOCK_VERSION_YESCRYPT;
+                break;
+            case ALGO_HMQ1725:
+                nVersion |= BLOCK_VERSION_HMQ1725;
+                break;
+            case ALGO_XEVAN:
+                nVersion |= BLOCK_VERSION_XEVAN;
+                break;
+            case ALGO_NIST5:
+                nVersion |= BLOCK_VERSION_NIST5;
+                break;             
+            default:
+                break;
+        }
+    }
+	
+    uint8_t GetAlgo() const;
     
     CDefaultBlockHeader GetDefaultBlockHeader() const;    
     CEquihashBlockHeader GetEquihashBlockHeader() const;

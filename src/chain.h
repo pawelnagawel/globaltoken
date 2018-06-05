@@ -209,7 +209,6 @@ public:
     uint32_t nStatus;
 
     //! block header
-    uint8_t nAlgo;
     int32_t nVersion;
     uint256 hashMerkleRoot;
 	uint256 hashReserved;
@@ -241,7 +240,6 @@ public:
         nSequenceId = 0;
         nTimeMax = 0;
 
-        nAlgo          = 0;
         nVersion       = 0;
         hashMerkleRoot = uint256();
 		hashReserved   = uint256();
@@ -261,7 +259,6 @@ public:
     {
         SetNull();
 
-        nAlgo          = block.nAlgo;
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
 		hashReserved   = block.hashReserved;
@@ -305,7 +302,13 @@ public:
 
     uint8_t GetAlgo() const
     {
-        CBlockHeader block = GetBlockHeader(Params().GetConsensus());
+        /* create a dummy blockheader and set the nVersion known from CBlockIndex into the block version.
+         * nVersion is required because we need the block algo, which is calculated through nVersion.
+         * So we don't need the full GetBlockHeader Command, because it will fail while linking and 
+         * the LoadBlockIndex will fail if it tries to get a BlockHeader with consensusParams.
+         */ 
+        CBlockHeader block;
+        block.nVersion = nVersion;
         return block.GetAlgo();
     }
 
@@ -414,21 +417,20 @@ public:
             READWRITE(VARINT(nUndoPos));
 
         // block header
-        READWRITE(nAlgo); 
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-        if (nAlgo == ALGO_EQUIHASH) {
+        if (GetAlgo() == ALGO_EQUIHASH) {
             READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (nAlgo == ALGO_EQUIHASH)
+        if (GetAlgo() == ALGO_EQUIHASH)
         {
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(nAlgo != ALGO_EQUIHASH)
+        if(GetAlgo() != ALGO_EQUIHASH)
         {
             READWRITE(nNonce);
         }
@@ -437,7 +439,6 @@ public:
     uint256 GetBlockHash() const
     {
         CBlockHeader block;
-        block.nAlgo           = nAlgo;
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;

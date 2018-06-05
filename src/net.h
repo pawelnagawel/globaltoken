@@ -48,13 +48,13 @@ static const unsigned int MAX_INV_SZ = 50000;
 /** The maximum number of new addresses to accumulate before announcing. */
 static const unsigned int MAX_ADDR_TO_SEND = 1000;
 /**
- * Maximum length of incoming protocol messages (no message over 33 MiB is
+ * Maximum length of incoming protocol messages (no message over 32 MiB is
  * currently acceptable).  Bitcoin has 4 MiB here, but we need more space
  * to allow for 2,000 block headers with auxpow.
  */
 /* FIXME: Once the headers size limit is deployed sufficiently in the network,
    we may want to lower this again if it seems useful.  */
-static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 33 * 1000 * 1000;
+static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 32 * 1000 * 1000;
 /** Maximum length of strSubVer in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
 /** Maximum number of automatic outgoing nodes */
@@ -854,8 +854,6 @@ public:
     std::string GetAddrName() const;
     //! Sets the addrName only if it was not previously set
     void MaybeSetAddrName(const std::string& addrNameIn);
-	
-	bool IsLegacyBlockHeader(int version) { return version < GLOBALTOKEN_HARDFORK_VERSION; };
 };
 
 

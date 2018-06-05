@@ -8,45 +8,11 @@
 #include <hash.h>
 #include <utilstrencodings.h>
 #include <chainparams.h>
-#ifndef NO_GLOBALTOKEN_HARDFORK
-#include <globaltoken/hardfork.h>
-#else
-#define IsHardForkActivated(nTime) (((nTime) >= (1533081600)) ? true : false)
-#endif
-
-#ifndef NO_GLOBALTOKEN_HARDFORK
-uint256 CPureBlockHeader::GetHash(const Consensus::Params& params) const
-{
-    int version;
-    if (IsHardForkActivated(nTime, params)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
 
 uint256 CPureBlockHeader::GetHash() const
 {
-    const Consensus::Params& consensusParams = Params().GetConsensus();
-    return GetHash(consensusParams);
+    return SerializeHash(*this);
 }
-#else
-uint256 CPureBlockHeader::GetHash() const
-{
-    int version;
-    if (IsHardForkActivated(nTime)) {
-        version = PROTOCOL_VERSION;
-    } else {
-        version = PROTOCOL_VERSION | SERIALIZE_BLOCK_LEGACY;
-    }
-    CHashWriter writer(SER_GETHASH, version);
-    ::Serialize(writer, *this);
-    return writer.GetHash();
-}
-#endif
 
 CEquihashBlockHeader CPureBlockHeader::GetEquihashBlockHeader() const
 {
@@ -90,4 +56,33 @@ uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
     CDefaultBlockHeader block;
     block = CPureBlockHeader::GetDefaultBlockHeader();
     return block.GetPoWHash(nAlgo);
+}
+
+uint8_t CPureBlockHeader::GetAlgo() const
+{
+    if(IsLegacyVersion(nVersion))
+        return ALGO_SHA256D;
+    
+    switch (nVersion & BLOCK_VERSION_ALGO)
+    {
+        case BLOCK_VERSION_SHA256D:
+            return ALGO_SHA256D;
+        case BLOCK_VERSION_SCRYPT:
+            return ALGO_SCRYPT;
+        case BLOCK_VERSION_X11:
+            return ALGO_X11;
+        case BLOCK_VERSION_NEOSCRYPT:
+            return ALGO_NEOSCRYPT;
+        case BLOCK_VERSION_EQUIHASH:
+            return ALGO_EQUIHASH;
+        case BLOCK_VERSION_YESCRYPT:
+            return ALGO_YESCRYPT;
+        case BLOCK_VERSION_HMQ1725:
+            return ALGO_HMQ1725;
+        case BLOCK_VERSION_XEVAN:
+            return ALGO_XEVAN;
+        case BLOCK_VERSION_NIST5:
+            return ALGO_NIST5;
+    }
+    return ALGO_SHA256D;
 }

@@ -227,6 +227,7 @@ CDefaultAuxPow::initAuxPow (CBlockHeader& header)
   /* Convert parent Block now into CDefaultBlock */
   CDefaultBlock defaultblock;
   defaultblock.nVersion = parent.nVersion;
+  defaultblock.vtx.resize (1);
   defaultblock.vtx = parent.vtx;
   defaultblock.hashMerkleRoot = parent.hashMerkleRoot;
 
@@ -370,8 +371,11 @@ CEquihashAuxPow::CheckMerkleBranch (uint256 hash,
 void
 CEquihashAuxPow::initAuxPow (CBlockHeader& header)
 {
+  uint256 bignonce = header.nBigNonce;  
+    
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
+  header.nBigNonce.SetNull();
 
   /* Build a minimal coinbase script input for merge-mining.  */
   const uint256 blockHash = header.GetHash ();
@@ -399,8 +403,10 @@ CEquihashAuxPow::initAuxPow (CBlockHeader& header)
   /* Convert parent Block now into CEquihashBlock */
   CEquihashBlock equihashblock;
   equihashblock.nVersion = parent.nVersion;
+  equihashblock.vtx.resize (1);
   equihashblock.vtx = parent.vtx;
   equihashblock.hashMerkleRoot = parent.hashMerkleRoot;
+  equihashblock.nNonce = bignonce;
 
   /* Construct the auxpow object.  */
   header.SetAuxpow (new CEquihashAuxPow (coinbaseRef));

@@ -10,7 +10,6 @@
 CBlockHeader CBlockIndex::GetBlockHeader(const Consensus::Params& consensusParams) const
 {
     CBlockHeader block;
-    block.nAlgo          = nAlgo;
     block.nVersion       = nVersion;
     /* The CBlockIndex object's block header is missing the auxpow.
        So if this is an auxpow block, read it from disk instead.  We only

@@ -280,7 +280,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nFile          = diskindex.nFile;
                 pindexNew->nDataPos       = diskindex.nDataPos;
                 pindexNew->nUndoPos       = diskindex.nUndoPos;
-                pindexNew->nAlgo          = diskindex.nAlgo;
                 pindexNew->nVersion       = diskindex.nVersion;
                 pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
                 pindexNew->hashReserved   = diskindex.hashReserved;
@@ -288,14 +287,14 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
                 pindexNew->nBigNonce      = diskindex.nBigNonce;
-				pindexNew->nSolution      = diskindex.nSolution;
+                pindexNew->nSolution      = diskindex.nSolution;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
 				
                 bool equihashvalidator;
                 bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);
                 
-                if (pindexNew->nAlgo == ALGO_EQUIHASH && !equihashvalidator) {
+                if (pindexNew->GetAlgo() == ALGO_EQUIHASH && !equihashvalidator) {
                     return error("%s: Equihash solution invalid at: %s", __func__, pindexNew->ToString());
                 }
 

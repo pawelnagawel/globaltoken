@@ -22,44 +22,22 @@ enum : uint8_t {
     ALGO_NIST5     = 8,
     NUM_ALGOS_IMPL };
 
+enum {
+    BLOCK_VERSION_ALGO           = 0x3E00,
+    BLOCK_VERSION_SHA256D        = (1 << 9),
+    BLOCK_VERSION_SCRYPT         = (2 << 9),
+    BLOCK_VERSION_X11            = (3 << 9),
+    BLOCK_VERSION_NEOSCRYPT      = (4 << 9),
+    BLOCK_VERSION_EQUIHASH       = (5 << 9),
+    BLOCK_VERSION_YESCRYPT       = (6 << 9),
+    BLOCK_VERSION_HMQ1725        = (7 << 9),
+    BLOCK_VERSION_XEVAN          = (8 << 9),
+    BLOCK_VERSION_NIST5          = (9 << 9),
+};
+    
 const int NUM_ALGOS = 9;
 
 std::string GetAlgoName(uint8_t Algo);
-
-/**
- * Pure nAlgo extracted into a seperate class.
- */
-class CBlockAlgo
-{
-public:
-
-    uint8_t nAlgo;
-
-    CBlockAlgo()
-    {
-        SetNull();
-    }
-
-    ADD_SERIALIZE_METHODS;
-
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(nAlgo);
-    }
-
-    void SetNull()
-    {
-        nAlgo = 0;
-    }
-    
-    // Set Algo to use
-    inline void SetAlgo(uint8_t algo)
-    {
-        nAlgo = algo;
-    }
-	
-    uint8_t GetAlgo() const;
-};
 
 /**
  * Pure Version that will inherit to all other Block classes
@@ -113,8 +91,12 @@ public:
     
     static inline int32_t GetBaseVersion(int32_t ver, int32_t nChainId)
     {
+        int32_t version = ver;
         //return ver % VERSION_AUXPOW;
-        return ver ^ (nChainId * VERSION_CHAIN_START);
+        if(version & VERSION_AUXPOW)
+            version = version ^ VERSION_AUXPOW;
+        
+        return version ^ (nChainId * VERSION_CHAIN_START);
     }
 
     /**
@@ -164,6 +146,26 @@ public:
             nVersion |= VERSION_AUXPOW;
         else
             nVersion &= ~VERSION_AUXPOW;
+    }
+    
+    /**
+     * Extract the normal version from an Auxpow block.
+     * It is needed to validate the algo.
+     * @return The basic Version without auxpow.
+     */
+    inline int32_t GetAuxpowVersion() const
+    {
+        return nVersion ^ VERSION_AUXPOW;
+    }
+    
+    /**
+     * Checks if the Blockversion is a legacy version (non-hardfork).
+     * @param nVersion the block version to check.
+     * @return true if it is legacy, false if not.
+     */
+    inline bool IsLegacyVersion(int32_t blockversion) const
+    {
+        return (blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913);
     }
 };
 

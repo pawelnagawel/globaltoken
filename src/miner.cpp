@@ -137,18 +137,19 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     }
     
     if (!IsHardForkActivated((uint32_t)currenttime) && algo != ALGO_SHA256D) {
-        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", pblock->nTime, chainparams.GetConsensus().HardforkTime);
+        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", currenttime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
     const int32_t nChainId = chainparams.GetConsensus().nAuxpowChainId;
     
-    pblock->SetAlgo(nBlockAlgo);
     pblock->SetBaseVersion(ComputeBlockVersion(pindexPrev, chainparams.GetConsensus()), nChainId);
 	
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
-        pblock->SetBaseVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion()), nChainId);
+        pblock->SetBaseVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId);
+    
+    pblock->SetAlgo(nBlockAlgo);
 
     pblock->nTime = currenttime;
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -190,7 +191,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
    arith_uint256 nonce;
    if (IsHardForkActivated(pblock->nTime) && algo == ALGO_EQUIHASH) {
-	 // Randomise nonce for new block foramt.
+	 // Randomise nonce for new block format.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)
 	 nonce <<= 32;

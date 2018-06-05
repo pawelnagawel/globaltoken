@@ -1730,9 +1730,12 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
+        CBlockHeader versionverifier;
+        versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, params), params.nAuxpowChainId);
+        versionverifier.SetAlgo(pindex->GetAlgo());
         return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
                ((pindex->nVersion >> bit) & 1) != 0 &&
-               ((ComputeBlockVersion(pindex->pprev, params) >> bit) & 1) == 0;
+               ((versionverifier.nVersion >> bit) & 1) == 0;
     }
 };
 
@@ -1768,12 +1771,6 @@ static unsigned int GetBlockScriptFlags(const CBlockIndex* pindex, const Consens
     if (IsWitnessEnabled(pindex->pprev, consensusparams)) {
         flags |= SCRIPT_VERIFY_WITNESS;
         flags |= SCRIPT_VERIFY_NULLDUMMY;
-    }
-	
-	if (IsHardForkActivated(pindex->nTime)) {
-        flags |= SCRIPT_VERIFY_STRICTENC;
-    } else {
-        flags |= SCRIPT_ALLOW_NON_FORKID;
     }
 
     return flags;
@@ -2162,6 +2159,9 @@ static void DoWarning(const std::string& strWarning)
 
 /** Check warning conditions and do some notifications on new chain tip set. */
 void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainParams) {
+    // Create a Test BlockHeader to verifiy the expected version.
+    CBlockHeader versionverifier;
+    
     // New best block
     mempool.AddTransactionsUpdated(1);
 
@@ -2187,7 +2187,9 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
         // Check the version of the last 100 blocks to see if we need to upgrade:
         for (int i = 0; i < 100 && pindex != nullptr; i++)
         {
-            int32_t nExpectedVersion = ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus());
+            versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus()), chainParams.GetConsensus().nAuxpowChainId);
+            versionverifier.SetAlgo(pindex->GetAlgo());
+            int32_t nExpectedVersion = versionverifier.nVersion;
             if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
@@ -2975,7 +2977,10 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     bool equihashvalidator;
-    bool checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
+    bool checkresult;
+    
+    if (fCheckPOW)
+        checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
     
     if (fCheckPOW && block.GetAlgo() == ALGO_EQUIHASH && !equihashvalidator) 
     {
@@ -3024,11 +3029,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // checks that use witness data may be performed here.
 
     // Size limits
-	int serialization_flags = SERIALIZE_TRANSACTION_NO_WITNESS;
-    if (!IsHardForkActivated(block.nTime)) {
-        serialization_flags |= SERIALIZE_BLOCK_LEGACY;
-    }
-    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
 
     // First transaction must be coinbase, the rest must not be

@@ -99,9 +99,10 @@ double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 
 namespace
 {
-UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow)
+UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
 {
     UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex()));
 
     {
         UniValue tx(UniValue::VOBJ);
@@ -138,6 +139,8 @@ UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow)
 UniValue AuxpowToJSON(const CEquihashAuxPow& auxpow)
 {
     UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("powhash", auxpow.getParentBlockHash().GetHex()));
+    result.push_back(Pair("solution", HexStr(auxpow.getParentBlock().nSolution)));
 
     {
         UniValue tx(UniValue::VOBJ);
@@ -177,13 +180,17 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = blockindex->GetAlgo();
+    CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
+    bool isauxpow = (header.auxpowequihash || header.auxpowdefault);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
-	result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
+    result.pushKV("isauxpow", isauxpow);
+    if(!isauxpow)
+        result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
     if (chainActive.Contains(blockindex))
@@ -197,7 +204,8 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)blockindex->nNonce);
     result.pushKV("bignonce", blockindex->nBigNonce.GetHex());
-	result.pushKV("solution", HexStr(blockindex->nSolution));
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
@@ -218,6 +226,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = block.GetAlgo();
+    bool isauxpow = (block.auxpowequihash || block.auxpowdefault);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
@@ -227,16 +236,16 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     if (chainActive.Contains(blockindex))
         confirmations = chainActive.Height() - blockindex->nHeight + 1;
     result.pushKV("confirmations", confirmations);
-	int ser_flags = (IsHardForkActivated(block.nTime)) ? 0 : SERIALIZE_BLOCK_LEGACY;
-    result.pushKV("strippedsize", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS | ser_flags));
-    result.pushKV("size", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | ser_flags));
+    result.pushKV("strippedsize", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS));
+    result.pushKV("size", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION));
     result.pushKV("weight", (int)::GetBlockWeight(block));
     result.pushKV("height", blockindex->nHeight);
     result.pushKV("algo", GetAlgoName(algo));
 	result.pushKV("algoid", algo);
+    if(!isauxpow)
+        result.pushKV("algopowhash", block.GetPoWHash().GetHex());
     result.pushKV("version", block.nVersion);
     result.pushKV("versionHex", strprintf("%08x", block.nVersion));
-    result.pushKV("algopowhash", block.GetPoWHash().GetHex());
     result.pushKV("merkleroot", block.hashMerkleRoot.GetHex());
     UniValue txs(UniValue::VARR);
     for(const auto& tx : block.vtx)
@@ -255,7 +264,8 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)block.nNonce);
     result.pushKV("bignonce", block.nBigNonce.GetHex());
-	result.pushKV("solution", HexStr(blockindex->nSolution));
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
@@ -268,7 +278,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     else
     {
         if (block.auxpowdefault)
-            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault)));
+            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault, algo)));
     }
 
     if (blockindex->pprev)
@@ -780,7 +790,7 @@ UniValue getblockhash(const JSONRPCRequest& request)
 
 UniValue getblockheader(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
         throw std::runtime_error(
             "getblockheader \"hash\" ( verbose )\n"
             "\nIf verbose is false, returns a string that is serialized, hex-encoded data for blockheader 'hash'.\n"
@@ -788,7 +798,6 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. \"hash\"          (string, required) The block hash\n"
             "2. verbose           (boolean, optional, default=true) true for a json object, false for the hex encoded data\n"
-			"3. \"legacy\"        (boolean, optional, default=(automatic choose)) indicates if the block should be in legacy format\n"
             "\nResult (for verbose = true):\n"
             "{\n"
             "  \"hash\" : \"hash\",     (string) the block hash (same as provided)\n"
@@ -804,9 +813,9 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"0000...1f3\"     (string) Expected number of hashes required to produce the current chain (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
-			"  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
+            "  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\",      (string) The hash of the next block\n"
-			"  \"nextalgohash\" : \"hash\",       (string) The hash of the next block with the same algo\n"
+            "  \"nextalgohash\" : \"hash\",       (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbose=false):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
@@ -823,15 +832,6 @@ UniValue getblockheader(const JSONRPCRequest& request)
     bool fVerbose = true;
     if (!request.params[1].isNull())
         fVerbose = request.params[1].get_bool();
-		
-    CBlockIndex* currentchain = chainActive.Tip();
-    bool legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
-
-    if (request.params.size() == 3) {
-        legacy_format = request.params[2].get_bool();
-    }
-    
-    int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
 
     if (mapBlockIndex.count(hash) == 0)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block not found");
@@ -840,7 +840,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
 
     if (!fVerbose)
     {
-        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION);
         ssBlock << pblockindex->GetBlockHeader(Params().GetConsensus());
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());
         return strHex;
@@ -851,7 +851,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
 
 UniValue getblock(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
         throw std::runtime_error(
             "getblock \"blockhash\" ( verbosity ) \n"
             "\nIf verbosity is 0, returns a string that is serialized, hex-encoded data for block 'hash'.\n"
@@ -860,8 +860,7 @@ UniValue getblock(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. \"blockhash\"          (string, required) The block hash\n"
             "2. verbosity              (numeric, optional, default=1) 0 for hex encoded data, 1 for a json object, and 2 for json object with transaction data\n"
-            "3. \"legacy\"             (boolean, optional, default=(automatic choose)) indicates if the block should be in legacy format\n"
-			"\nResult (for verbosity = 0):\n"
+            "\nResult (for verbosity = 0):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
             "\nResult (for verbosity = 1):\n"
             "{\n"
@@ -885,9 +884,9 @@ UniValue getblock(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"xxxx\",  (string) Expected number of hashes required to produce the chain up to this block (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
-			"  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
+            "  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
-			"  \"nextalgohash\" : \"hash\"        (string) The hash of the next block with the same algo\n"
+            "  \"nextalgohash\" : \"hash\"        (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbosity = 2):\n"
             "{\n"
@@ -914,12 +913,6 @@ UniValue getblock(const JSONRPCRequest& request)
         else
             verbosity = request.params[1].get_bool() ? 1 : 0;
     }
-	
-	CBlockIndex* currentchain = chainActive.Tip();
-    bool legacy_format = IsHardForkActivated(currentchain->nTime) ? false : true;
-    if (request.params.size() == 3) {
-        legacy_format = request.params[2].get_bool();
-    }
 
     if (mapBlockIndex.count(hash) == 0)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block not found");
@@ -940,8 +933,7 @@ UniValue getblock(const JSONRPCRequest& request)
 
     if (verbosity <= 0)
     {
-        int ser_flags = legacy_format ? SERIALIZE_BLOCK_LEGACY : 0;
-        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | ser_flags | RPCSerializationFlags());
+        CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
         ssBlock << block;
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());
         return strHex;
