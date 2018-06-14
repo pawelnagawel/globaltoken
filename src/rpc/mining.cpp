@@ -93,7 +93,8 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
             return NullUniValue;
         
         const CChainParams& params = Params();
-        CAmount treasuryamount = params.GetTreasuryAmount(GetBlockSubsidy(nHeight, params.GetConsensus()));
+        CAmount blockreward = GetBlockSubsidy(nHeight, params.GetConsensus());
+        CAmount treasuryamount = params.GetTreasuryAmount(blockreward);
         CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
         
         CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
@@ -101,11 +102,14 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         sshextxstream << out;
         
         UniValue obj(UniValue::VOBJ);
-        obj.pushKV("height",           nHeight);
-        obj.pushKV("treasuryamount",   treasuryamount);
-        obj.pushKV("treasuryvalue",    ValueFromAmount(treasuryamount));
-        obj.pushKV("treasuryaddress",  params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
-        obj.pushKV("hex",              HexStr(sshextxstream.begin(), sshextxstream.end()));
+        obj.pushKV("height",                 nHeight);
+        obj.pushKV("blockreward",            blockreward);
+        obj.pushKV("blockreward_coins",      ValueFromAmount(blockreward));
+        obj.pushKV("treasury_percentage",    params.GetConsensus().nTreasuryAmount);
+        obj.pushKV("treasury_amount",        treasuryamount);
+        obj.pushKV("treasury_value",         ValueFromAmount(treasuryamount));
+        obj.pushKV("treasury_address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+        obj.pushKV("hex",                    HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
     }
     return NullUniValue;
@@ -121,11 +125,14 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
             "1. nHeight     (numeric, optional, default=currentHeight) Calculate treasury for a given height.\n"
             "\nResult:\n"
             "{\n"
-            "  \"height\": xxxxx,           (numeric) The height of this treasury details\n"
-            "  \"treasuryamount\":  xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
-            "  \"treasuryvalue\":   xxxxx,  (numeric) The treasury amount for this height in Coins\n"
-            "  \"treasuryaddress\": xxxxx,  (string)  The GlobalToken treasury address of this height\n"
-            "  \"hex\": xxxxx,              (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "  \"height\": xxxxx,                 (numeric) The height of this treasury details\n"
+            "  \"blockreward\":  xxxxx,           (numeric) The full blockreward of the given height in Satoshis (excluding fees)\n"
+            "  \"blockreward_coins\":   xxxxx,    (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
+            "  \"treasury_percentage\": xxxxx,    (numeric) The treasury percentage\n"
+            "  \"treasury_amount\":     xxxxx,    (numeric) The treasury amount for this height in Satoshis\n"
+            "  \"treasury_value\":      xxxxx,    (numeric) The treasury amount for this height in Coins\n"
+            "  \"treasury_address\":    xxxxx,    (string)  The GlobalToken treasury address of this height\n"
+            "  \"hex\": xxxxx,                    (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
             "}\n"
             + HelpExampleCli("getblocktreasury", "")
             + HelpExampleRpc("getblocktreasury", "")
