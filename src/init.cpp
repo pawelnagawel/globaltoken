@@ -494,7 +494,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-whitelistforcerelay", strprintf(_("Force relay of transactions from whitelisted peers even if they violate local relay policy (default: %d)"), DEFAULT_WHITELISTFORCERELAY));
     strUsage += HelpMessageOpt("-whitelistrelay", strprintf(_("Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)"), DEFAULT_WHITELISTRELAY));
 
-    strUsage += HelpMessageGroup(_("Block creation options:"));
+    strUsage += HelpMessageGroup(_("Block creation options:"));    
+    strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithm: sha256d, scrypt, x11, neoscrypt, equihash, yescrypt, hmq1725, xevan, nist5"));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");
     strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DefaultMaxBlockWeight(false)));
@@ -502,7 +503,7 @@ std::string HelpMessage(HelpMessageMode mode)
     if (showDebug)
         strUsage += HelpMessageOpt("-blockversion=<n>", "Override block version to test forking scenarios");
 		
-	strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithm: sha256d, scrypt, x11, neoscrypt, equihash, yescrypt, hmq1725, xevan, nist5"));
+    strUsage += HelpMessageOpt("-coinbasetxnaddress=<address>", _("If you mine with getblocktemplate coinbasetxn, you need to paste an address here. It will be used to generate the coinbasetxn"));
     strUsage += HelpMessageGroup(_("RPC server options:"));
     strUsage += HelpMessageOpt("-rest", strprintf(_("Accept public REST requests (default: %u)"), DEFAULT_REST_ENABLE));
     strUsage += HelpMessageOpt("-rpcallowip=<ip>", _("Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"));

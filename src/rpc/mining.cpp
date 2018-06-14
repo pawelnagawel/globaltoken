@@ -85,6 +85,57 @@ UniValue GetNetworkHashPS(int lookup, int height) {
     return workDiff.getdouble() / timeDiff;
 }
 
+UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck)
+{
+    if(IsHardForkActivated(nTime) || skipActivationCheck)
+    {
+        if(nHeight < 0)
+            return NullUniValue;
+        
+        const CChainParams& params = Params();
+        CAmount treasuryamount = params.GetTreasuryAmount(GetBlockSubsidy(nHeight, params.GetConsensus()));
+        CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
+        
+        CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
+        
+        sshextxstream << out;
+        
+        UniValue obj(UniValue::VOBJ);
+        obj.pushKV("height",           nHeight);
+        obj.pushKV("treasuryamount",   treasuryamount);
+        obj.pushKV("treasuryvalue",    ValueFromAmount(treasuryamount));
+        obj.pushKV("treasuryaddress",  params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+        obj.pushKV("hex",              HexStr(sshextxstream.begin(), sshextxstream.end()));
+        return obj;
+    }
+    return NullUniValue;
+}
+
+UniValue getblocktreasury(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() > 1)
+        throw std::runtime_error(
+            "getblocktreasury ( nblocks height )\n"
+            "\nReturns a json object containing treasury-related information, that must be included in Hardfork blocks.\n"
+            "\nArguments:\n"
+            "1. nHeight     (numeric, optional, default=currentHeight) Calculate treasury for a given height.\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"height\": xxxxx,           (numeric) The height of this treasury details\n"
+            "  \"treasuryamount\":  xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
+            "  \"treasuryvalue\":   xxxxx,  (numeric) The treasury amount for this height in Coins\n"
+            "  \"treasuryaddress\": xxxxx,  (string)  The GlobalToken treasury address of this height\n"
+            "  \"hex\": xxxxx,              (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "}\n"
+            + HelpExampleCli("getblocktreasury", "")
+            + HelpExampleRpc("getblocktreasury", "")
+       );
+
+    LOCK(cs_main);
+    int nHeight = (request.params[0].isNull()) ? chainActive.Tip()->nHeight : request.params[0].get_int();
+    return GetTreasuryOutput(chainActive.Tip()->nTime, nHeight, true);
+}
+
 UniValue getnetworkhashps(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() > 2)
@@ -559,9 +610,11 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
+    CScript coinbasetxnscript = CScript();
     std::string strMode = "template";
     UniValue lpval = NullUniValue;
     std::set<std::string> setClientRules;
+    std::set<std::string> setCapabilitiesRules;
     int64_t nMaxVersionPreVB = -1;
     if (!request.params[0].isNull())
     {
@@ -577,7 +630,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
         lpval = find_value(oparam, "longpollid");
 
-        if (strMode == "proposal" || strMode == "proposal_legacy")
+        if (strMode == "proposal")
         {
             const UniValue& dataval = find_value(oparam, "data");
             if (!dataval.isStr())
@@ -618,6 +671,14 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             const UniValue& uvMaxVersion = find_value(oparam, "maxversion");
             if (uvMaxVersion.isNum()) {
                 nMaxVersionPreVB = uvMaxVersion.get_int64();
+            }
+        }
+        
+        const UniValue& aCapabilities = find_value(oparam, "capabilities");
+        if (aCapabilities.isArray()) {
+            for (unsigned int i = 0; i < aCapabilities.size(); ++i) {
+                const UniValue& v = aCapabilities[i];
+                setCapabilitiesRules.insert(v.get_str());
             }
         }
     }
@@ -687,6 +748,19 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     // to select witness transactions, after segwit activates (otherwise
     // don't).
     bool fSupportsSegwit = setClientRules.find(segwit_info.name) != setClientRules.end();
+    
+    // Use coinbasetxn ?
+    bool coinbasetxn = setCapabilitiesRules.find("coinbasetxn") != setCapabilitiesRules.end();
+    
+    if(coinbasetxn)
+    {
+        CTxDestination destination = DecodeDestination(gArgs.GetArg("-coinbasetxnaddress", ""));
+        if (!IsValidDestination(destination)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address (-coinbasetxnaddress missing or invalid ?)");
+        }
+
+        coinbasetxnscript = GetScriptForDestination(destination);
+    }
 
     // Update block
     static CBlockIndex* pindexPrev;
@@ -710,7 +784,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, currentAlgo, fSupportsSegwit);
+        CScript createscript = (coinbasetxn) ? coinbasetxnscript : scriptDummy;
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, currentAlgo, fSupportsSegwit);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
@@ -732,6 +807,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     UniValue aCaps(UniValue::VARR); aCaps.push_back("proposal");
 
     UniValue transactions(UniValue::VARR);
+    UniValue txCoinbase = NullUniValue;
     std::map<uint256, int64_t> setTxIndex;
     int i = 0;
     for (const auto& it : pblock->vtx) {
@@ -739,7 +815,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         uint256 txHash = tx.GetHash();
         setTxIndex[txHash] = i++;
 
-        if (tx.IsCoinBase())
+        if (tx.IsCoinBase() && !coinbasetxn)
             continue;
 
         UniValue entry(UniValue::VOBJ);
@@ -766,7 +842,22 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         entry.pushKV("sigops", nTxSigOps);
         entry.pushKV("weight", GetTransactionWeight(tx));
 
-        transactions.push_back(entry);
+        if (tx.IsCoinBase()) 
+        {
+            // Show founders' reward if it is required
+            if (pblock->vtx[0]->vout.size() > 1) {
+                // Correct this if GetBlockTemplate changes the order
+                entry.pushKV("foundersreward", (int64_t)tx.vout[1].nValue);
+            }
+            entry.pushKV("required", true);
+            txCoinbase = entry;
+        } 
+        else 
+        {
+            transactions.push_back(entry);
+        }
+        
+        //transactions.push_back(entry);
     }
 
     UniValue aux(UniValue::VOBJ);
@@ -841,8 +932,17 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     result.pushKV("previousblockhash", pblock->hashPrevBlock.GetHex());
     result.pushKV("transactions", transactions);
-    result.pushKV("coinbaseaux", aux);
-    result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->vout[0].nValue);
+    if (coinbasetxn) 
+    {
+        assert(txCoinbase.isObject());
+        result.pushKV("coinbasetxn", txCoinbase);
+    } 
+    else 
+    {
+        result.pushKV("coinbaseaux", aux);
+        result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->vout[0].nValue);
+    }
+    result.pushKV("treasury", GetTreasuryOutput(pblock->nTime, pindexPrev->nHeight, false));
     result.pushKV("longpollid", chainActive.Tip()->GetBlockHash().GetHex() + i64tostr(nTransactionsUpdatedLast));
     result.pushKV("target", hashTarget.GetHex());
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
@@ -1353,7 +1453,8 @@ UniValue submitauxblock(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
-    { "mining",             "getalgoinfo",            &getalgoinfo,             {} },
+    { "mining",             "getalgoinfo",            &getalgoinfo,            {} },
+    { "mining",             "getblocktreasury",       &getblocktreasury,       {"height"} },
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },
