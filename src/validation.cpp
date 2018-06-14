@@ -3205,6 +3205,25 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
         }
     }
+    
+    // Coinbase transaction must include the Treasury amount to the given Reward address, if Hardfork is activated.
+    if (IsHardForkActivated(block.nTime)) 
+    {
+        bool found = false;
+
+        for(const CTxOut& output : block.vtx[0].vout) {
+            if (output.scriptPubKey == Params().GetFoundersRewardScriptAtHeight(nHeight)) {
+                if (output.nValue == Params().GetTreasuryAmount(GetBlockSubsidy(nHeight, consensusParams))) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block has no treasury output");
+        }
+    }
 
     // Validation for witness commitments.
     // * We compute the witness hash (which is the hash including witnesses) of all the block's transactions, except the
