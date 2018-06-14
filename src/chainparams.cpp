@@ -4,6 +4,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <base58.h> // For CTxDestination
 #include <chainparams.h>
 #include <consensus/merkle.h>
 #include <primitives/mining_block.h>
@@ -1246,10 +1247,10 @@ std::string CChainParams::GetFoundersRewardAddressAtHeight(int nHeight) const {
 
 // The founders reward address is expected to be a multisig (P2SH) address
 CScript CChainParams::GetFoundersRewardScriptAtHeight(int nHeight) const {
-    CBitcoinAddress address(GetFoundersRewardAddressAtHeight(nHeight).c_str());
-    assert(address.IsValid());
-    assert(address.IsScript());
-    CScriptID scriptID = boost::get<CScriptID>(address.Get()); // Get() returns a boost variant
+    CTxDestination address = DecodeDestination(GetFoundersRewardAddressAtHeight(nHeight).c_str());
+    assert(IsValidDestination(address));
+    assert(boost::get<CScriptID>(&address) != nullptr);
+    CScriptID scriptID = boost::get<CScriptID>(address); // address is a boost variant
     CScript script = CScript() << OP_HASH160 << ToByteVector(scriptID) << OP_EQUAL;
     return script;
 }
