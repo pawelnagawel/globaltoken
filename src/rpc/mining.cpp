@@ -109,6 +109,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         obj.pushKV("treasury_amount",        treasuryamount);
         obj.pushKV("treasury_value",         ValueFromAmount(treasuryamount));
         obj.pushKV("treasury_address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+        obj.pushKV("treasury_scriptPubKey",  params.GetFoundersRewardScriptAtHeight(nHeight));
         obj.pushKV("hex",                    HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
     }
@@ -127,12 +128,13 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
             "{\n"
             "  \"height\": xxxxx,                 (numeric) The height of this treasury details\n"
             "  \"blockreward\":  xxxxx,           (numeric) The full blockreward of the given height in Satoshis (excluding fees)\n"
-            "  \"blockreward_coins\":   xxxxx,    (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
-            "  \"treasury_percentage\": xxxxx,    (numeric) The treasury percentage\n"
-            "  \"treasury_amount\":     xxxxx,    (numeric) The treasury amount for this height in Satoshis\n"
-            "  \"treasury_value\":      xxxxx,    (numeric) The treasury amount for this height in Coins\n"
-            "  \"treasury_address\":    xxxxx,    (string)  The GlobalToken treasury address of this height\n"
-            "  \"hex\": xxxxx,                    (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "  \"blockreward_coins\":     xxxxx,  (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
+            "  \"treasury_percentage\":   xxxxx,  (numeric) The treasury percentage\n"
+            "  \"treasury_amount\":       xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
+            "  \"treasury_value\":        xxxxx,  (numeric) The treasury amount for this height in Coins\n"
+            "  \"treasury_address\":      xxxxx,  (string)  The GlobalToken treasury address of this height\n"
+            "  \"treasury_scriptPubKey\": xxxxx,  (string)  The scriptpubkey of the treasury address\n"
+            "  \"hex\": xxxxx                     (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
             "}\n"
             + HelpExampleCli("getblocktreasury", "")
             + HelpExampleRpc("getblocktreasury", "")
@@ -397,7 +399,28 @@ UniValue getmininginfo(const JSONRPCRequest& request)
 	obj.pushKV("difficulty_YESCRYPT",       (double)GetDifficulty(NULL, ALGO_YESCRYPT));
 	obj.pushKV("difficulty_HMQ1725",       (double)GetDifficulty(NULL, ALGO_HMQ1725));
 	obj.pushKV("difficulty_XEVAN",       (double)GetDifficulty(NULL, ALGO_XEVAN));
-	obj.pushKV("difficulty_NIST5",       (double)GetDifficulty(NULL, ALGO_NIST5));
+    obj.pushKV("difficulty_NIST5",       (double)GetDifficulty(NULL, ALGO_NIST5));
+    obj.pushKV("difficulty_TIMETRAVEL10", (double)GetDifficulty(NULL, ALGO_TIMETRAVEL10));
+    obj.pushKV("difficulty_PAWELHASH", (double)GetDifficulty(NULL, ALGO_PAWELHASH));
+    obj.pushKV("difficulty_X13", (double)GetDifficulty(NULL, ALGO_X13));
+    obj.pushKV("difficulty_X14", (double)GetDifficulty(NULL, ALGO_X14));
+    obj.pushKV("difficulty_X15", (double)GetDifficulty(NULL, ALGO_X15));
+    obj.pushKV("difficulty_X17", (double)GetDifficulty(NULL, ALGO_X17));
+    obj.pushKV("difficulty_LYRA2RE", (double)GetDifficulty(NULL, ALGO_LYRA2RE));
+    obj.pushKV("difficulty_BLAKE2S", (double)GetDifficulty(NULL, ALGO_BLAKE2S));
+    obj.pushKV("difficulty_BLAKE2B", (double)GetDifficulty(NULL, ALGO_BLAKE2B));
+    obj.pushKV("difficulty_ASTRALHASH", (double)GetDifficulty(NULL, ALGO_ASTRALHASH));
+    obj.pushKV("difficulty_PADIHASH", (double)GetDifficulty(NULL, ALGO_PADIHASH));
+    obj.pushKV("difficulty_JEONGHASH", (double)GetDifficulty(NULL, ALGO_JEONGHASH));
+    obj.pushKV("difficulty_DESERTHASH", (double)GetDifficulty(NULL, ALGO_DESERTHASH));
+    obj.pushKV("difficulty_ARCTICHASH", (double)GetDifficulty(NULL, ALGO_ARCTICHASH));
+    obj.pushKV("difficulty_GLOBALHASH", (double)GetDifficulty(NULL, ALGO_GLOBALHASH));
+    obj.pushKV("difficulty_SKEIN", (double)GetDifficulty(NULL, ALGO_SKEIN));
+    obj.pushKV("difficulty_GROESTL", (double)GetDifficulty(NULL, ALGO_GROESTL));
+    obj.pushKV("difficulty_QUBIT", (double)GetDifficulty(NULL, ALGO_QUBIT));
+    obj.pushKV("difficulty_SKUNKHASH", (double)GetDifficulty(NULL, ALGO_SKUNKHASH));
+    obj.pushKV("difficulty_QUARK", (double)GetDifficulty(NULL, ALGO_QUARK));
+    obj.pushKV("difficulty_X16R", (double)GetDifficulty(NULL, ALGO_X16R));
     obj.pushKV("networkhashps",    getnetworkhashps(request));
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
@@ -595,6 +618,18 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  },\n"
             "  \"coinbasevalue\" : n,              (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in satoshis)\n"
             "  \"coinbasetxn\" : { ... },          (json object) information for coinbase transaction\n"
+            "  \"treasury\" : {                    (json object) treasury transaction,that must be included in this block.\n"
+            "  {\n"
+            "     \"height\": xxxxx,                 (numeric) The height of this treasury details\n"
+            "     \"blockreward\":  xxxxx,           (numeric) The full blockreward of the given height in Satoshis (excluding fees)\n"
+            "     \"blockreward_coins\":     xxxxx,  (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
+            "     \"treasury_percentage\":   xxxxx,  (numeric) The treasury percentage\n"
+            "     \"treasury_amount\":       xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
+            "     \"treasury_value\":        xxxxx,  (numeric) The treasury amount for this height in Coins\n"
+            "     \"treasury_address\":      xxxxx,  (string)  The GlobalToken treasury address of this height\n"
+            "     \"treasury_scriptPubKey\": xxxxx,  (string)  The scriptpubkey of the treasury address\n"
+            "     \"hex\": xxxxx                     (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "  }, \n"
             "  \"target\" : \"xxxx\",                (string) The hash target\n"
             "  \"mintime\" : xxx,                  (numeric) The minimum timestamp appropriate for next block time in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"mutable\" : [                     (array of string) list of ways the block template may be changed \n"

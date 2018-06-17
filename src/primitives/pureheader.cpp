@@ -83,6 +83,48 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_XEVAN;
         case BLOCK_VERSION_NIST5:
             return ALGO_NIST5;
+        case BLOCK_VERSION_TIMETRAVEL10:
+            return ALGO_TIMETRAVEL10;
+        case BLOCK_VERSION_PAWELHASH:
+            return ALGO_PAWELHASH;
+        case BLOCK_VERSION_X13:
+            return ALGO_X13;
+        case BLOCK_VERSION_X14:
+            return ALGO_X14;
+        case BLOCK_VERSION_X15:
+            return ALGO_X15;
+        case BLOCK_VERSION_X17:
+            return ALGO_X17;
+        case BLOCK_VERSION_LYRA2RE:
+            return ALGO_LYRA2RE;
+        case BLOCK_VERSION_BLAKE2S:
+            return ALGO_BLAKE2S;
+        case BLOCK_VERSION_BLAKE2B:
+            return ALGO_BLAKE2B;
+        case BLOCK_VERSION_ASTRALHASH:
+            return ALGO_ASTRALHASH;
+        case BLOCK_VERSION_PADIHASH:
+            return ALGO_PADIHASH;
+        case BLOCK_VERSION_JEONGHASH:
+            return ALGO_JEONGHASH;
+        case BLOCK_VERSION_DESERTHASH:
+            return ALGO_DESERTHASH;
+        case BLOCK_VERSION_ARCTICHASH:
+            return ALGO_ARCTICHASH;
+        case BLOCK_VERSION_GLOBALHASH:
+            return ALGO_GLOBALHASH;
+        case BLOCK_VERSION_GROESTL:
+            return ALGO_GROESTL;
+        case BLOCK_VERSION_SKEIN:
+            return ALGO_SKEIN;
+        case BLOCK_VERSION_QUBIT:
+            return ALGO_QUBIT;
+        case BLOCK_VERSION_SKUNKHASH:
+            return ALGO_SKUNKHASH;
+        case BLOCK_VERSION_QUARK:
+            return ALGO_QUARK;
+        case BLOCK_VERSION_X16R:
+            return ALGO_X16R;
     }
     return ALGO_SHA256D;
 }

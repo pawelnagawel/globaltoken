@@ -129,6 +129,14 @@ public:
      * when the value can easily be influenced from outside as e.g. a network adversary could
      * provide values to trigger worst-case behavior.
      */
+    int GetNibble(int index) const 
+    {
+        index = 63 - index;
+        if (index % 2 == 1)
+            return(data[index / 2] >> 4);
+        return(data[index / 2] & 0x0F); 
+    } 
+     
     uint64_t GetCheapHash() const
     {
         return ReadLE64(data);

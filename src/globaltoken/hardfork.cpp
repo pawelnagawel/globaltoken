@@ -28,6 +28,48 @@ arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusPa
 		return UintToArith256(consensusParams.powLimit_XEVAN);
 	else if (algo == ALGO_NIST5)
 		return UintToArith256(consensusParams.powLimit_NIST5);
+    else if (algo == ALGO_TIMETRAVEL10)
+		return UintToArith256(consensusParams.powLimit_TIMETRAVEL10);
+    else if (algo == ALGO_PAWELHASH)
+		return UintToArith256(consensusParams.powLimit_PAWELHASH);
+    else if (algo == ALGO_X13)
+		return UintToArith256(consensusParams.powLimit_X13);
+    else if (algo == ALGO_X14)
+		return UintToArith256(consensusParams.powLimit_X14);
+    else if (algo == ALGO_X15)
+		return UintToArith256(consensusParams.powLimit_X15);
+    else if (algo == ALGO_X17)
+		return UintToArith256(consensusParams.powLimit_X17);
+    else if (algo == ALGO_LYRA2RE)
+        return UintToArith256(consensusParams.powLimit_LYRA2RE);
+    else if (algo == ALGO_BLAKE2S)
+        return UintToArith256(consensusParams.powLimit_BLAKE2S);
+    else if (algo == ALGO_BLAKE2B)
+        return UintToArith256(consensusParams.powLimit_BLAKE2B);
+    else if (algo == ALGO_ASTRALHASH)
+        return UintToArith256(consensusParams.powLimit_ASTRALHASH);
+    else if (algo == ALGO_PADIHASH)
+        return UintToArith256(consensusParams.powLimit_PADIHASH);
+    else if (algo == ALGO_JEONGHASH)
+        return UintToArith256(consensusParams.powLimit_JEONGHASH);
+    else if (algo == ALGO_ARCTICHASH)
+        return UintToArith256(consensusParams.powLimit_ARCTICHASH);
+    else if (algo == ALGO_DESERTHASH)
+        return UintToArith256(consensusParams.powLimit_DESERTHASH);
+    else if (algo == ALGO_GLOBALHASH)
+        return UintToArith256(consensusParams.powLimit_GLOBALHASH);
+    else if (algo == ALGO_QUBIT)
+        return UintToArith256(consensusParams.powLimit_QUBIT);
+    else if (algo == ALGO_SKEIN)
+        return UintToArith256(consensusParams.powLimit_SKEIN);
+    else if (algo == ALGO_GROESTL)
+        return UintToArith256(consensusParams.powLimit_GROESTL);
+    else if (algo == ALGO_SKUNKHASH)
+        return UintToArith256(consensusParams.powLimit_SKUNKHASH);
+    else if (algo == ALGO_QUARK)
+        return UintToArith256(consensusParams.powLimit_QUARK);
+    else if (algo == ALGO_X16R)
+        return UintToArith256(consensusParams.powLimit_X16R);
 	else
 		return UintToArith256(consensusParams.powLimit_SHA256);
 }

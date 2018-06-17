@@ -34,6 +34,48 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("xevan");
         case ALGO_NIST5:
             return std::string("nist5");
+        case ALGO_TIMETRAVEL10:
+            return std::string("timetravel10");
+        case ALGO_PAWELHASH:
+            return std::string("pawelhash");
+        case ALGO_X13:
+            return std::string("x13");
+        case ALGO_X14:
+            return std::string("x14");
+        case ALGO_X15:
+            return std::string("x15");
+        case ALGO_X17:
+            return std::string("x17");
+        case ALGO_LYRA2RE:
+            return std::string("lyra2re");
+        case ALGO_BLAKE2S:
+            return std::string("blake2s");
+        case ALGO_BLAKE2B:
+            return std::string("blake2b");
+        case ALGO_ASTRALHASH:
+            return std::string("astralhash");
+        case ALGO_PADIHASH:
+            return std::string("padihash");
+        case ALGO_JEONGHASH:
+            return std::string("jeonghash");
+        case ALGO_DESERTHASH:
+            return std::string("deserthash");
+        case ALGO_ARCTICHASH:
+            return std::string("arctichash");
+        case ALGO_GLOBALHASH:
+            return std::string("globalhash");
+        case ALGO_SKEIN:
+            return std::string("skein");
+        case ALGO_GROESTL:
+            return std::string("groestl");
+        case ALGO_QUBIT:
+            return std::string("qubit");
+        case ALGO_SKUNKHASH:
+            return std::string("skunkhash");
+        case ALGO_QUARK:
+            return std::string("quark");
+        case ALGO_X16R:
+            return std::string("x16r");
     }
     return std::string("unknown");       
 }

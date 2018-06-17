@@ -114,7 +114,70 @@ public:
                 break;
             case ALGO_NIST5:
                 nVersion |= BLOCK_VERSION_NIST5;
-                break;             
+                break;   
+            case ALGO_TIMETRAVEL10:
+                nVersion |= BLOCK_VERSION_TIMETRAVEL10;
+                break;     
+            case ALGO_PAWELHASH:
+                nVersion |= BLOCK_VERSION_PAWELHASH;
+                break;   
+            case ALGO_X13:
+                nVersion |= BLOCK_VERSION_X13;
+                break;  
+            case ALGO_X14:
+                nVersion |= BLOCK_VERSION_X14;
+                break;  
+            case ALGO_X15:
+                nVersion |= BLOCK_VERSION_X15;
+                break;
+            case ALGO_X17:
+                nVersion |= BLOCK_VERSION_X17;
+                break;
+            case ALGO_LYRA2RE:
+                nVersion |= BLOCK_VERSION_LYRA2RE;
+                break;
+            case ALGO_BLAKE2S:
+                nVersion |= BLOCK_VERSION_BLAKE2S;
+                break;
+            case ALGO_BLAKE2B:
+                nVersion |= BLOCK_VERSION_BLAKE2B;
+                break;
+            case ALGO_ASTRALHASH:
+                nVersion |= BLOCK_VERSION_ASTRALHASH;
+                break;
+            case ALGO_PADIHASH:
+                nVersion |= BLOCK_VERSION_PADIHASH;
+                break;
+            case ALGO_JEONGHASH:
+                nVersion |= BLOCK_VERSION_JEONGHASH;
+                break;
+            case ALGO_DESERTHASH:
+                nVersion |= BLOCK_VERSION_DESERTHASH;
+                break;
+            case ALGO_ARCTICHASH:
+                nVersion |= BLOCK_VERSION_ARCTICHASH;
+                break;
+            case ALGO_GLOBALHASH:
+                nVersion |= BLOCK_VERSION_GLOBALHASH;
+                break;
+            case ALGO_GROESTL:
+                nVersion |= BLOCK_VERSION_GROESTL;
+                break;
+            case ALGO_SKEIN:
+                nVersion |= BLOCK_VERSION_SKEIN;
+                break;
+            case ALGO_QUBIT:
+                nVersion |= BLOCK_VERSION_QUBIT;
+                break;
+            case ALGO_SKUNKHASH:
+                nVersion |= BLOCK_VERSION_SKUNKHASH;
+                break;
+            case ALGO_QUARK:
+                nVersion |= BLOCK_VERSION_QUARK;
+                break;
+            case ALGO_X16R:
+                nVersion |= BLOCK_VERSION_X16R;
+                break;
             default:
                 break;
         }

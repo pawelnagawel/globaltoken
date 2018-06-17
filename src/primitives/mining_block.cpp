@@ -15,6 +15,8 @@
 #include <crypto/algos/neoscrypt/neoscrypt.h>
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
+#include <crypto/algos/Lyra2RE/Lyra2RE.h>
+#include <crypto/algos/blake/hashblake.h>
 
 uint256 CDefaultBlockHeader::GetHash() const
 {
@@ -68,6 +70,92 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         case ALGO_NIST5:
         {
             return NIST5(BEGIN(nVersion), END(nNonce));	    
+        }
+        case ALGO_TIMETRAVEL10:
+        {
+            return HashTimeTravel(BEGIN(nVersion), END(nNonce), nTime);	    
+        }
+        case ALGO_PAWELHASH:
+        {
+            return PawelHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_X13:
+        {
+            return HashX13(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_X14:
+        {
+            return HashX14(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_X15:
+        {
+            return HashX15(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_X17:
+        {
+            return HashX15(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_LYRA2RE:
+        {
+            uint256 thash;
+            lyra2re2_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
+        case ALGO_BLAKE2S:
+        {
+            return HashBlake2S(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_BLAKE2B:
+        {
+            return HashBlake2B(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_ASTRALHASH:
+        {
+            return AstralHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_PADIHASH:
+        {
+            return PadiHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_JEONGHASH:
+        {
+            return JeongHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_DESERTHASH:
+        {
+            return DesertHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_ARCTICHASH:
+        {
+            return ArcticHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_GLOBALHASH:
+        {
+            return GlobalHash(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_GROESTL:
+        {
+            return HashGroestl(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_SKEIN:
+        {
+            return HashSkein(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_QUBIT:
+        {
+            return HashQubit(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_SKUNKHASH:
+        {
+            return SkunkHash5(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_QUARK:
+        {
+            return QUARK(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_X16R:
+        {
+            return HashX16R(BEGIN(nVersion), END(nNonce), hashPrevBlock);
         }
     }
     return GetHash();

@@ -296,6 +296,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/cubehash.c \
   crypto/algos/hashlib/echo.c \
   crypto/algos/hashlib/fugue.c \
+  crypto/algos/hashlib/gost.c \
   crypto/algos/hashlib/groestl.c \
   crypto/algos/hashlib/hamsi.c \
   crypto/algos/hashlib/haval.c \
@@ -312,6 +313,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/sph_cubehash.h \
   crypto/algos/hashlib/sph_echo.h \
   crypto/algos/hashlib/sph_fugue.h \
+  crypto/algos/hashlib/sph_gost.h \
   crypto/algos/hashlib/sph_groestl.h \
   crypto/algos/hashlib/sph_hamsi.h \
   crypto/algos/hashlib/sph_haval.h \
@@ -328,6 +330,17 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/whirlpool.c \
   crypto/algos/hashlib/aes_helper.c \
   crypto/algos/hashlib/multihash.h \
+  crypto/algos/Lyra2RE/Lyra2.c \
+  crypto/algos/Lyra2RE/Lyra2.h \
+  crypto/algos/Lyra2RE/Lyra2RE.c \
+  crypto/algos/Lyra2RE/Lyra2RE.h \
+  crypto/algos/Lyra2RE/Sponge.c \
+  crypto/algos/Lyra2RE/Sponge.h \
+  crypto/algos/blake/blake.c \
+  crypto/algos/blake/blake2.h \
+  crypto/algos/blake/blake2-impl.h \
+  crypto/algos/blake/blake2s-ref.c \
+  crypto/algos/blake/hashblake.h \
   crypto/algos/neoscrypt/neoscrypt.c \
   crypto/algos/neoscrypt/neoscrypt.h \
   crypto/algos/scrypt/scrypt.cpp \
