@@ -96,6 +96,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         CAmount blockreward = GetBlockSubsidy(nHeight, params.GetConsensus());
         CAmount treasuryamount = params.GetTreasuryAmount(blockreward);
         CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
+        CScript scriptPubKey = params.GetFoundersRewardScriptAtHeight(nHeight);
         
         CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
         
@@ -109,7 +110,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         obj.pushKV("treasury_amount",        treasuryamount);
         obj.pushKV("treasury_value",         ValueFromAmount(treasuryamount));
         obj.pushKV("treasury_address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
-        obj.pushKV("treasury_scriptPubKey",  params.GetFoundersRewardScriptAtHeight(nHeight));
+        obj.pushKV("treasury_scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
         obj.pushKV("hex",                    HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
     }

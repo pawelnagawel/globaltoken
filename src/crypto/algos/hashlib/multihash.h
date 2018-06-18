@@ -1104,6 +1104,7 @@ inline uint256 HashX15(const T1 pbegin, const T1 pend)
     return hash[14].trim256();
 }
 
+template<typename T1>
 inline uint256 HashX17(const T1 pbegin, const T1 pend)
 {
     sph_blake512_context      ctx_blake;
@@ -2273,7 +2274,7 @@ inline uint256 GlobalHash(const T1 pbegin, const T1 pend)
     sph_jh512_close(&ctx_jh, static_cast<void*>(&hash[45]));
 
     sph_luffa512_init(&ctx_luffa);
-    sph_luffa512(&ctx_luffa, static_cast<const void*>(&hash[45), 64);
+    sph_luffa512(&ctx_luffa, static_cast<const void*>(&hash[45]), 64);
     sph_luffa512_close(&ctx_luffa, static_cast<void*>(&hash[46]));
     
     sph_whirlpool_init(&ctx_whirlpool);

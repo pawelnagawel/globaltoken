@@ -336,9 +336,9 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/Lyra2RE/Lyra2RE.h \
   crypto/algos/Lyra2RE/Sponge.c \
   crypto/algos/Lyra2RE/Sponge.h \
-  crypto/algos/blake/blake.c \
   crypto/algos/blake/blake2.h \
   crypto/algos/blake/blake2-impl.h \
+  crypto/algos/blake/blake2b-ref.c \
   crypto/algos/blake/blake2s-ref.c \
   crypto/algos/blake/hashblake.h \
   crypto/algos/neoscrypt/neoscrypt.c \
