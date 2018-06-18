@@ -1386,8 +1386,6 @@ bool AppInitMain()
         currentAlgo = ALGO_SHA256D;
     else if (strAlgo == "scrypt")
         currentAlgo = ALGO_SCRYPT;
-    else if (strAlgo == "x11")
-        currentAlgo = ALGO_X11;
     else if (strAlgo == "neoscrypt")
         currentAlgo = ALGO_NEOSCRYPT;
     else if (strAlgo == "equihash")
@@ -1404,12 +1402,18 @@ bool AppInitMain()
         currentAlgo = ALGO_TIMETRAVEL10;
     else if (strAlgo == "pawelhash")
         currentAlgo = ALGO_PAWELHASH;
+    else if (strAlgo == "x11")
+        currentAlgo = ALGO_X11;
     else if (strAlgo == "x13")
         currentAlgo = ALGO_X13;
     else if (strAlgo == "x14")
         currentAlgo = ALGO_X14;
     else if (strAlgo == "x15")
         currentAlgo = ALGO_X15;
+    else if (strAlgo == "x16r")
+        currentAlgo = ALGO_X16R;
+    else if (strAlgo == "x17")
+        currentAlgo = ALGO_X17;
     else if (strAlgo == "lyra" || strAlgo == "lyra2re" || strAlgo == "lyra2" || strAlgo == "lyra2rev2")
         currentAlgo = ALGO_LYRA2RE;
     else if (strAlgo == "blake2s")
@@ -1438,8 +1442,6 @@ bool AppInitMain()
         currentAlgo = ALGO_SKUNKHASH;
     else if (strAlgo == "quark")
         currentAlgo = ALGO_QUARK;
-    else if (strAlgo == "x16r")
-        currentAlgo = ALGO_X16R;
     else
     {
         currentAlgo = ALGO_SHA256D;
