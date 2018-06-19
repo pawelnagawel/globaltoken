@@ -127,11 +127,11 @@ public:
         consensus.powLimit_QUARK = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_X16R = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nTargetSpacing = 60; // 1 minute
-        consensus.nTargetTimespan =  60 * 20; // 20 minutes
+        consensus.nTargetTimespan =  60 * 5; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
         consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
-        consensus.nPowTargetSpacingV2 = 60 * 9; // NUM_ALGOS * 60
+        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
         consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
         consensus.nAveragingInterval = 5; // 5 blocks
         consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
@@ -542,11 +542,11 @@ public:
         consensus.powLimit_QUARK = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_X16R = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nTargetSpacing = 60; // 1 minute
-        consensus.nTargetTimespan =  60 * 20; // 20 minutes
+        consensus.nTargetTimespan =  60 * 5; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
         consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
-        consensus.nPowTargetSpacingV2 = 60 * 9;
+        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS;
         consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
         consensus.nAveragingInterval = 5; // 5 blocks
         consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
