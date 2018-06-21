@@ -50,6 +50,7 @@ struct Params {
     uint256 hashGenesisBlock;
     int nSubsidyHalvingInterval;
     int nTreasuryAddressChange;
+    int nTreasuryAddressChangeStart;
     int nTreasuryAmount;
     /** Block height at which BIP16 becomes active */
     int BIP16Height;

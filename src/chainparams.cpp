@@ -87,6 +87,7 @@ public:
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 840000;
         consensus.nTreasuryAddressChange = 133920;
+        consensus.nTreasuryAddressChangeStart = 500000;
         consensus.nTreasuryAmount = 15;
         consensus.BIP16Height = 100000;
         consensus.BIP34Height = 299999;
@@ -502,6 +503,7 @@ public:
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 840000;
         consensus.nTreasuryAddressChange = 600000;
+        consensus.nTreasuryAddressChangeStart = 100000;
         consensus.nTreasuryAmount = 15;
         consensus.BIP16Height = 1;
         consensus.BIP34Height = 1;
@@ -904,6 +906,7 @@ public:
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
         consensus.nTreasuryAddressChange = 350;
+        consensus.nTreasuryAddressChangeStart = 500;
         consensus.nTreasuryAmount = 10;
         consensus.BIP16Height = 0; // always enforce P2SH BIP16 on regtest
         consensus.BIP34Height = 100000000; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
@@ -1299,13 +1302,17 @@ void SelectParams(const std::string& network)
 
 // Index variable i ranges from 0 - (vFoundersRewardAddress.size()-1)
 std::string CChainParams::GetFoundersRewardAddressAtHeight(int nHeight) const {
-    size_t addressChangeInterval = consensus.nTreasuryAddressChange;
-    size_t i = nHeight / addressChangeInterval;
+    int addressChangeInterval = consensus.nTreasuryAddressChange;
+    int addressChangeStartHeight = consensus.nTreasuryAddressChangeStart;
+    int i = (nHeight - addressChangeStartHeight) / addressChangeInterval;
+    
+    if(i <= 0)
+        i = 0;
     
     if(i >= 256)
         i = 256;
     
-    return vFoundersRewardAddress[i];
+    return GetFoundersRewardAddressAtIndex(i);
 }
 
 // The founders reward address is expected to be a multisig (P2SH) address
