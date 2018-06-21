@@ -797,9 +797,17 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     
     if(coinbasetxn)
     {
-        CTxDestination destination = DecodeDestination(gArgs.GetArg("-coinbasetxnaddress", ""));
-        if (!IsValidDestination(destination)) {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address (-coinbasetxnaddress missing or invalid ?)");
+        std::string strAddress = gArgs.GetArg("-coinbasetxnaddress", "NULL");
+        CTxDestination destination = DecodeDestination(strAddress);
+        if(strAddress != "NULL")
+        {
+            if (!IsValidDestination(destination)) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address (-coinbasetxnaddress missing or invalid ?)");
+            }
+        }
+        else
+        {
+            LogPrintf("%s: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
         }
 
         coinbasetxnscript = GetScriptForDestination(destination);
