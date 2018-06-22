@@ -802,12 +802,13 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         if(strAddress != "NULL")
         {
             if (!IsValidDestination(destination)) {
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address (-coinbasetxnaddress missing or invalid ?)");
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid coinbase address. Check if your entered -coinbasetxnaddress is valid.");
             }
         }
         else
         {
             LogPrintf("%s: WARNING: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
+            coinbasetxn = false;
         }
 
         coinbasetxnscript = GetScriptForDestination(destination);
@@ -838,7 +839,25 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         CScript createscript = (coinbasetxn) ? coinbasetxnscript : scriptDummy;
         pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, currentAlgo, fSupportsSegwit);
         if (!pblocktemplate)
-            throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+        {
+            if(IsHardForkActivated(pindexPrevNew->nTime))
+            {
+                throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+            }
+            else
+            {
+                if(currentAlgo == ALGO_SHA256D)
+                {
+                    throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+                }
+                else
+                {
+                    std::stringstream strstream;
+                    strstream << "You cannot mine with Algorithm " << GetAlgoName(currentAlgo) << ", because Hardfork is not activated yet.";
+                    throw JSONRPCError(RPC_INVALID_PARAMS, strstream.str()); 
+                }
+            }
+        }
 
         // Need to update only after we know CreateNewBlock succeeded
         pindexPrev = pindexPrevNew;
@@ -1352,7 +1371,25 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         std::unique_ptr<CBlockTemplate> newBlock
             = BlockAssembler(Params()).CreateNewBlock(scriptPubKey, currentAlgo);
         if (!newBlock)
-            throw JSONRPCError(RPC_OUT_OF_MEMORY, "out of memory");
+        {
+            if(IsHardForkActivated(chainActive.Tip()->nTime))
+            {
+                throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+            }
+            else
+            {
+                if(currentAlgo == ALGO_SHA256D)
+                {
+                    throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+                }
+                else
+                {
+                    std::stringstream strstream;
+                    strstream << "You cannot mine with Algorithm " << GetAlgoName(currentAlgo) << ", because Hardfork is not activated yet.";
+                    throw JSONRPCError(RPC_INVALID_PARAMS, strstream.str()); 
+                }
+            }
+        }
 
         // Update state only when CreateNewBlock succeeded
         nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
