@@ -807,7 +807,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         }
         else
         {
-            LogPrintf("%s: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
+            LogPrintf("%s: WARNING: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
         }
 
         coinbasetxnscript = GetScriptForDestination(destination);
