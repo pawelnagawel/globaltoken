@@ -1709,7 +1709,7 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
     }
 
     assert(pindex != nullptr);
-	int blockcount = 30 * 24 * 60 * 60 / GetPoWTargetSpacing(pindex->nTime); // By default: 1 month
+	int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
 
     if (request.params[0].isNull()) {
         blockcount = std::max(0, std::min(blockcount, pindex->nHeight - 1));

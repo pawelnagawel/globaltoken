@@ -197,7 +197,10 @@ public:
      */
     inline int32_t GetAuxpowVersion() const
     {
-        return nVersion ^ VERSION_AUXPOW;
+        if(IsAuxpow())
+            return nVersion ^ VERSION_AUXPOW;
+        else
+            return nVersion;
     }
     
     /**

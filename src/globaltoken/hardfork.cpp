@@ -94,39 +94,3 @@ bool IsHardForkActivated(uint32_t blocktime)
 	const Consensus::Params& consensusParams = Params().GetConsensus();
 	return IsHardForkActivated(blocktime, consensusParams);
 }
-
-int64_t GetPoWTargetTimeSpan(uint32_t blocktime, const Consensus::Params& consensusParams)
-{
-	if(IsHardForkActivated(blocktime))
-	{
-		return consensusParams.nPowTargetTimespanV2;
-	}
-	else
-	{
-		return consensusParams.nPowTargetTimespan;
-	}
-}
-
-int64_t GetPoWTargetTimeSpan(uint32_t blocktime)
-{
-	const Consensus::Params& consensusParams = Params().GetConsensus();
-	return GetPoWTargetTimeSpan(blocktime, consensusParams);
-}
-
-int64_t GetPoWTargetSpacing(uint32_t blocktime, const Consensus::Params& consensusParams)
-{
-	if(IsHardForkActivated(blocktime))
-	{
-		return consensusParams.nPowTargetSpacingV2;
-	}
-	else
-	{
-		return consensusParams.nPowTargetSpacing;
-	}
-}
-
-int64_t GetPoWTargetSpacing(uint32_t blocktime)
-{
-	const Consensus::Params& consensusParams = Params().GetConsensus();
-	return GetPoWTargetSpacing(blocktime, consensusParams);
-}

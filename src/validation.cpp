@@ -1719,6 +1719,7 @@ class WarningBitsConditionChecker : public AbstractThresholdConditionChecker
 {
 private:
     int bit;
+    CPureBlockVersion versionverifier;
 
 public:
     explicit WarningBitsConditionChecker(int bitIn) : bit(bitIn) {}
@@ -1730,11 +1731,11 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
-        CBlockHeader versionverifier;
+        versionverifier.SetNull();
         versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, params), params.nAuxpowChainId);
         versionverifier.SetAlgo(pindex->GetAlgo());
-        return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
-               ((pindex->nVersion >> bit) & 1) != 0 &&
+        return ((pindex->GetAuxpowVersion() & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
+               ((pindex->GetAuxpowVersion() >> bit) & 1) != 0 &&
                ((versionverifier.nVersion >> bit) & 1) == 0;
     }
 };
@@ -2159,8 +2160,8 @@ static void DoWarning(const std::string& strWarning)
 
 /** Check warning conditions and do some notifications on new chain tip set. */
 void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainParams) {
-    // Create a Test BlockHeader to verifiy the expected version.
-    CBlockHeader versionverifier;
+    // Create a Test BlocKVersion to verifiy the expected version.
+    CPureBlockVersion versionverifier;
     
     // New best block
     mempool.AddTransactionsUpdated(1);
@@ -2190,7 +2191,7 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
             versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, chainParams.GetConsensus()), chainParams.GetConsensus().nAuxpowChainId);
             versionverifier.SetAlgo(pindex->GetAlgo());
             int32_t nExpectedVersion = versionverifier.nVersion;
-            if (pindex->nVersion > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->nVersion & ~nExpectedVersion) != 0)
+            if (pindex->GetAuxpowVersion() > VERSIONBITS_LAST_OLD_BLOCK_VERSION && (pindex->GetAuxpowVersion() & ~nExpectedVersion) != 0)
                 ++nUpgraded;
             pindex = pindex->pprev;
         }
