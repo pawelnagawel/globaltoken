@@ -311,6 +311,13 @@ public:
         block.nVersion = nVersion;
         return block.GetAlgo();
     }
+    
+    int32_t GetAuxpowVersion() const
+    {
+        CPureBlockVersion block;
+        block.nVersion = nVersion;
+        return block.GetAuxpowVersion();
+    }
 
     int64_t GetBlockTime() const
     {
