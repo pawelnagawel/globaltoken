@@ -2161,7 +2161,7 @@ static void DoWarning(const std::string& strWarning)
 /** Check warning conditions and do some notifications on new chain tip set. */
 void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainParams) {
     // Create a Test BlocKVersion to verifiy the expected version.
-    CPureBlockVersion versionverifier;
+    CBlockHeader versionverifier;
     
     // New best block
     mempool.AddTransactionsUpdated(1);
