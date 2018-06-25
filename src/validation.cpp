@@ -1719,7 +1719,6 @@ class WarningBitsConditionChecker : public AbstractThresholdConditionChecker
 {
 private:
     int bit;
-    CBlockHeader versionverifier;
 
 public:
     explicit WarningBitsConditionChecker(int bitIn) : bit(bitIn) {}
@@ -1731,6 +1730,7 @@ public:
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
+        CBlockHeader versionverifier;
         versionverifier.SetNull();
         versionverifier.SetBaseVersion(ComputeBlockVersion(pindex->pprev, params), params.nAuxpowChainId);
         versionverifier.SetAlgo(pindex->GetAlgo());
