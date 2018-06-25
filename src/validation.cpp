@@ -1719,7 +1719,7 @@ class WarningBitsConditionChecker : public AbstractThresholdConditionChecker
 {
 private:
     int bit;
-    CPureBlockVersion versionverifier;
+    CBlockHeader versionverifier;
 
 public:
     explicit WarningBitsConditionChecker(int bitIn) : bit(bitIn) {}
