@@ -210,7 +210,7 @@ public:
      */
     inline bool IsLegacyVersion(int32_t blockversion) const
     {
-        return (blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913);
+        return (blockversion == 1 || blockversion == 2 || blockversion == 536870912 || blockversion == 536870913 || blockversion == 536870914);
     }
 };
 
