@@ -93,7 +93,7 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         }
         case ALGO_X17:
         {
-            return HashX15(BEGIN(nVersion), END(nNonce));
+            return HashX17(BEGIN(nVersion), END(nNonce));
         }
         case ALGO_LYRA2RE:
         {
