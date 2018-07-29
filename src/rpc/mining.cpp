@@ -13,6 +13,7 @@
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <crypto/algos/equihash/equihash.h>
+#include <crypto/algos/equihash/equihash_params.h>
 #include <globaltoken/hardfork.h>
 #include <init.h>
 #include <validation.h>
@@ -195,6 +196,38 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         if (!pblocktemplate.get())
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
         CBlock *pblock = &pblocktemplate->block;
+        
+        // Check if the user accepted to pay the block treasury / founders reward (dev tax) / blockchain self-funding fee
+    
+        if(IsHardForkActivated(pblock->nTime) && !gArgs.GetBoolArg("-accepttreasury", false))
+        {
+            int userpercent = 100 - params.GetConsensus().nTreasuryAmount;
+            std::stringstream s;
+            s << strprintf(
+                "You are not able to mine new coins right now.\n"
+                "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
+                "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
+                "- Pay new Exchanges with the GlobalTokens from the treasury\n"
+                "- Get budget for marketing\n"
+                "- Pay the dev fee\n"
+                "- Pay the costs for coming chain upgrades\n"
+                "- Fund the projects to realize future projects and new ideas\n"
+                "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
+                "and lot of more coming stuff!\n"
+                "\Details:\n\n"
+                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
+                "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
+                "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+                "\nAgreement:\n"
+                "You can agree to pay the block treasury by the following way:\n"
+                "\n- Always start the wallet with the -accepttreasury argument\n"
+                "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
+                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+                params.GetConsensus().nTreasuryAmount, userpercent
+            );
+            throw std::runtime_error(s.str());
+        }
+        
         /*
         Best way to test auxpow (needs some code change for Equihash and normal block format!)
         
@@ -220,7 +253,8 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 		{
 			if(currentAlgo == ALGO_EQUIHASH)
 			{
-                CEquihashBlockHeader equihashblock = pblock->GetEquihashBlockHeader();
+                CEquihashBlock equihashblock = pblock->GetEquihashBlockHeader();
+                equihashblock.vtx = pblock->vtx;
 				nInnerLoopMask = nInnerLoopEquihashMask;
 				nInnerLoopCount = nInnerLoopEquihashCount;
 				// Solve Equihash.
@@ -234,13 +268,15 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 
 				// H(I||...
 				crypto_generichash_blake2b_update(&eh_state, (unsigned char*)&ss[0], ss.size());
+                
+                solutionTargetChecks.set(nMaxTries);
+                ehSolverRuns.SetNull();
 
-				while (nMaxTries > 0 &&
+				while (solutionTargetChecks.get() > 0 &&
 					   ((int)equihashblock.nNonce.GetUint64(0) & nInnerLoopEquihashMask) < nInnerLoopCount) {
 					// Yes, there is a chance every nonce could fail to satisfy the -regtest
 					// target -- 1 in 2^(2^256). That ain't gonna happen
 					equihashblock.nNonce = ArithToUint256(UintToArith256(equihashblock.nNonce) + 1);
-                    --nMaxTries;
 
 					// H(I||V||...
 					crypto_generichash_blake2b_state curr_state;
@@ -253,12 +289,11 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 					std::function<bool(std::vector<unsigned char>)> validBlock =
 							[&equihashblock](std::vector<unsigned char> soln) {
 						equihashblock.nSolution = soln;
-						// TODO(h4x3rotab): Add metrics counter like Zcash? `solutionTargetChecks.increment();`
-						// TODO(h4x3rotab): Maybe switch to EhBasicSolve and better deal with `nMaxTries`?
+						solutionTargetChecks.decrement();
 						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
-					// TODO(h4x3rotab): Add metrics counter like Zcash? `ehSolverRuns.increment();`
+					ehSolverRuns.increment();
 					if (found) {
 						break;
 					}
@@ -413,7 +448,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
     obj.pushKV("difficulty_ASTRALHASH", (double)GetDifficulty(NULL, ALGO_ASTRALHASH));
     obj.pushKV("difficulty_PADIHASH", (double)GetDifficulty(NULL, ALGO_PADIHASH));
     obj.pushKV("difficulty_JEONGHASH", (double)GetDifficulty(NULL, ALGO_JEONGHASH));
-    obj.pushKV("difficulty_DESERTHASH", (double)GetDifficulty(NULL, ALGO_DESERTHASH));
+    obj.pushKV("difficulty_KECCAK", (double)GetDifficulty(NULL, ALGO_KECCAK));
     obj.pushKV("difficulty_ARCTICHASH", (double)GetDifficulty(NULL, ALGO_ARCTICHASH));
     obj.pushKV("difficulty_GLOBALHASH", (double)GetDifficulty(NULL, ALGO_GLOBALHASH));
     obj.pushKV("difficulty_SKEIN", (double)GetDifficulty(NULL, ALGO_SKEIN));
@@ -870,6 +905,41 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     pblock->nNonce = 0;
     pblock->nBigNonce = uint256();
 	pblock->nSolution.clear();
+    
+    if(IsHardForkActivated(pblock->nTime) && !gArgs.GetBoolArg("-accepttreasury", false))
+    {
+        int userpercent = 100 - consensusParams.nTreasuryAmount;
+        std::stringstream s;
+        s << strprintf(
+            "You are not able to mine new coins right now.\n"
+            "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
+            "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
+            "- Pay new Exchanges with the GlobalTokens from the treasury\n"
+            "- Get budget for marketing\n"
+            "- Pay the dev fee\n"
+            "- Pay the costs for coming chain upgrades\n"
+            "- Fund the projects to realize future projects and new ideas\n"
+            "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
+            "and lot of more coming stuff!\n"
+            "\Details:\n\n"
+            "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
+            "You need to pay the dev fee, by adding the treasury details to your coinbase transaction.\n"
+            "In the RPC Result of %s you will find a JSON-Object called 'treasury'.\n"
+            "You must add the address and amount as a receiver of your coinbase transaction.\n"
+            "The coinbasevalue variable is already your reward, the treasury is deducted from it.\n"
+            "There is a simple way to add the GlobalToken treasury to your coinbase transaction:\n"
+            "\n- Just add the hex treasury output to your coinbase receivers. (treasury -> hex)\n"
+            "The amount and addresses will change by time, so always take the current output from getblocktemplate!\n"
+            "\nThe amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+            "\nAgreement:\n"
+            "You can agree to pay the block treasury by the following way:\n"
+            "\n- Always start the wallet with the -accepttreasury argument\n"
+            "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
+            "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+            __func__, consensusParams.nTreasuryAmount, userpercent
+        );
+        throw std::runtime_error(s.str());
+    }
 
     // NOTE: If at some point we support pre-segwit miners post-segwit-activation, this needs to take segwit support into consideration
     const bool fPreSegWit = (THRESHOLD_ACTIVE != VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SEGWIT, versionbitscache));
@@ -1389,6 +1459,35 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
                     throw JSONRPCError(RPC_INVALID_PARAMS, strstream.str()); 
                 }
             }
+        }
+        
+        if(IsHardForkActivated(newBlock->block.nTime) && !gArgs.GetBoolArg("-accepttreasury", false))
+        {
+            int userpercent = 100 - params.GetConsensus().nTreasuryAmount;
+            std::stringstream s;
+            s << strprintf(
+                "You are not able to mine new coins right now.\n"
+                "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
+                "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
+                "- Pay new Exchanges with the GlobalTokens from the treasury\n"
+                "- Get budget for marketing\n"
+                "- Pay the dev fee\n"
+                "- Pay the costs for coming chain upgrades\n"
+                "- Fund the projects to realize future projects and new ideas\n"
+                "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
+                "and lot of more coming stuff!\n"
+                "\Details:\n\n"
+                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
+                "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
+                "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+                "\nAgreement:\n"
+                "You can agree to pay the block treasury by the following way:\n"
+                "\n- Always start the wallet with the -accepttreasury argument\n"
+                "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
+                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+                params.GetConsensus().nTreasuryAmount, userpercent
+            );
+            throw std::runtime_error(s.str());
         }
 
         // Update state only when CreateNewBlock succeeded

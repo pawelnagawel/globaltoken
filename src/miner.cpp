@@ -140,6 +140,16 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", currenttime, chainparams.GetConsensus().HardforkTime);
         return nullptr;
     }
+    
+    if(IsHardForkActivated((uint32_t)currenttime) && !gArgs.GetBoolArg("-accepttreasury", false))
+    {
+        int userpercent = 100 - chainparams.GetConsensus().nTreasuryAmount;
+        LogPrintf("Warning (Treasury): You tried to mine a block, but did not agreed to pay the block treasury.\nSince the hardfork, a new network rule is active. The block treasury. Everyone needs to pay now %d%% of the block reward to the developers.\nThe block treasury will be deducted automatically from your mined block, if you mine directly in your wallet.", chainparams.GetConsensus().nTreasuryAmount);
+        LogPrintf("Warning (Treasury): If you like to mine GlobalTokens you must agree, that you will just receive %d%% of the block reward. The other %d%% goes to the developers as dev fee.", userpercent, chainparams.GetConsensus().nTreasuryAmount);
+        LogPrintf("Warning (Treasury): To agree, you must start the wallet with the -accepttreasury argument or add accepttreasury=1 to your globaltoken.conf file.");
+        
+        // Continue and cancel block mining at getblocktemplate / generateblocks
+    }
     const int32_t nChainId = chainparams.GetConsensus().nAuxpowChainId;
     
     pblock->SetBaseVersion(ComputeBlockVersion(pindexPrev, chainparams.GetConsensus()), nChainId);

@@ -151,8 +151,8 @@ public:
             case ALGO_JEONGHASH:
                 nVersion |= BLOCK_VERSION_JEONGHASH;
                 break;
-            case ALGO_DESERTHASH:
-                nVersion |= BLOCK_VERSION_DESERTHASH;
+            case ALGO_KECCAK:
+                nVersion |= BLOCK_VERSION_KECCAK;
                 break;
             case ALGO_ARCTICHASH:
                 nVersion |= BLOCK_VERSION_ARCTICHASH;

@@ -58,8 +58,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("padihash");
         case ALGO_JEONGHASH:
             return std::string("jeonghash");
-        case ALGO_DESERTHASH:
-            return std::string("deserthash");
+        case ALGO_KECCAK:
+            return std::string("keccak");
         case ALGO_ARCTICHASH:
             return std::string("arctichash");
         case ALGO_GLOBALHASH:

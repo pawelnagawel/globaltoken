@@ -107,8 +107,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_PADIHASH;
         case BLOCK_VERSION_JEONGHASH:
             return ALGO_JEONGHASH;
-        case BLOCK_VERSION_DESERTHASH:
-            return ALGO_DESERTHASH;
+        case BLOCK_VERSION_KECCAK:
+            return ALGO_KECCAK;
         case BLOCK_VERSION_ARCTICHASH:
             return ALGO_ARCTICHASH;
         case BLOCK_VERSION_GLOBALHASH:

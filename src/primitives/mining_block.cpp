@@ -121,9 +121,9 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return JeongHash(BEGIN(nVersion), END(nNonce));
         }
-        case ALGO_DESERTHASH:
+        case ALGO_KECCAK:
         {
-            return DesertHash(BEGIN(nVersion), END(nNonce));
+            return HashKeccak(BEGIN(nVersion), END(nNonce));
         }
         case ALGO_ARCTICHASH:
         {

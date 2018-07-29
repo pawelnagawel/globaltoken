@@ -494,8 +494,9 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-whitelistforcerelay", strprintf(_("Force relay of transactions from whitelisted peers even if they violate local relay policy (default: %d)"), DEFAULT_WHITELISTFORCERELAY));
     strUsage += HelpMessageOpt("-whitelistrelay", strprintf(_("Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)"), DEFAULT_WHITELISTRELAY));
 
-    strUsage += HelpMessageGroup(_("Block creation options:"));    
-    strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithms: arctichash, astralhash, blake2b, blake2s, deserthash, equihash, globalhash, groestl, hmq1725, jeonghash, lyra2re, neoscrypt, nist5, padihash, pawelhash, quark, qubit, scrypt, sha256d, skein, skunkhash, timetravel10, x11, x13, x14, x15, x16r, x17, xevan, yescrypt"));
+    strUsage += HelpMessageGroup(_("Block creation options:"));
+    strUsage += HelpMessageOpt("-accepttreasury", strprintf(_("You need to pay the dev tax fee if you like to mine GlobalTokens. If this is enabled, you agree to pay the treasury. This is a network rule, everyone who wants to mine must pay the treasury. (default: %u)"), false));
+    strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithms: arctichash, astralhash, blake2b, blake2s, equihash, globalhash, groestl, hmq1725, jeonghash, keccak, lyra2re, neoscrypt, nist5, padihash, pawelhash, quark, qubit, scrypt, sha256d, skein, skunkhash, timetravel10, x11, x13, x14, x15, x16r, x17, xevan, yescrypt"));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");
     strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DefaultMaxBlockWeight(false)));
@@ -1426,8 +1427,8 @@ bool AppInitMain()
         currentAlgo = ALGO_PADIHASH;
     else if (strAlgo == "jeonghash")
         currentAlgo = ALGO_JEONGHASH;
-    else if (strAlgo == "deserthash")
-        currentAlgo = ALGO_DESERTHASH;
+    else if (strAlgo == "keccak")
+        currentAlgo = ALGO_KECCAK;
     else if (strAlgo == "arctichash")
         currentAlgo = ALGO_ARCTICHASH;
     else if (strAlgo == "globalhash")

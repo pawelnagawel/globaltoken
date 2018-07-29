@@ -95,7 +95,7 @@ public:
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
         consensus.HardforkHeight = 300000; // not final
-        consensus.HardforkTime = 1533081600;
+        consensus.HardforkTime = 1538395200;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");	
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -119,7 +119,7 @@ public:
         consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ARCTICHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_DESERTHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SKEIN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -511,7 +511,7 @@ public:
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
         consensus.HardforkHeight = 2999; // not final
-        consensus.HardforkTime = 1533081600;
+        consensus.HardforkTime = 1535781600;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -535,7 +535,7 @@ public:
         consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ARCTICHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_DESERTHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SKEIN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -914,7 +914,7 @@ public:
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.HardforkHeight = 15; // not final
-        consensus.HardforkTime = 1533081600;
+        consensus.HardforkTime = 1534305600;
         consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated after height
         consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -938,7 +938,7 @@ public:
         consensus.powLimit_PADIHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ARCTICHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_DESERTHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_KECCAK = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SKEIN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
