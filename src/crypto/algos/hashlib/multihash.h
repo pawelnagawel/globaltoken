@@ -1854,8 +1854,8 @@ inline uint256 GlobalHash(const T1 pbegin, const T1 pend)
 {
     sph_gost512_context      ctx_gost;
     sph_blake512_context     ctx_blake;
-    blake2b_state            ctx_blake2b;
-    blake2s_state            ctx_blake2s;
+    blake2b_state            ctx_blake2b[1];
+    blake2s_state            ctx_blake2s[1];
     
     static unsigned char pblank[1];
 

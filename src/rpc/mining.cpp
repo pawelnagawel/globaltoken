@@ -214,7 +214,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 "- Fund the projects to realize future projects and new ideas\n"
                 "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
                 "and lot of more coming stuff!\n"
-                "\Details:\n\n"
+                "\nDetails:\n\n"
                 "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
                 "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
                 "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
@@ -921,7 +921,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "- Fund the projects to realize future projects and new ideas\n"
             "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
             "and lot of more coming stuff!\n"
-            "\Details:\n\n"
+            "\nDetails:\n\n"
             "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
             "You need to pay the dev fee, by adding the treasury details to your coinbase transaction.\n"
             "In the RPC Result of %s you will find a JSON-Object called 'treasury'.\n"
@@ -1463,7 +1463,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         
         if(IsHardForkActivated(newBlock->block.nTime) && !gArgs.GetBoolArg("-accepttreasury", false))
         {
-            int userpercent = 100 - params.GetConsensus().nTreasuryAmount;
+            int userpercent = 100 - Params().GetConsensus().nTreasuryAmount;
             std::stringstream s;
             s << strprintf(
                 "You are not able to mine new coins right now.\n"
@@ -1476,7 +1476,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
                 "- Fund the projects to realize future projects and new ideas\n"
                 "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
                 "and lot of more coming stuff!\n"
-                "\Details:\n\n"
+                "\nDetails:\n\n"
                 "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
                 "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
                 "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
@@ -1485,7 +1485,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
                 "\n- Always start the wallet with the -accepttreasury argument\n"
                 "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
                 "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
-                params.GetConsensus().nTreasuryAmount, userpercent
+                Params().GetConsensus().nTreasuryAmount, userpercent
             );
             throw std::runtime_error(s.str());
         }
