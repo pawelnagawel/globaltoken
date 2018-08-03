@@ -205,24 +205,25 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
             std::stringstream s;
             s << strprintf(
                 "You are not able to mine new coins right now.\n"
-                "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
-                "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
-                "- Pay new Exchanges with the GlobalTokens from the treasury\n"
-                "- Get budget for marketing\n"
-                "- Pay the dev fee\n"
-                "- Pay the costs for coming chain upgrades\n"
-                "- Fund the projects to realize future projects and new ideas\n"
-                "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
-                "and lot of more coming stuff!\n"
+                "\nWith the hardfork the devs introduced a new network rule; the block treasury.\n"
+                "\nThe block treasury will help GlobalToken grow to new heights.\n"
+                "\nIt will help:\n\n"
+                "- Pay exchange listing fees with GlobalTokens from the treasury\n"
+                "- Create a budget for marketing\n"
+                "- Pay the developers\n"
+                "- Pay costs for upcoming blockchain upgrades\n"
+                "- Fund GlobalToken projects to realize future goals and new ideas\n"
+                "- Pay for general services/upgrades such as a new website, mobile wallets, user requested features and so on\n"
+                "- and a lot more coming stuff!\n"
                 "\nDetails:\n\n"
-                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
-                "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
-                "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from their new coins.\n"
+                "Your found blocks will automatically pay the treasury, there are no additional steps for you.\n"
+                "%d%% of your mined coins go to the treasury, and the other %d%% go to your own wallet.\n"
                 "\nAgreement:\n"
                 "You can agree to pay the block treasury by the following way:\n"
                 "\n- Always start the wallet with the -accepttreasury argument\n"
                 "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
-                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will be rejected.\n",
                 params.GetConsensus().nTreasuryAmount, userpercent
             );
             throw std::runtime_error(s.str());
@@ -912,17 +913,18 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         std::stringstream s;
         s << strprintf(
             "You are not able to mine new coins right now.\n"
-            "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
-            "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
-            "- Pay new Exchanges with the GlobalTokens from the treasury\n"
-            "- Get budget for marketing\n"
-            "- Pay the dev fee\n"
-            "- Pay the costs for coming chain upgrades\n"
-            "- Fund the projects to realize future projects and new ideas\n"
-            "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
-            "and lot of more coming stuff!\n"
+            "\nWith the hardfork the devs introduced a new network rule; the block treasury.\n"
+            "\nThe block treasury will help GlobalToken grow to new heights.\n"
+            "\nIt will help:\n\n"
+            "- Pay exchange listing fees with GlobalTokens from the treasury\n"
+            "- Create a budget for marketing\n"
+            "- Pay the developers\n"
+            "- Pay costs for upcoming blockchain upgrades\n"
+            "- Fund GlobalToken projects to realize future goals and new ideas\n"
+            "- Pay for general services/upgrades such as a new website, mobile wallets, user requested features and so on\n"
+            "- and a lot more coming stuff!\n"
             "\nDetails:\n\n"
-            "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
+            "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from their new coins.\n"
             "You need to pay the dev fee, by adding the treasury details to your coinbase transaction.\n"
             "In the RPC Result of %s you will find a JSON-Object called 'treasury'.\n"
             "You must add the address and amount as a receiver of your coinbase transaction.\n"
@@ -930,12 +932,12 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "There is a simple way to add the GlobalToken treasury to your coinbase transaction:\n"
             "\n- Just add the hex treasury output to your coinbase receivers. (treasury -> hex)\n"
             "The amount and addresses will change by time, so always take the current output from getblocktemplate!\n"
-            "\nThe amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+            "\n%d%% of your mined coins go to the treasury, and the other %d%% go to your own wallet.\n"
             "\nAgreement:\n"
             "You can agree to pay the block treasury by the following way:\n"
             "\n- Always start the wallet with the -accepttreasury argument\n"
             "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
-            "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+            "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will be rejected.\n",
             __func__, consensusParams.nTreasuryAmount, userpercent
         );
         throw std::runtime_error(s.str());
@@ -1135,7 +1137,7 @@ UniValue submitblock(const JSONRPCRequest& request)
     // We allow 2 arguments for compliance with BIP22. Argument 2 is ignored.
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 2) {
         throw std::runtime_error(
-            "submitblock \"hexdata\"  ( \"dummy\" ) \"blockformat\"\n"
+            "submitblock \"hexdata\"  ( \"dummy\" )\n"
             "\nAttempts to submit new block to network.\n"
             "See https://en.bitcoin.it/wiki/BIP_0022 for full specification.\n"
 
@@ -1467,24 +1469,25 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
             std::stringstream s;
             s << strprintf(
                 "You are not able to mine new coins right now.\n"
-                "\nWith the hardfork the devs introduced a new network rule, the block treasury.\n"
-                "\nThe block treasury will help GlobalToken to grow to a very huge cryptocurrency:\n\n"
-                "- Pay new Exchanges with the GlobalTokens from the treasury\n"
-                "- Get budget for marketing\n"
-                "- Pay the dev fee\n"
-                "- Pay the costs for coming chain upgrades\n"
-                "- Fund the projects to realize future projects and new ideas\n"
-                "- Pay necessary stuff like a new website, mobile wallets, user requested features and so on\n"
-                "and lot of more coming stuff!\n"
+                "\nWith the hardfork the devs introduced a new network rule; the block treasury.\n"
+                "\nThe block treasury will help GlobalToken grow to new heights.\n"
+                "\nIt will help:\n\n"
+                "- Pay exchange listing fees with GlobalTokens from the treasury\n"
+                "- Create a budget for marketing\n"
+                "- Pay the developers\n"
+                "- Pay costs for upcoming blockchain upgrades\n"
+                "- Fund GlobalToken projects to realize future goals and new ideas\n"
+                "- Pay for general services/upgrades such as a new website, mobile wallets, user requested features and so on\n"
+                "- and a lot more coming stuff!\n"
                 "\nDetails:\n\n"
-                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from his new coins.\n"
-                "Your found blocks will automatically pay the treasury, there is no additional step for you.\n"
-                "The amount you need to pay from block reward: %d%% | You will receive: %d%% of the block reward \n"
+                "The block treasury is a network rule now. Everyone who wants to mine must pay the treasury from their new coins.\n"
+                "Your found blocks will automatically pay the treasury, there are no additional steps for you.\n"
+                "%d%% of your mined coins go to the treasury, and the other %d%% go to your own wallet.\n"
                 "\nAgreement:\n"
                 "You can agree to pay the block treasury by the following way:\n"
                 "\n- Always start the wallet with the -accepttreasury argument\n"
                 "- Add accepttreasury=1 to your globaltoken.conf file and restart the wallet.\n"
-                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will get rejected.\n",
+                "\nIf you don't agree to pay the treasury, you will not be able to mine GlobalTokens and your blocks will be rejected.\n",
                 Params().GetConsensus().nTreasuryAmount, userpercent
             );
             throw std::runtime_error(s.str());
