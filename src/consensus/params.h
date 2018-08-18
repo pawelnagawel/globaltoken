@@ -49,6 +49,11 @@ struct BIP9Deployment {
 struct Params {
     uint256 hashGenesisBlock;
     int nSubsidyHalvingInterval;
+    int nMasternodeMinimumConfirmations;
+    int nMasternodeColleteralPaymentAmount;
+    int nMasternodePayeeReward;
+    int nInstantSendConfirmationsRequired;
+    int nInstantSendKeepLock;
     int nTreasuryAddressChange;
     int nTreasuryAddressChangeStart;
     int nTreasuryAmount;

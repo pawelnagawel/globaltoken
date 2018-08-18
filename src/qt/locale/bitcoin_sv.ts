@@ -2086,6 +2086,10 @@ Var vänlig och försök igen.</translation>
         <translation>Lägg till &amp;mottagare</translation>
     </message>
     <message>
+        <source>InstantX</source>
+        <translation>InstantX</translation>
+    </message>
+    <message>
         <source>Clear all fields of the form.</source>
         <translation>Rensa alla formulärfälten</translation>
     </message>
@@ -2140,6 +2144,10 @@ Var vänlig och försök igen.</translation>
     <message>
         <source>Copy change</source>
         <translation>Kopiera växel</translation>
+    </message>
+    <message>
+        <source>and InstantX</source>
+        <translation>och InstantX</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2501,6 +2509,38 @@ Var vänlig och försök igen.</translation>
     <message>
         <source>conflicted with a transaction with %1 confirmations</source>
         <translation>konflikt med en transaktion med %1 konfirmationer</translation>
+    </message>
+    <message>
+        <source>%1/offline (verified via instantx)</source>
+        <translation>%1/offline (bekräftad genom instantx)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (verified via instantx)</source>
+        <translation>%1/bekräftad (bekräftad genom instantx)</translation>
+    </message>
+    <message>
+        <source>%1 confirmations (verified via instantx)</source>
+        <translation>%1/bekräftelser (bekräftad genom instantx)</translation>
+    </message>
+    <message>
+        <source>%1/offline (InstantX verification in progress - %2 of %3 signatures)</source>
+        <translation>%1/offline (InstantX-bekräftelse under behandling - %2 av %3 signaturer)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (InstantX verification in progress - %2 of %3 signatures )</source>
+        <translation>%1/bekräftad (InstantX-bekräftelse under behandling - %2 av %3 signaturer)</translation>
+    </message>
+    <message>
+        <source>%1 confirmations (InstantX verification in progress - %2 of %3 signatures)</source>
+        <translation>%1 bekräftelser (InstantX-bekräftelse under behandling - %2 av %3 signaturer)</translation>
+    </message>
+    <message>
+        <source>%1/offline (InstantX verification failed)</source>
+        <translation>%1/offline (InstantX-bekräftelse misslyckades)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (InstantX verification failed)</source>
+        <translation>%1/bekräftad (InstantX-bekräftelse misslyckades)</translation>
     </message>
     <message>
         <source>%1/offline</source>
@@ -3543,6 +3583,10 @@ Var vänlig och försök igen.</translation>
         <translation>Ogiltigt belopp för -paytxfee=&lt;belopp&gt;:'%s' (måste vara minst %s)</translation>
     </message>
     <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Ogiltig masternodepriv-nyckel. Vänligen se dokumentationen.</translation>
+    </message>
+    <message>
         <source>Invalid netmask specified in -whitelist: '%s'</source>
         <translation>Ogiltig nätmask angiven i -whitelist: '%s'</translation>
     </message>
@@ -3661,6 +3705,10 @@ Var vänlig och försök igen.</translation>
     <message>
         <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
         <translation>Exekvera kommando när det bästa blocket ändras (%s i cmd är utbytt av blockhash)</translation>
+    </message>
+    <message>
+        <source>InstantX requires inputs with at least 6 confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantX kräver indatan med åtminstone 6 bekräftelser. Du kanske måste vänta ett par minuter och försöka igen.</translation>
     </message>
     <message>
         <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
@@ -3891,12 +3939,28 @@ Var vänlig och försök igen.</translation>
         <translation>Otillräckligt med globaltokens</translation>
     </message>
     <message>
+        <source>InstantX options:</source>
+        <translation>InstantX-alternativ:</translation>
+    </message>
+    <message>
         <source>Loading block index...</source>
         <translation>Laddar blockindex...</translation>
     </message>
     <message>
         <source>Loading wallet...</source>
         <translation>Laddar plånbok...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Masternode-alternativ:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Masternode-kön är uppfylld.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
     </message>
     <message>
         <source>Cannot downgrade wallet</source>
@@ -3913,6 +3977,14 @@ Var vänlig och försök igen.</translation>
     <message>
         <source>Error</source>
         <translation>Fel</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Ställ in masternodprivatnyckeln</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Kan inte sporka meddelandet, fel nyckel?</translation>
     </message>
 </context>
 </TS>

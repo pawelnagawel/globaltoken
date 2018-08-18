@@ -81,6 +81,7 @@ public:
     CAmount GetTreasuryAmount(CAmount coinAmount) const;
     const ChainTxData& TxData() const { return chainTxData; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
+    const std::string& SporkAddress() const { return strSporkAddress; }
 protected:
     CChainParams() {}
 
@@ -101,6 +102,7 @@ protected:
     bool fMineBlocksOnDemand;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
+    std::string strSporkAddress;
     std::vector<std::string> vFoundersRewardAddress;
 };
 

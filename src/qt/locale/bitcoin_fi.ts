@@ -266,6 +266,14 @@
         <translation>Selaa rahansiirtohistoriaa</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodet</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Selaa masternodeja</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>L&amp;opeta</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Vaihda Tunnuslause...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Avaa &amp;Masternode Asetustiedosto</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Avaa Masternode asetustiedosto</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -900,6 +916,161 @@
     </message>
     </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Lomake</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Omat Masternodet</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>Huom: Masternoden status paikallisessa lompakossa saattaa olla väärä.&lt;br /&gt;Odota että lompakko on synkronoinut lisätiedot ja tarkista sitten toisesta nodesta&lt;br /&gt;jos nodesi pitäisi olla käynnissä mutta et näe silti "KÄYTÖSSÄ" "Tila" kentässä.</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>IP Osoite</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protokolla</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Tila</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Aktiivinen</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Nähty Viimeksi</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Maksun Saaja</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>Käynnistä &amp;alias</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>Käynnistä &amp;kaikki</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>Käynnistä &amp;PUUTTUVA</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>Päivitä &amp;tila</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Näytä Masternode lisätietoja</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Näytä &amp;Tietoja...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Tila päivitetään automaattisesti (sek):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Kaikki Masternodet</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Suodatukset:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Suodata masternodet lista</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Solmuja Yht:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Käynnistä alias</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Vahvista masternoden käynnistys</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Haluatko varmasti käynnistää masternoden %1?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Vahvista kaikkien masternodien käynnistys</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Haluatko varmasti käynnistää KAIKKI masternodet?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Komento ei ole juuri nyt käytettävissä</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>Et voi käyttää tätä komentoa ennen kuin masternode lista on synkronissa</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Vahvista puuttuvien masternodien käynnistys</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Haluatko varmasti käynnistää PUUTTUVAT masternodet?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Masternode lisätietoja %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Masternoden Yksityisavain</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Yksityisavain</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Vakuus</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Versio</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Tuntematon</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1006,6 +1177,14 @@
     <message>
         <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
         <translation>IP osoite proxille (esim. IPv4: 127.0.0.1 / IPv6: ::1)</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Näytä lisävälilehti jonka ensimmäisellä alivälilehdellä näkyvät sinun masternodet&lt;br/&gt;ja toisella alivälilehdellä näkyvät verkon kaikki masternodet.</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Näytä Masternodet Välilehti</translation>
     </message>
     <message>
         <source>Shows if the supplied default SOCKS5 proxy is used to reach peers via this network type.</source>
@@ -1400,6 +1579,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Virhe luettaessa masternoden asetustiedostoa: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Määrä</translation>
     </message>
@@ -1480,6 +1663,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>QR Koodi Otsikko</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>QR Koodi</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Tallenna Kuva</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Virhe QR koodin generoinnissa.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1547,6 +1749,10 @@
     <message>
         <source>Block chain</source>
         <translation>Lohkoketju</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Masternodet määrä</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1820,6 +2026,10 @@
         <translation>Tyhjennä</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Pyydä InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>Pyydettyjen maksujen historia</translation>
     </message>
@@ -1909,6 +2119,10 @@
     <message>
         <source>Message</source>
         <translation>Viesti</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2025,6 +2239,10 @@
         <translation>pudota kulujen asetukset</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>per kilotavu</translation>
     </message>
@@ -2123,6 +2341,10 @@
     <message>
         <source>%1 to %2</source>
         <translation>%1 to %2</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>ja InstantSend</translation>
     </message>
     <message>
         <source>Are you sure you want to send?</source>
@@ -2496,6 +2718,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 vahvistusta</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>vahvistettu InstanSend:illä</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>InstantSend vahvistus käynnissä - %1 / %2 allekirjoitusta</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>InstantSend vahvistus epäonnistui</translation>
     </message>
     <message>
         <source>Status</source>
@@ -2916,6 +3150,14 @@
         <translation>Lähetä kolikoita</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ei tue näin korkeaa lähetysmäärää vielä. Siirtotapahtumat on tällä hetkellä rajoitettu %1 GLT.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Käytetty liian monia syötteitä (&gt;%1) tähän InstantSend siirtotapahtumaan, siirtokulut voivat olla todella isot.</translation>
+    </message>
+    <message>
         <source>Increasing transaction fee failed</source>
         <translation>Siirtokulun nosto epäonnistui</translation>
     </message>
@@ -2992,6 +3234,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Määritä julkinen osoitteesi</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>Sinun täytyy määritellä masternodeprivkey asetustiedostoon. Katso lisätietoja dokumentaatiosta.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3446,12 +3692,24 @@
         <translation>Yhdistä SOCKS5 proxin kautta</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Aktivoi asiakasohjelman käyttö masternode:na (0-1, oletus: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Virhe ladattaessa %s: Et voi poistaa HD-ominaisuutta jo olemassa olevasta HD-lompakosta.</translation>
     </message>
     <message>
         <source>Error reading from database, shutting down.</source>
         <translation>Virheitä tietokantaa luettaessa, ohjelma pysäytetään.</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Masternode välimuistin lataaminen epäonnistui</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Masternode maksujen välimuistin lataaminen epäonnistui</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3482,8 +3740,32 @@
         <translation>Pidä enimmillään &lt;n&gt; yhdistämiskelvotonta rahansiirtoa muistissa (oletus: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Ladataan masternode välimuistia...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Ladataan masternode maksuvälimuistia...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Lukitse masternodet niiden asetustiedoston kautta (oletus: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Pitää määritellä portti argumentilla -whitebind: '%s'</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Masternodeja ei havaittu.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Yhteensopivaa Masternodea ei löytynyt.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Ei ole Masternodet listassa.</translation>
     </message>
     <message>
         <source>Node relay options:</source>
@@ -3516,6 +3798,30 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Siirron vahvistus epäonnistui</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Määritä masternoden asetustiedosto (oletus: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Esitetty seuraavat merkinnät masternodelle: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Esitetty masternodelle, odotetaan lisää merkintöjä ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Esitetty masternodelle, odotetaan jonossa %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Synkronoidaan masternodet...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Tämä ei ole Masternode.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -3808,6 +4114,98 @@
     <message>
         <source>Error</source>
         <translation>Virhe</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Virheellinen masternoden yksityisavain (masternodeprivkey). Katso lisätietoja dokumentaatiosta.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Satunnaista Masternodea ei löydy.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation> Ei voitu jäsentää masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Virheellinen portti löytyi masternode.conf :sta</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Kytke pois käytöstä kaikki Globaltoken:in erityistoiminnot (Masternodet, InstantSend) (0-1, oletus: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Ota InstantSend käyttöön, näytä lukittujen siirtojen vahvistukset (0-1, oletus: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Suorita käsky kun lompakon InstantSend siirtotapahtuma on hyväksytysti lukittu (%s cmd on korvattu TxID:llä)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ei tue näin korkeaa lähetysmäärää vielä. Siirtotapahtumat on tällä hetkellä rajoitettu %1 GLT.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend vaatii syötteille vähintään %d vahvistusta, odota muutama minuutti ja yritä uudelleen.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Masternode välimuisti on tyhjä, ohitetaan maksujen välimuisti...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Masternode valinnat:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Masternode jono on täysi.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Varoitus: Ainakin %d / %d masternodesta käyttää uudempaa ohjelmaversiota. Tarkista uusimmat päivitetyt ohjelmistot, sinunkin on ehkä päivitettävä ohjelmisto.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Varoitus: Jokainen masternode (%d tunnetusta) käyttää uudempaa ohjelmistoversiota. Tarkista uusimmat ohjelmistoversiot, on todennäköistä että et ole huomannut isoa/kriittistä päivitystä.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Aseta masternoden yksityisavain.</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Synkronoidaan masternode maksuja...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Ota käyttöön julkaise siirtotapahtuman tarkiste (lukittu InstantSend kautta) osoitteessa &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Ota käyttöön julkaise raaka siirtotapahtuma (lukittu InstantSend kautta) osoitteessa &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>InstantSend valinnat:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Ohita spork osoite. Käyttökelpoinen vain regtest. Jos käytät tätä pääverkossa tai testiverkossa, joudut estolistalle, eli bannataan.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>Virheellinen spork osoite määritelty -sporkaddr</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>En voida allekirjoittaa spork viestiä, väärä avain?</translation>
     </message>
 </context>
 </TS>

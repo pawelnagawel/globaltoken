@@ -56,11 +56,29 @@ void SyncWithValidationInterfaceQueue();
 class CValidationInterface {
 protected:
     /**
+     * Notifies listeners of accepted headers
+     *
+     * Called on a background thread.
+     */
+    virtual void AcceptedBlockHeader(const CBlockIndex *pindexNew) {}
+    /**
+     * Notifies listeners of header tips
+     *
+     * Called on a background thread.
+     */
+    virtual void NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitialDownload) {}
+    /**
      * Notifies listeners of updated block chain tip
      *
      * Called on a background thread.
      */
     virtual void UpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload) {}
+    /**
+     * Notifies listeners of a transaction having been locked.
+     *
+     * Called on a background thread.
+     */
+    virtual void NotifyTransactionLock(const CTransaction &tx) {}
     /**
      * Notifies listeners of a transaction having been added to mempool.
      *
@@ -148,6 +166,8 @@ public:
     /** Unregister with mempool */
     void UnregisterWithMempoolSignals(CTxMemPool& pool);
 
+    void AcceptedBlockHeader(const CBlockIndex *pindexNew);
+    void NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitialDownload);
     void UpdatedBlockTip(const CBlockIndex *, const CBlockIndex *, bool fInitialDownload);
     void TransactionAddedToMempool(const CTransactionRef &);
     void BlockConnected(const std::shared_ptr<const CBlock> &, const CBlockIndex *pindex, const std::shared_ptr<const std::vector<CTransactionRef>> &);

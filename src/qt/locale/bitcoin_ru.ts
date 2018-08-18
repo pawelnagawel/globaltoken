@@ -266,6 +266,14 @@
         <translation>Показать историю транзакций</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Мастерноды</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Посмотреть мастерноды</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>В&amp;ыход</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Изменить пароль...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Открыть файл настроек &amp;мастернод</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Открыть файл настроек мастернод</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -912,6 +928,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Мои мастерноды</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>Примечание: Статус Ваших мастернод в локальном кошельке может быть не совсем корректным.&lt;br /&gt;Всегда дожидайтесь окончания синхронизации дополнительных данных и перепроверяйте с другой ноды,&lt;br /&gt;если Ваша ьастернода должна быть активна, но Вы ее статус все равно не отображается как "ENABLED".</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Протокол</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Статус</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Активна</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Последняя активность</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Получатель</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>Запуск по &amp;имени</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>Запуск &amp;всех</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>Запуск &amp;MISSING</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>&amp;Обновить статус</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Показать дополнительную информацию о мастерноде</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Показать &amp;информацию</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Статус будет обновлен автоматически через (сек):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Все мастерноды</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Фильтровать список:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Фильтровать список мастернод</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Количество узлов:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Запуск по имени</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Подтверждение запуска мастерноды</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Вы уверены, что хотите запустить мастерноду %1?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Подтверждение запуска всех мастернод</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Вы уверены, что хотите запустить ВСЕ мастерноды?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Команда в данный момент недоступна</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>Вы не можете использовать данную команду до завершения синхронизации списка мастернод</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Подтверждение запуска отсутствующих мастернод</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Вы уверены, что хотите запустить ОТСУТСТВУЮЩИЕ мастерноды?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Дополнительная информация по мастерноде %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Закрытый ключ мастерноды</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Закрытый ключ</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Обеспечительная транзакция</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Версия</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Неизвестно</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1074,6 +1245,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>Б&amp;умажник</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Показывать дополнительную вкладку со списком своих мастернод&lt;br/&gt;в одной таблице и списком всех мастернод в другой.</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Показывать вкладку с мастернодами</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1440,6 +1619,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Ошибка чтения файла конфигурации мастернод: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Сумма</translation>
     </message>
@@ -1544,6 +1727,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>Заголовок QR-кода</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>QR-код</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Сохранить изображение...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Ошибка создания QR-кода</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1611,6 +1813,10 @@
     <message>
         <source>Block chain</source>
         <translation>Цепь блоков</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Количество Мастернод</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1892,6 +2098,10 @@
         <translation>Очистить</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Запросить InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>История запрошенных платежей</translation>
     </message>
@@ -1985,6 +2195,10 @@
     <message>
         <source>Message</source>
         <translation>Сообщение</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2101,6 +2315,10 @@
         <translation>Свернуть настройки комиссии</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>за килобайт</translation>
     </message>
@@ -2203,6 +2421,10 @@
     <message>
         <source>Copy change</source>
         <translation>Копировать сдачу</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>и InstantSend</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2604,6 +2826,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 подтверждений</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>проверено через InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>верификация InstantSend в процессе - %1 из %2 подписей</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>верификация InstantSend завершилась неудачно</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3044,6 +3278,14 @@
         <translation>Отправка</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend пока что не поддерживает такие большие суммы. На данный момент транзакции ограничены суммами до %1 GLT.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Для этой InstantSend транзакции было использовано слишком много входов (&gt;%1), комиссия может быть огромной.</translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>Ошибка повышения комиссии</translation>
     </message>
@@ -3132,6 +3374,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Укажите ваш собственный публичный адрес</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>Необходимо указать masternodeprivkey в файле конфигурации. Пожалуйста, ознакомьтесь с документацией.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3670,6 +3916,10 @@
         <translation>Подключаться через SOCKS5 прокси</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Разрешить этому клиенту работать в качестве мастерноды (0-1, по умолчанию: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Ошибка загрузки %s: Вы не можете выключить HD в уже существующем HD кошельке</translation>
     </message>
@@ -3680,6 +3930,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>Ошибка модернизации базы блокчейна</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Ошибка загрузка кэша мастернод из</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Ошибка загрузка кэша выплат мастернодам из</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3710,12 +3968,36 @@
         <translation>Держать в памяти до &lt;n&gt; несвязных транзакций (по умолчанию: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Загрузка кэша мастернод...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Загрузка кэша выплат Мастернодам...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Заблокировать средства мастернод, указанных в настроечном файле (по умолчанию: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Необходимо указать порт с помощью -whitebind: '%s'</translation>
     </message>
     <message>
         <source>Node relay options:</source>
         <translation>Параметры трансляции узла:</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Мастерноды не найдены.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Отсутствуют совместимые мастерноды.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Отсутствует в списке мастернод.</translation>
     </message>
     <message>
         <source>RPC server options:</source>
@@ -3756,6 +4038,30 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>Указанный -walletdir "%s" не является директорией</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Указать конфигурационный файл для мастернод (по умолчанию: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Мастерноде отправлены следующие записи: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Отправлено мастерноде, ожидаем больше записей ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Отправлено на мастерноду, ожидаем в очереди %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Синхронизация списка мастернод...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Это не мастернода.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4124,6 +4430,98 @@
     <message>
         <source>Error</source>
         <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Неправильное значение masternodeprivkey. Пожалуйста, ознакомьтесь с документацией.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Не получилось выбрать случайную Мастерноду.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Не могу разобрать masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Обнаружен некорректный порт в masternode.conf</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Отключить всю функциональность, относящуюся к Globaltoken (Мастерноды, InstantSend) (0-1, по умолчанию: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Включить InstantSend, показывать подтверждения для заблокированных транзакций (0-1, по умолчанию: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Выполнить команду, когда транзакция InstantSend успешно заблокирована (%s в команде заменяется на TxID)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend пока что не поддерживает такие большие суммы. На данный момент транзакции ограничены суммами до %1 GLT.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend требует наличия средств с хотя бы %d подтверждениями, возможно Вам нужно подождать пару минут и попробовать снова.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Кэш мастернод пуст, пропускаем кэш платежей...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Параметры мастерноды:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Очередь на мастерноде переполнена.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Мастернода:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Внимание: как минимум %d из %d мастернод используют новое ПО. Пожалуйста, ознакомьтесь с последними релизами, возможно Вам тоже необходимо перейти на новую версию.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Внимание: все мастерноды (из %d известных) используют новое ПО. Пожалуйста, ознакомьтесь с последними релизами, крайне вероятно, что Вы пропустили значимое либо критическое обновление.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Установить закрытый ключ мастерноды</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Синхронизация выплат мастернодам...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Включить публикацию хэша транзакции (заблокированной через InstantSend) на &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Включить публикацию кода транзакции (заблокированной через InstantSend) на &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>Параметры InstantSend:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Задать spork-адрес. Полезно только для regtest. Использование этого в главной либо тестовой сети приведет к бану Вашего узла.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>В -sporkaddr указан некорректный адрес</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Не удалось подписать spork-сообщение. Неправильный ключ?</translation>
     </message>
 </context>
 </TS>

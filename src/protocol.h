@@ -237,6 +237,21 @@ extern const char *GETBLOCKTXN;
  * @since protocol version 70014 as described by BIP 152
  */
 extern const char *BLOCKTXN;
+
+// GlobalToken message types
+// NOTE: do NOT declare non-implmented here, we don't want them to be exposed to the outside
+// TODO: add description
+extern const char *TXLOCKREQUEST;
+extern const char *TXLOCKVOTE;
+extern const char *SPORK;
+extern const char *GETSPORKS;
+extern const char *MASTERNODEPAYMENTVOTE;
+extern const char *MASTERNODEPAYMENTSYNC;
+extern const char *MNANNOUNCE;
+extern const char *MNPING;
+extern const char *DSEG;
+extern const char *SYNCSTATUSCOUNT;
+extern const char *MNVERIFY;
 };
 
 /* Get a vector of all valid message types (see above) */
@@ -377,6 +392,17 @@ enum GetDataMsg
     MSG_WITNESS_BLOCK = MSG_BLOCK | MSG_WITNESS_FLAG, //!< Defined in BIP144
     MSG_WITNESS_TX = MSG_TX | MSG_WITNESS_FLAG,       //!< Defined in BIP144
     MSG_FILTERED_WITNESS_BLOCK = MSG_FILTERED_BLOCK | MSG_WITNESS_FLAG,
+    // Globaltoken message types
+    // NOTE: declare non-implmented here, we must keep this enum consistent and backwards compatible
+    MSG_TXLOCK_REQUEST = 5,
+    MSG_TXLOCK_VOTE = 6,
+    MSG_SPORK = 7,
+    MSG_MASTERNODE_PAYMENT_VOTE = 8,
+    MSG_MASTERNODE_PAYMENT_BLOCK = 9, // reusing, was MSG_MASTERNODE_SCANNING_ERROR previousely, was NOT used in 12.0
+    MSG_MASTERNODE_QUORUM = 10, // not implemented
+    MSG_MASTERNODE_ANNOUNCE = 11,
+    MSG_MASTERNODE_PING = 12,
+    MSG_MASTERNODE_VERIFY = 13,
 };
 
 /** inv message data */

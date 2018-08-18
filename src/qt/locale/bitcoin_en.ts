@@ -339,6 +339,16 @@
         <translation>Browse transaction history</translation>
     </message>
     <message>
+        <location line="+13"/>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodes</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Browse masternodes</source>
+        <translation>Browse masternodes</translation>
+    </message>
+    <message>
         <location line="+23"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
@@ -392,6 +402,16 @@
         <location line="+2"/>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Change Passphrase...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Open &amp;Masternode Configuration File</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Open Masternode configuration file</source>
+        <translation>Open Masternode configuration file</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1155,6 +1175,213 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <location filename="../forms/masternodelist.ui" line="+14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>My Masternodes</source>
+        <translation>My Masternodes</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see &quot;ENABLED&quot; in &quot;Status&quot; field.</source>
+        <translation>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see &quot;ENABLED&quot; in &quot;Status&quot; field.</translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <location filename="../masternodelist.cpp" line="+493"/>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+130"/>
+        <source>Address</source>
+        <translation>Address</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <location line="+130"/>
+        <location filename="../masternodelist.cpp" line="+5"/>
+        <source>Protocol</source>
+        <translation>Protocol</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <location line="+130"/>
+        <location filename="../masternodelist.cpp" line="+3"/>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <location line="+130"/>
+        <location filename="../masternodelist.cpp" line="+2"/>
+        <source>Active</source>
+        <translation>Active</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <location line="+130"/>
+        <location filename="../masternodelist.cpp" line="+1"/>
+        <source>Last Seen</source>
+        <translation>Last Seen</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <location line="+130"/>
+        <location filename="../masternodelist.cpp" line="-2"/>
+        <source>Payee</source>
+        <translation>Payee</translation>
+    </message>
+    <message>
+        <location line="-117"/>
+        <source>S&amp;tart alias</source>
+        <translation>S&amp;tart alias</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Start &amp;all</source>
+        <translation>Start &amp;all</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Start &amp;MISSING</source>
+        <translation>Start &amp;MISSING</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&amp;Update status</source>
+        <translation>&amp;Update status</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Show additional Masternode information</source>
+        <translation>Show additional Masternode information</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show &amp;Info...</source>
+        <translation>Show &amp;Info...</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Status will be updated automatically in (sec):</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <location line="+119"/>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <location line="-94"/>
+        <source>All Masternodes</source>
+        <translation>All Masternodes</translation>
+    </message>
+    <message>
+        <location line="+60"/>
+        <source>Filter List:</source>
+        <translation>Filter List:</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Filter masternode list</source>
+        <translation>Filter masternode list</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Node Count:</source>
+        <translation>Node Count:</translation>
+    </message>
+    <message>
+        <location filename="../masternodelist.cpp" line="-439"/>
+        <source>Start alias</source>
+        <translation>Start alias</translation>
+    </message>
+    <message>
+        <location line="+289"/>
+        <source>Confirm masternode start</source>
+        <translation>Confirm masternode start</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Are you sure you want to start masternode %1?</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Confirm all masternodes start</source>
+        <translation>Confirm all masternodes start</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Are you sure you want to start ALL masternodes?</translation>
+    </message>
+    <message>
+        <location line="+24"/>
+        <source>Command is not available right now</source>
+        <translation>Command is not available right now</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>You can&apos;t use this command until masternode list is synced</source>
+        <translation>You can&apos;t use this command until masternode list is synced</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Confirm missing masternodes start</source>
+        <translation>Confirm missing masternodes start</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Are you sure you want to start MISSING masternodes?</translation>
+    </message>
+    <message>
+        <location line="+77"/>
+        <source>Additional information for Masternode %1</source>
+        <translation>Additional information for Masternode %1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Masternode Private Key</source>
+        <translation>Masternode Private Key</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Private Key</source>
+        <translation>Private Key</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Collateral</source>
+        <translation>Collateral</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <location line="+1"/>
+        <source>Unknown</source>
+        <translation>Unknown</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <location filename="../forms/modaloverlay.ui" line="+14"/>
@@ -1264,6 +1491,16 @@
         <location line="+6"/>
         <source>Automatically start %1 after logging in to the system.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show Masternodes Tab</source>
+        <translation>Show Masternodes Tab</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1835,6 +2072,11 @@
 <context>
     <name>QObject</name>
     <message>
+        <location line="-48"/>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Error reading masternode configuration file: %1</translation>
+    </message>
+    <message>
         <location filename="../bitcoinunits.cpp" line="+185"/>
         <source>Amount</source>
         <translation type="unfinished">Amount</translation>
@@ -1984,6 +2226,29 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <location filename="../forms/qrdialog.ui" line="+23"/>
+        <source>QR-Code Title</source>
+        <translation>QR-Code Title</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>QR Code</source>
+        <translation>QR Code</translation>
+    </message>
+    <message>
+        <location line="+46"/>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Save Image...</translation>
+    </message>
+    <message>
+        <location filename="../qrdialog.cpp" line="+149"/>
+        <source>Error creating QR Code.</source>
+        <translation>Error creating QR Code.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <location filename="../receiverequestdialog.cpp" line="+35"/>
@@ -2095,6 +2360,11 @@
         <location line="+29"/>
         <source>Block chain</source>
         <translation>Block chain</translation>
+    </message>
+    <message>
+        <location line="-20"/>
+        <source>Number of Masternodes</source>
+        <translation>Number of Masternodes</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2458,6 +2728,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+32"/>
+        <source>Request InstantSend</source>
+        <translation>Request InstantSend</translation>
+    </message>
+    <message>
         <location line="+142"/>
         <source>Requested payments history</source>
         <translation type="unfinished"></translation>
@@ -2574,6 +2849,11 @@
         <location line="+2"/>
         <source>Message</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2784,6 +3064,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+19"/>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <location line="+74"/>
         <source>Enable Replace-By-Fee</source>
         <translation type="unfinished"></translation>
@@ -2852,6 +3137,11 @@
         <location line="+76"/>
         <source>%1 (%2 blocks)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>and InstantSend</source>
+        <translation>and InstantSend</translation>
     </message>
     <message>
         <location line="+127"/>
@@ -3368,6 +3658,21 @@
         <location line="+2"/>
         <source>%1 confirmations</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>verified via InstantSend</source>
+        <translation>verified via InstantSend</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>InstantSend verification in progress - %1 of %2 signatures</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>InstantSend verification failed</source>
+        <translation>InstantSend verification failed</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3937,6 +4242,17 @@
         <translation type="unfinished">Send Coins</translation>
     </message>
     <message>
+        <location line="-28"/>
+        <location line="+12"/>
+        <source>InstantSend doesn&apos;t support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend doesn&apos;t support sending values that high yet. Transactions are currently limited to %1 GLT.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</translation>
+    </message>
+    <message>
         <location line="+384"/>
         <location line="+39"/>
         <location line="+6"/>
@@ -4048,6 +4364,11 @@
         <location line="+102"/>
         <source>Specify your own public address</source>
         <translation>Specify your own public address</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</translation>
     </message>
     <message>
         <location line="-116"/>
@@ -4725,6 +5046,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+17"/>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Enable the client to act as a masternode (0-1, default: %u)</translation>
+    </message>
+    <message>
         <location line="+20"/>
         <source>Error loading %s: You can&apos;t disable HD on an already existing HD wallet</source>
         <translation type="unfinished"></translation>
@@ -4738,6 +5064,16 @@
         <location line="+1"/>
         <source>Error upgrading chainstate database</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Failed to load masternode cache from</source>
+        <translation>Failed to load masternode cache from</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Failed to load masternode payments cache from</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4775,6 +5111,21 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+2"/>
+        <source>Loading masternode cache...</source>
+        <translation>Loading masternode cache...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Loading masternode payment cache...</source>
+        <translation>Loading masternode payment cache...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Lock masternodes from masternode configuration file (default: %u)</translation>
+    </message>
+    <message>
         <location line="+14"/>
         <source>Need to specify a port with -whitebind: &apos;%s&apos;</source>
         <translation type="unfinished"></translation>
@@ -4783,6 +5134,21 @@
         <location line="+1"/>
         <source>Node relay options:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>No Masternodes detected.</source>
+        <translation>No Masternodes detected.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>No compatible Masternode found.</source>
+        <translation>No compatible Masternode found.</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Not in the Masternode list.</source>
+        <translation>Not in the Masternode list.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4833,6 +5199,36 @@
         <location line="+1"/>
         <source>Specified -walletdir &quot;%s&quot; is not a directory</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Specify masternode configuration file (default: %s)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Submitted following entries to masternode: %u / %d</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Submitted to masternode, waiting for more entries ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Submitted to masternode, waiting in queue %s</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Synchronizing masternodes...</source>
+        <translation>Synchronizing masternodes...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>This is not a Masternode.</source>
+        <translation>This is not a Masternode.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5293,6 +5689,121 @@
         <location line="+20"/>
         <source>Error</source>
         <translation>Error</translation>
+    </message>
+    <message>
+        <location line="-158"/>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Invalid masternodeprivkey. Please see documenation.</translation>
+    </message>
+    <message>
+        <location line="-75"/>
+        <source>Can&apos;t find random Masternode.</source>
+        <translation>Can&apos;t find random Masternode.</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Could not parse masternode.conf</source>
+        <translation>Could not parse masternode.conf</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Invalid port detected in masternode.conf</translation>
+    </message>
+    <message>
+        <location line="-376"/>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>InstantSend doesn&apos;t support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend doesn&apos;t support sending values that high yet. Transactions are currently limited to %1 GLT.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Masternode cache is empty, skipping payments cache...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Masternode options:</source>
+        <translation>Masternode options:</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Masternode queue is full.</source>
+        <translation>Masternode queue is full.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it&apos;s very likely that you missed a major/critical update.</source>
+        <translation>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it&apos;s very likely that you missed a major/critical update.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Set the masternode private key</source>
+        <translation>Set the masternode private key</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Synchronizing masternode payments...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>InstantSend options:</source>
+        <translation>InstantSend options:</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>Invalid spork address specified with -sporkaddr</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Unable to sign spork message, wrong key?</translation>
     </message>
 </context>
 </TS>

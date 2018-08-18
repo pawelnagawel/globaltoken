@@ -18,6 +18,7 @@ class CCoinControl
 public:
     //! Custom change destination, if not set an address is generated
     CTxDestination destChange;
+    bool fUseInstantSend;
     //! Custom change type, ignored if destChange is set, defaults to g_change_type
     OutputType change_type;
     //! If false, allows unselected inputs, but requires all selected inputs be used
@@ -47,6 +48,7 @@ public:
         fAllowOtherInputs = false;
         fAllowWatchOnly = false;
         setSelected.clear();
+        fUseInstantSend = false;
         m_feerate.reset();
         fOverrideFeeRate = false;
         m_confirm_target.reset();

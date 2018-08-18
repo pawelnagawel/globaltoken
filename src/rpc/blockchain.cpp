@@ -11,6 +11,7 @@
 #include <checkpoints.h>
 #include <coins.h>
 #include <consensus/validation.h>
+#include <instantx.h>
 #include <globaltoken/hardfork.h>
 #include <validation.h>
 #include <core_io.h>
@@ -102,36 +103,36 @@ namespace
 UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
 {
     UniValue result(UniValue::VOBJ);
-    result.push_back(Pair("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex()));
+    result.pushKV("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex());
 
     {
         UniValue tx(UniValue::VOBJ);
-        tx.push_back(Pair("hex", EncodeHexTx(*auxpow.tx)));
+        tx.pushKV("hex", EncodeHexTx(*auxpow.tx));
         TxToJSON(*auxpow.tx, auxpow.parentBlock.GetHash(), tx);
-        result.push_back(Pair("tx", tx));
+        result.pushKV("tx", tx);
     }
 
-    result.push_back(Pair("index", auxpow.nIndex));
-    result.push_back(Pair("chainindex", auxpow.nChainIndex));
+    result.pushKV("index", auxpow.nIndex);
+    result.pushKV("chainindex", auxpow.nChainIndex);
 
     {
         UniValue branch(UniValue::VARR);
         for (const auto& node : auxpow.vMerkleBranch)
             branch.push_back(node.GetHex());
-        result.push_back(Pair("merklebranch", branch));
+        result.pushKV("merklebranch", branch);
     }
 
     {
         UniValue branch(UniValue::VARR);
         for (const auto& node : auxpow.vChainMerkleBranch)
             branch.push_back(node.GetHex());
-        result.push_back(Pair("chainmerklebranch", branch));
+        result.pushKV("chainmerklebranch", branch);
     }
 
     CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
     ssParent << auxpow.parentBlock;
     const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
-    result.push_back(Pair("parentblock", strHex));
+    result.pushKV("parentblock", strHex);
 
     return result;
 }
@@ -139,37 +140,37 @@ UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
 UniValue AuxpowToJSON(const CEquihashAuxPow& auxpow)
 {
     UniValue result(UniValue::VOBJ);
-    result.push_back(Pair("powhash", auxpow.getParentBlockHash().GetHex()));
-    result.push_back(Pair("solution", HexStr(auxpow.getParentBlock().nSolution)));
+    result.pushKV("powhash", auxpow.getParentBlockHash().GetHex());
+    result.pushKV("solution", HexStr(auxpow.getParentBlock().nSolution));
 
     {
         UniValue tx(UniValue::VOBJ);
-        tx.push_back(Pair("hex", EncodeHexTx(*auxpow.tx)));
+        tx.pushKV("hex", EncodeHexTx(*auxpow.tx));
         TxToJSON(*auxpow.tx, auxpow.parentBlock.GetHash(), tx);
-        result.push_back(Pair("tx", tx));
+        result.pushKV("tx", tx);
     }
 
-    result.push_back(Pair("index", auxpow.nIndex));
-    result.push_back(Pair("chainindex", auxpow.nChainIndex));
+    result.pushKV("index", auxpow.nIndex);
+    result.pushKV("chainindex", auxpow.nChainIndex);
 
     {
         UniValue branch(UniValue::VARR);
         for (const auto& node : auxpow.vMerkleBranch)
             branch.push_back(node.GetHex());
-        result.push_back(Pair("merklebranch", branch));
+        result.pushKV("merklebranch", branch);
     }
 
     {
         UniValue branch(UniValue::VARR);
         for (const auto& node : auxpow.vChainMerkleBranch)
             branch.push_back(node.GetHex());
-        result.push_back(Pair("chainmerklebranch", branch));
+        result.pushKV("chainmerklebranch", branch);
     }
 
     CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
     ssParent << auxpow.parentBlock;
     const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
-    result.push_back(Pair("parentblock", strHex));
+    result.pushKV("parentblock", strHex);
 
     return result;
 }
@@ -273,12 +274,12 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     if(algo == ALGO_EQUIHASH)
     {
         if (block.auxpowequihash)
-            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowequihash)));
+            result.pushKV("auxpow", AuxpowToJSON(*block.auxpowequihash));
     }
     else
     {
         if (block.auxpowdefault)
-            result.push_back(Pair("auxpow", AuxpowToJSON(*block.auxpowdefault, algo)));
+            result.pushKV("auxpow", AuxpowToJSON(*block.auxpowdefault, algo));
     }
 
     if (blockindex->pprev)
@@ -506,7 +507,9 @@ std::string EntryDescriptionString()
            "    \"wtxid\" : hash,         (string) hash of serialized transaction, including witness data\n"
            "    \"depends\" : [           (array) unconfirmed transactions used as inputs for this transaction\n"
            "        \"transactionid\",    (string) parent transaction id\n"
-           "       ... ]\n";
+           "       ... ],\n"
+            "    \"instantsend\" : true|false, (boolean) True if this transaction was sent as an InstantSend one\n"
+            "    \"instantlock\" : true|false  (boolean) True if this transaction was locked via InstantSend\n";
 }
 
 void entryToJSON(UniValue &info, const CTxMemPoolEntry &e)
@@ -540,6 +543,8 @@ void entryToJSON(UniValue &info, const CTxMemPoolEntry &e)
     }
 
     info.pushKV("depends", depends);
+    info.pushKV("instantsend", instantsend.HasTxLockRequest(tx.GetHash()));
+    info.pushKV("instantlock", instantsend.IsLockedInstantSendTransaction(tx.GetHash()));
 }
 
 UniValue mempoolToJSON(bool fVerbose)

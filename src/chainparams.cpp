@@ -1,5 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -86,6 +87,11 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 840000;
+        consensus.nMasternodeMinimumConfirmations = 15;
+        consensus.nMasternodeColleteralPaymentAmount = 50000;
+        consensus.nMasternodePayeeReward = 25;
+        consensus.nInstantSendConfirmationsRequired = 6;
+        consensus.nInstantSendKeepLock = 24;
         consensus.nTreasuryAddressChange = 133920;
         consensus.nTreasuryAddressChangeStart = 500000;
         consensus.nTreasuryAmount = 15;
@@ -210,6 +216,8 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
+        
+        strSporkAddress = "GP4r6YBda72vWgmK7m9z8JGkq3smhipTYb";
 
         checkpointData = {
             {
@@ -502,6 +510,11 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 840000;
+        consensus.nMasternodeMinimumConfirmations = 1;
+        consensus.nMasternodeColleteralPaymentAmount = 12500;
+        consensus.nMasternodePayeeReward = 35;
+        consensus.nInstantSendConfirmationsRequired = 2;
+        consensus.nInstantSendKeepLock = 6;
         consensus.nTreasuryAddressChange = 600000;
         consensus.nTreasuryAddressChangeStart = 100000;
         consensus.nTreasuryAmount = 15;
@@ -619,6 +632,8 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
+        
+        strSporkAddress = "mnGzwQeK4FkhQfYGMYKfuXHq29DJN1MVzd";
 
 
         checkpointData = {
@@ -905,6 +920,12 @@ public:
     CRegTestParams() {
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
+        consensus.nSubsidyHalvingInterval = 840000;
+        consensus.nMasternodeMinimumConfirmations = 1;
+        consensus.nMasternodeColleteralPaymentAmount = 7500;
+        consensus.nMasternodePayeeReward = 30;
+        consensus.nInstantSendConfirmationsRequired = 2;
+        consensus.nInstantSendKeepLock = 6;
         consensus.nTreasuryAddressChange = 350;
         consensus.nTreasuryAddressChangeStart = 500;
         consensus.nTreasuryAmount = 10;
@@ -993,6 +1014,8 @@ public:
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fMineBlocksOnDemand = true;
+        
+        strSporkAddress = "mqakdpV7YNSnfobctsdSt6GmDzmQTEMois";
 
         checkpointData = {
             {
