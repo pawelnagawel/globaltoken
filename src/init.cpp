@@ -1866,7 +1866,7 @@ bool AppInitMain()
 #ifdef ENABLE_WALLET
     LogPrintf("Using masternode config file %s\n", GetMasternodeConfigFile().string());
     
-    for (CWalletRef pwallet : ::vpwallets) {
+    for (CWalletRef pwallet : vpwallets) {
         if(gArgs.GetBoolArg("-mnconflock", true) && pwallet && (masternodeConfig.getCount() > 0)) {
             LOCK(pwallet->cs_wallet);
             LogPrintf("Locking Masternodes:\n");

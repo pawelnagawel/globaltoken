@@ -341,7 +341,7 @@ bool CMasternodeBroadcast::Create(const std::string& strService, const std::stri
         return Log(strprintf("Invalid masternode key %s", strKeyMasternode));
 
     bool fFoundInWallet = false;
-    for (CWalletRef pwallet : ::vpwallets) {
+    for (CWalletRef pwallet : vpwallets) {
         if (pwallet && pwallet->GetMasternodeOutpointAndKeys(outpoint, pubKeyCollateralAddressNew, keyCollateralAddressNew, strTxHash, strOutputIndex))
             fFoundInWallet = true;
     }

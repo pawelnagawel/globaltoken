@@ -185,13 +185,13 @@ public:
     void OpenMasternodeConnection(const CAddress& addrConnect);
     bool CheckIncomingNonce(uint64_t nonce);
     
-    struct CNodeFullyConnected {
+    struct CFullyConnectedOnly {
         bool operator() (const CNode* pnode) const {
             return NodeFullyConnected(pnode);
         }
     };
 
-    constexpr static const CNodeFullyConnected NodeFullyConnected{};
+    constexpr static const CFullyConnectedOnly FullyConnectedOnly{};
 
     struct CAllNodes {
         bool operator() (const CNode*) const {return true;}
@@ -201,17 +201,17 @@ public:
 
     bool ForNode(NodeId id, std::function<bool(const CNode* pnode)> cond, std::function<bool(CNode* pnode)> func);
     bool ForNode(const CService& addr, std::function<bool(const CNode* pnode)> cond, std::function<bool(CNode* pnode)> func);
-    
+
     template<typename Callable>
     bool ForNode(const CService& addr, Callable&& func)
     {
-        return ForNode(addr, NodeFullyConnected, func);
+        return ForNode(addr, FullyConnectedOnly, func);
     }
 
     template<typename Callable>
     bool ForNode(NodeId id, Callable&& func)
     {
-        return ForNode(id, NodeFullyConnected, func);
+        return ForNode(id, FullyConnectedOnly, func);
     }
     
     bool IsConnected(const CService& addr, std::function<bool(const CNode* pnode)> cond)
@@ -239,7 +239,7 @@ public:
     template<typename Callable>
     bool ForEachNodeContinueIf(Callable&& func)
     {
-        return ForEachNodeContinueIf(NodeFullyConnected, func);
+        return ForEachNodeContinueIf(FullyConnectedOnly, func);
     }
 
     template<typename Condition, typename Callable>
@@ -256,9 +256,9 @@ public:
     template<typename Callable>
     bool ForEachNodeContinueIf(Callable&& func) const
     {
-        return ForEachNodeContinueIf(NodeFullyConnected, func);
+        return ForEachNodeContinueIf(FullyConnectedOnly, func);
     }
-    
+
     template<typename Condition, typename Callable>
     void ForEachNode(const Condition& cond, Callable&& func)
     {
@@ -272,7 +272,7 @@ public:
     template<typename Callable>
     void ForEachNode(Callable&& func)
     {
-        ForEachNode(NodeFullyConnected, func);
+        ForEachNode(FullyConnectedOnly, func);
     }
 
     template<typename Condition, typename Callable>
@@ -288,15 +288,32 @@ public:
     template<typename Callable>
     void ForEachNode(Callable&& func) const
     {
-        ForEachNode(NodeFullyConnected, func);
+        ForEachNode(FullyConnectedOnly, func);
     }
+
+    template<typename Condition, typename Callable, typename CallableAfter>
+    void ForEachNodeThen(const Condition& cond, Callable&& pre, CallableAfter&& post)
+    {
+        LOCK(cs_vNodes);
+        for (auto&& node : vNodes) {
+            if (cond(node))
+                pre(node);
+        }
+        post();
+    };
 
     template<typename Callable, typename CallableAfter>
     void ForEachNodeThen(Callable&& pre, CallableAfter&& post)
     {
+        ForEachNodeThen(FullyConnectedOnly, pre, post);
+    }
+
+    template<typename Condition, typename Callable, typename CallableAfter>
+    void ForEachNodeThen(const Condition& cond, Callable&& pre, CallableAfter&& post) const
+    {
         LOCK(cs_vNodes);
         for (auto&& node : vNodes) {
-            if (NodeFullyConnected(node))
+            if (cond(node))
                 pre(node);
         }
         post();
@@ -305,13 +322,8 @@ public:
     template<typename Callable, typename CallableAfter>
     void ForEachNodeThen(Callable&& pre, CallableAfter&& post) const
     {
-        LOCK(cs_vNodes);
-        for (auto&& node : vNodes) {
-            if (NodeFullyConnected(node))
-                pre(node);
-        }
-        post();
-    };
+        ForEachNodeThen(FullyConnectedOnly, pre, post);
+    }
     
     std::vector<CNode*> CopyNodeVector(std::function<bool(const CNode* pnode)> cond);
     std::vector<CNode*> CopyNodeVector();
