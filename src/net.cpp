@@ -2985,8 +2985,7 @@ std::vector<CNode*> CConnman::CopyNodeVector(std::function<bool(const CNode* pno
 {
     std::vector<CNode*> vecNodesCopy;
     LOCK(cs_vNodes);
-    vecNodesCopy = vNodes;
-    for (CNode* pnode : vecNodesCopy)
+    for (CNode* pnode : vNodes)
     {
         if (!cond(pnode))
             continue;
