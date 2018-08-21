@@ -8,6 +8,10 @@
 #include <net.h>
 #include <primitives/transaction.h>
 
+#ifdef ENABLE_WALLET
+#include <wallet/wallet.h>
+#endif
+
 class CTxLockVote;
 class COutPointLock;
 class CTxLockRequest;
@@ -78,14 +82,28 @@ private:
     bool ProcessNewTxLockVote(CNode* pfrom, const CTxLockVote& vote, CConnman& connman);
 
     void UpdateVotedOutpoints(const CTxLockVote& vote, CTxLockCandidate& txLockCandidate);
+#ifdef ENABLE_WALLET
+    bool ProcessOrphanTxLockVote(const CTxLockVote& vote, CWallet *wallet);
+    void ProcessOrphanTxLockVotes(CWallet *wallet);
+#else
     bool ProcessOrphanTxLockVote(const CTxLockVote& vote);
     void ProcessOrphanTxLockVotes();
+#endif
     int64_t GetAverageMasternodeOrphanVoteTime();
 
     void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate);
+#ifdef ENABLE_WALLET
+    void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate, CWallet *wallet);
+#else
+    void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate);
+#endif
     void LockTransactionInputs(const CTxLockCandidate& txLockCandidate);
     /// Update UI and notify external script if any
+#ifdef ENABLE_WALLET
+    void UpdateLockedTransaction(const CTxLockCandidate& txLockCandidate, CWallet *wallet);
+#else
     void UpdateLockedTransaction(const CTxLockCandidate& txLockCandidate);
+#endif
     bool ResolveConflicts(const CTxLockCandidate& txLockCandidate);
 
     bool IsInstantSendReadyToLock(const uint256 &txHash);

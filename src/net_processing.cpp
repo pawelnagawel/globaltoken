@@ -997,7 +997,6 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
     case MSG_BLOCK:
     case MSG_WITNESS_BLOCK:
         return mapBlockIndex.count(inv.hash);
-    }
     
     /* 
         GlobalToken Related Inventory Messages
@@ -1050,6 +1049,11 @@ static void RelayTransaction(const CTransaction& tx, CConnman* connman)
     {
         pnode->PushInventory(inv);
     });
+}
+
+void RelayTransactionFromExtern(const CTransaction& tx, CConnman* connman)
+{
+    RelayTransaction(tx, connman);
 }
 
 static void RelayAddress(const CAddress& addr, bool fReachable, CConnman* connman)
@@ -1215,7 +1219,9 @@ void static ProcessGetBlockData(CNode* pfrom, const Consensus::Params& consensus
                 connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::BLOCK, *pblock));
             }
         }
-        else if (inv.IsKnownType())
+        else if (inv.type == MSG_TX || inv.type == MSG_TXLOCK_REQUEST || inv.type == MSG_TXLOCK_VOTE || inv.type == MSG_SPORK ||
+                 inv.type == MSG_MASTERNODE_PAYMENT_VOTE || inv.type == MSG_MASTERNODE_PAYMENT_BLOCK || inv.type == MSG_MASTERNODE_ANNOUNCE ||
+                 inv.type == MSG_MASTERNODE_PING || inv.type == MSG_MASTERNODE_VERIFY)
         {
             // Send stream from relay memory
             bool push = false;
@@ -2280,7 +2286,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         
         // Process custom logic, no matter if tx will be accepted to mempool later or not
         if (strCommand == NetMsgType::TXLOCKREQUEST) {
-            if(!instantsend.ProcessTxLockRequest(txLockRequest, connman)) {
+            if(!instantsend.ProcessTxLockRequest(txLockRequest, *connman)) {
                 LogPrint(BCLog::INSTANTSEND, "TXLOCKREQUEST -- failed %s\n", txLockRequest.GetHash().ToString());
                 return false;
             }
@@ -2301,9 +2307,9 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             
             if (strCommand == NetMsgType::TXLOCKREQUEST) {
                 LogPrintf("TXLOCKREQUEST -- Transaction Lock Request accepted, txid=%s, peer=%d\n",
-                        tx.GetHash().ToString(), pfrom->id);
+                        tx.GetHash().ToString(), pfrom->GetId());
                 instantsend.AcceptLockRequest(txLockRequest);
-                instantsend.Vote(tx.GetHash(), connman);
+                instantsend.Vote(tx.GetHash(), *connman);
             }            
                 
             mempool.check(pcoinsTip.get());
@@ -2434,7 +2440,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 instantsend.RejectLockRequest(txLockRequest);
                 // this lets other nodes to create lock request candidate i.e.
                 // this allows multiple conflicting lock requests to compete for votes
-                connman.RelayTransaction(tx);
+                RelayTransaction(tx, connman);
             }
 
             if (pfrom->fWhitelisted && gArgs.GetBoolArg("-whitelistforcerelay", DEFAULT_WHITELISTFORCERELAY)) {
@@ -3038,10 +3044,10 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (found)
         {
             //probably one the extensions
-            mnodeman.ProcessMessage(pfrom, strCommand, vRecv, connman);
-            mnpayments.ProcessMessage(pfrom, strCommand, vRecv, connman);
-            instantsend.ProcessMessage(pfrom, strCommand, vRecv, connman);
-            sporkManager.ProcessSpork(pfrom, strCommand, vRecv, connman);
+            mnodeman.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            mnpayments.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            instantsend.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            sporkManager.ProcessSpork(pfrom, strCommand, vRecv, *connman);
             masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
         }
         else

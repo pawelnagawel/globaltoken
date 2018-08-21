@@ -519,6 +519,8 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
         modalOverlay->setKnownBestHeight(_clientModel->getHeaderTipHeight(), QDateTime::fromTime_t(_clientModel->getHeaderTipTime()));
         setNumBlocks(_clientModel->getNumBlocks(), _clientModel->getLastBlockDate(), _clientModel->getVerificationProgress(nullptr), false);
         connect(_clientModel, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(setNumBlocks(int,QDateTime,double,bool)));
+        
+        connect(_clientModel, SIGNAL(additionalDataSyncProgressChanged(double)), this, SLOT(setAdditionalDataSyncProgress(double)));
 
         // Receive and report messages from client model
         connect(_clientModel, SIGNAL(message(QString,QString,unsigned int)), this, SLOT(message(QString,QString,unsigned int)));
@@ -920,8 +922,10 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
             tooltip += tr("Last received block was generated %1 ago.").arg(timeBehindText);
             tooltip += QString("<br>");
             tooltip += tr("Transactions after this will not yet be visible.");
-    } else if (fLiteMode) {
-        setAdditionalDataSyncProgress(1);
+        }
+        else if (fLiteMode) {
+            setAdditionalDataSyncProgress(1);
+        }
     }
 
     // Don't word-wrap this (fixed-width) tooltip
@@ -945,9 +949,6 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
     statusBar()->clearMessage();
 
     QString tooltip;
-
-    // Set icon state: spinning if catching up, tick otherwise
-    QString theme = GUIUtil::getThemeName();
 
     QString strSyncStatus;
     tooltip = tr("Up to date") + QString(".<br>") + tooltip;

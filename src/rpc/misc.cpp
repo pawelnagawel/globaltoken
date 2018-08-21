@@ -593,8 +593,8 @@ static const CRPCCommand commands[] =
     { "util",               "signmessagewithprivkey", &signmessagewithprivkey, {"privkey","message"} },
     
     /* Globaltoken features */
-    { "globaltoken",        "mnsync",                 &mnsync,                 true,  {} },
-    { "globaltoken",        "spork",                  &spork,                  true,  {"value"} },
+    { "globaltoken",        "mnsync",                 &mnsync,                 {} },
+    { "globaltoken",        "spork",                  &spork,                  {"value"} },
 
     /* Not shown in help */
     { "hidden",             "setmocktime",            &setmocktime,            {"timestamp"}},

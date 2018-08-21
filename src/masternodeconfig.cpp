@@ -5,6 +5,7 @@
 #include <netbase.h>
 #include <masternodeconfig.h>
 #include <util.h>
+#include <utilstrencodings.h>
 #include <chainparams.h>
 
 #include <boost/filesystem.hpp>
@@ -67,7 +68,7 @@ bool CMasternodeConfig::read(std::string& strErrRet) {
             streamConfig.close();
             return false;
         }
-        int mainnetDefaultPort = Params(CBaseChainParams::MAIN).GetDefaultPort();
+        int mainnetDefaultPort = CreateNetworkParams(CBaseChainParams::MAIN).GetDefaultPort();
         if(Params().NetworkIDString() == CBaseChainParams::MAIN) {
             if(port != mainnetDefaultPort) {
                 strErrRet = _("Invalid port detected in masternode.conf") + "\n" +

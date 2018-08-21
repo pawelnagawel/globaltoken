@@ -216,7 +216,7 @@ void CMasternode::Check(bool fForce)
 
     // We require MNs to be in PRE_ENABLED until they either start to expire or receive a ping and go into ENABLED state
     // Works on mainnet/testnet only and not the case on regtest/devnet.
-    if (Params().NetworkIDString() != CBaseChainParams::REGTEST && Params().NetworkIDString() != CBaseChainParams::DEVNET) {
+    if (Params().NetworkIDString() != CBaseChainParams::REGTEST) {
         if (lastPing.sigTime - sigTime < MASTERNODE_MIN_MNP_SECONDS) {
             nActiveState = MASTERNODE_PRE_ENABLED;
             if (nActiveStatePrev != nActiveState) {
@@ -340,13 +340,19 @@ bool CMasternodeBroadcast::Create(const std::string& strService, const std::stri
     if (!CMessageSigner::GetKeysFromSecret(strKeyMasternode, keyMasternodeNew, pubKeyMasternodeNew))
         return Log(strprintf("Invalid masternode key %s", strKeyMasternode));
 
-    if (!pwalletMain->GetMasternodeOutpointAndKeys(outpoint, pubKeyCollateralAddressNew, keyCollateralAddressNew, strTxHash, strOutputIndex))
+    bool fFoundInWallet = false;
+    for (CWalletRef pwallet : ::vpwallets) {
+        if (pwallet && pwallet->GetMasternodeOutpointAndKeys(outpoint, pubKeyCollateralAddressNew, keyCollateralAddressNew, strTxHash, strOutputIndex))
+            fFoundInWallet = true;
+    }
+    
+    if (!fFoundInWallet)
         return Log(strprintf("Could not allocate outpoint %s:%s for masternode %s", strTxHash, strOutputIndex, strService));
 
     CService service;
     if (!Lookup(strService.c_str(), service, 0, false))
         return Log(strprintf("Invalid address %s for masternode.", strService));
-    int mainnetDefaultPort = Params(CBaseChainParams::MAIN).GetDefaultPort();
+    int mainnetDefaultPort = CreateNetworkParams(CBaseChainParams::MAIN).GetDefaultPort();
     if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
         if (service.GetPort() != mainnetDefaultPort)
             return Log(strprintf("Invalid port %u for masternode %s, only %d is supported on mainnet.", service.GetPort(), strService, mainnetDefaultPort));
@@ -439,7 +445,7 @@ bool CMasternodeBroadcast::SimpleCheck(int& nDos)
         return false;
     }
 
-    int mainnetDefaultPort = Params(CBaseChainParams::MAIN).GetDefaultPort();
+    int mainnetDefaultPort = CreateNetworkParams(CBaseChainParams::MAIN).GetDefaultPort();
     if(Params().NetworkIDString() == CBaseChainParams::MAIN) {
         if(addr.GetPort() != mainnetDefaultPort) return false;
     } else if(addr.GetPort() == mainnetDefaultPort) return false;
@@ -605,7 +611,7 @@ bool CMasternodeBroadcast::Sign(const CKey& keyCollateralAddress)
             return false;
         }
     } else {
-        std::string strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTime) +
+        std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) +
                         pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() +
                         boost::lexical_cast<std::string>(nProtocolVersion);
 
@@ -633,7 +639,7 @@ bool CMasternodeBroadcast::CheckSignature(int& nDos) const
 
         if (!CHashSigner::VerifyHash(hash, pubKeyCollateralAddress, vchSig, strError)) {
             // maybe it's in old format
-            std::string strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTime) +
+            std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) +
                             pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() +
                             boost::lexical_cast<std::string>(nProtocolVersion);
 
@@ -645,7 +651,7 @@ bool CMasternodeBroadcast::CheckSignature(int& nDos) const
             }
         }
     } else {
-        std::string strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTime) +
+        std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) +
                         pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() +
                         boost::lexical_cast<std::string>(nProtocolVersion);
 

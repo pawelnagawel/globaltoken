@@ -8,6 +8,7 @@
 #include <base58.h>
 #include <chainparams.h>
 #include <crypto/algos/hashlib/multihash.h>
+#include <globaltoken/hardfork.h>
 #include <validation.h>
 #include <messagesigner.h>
 #include <net_processing.h>
@@ -44,7 +45,7 @@ void CSporkManager::ProcessSpork(CNode* pfrom, const std::string& strCommand, CD
             LOCK(cs_main);
             pfrom->setAskFor.erase(hash);
             if(!chainActive.Tip()) return;
-            strLogMsg = strprintf("SPORK -- hash: %s id: %d value: %10d bestHeight: %d peer=%d", hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Height(), pfrom->id);
+            strLogMsg = strprintf("SPORK -- hash: %s id: %d value: %10d bestHeight: %d peer=%d", hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Height(), pfrom->GetId());
         }
 
         if(mapSporksActive.count(spork.nSporkID)) {
@@ -194,9 +195,8 @@ std::string CSporkManager::GetSporkNameByID(int nSporkID)
 
 bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
     CTxDestination address = DecodeDestination(strAddress);
-    const CKeyID *keyID = boost::get<CKeyID>(&address);
-    sporkPubKeyID = &keyID;
-    if (!IsValidDestination(address) || !sporkPubKeyID) {
+    sporkPubKeyID = *boost::get<CKeyID>(&address);
+    if (!IsValidDestination(address) || !(&sporkPubKeyID)) {
         LogPrintf("CSporkManager::SetSporkAddress -- Failed to parse spork address\n");
         return false;
     }

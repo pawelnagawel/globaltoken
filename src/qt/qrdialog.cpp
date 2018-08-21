@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <qt/qrdialog.h>
-#include <qt/ui_qrdialog.h>
+#include <qt/forms/ui_qrdialog.h>
 
 #include <qt/bitcoinunits.h>
 #include <qt/guiconstants.h>
@@ -22,7 +22,7 @@
 #endif
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h" /* for USE_QRCODE */
+#include <config/bitcoin-config.h> /* for USE_QRCODE */
 #endif
 
 #ifdef USE_QRCODE

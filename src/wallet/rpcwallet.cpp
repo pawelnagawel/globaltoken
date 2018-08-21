@@ -435,7 +435,7 @@ static void SendMoney(CWallet * const pwallet, const CTxDestination &address, CA
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
     vecSend.push_back(recipient);
-    if (!pwallet->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, fUseInstantSend, coin_control)) {
+    if (!pwallet->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, coin_control, true, ALL_COINS, fUseInstantSend)) {
         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > curBalance)
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
@@ -624,7 +624,7 @@ UniValue instantsendtoaddress(const JSONRPCRequest& request)
 
     EnsureWalletIsUnlocked(pwallet);
 
-    SendMoney(pwallet, address.Get(), nAmount, fSubtractFeeFromAmount, wtx, coin_control, true);
+    SendMoney(pwallet, address, nAmount, fSubtractFeeFromAmount, wtx, coin_control, true);
 
     return wtx.GetHash().GetHex();
 }
@@ -896,7 +896,7 @@ UniValue getbalance(const JSONRPCRequest& request)
         return NullUniValue;
     }
 
-    if (request.fHelp || request.params.size() > 3)
+    if (request.fHelp || request.params.size() > 4)
         throw std::runtime_error(
             "getbalance ( \"account\" minconf include_watchonly )\n"
             "\nIf account is not specified, returns the server's total available balance.\n"
@@ -919,7 +919,8 @@ UniValue getbalance(const JSONRPCRequest& request)
             "                     reliable and has resulted in confusing outcomes, so it is recommended to\n"
             "                     avoid passing this argument.\n"
             "2. minconf           (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
-            "3. include_watchonly (bool, optional, default=false) Also include balance in watch-only addresses (see 'importaddress')\n"
+            "3. addlockconf      (bool, optional, default=false) Whether to add " + std::to_string(nInstantSendDepth) + " confirmations to transactions locked via InstantSend.\n"
+            "4. include_watchonly (bool, optional, default=false) Also include balance in watch-only addresses (see 'importaddress')\n"
             "\nResult:\n"
             "amount              (numeric) The total amount in " + CURRENCY_UNIT + " received for this account.\n"
             "\nExamples:\n"
@@ -941,12 +942,17 @@ UniValue getbalance(const JSONRPCRequest& request)
 
     const UniValue& account_value = request.params[0];
     const UniValue& minconf = request.params[1];
-    const UniValue& include_watchonly = request.params[2];
+    const UniValue& instantsend = request.params[2];
+    const UniValue& include_watchonly = request.params[3];
 
     if (account_value.isNull()) {
         if (!minconf.isNull()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER,
                 "getbalance minconf option is only currently supported if an account is specified");
+        }
+        if (!instantsend.isNull()) {
+            throw JSONRPCError(RPC_INVALID_PARAMETER,
+                "getbalance instantsend option is only currently supported if an account is specified");
         }
         if (!include_watchonly.isNull()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER,
@@ -966,7 +972,7 @@ UniValue getbalance(const JSONRPCRequest& request)
         if(include_watchonly.get_bool())
             filter = filter | ISMINE_WATCH_ONLY;
 
-    return ValueFromAmount(pwallet->GetLegacyBalance(filter, nMinDepth, account));
+    return ValueFromAmount(pwallet->GetLegacyBalance(filter, nMinDepth, account, instantsend.get_bool()));
 }
 
 UniValue getunconfirmedbalance(const JSONRPCRequest &request)
@@ -1271,7 +1277,7 @@ UniValue sendmany(const JSONRPCRequest& request)
     int nChangePosRet = -1;
     std::string strFailReason;
     
-    bool fCreated = pwallet->CreateTransaction(vecSend, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason, coin_control, fUseInstantSend);
+    bool fCreated = pwallet->CreateTransaction(vecSend, wtx, keyChange, nFeeRequired, nChangePosRet, strFailReason, coin_control, true, ALL_COINS, fUseInstantSend);
     if (!fCreated)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, strFailReason);
     CValidationState state;

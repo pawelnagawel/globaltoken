@@ -216,6 +216,9 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fMineBlocksOnDemand = false;
+        fAllowMultiplePorts = false;
+        
+        nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
         
         strSporkAddress = "GP4r6YBda72vWgmK7m9z8JGkq3smhipTYb";
 
@@ -632,6 +635,9 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
+        fAllowMultiplePorts = false;
+        
+        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         
         strSporkAddress = "mnGzwQeK4FkhQfYGMYKfuXHq29DJN1MVzd";
 
@@ -1014,6 +1020,9 @@ public:
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fMineBlocksOnDemand = true;
+        fAllowMultiplePorts = true;
+        
+        nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         
         strSporkAddress = "mqakdpV7YNSnfobctsdSt6GmDzmQTEMois";
 
@@ -1304,6 +1313,13 @@ static std::unique_ptr<CChainParams> globalChainParams;
 const CChainParams &Params() {
     assert(globalChainParams);
     return *globalChainParams;
+}
+
+const CChainParams &CreateNetworkParams(const std::string& network) {
+    static std::unique_ptr<CChainParams> networkparams; 
+    networkparams = CreateChainParams(network);
+    assert(networkparams);    
+    return *networkparams;
 }
 
 std::unique_ptr<CChainParams> CreateChainParams(const std::string& chain)

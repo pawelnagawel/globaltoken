@@ -3550,6 +3550,7 @@
     <message>
         <source>This is not a Masternode.</source>
         <translation>Este não é um Masternode</translation>
+    </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
         <translation>O montante da transacção é demasiado baixo para pagar a taxa</translation>

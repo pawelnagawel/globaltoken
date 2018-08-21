@@ -3,10 +3,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <qt/masternodelist.h>
+#include <qt/forms/ui_masternodelist.h>
+
 #include <qt/clientmodel.h>
 #include <qt/guiutil.h>
 #include <qt/qrdialog.h>
-#include <qt/ui_masternodelist.h>
 #include <qt/walletmodel.h>
 
 #include <activemasternode.h>

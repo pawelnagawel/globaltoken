@@ -66,6 +66,8 @@ public:
     unsigned int EquihashK() const { return nEquihashK; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }
+    /** Allow nodes with the same address and multiple ports */
+    bool AllowMultiplePorts() const { return fAllowMultiplePorts; }
     /** Return the BIP70 network string (main, test or regtest) */
     std::string NetworkIDString() const { return strNetworkID; }
     /** Return the list of hostnames to look up for DNS seeds */
@@ -80,6 +82,7 @@ public:
     std::string GetFoundersRewardAddressAtIndex(int i) const;
     CAmount GetTreasuryAmount(CAmount coinAmount) const;
     const ChainTxData& TxData() const { return chainTxData; }
+    int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
     const std::string& SporkAddress() const { return strSporkAddress; }
 protected:
@@ -100,8 +103,10 @@ protected:
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fMineBlocksOnDemand;
+    bool fAllowMultiplePorts;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
+    int nFulfilledRequestExpireTime;
     std::string strSporkAddress;
     std::vector<std::string> vFoundersRewardAddress;
 };
@@ -118,6 +123,12 @@ std::unique_ptr<CChainParams> CreateChainParams(const std::string& chain);
  * startup, except for unit tests.
  */
 const CChainParams &Params();
+
+/**
+ * Return params for a selected network.
+ * Can be useful to get ports for other networks, masternodes require this.
+ */
+const CChainParams &CreateNetworkParams(const std::string& network);
 
 /**
  * Sets the params returned by Params() to those for the given BIP70 chain name.

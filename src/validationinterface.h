@@ -78,7 +78,7 @@ protected:
      *
      * Called on a background thread.
      */
-    virtual void NotifyTransactionLock(const CTransaction &tx) {}
+    virtual void NotifyTransactionLock(const CTransactionRef &ptx) {}
     /**
      * Notifies listeners of a transaction having been added to mempool.
      *
@@ -169,6 +169,7 @@ public:
     void AcceptedBlockHeader(const CBlockIndex *pindexNew);
     void NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitialDownload);
     void UpdatedBlockTip(const CBlockIndex *, const CBlockIndex *, bool fInitialDownload);
+    void NotifyTransactionLock(const CTransactionRef &);
     void TransactionAddedToMempool(const CTransactionRef &);
     void BlockConnected(const std::shared_ptr<const CBlock> &, const CBlockIndex *pindex, const std::shared_ptr<const std::vector<CTransactionRef>> &);
     void BlockDisconnected(const std::shared_ptr<const CBlock> &);

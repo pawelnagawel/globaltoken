@@ -80,5 +80,7 @@ struct CNodeStateStats {
 bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
 /** Increase a node's misbehavior score. */
 void Misbehaving(NodeId nodeid, int howmuch, const std::string& message="");
+/** Relay a Transaction from external functions. */
+void RelayTransactionFromExtern(const CTransaction& tx, CConnman* connman);
 
 #endif // BITCOIN_NET_PROCESSING_H

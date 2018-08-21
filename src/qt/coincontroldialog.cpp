@@ -491,7 +491,7 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
         else nBytesInputs += 148;
         
         // Add inputs to calculate InstantSend Fee later
-        if(coinControl->fUseInstantSend)
+        if(coinControl()->fUseInstantSend)
             txDummy.vin.push_back(CTxIn());
     }
 
@@ -518,7 +518,7 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
         nPayFee = GetMinimumFee(nBytes, *coinControl(), ::mempool, ::feeEstimator, nullptr /* FeeCalculation */);
         
         // InstantSend Fee
-        if (coinControl->fUseInstantSend) nPayFee = std::max(nPayFee, CTxLockRequest(txDummy).GetMinFee());
+        if (coinControl()->fUseInstantSend) nPayFee = std::max(nPayFee, CTxLockRequest(txDummy).GetMinFee());
 
         if (nPayAmount > 0)
         {

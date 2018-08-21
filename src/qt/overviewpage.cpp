@@ -16,6 +16,8 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/walletmodel.h>
 
+#include <instantx.h>
+
 #include <QAbstractItemDelegate>
 #include <QPainter>
 

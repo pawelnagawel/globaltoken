@@ -115,6 +115,12 @@ public:
 
     /** Generate a random 32-bit integer. */
     uint32_t rand32() { return randbits(32); }
+    
+    /** Generate a random 32-bit integer with a max value. */
+    uint32_t rand32(uint32_t nMax) { return rand32() % nMax; }
+    
+    /** Operator for direct call. */
+    uint32_t operator()(uint32_t nMax) { return rand32(nMax); }
 
     /** generate a random uint256. */
     uint256 rand256();

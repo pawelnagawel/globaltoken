@@ -15,12 +15,14 @@
 #include <qt/optionsmodel.h>
 #include <qt/platformstyle.h>
 #include <qt/sendcoinsentry.h>
+#include <qt/walletmodel.h>
 
 #include <base58.h>
 #include <chainparams.h>
 #include <wallet/coincontrol.h>
 #include <validation.h> // mempool and minRelayTxFee
 #include <ui_interface.h>
+#include <util.h>
 #include <txmempool.h>
 #include <policy/fees.h>
 #include <wallet/fees.h>
@@ -90,11 +92,11 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     bool fUseInstantSend = settings.value("bUseInstantX").toBool();
     if(fLiteMode) {
         ui->checkUseInstantSend->setVisible(false);
-        CoinControlDialog::coinControl->fUseInstantSend = false;
+        CoinControlDialog::coinControl()->fUseInstantSend = false;
     }
     else{
         ui->checkUseInstantSend->setChecked(fUseInstantSend);
-        CoinControlDialog::coinControl->fUseInstantSend = fUseInstantSend;
+        CoinControlDialog::coinControl()->fUseInstantSend = fUseInstantSend;
     }
 
     connect(ui->checkUseInstantSend, SIGNAL(stateChanged ( int )), this, SLOT(updateInstantSend()));
@@ -123,7 +125,6 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     ui->labelCoinControlChange->addAction(clipboardChangeAction);
 
     // init transaction fee section
-    QSettings settings;
     if (!settings.contains("fFeeSectionMinimized"))
         settings.setValue("fFeeSectionMinimized", true);
     if (!settings.contains("nFeeRadio") && settings.contains("nTransactionFee") && settings.value("nTransactionFee").toLongLong() > 0) // compatibility

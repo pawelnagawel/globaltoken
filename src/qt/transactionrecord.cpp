@@ -11,6 +11,8 @@
 #include <timedata.h>
 #include <wallet/wallet.h>
 
+#include <instantx.h>
+
 #include <stdint.h>
 
 

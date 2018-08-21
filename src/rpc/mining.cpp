@@ -1132,7 +1132,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         ExtractDestination(pblock->txoutMasternode.scriptPubKey, address);
         masternodeObj.pushKV("payee", EncodeDestination(address).c_str());
         masternodeObj.pushKV("script", HexStr(pblock->txoutMasternode.scriptPubKey));
-        masternodeObj.pushKV("amount", pblock->txoutMasternode.nValue));
+        masternodeObj.pushKV("amount", pblock->txoutMasternode.nValue);
     }
     result.pushKV("masternode", masternodeObj);
     result.pushKV("masternode_payments_started", IsHardForkActivated(pblock->nTime));

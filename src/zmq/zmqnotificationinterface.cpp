@@ -185,11 +185,10 @@ void CZMQNotificationInterface::BlockDisconnected(const std::shared_ptr<const CB
 
 void CZMQNotificationInterface::NotifyTransactionLock(const CTransactionRef &ptx)
 {
-    const CTransaction& transaction = *ptx;
     for (std::list<CZMQAbstractNotifier*>::iterator i = notifiers.begin(); i!=notifiers.end(); )
     {
         CZMQAbstractNotifier *notifier = *i;
-        if (notifier->NotifyTransactionLock(transaction))
+        if (notifier->NotifyTransactionLock(ptx))
         {
             i++;
         }
