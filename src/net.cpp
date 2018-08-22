@@ -1182,7 +1182,7 @@ void CConnman::ThreadSocketHandler()
                 if (pnode->fDisconnect)
                 {
                     LogPrintf("ThreadSocketHandler -- removing node: peer=%d addr=%s nRefCount=%d fInbound=%d fMasternode=%d\n",
-                              pnode->id, pnode->addr.ToString(), pnode->GetRefCount(), pnode->fInbound, pnode->fMasternode);
+                              pnode->GetId(), pnode->addr.ToString(), pnode->GetRefCount(), pnode->fInbound, pnode->fMasternode);
                     
                     // remove from vNodes
                     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
