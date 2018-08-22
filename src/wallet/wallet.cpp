@@ -2286,7 +2286,7 @@ void CWallet::AvailableCoins(std::vector<COutput> &vCoins, bool fOnlySafe, const
             }
             if(!found) continue;
             
-            if(IsLockedCoin(entry.first, i) || nCoinType != ONLY_COLLATERAL)
+            if(nCoinType == ONLY_COLLATERAL)
                 continue;
             
             if (pcoin->tx->vout[i].nValue < nMinimumAmount || pcoin->tx->vout[i].nValue > nMaximumAmount)
@@ -2452,9 +2452,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, const int nConfMin
     std::vector<CInputCoin> vValue;
     CAmount nTotalLower = 0;
     
-    coinLowestLarger->txout.nValue = fUseInstantSend
-                                        ? sporkManager.GetSporkValue(SPORK_3_INSTANTSEND_MAX_VALUE)*COIN
-                                        : std::numeric_limits<CAmount>::max();
+    CAmount nTxValueLimit = fUseInstantSend ? sporkManager.GetSporkValue(SPORK_3_INSTANTSEND_MAX_VALUE)*COIN : std::numeric_limits<CAmount>::max();
 
     random_shuffle(vCoins.begin(), vCoins.end(), GetRandInt);
 
@@ -2486,7 +2484,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, const int nConfMin
             vValue.push_back(coin);
             nTotalLower += coin.txout.nValue;
         }
-        else if (!coinLowestLarger || coin.txout.nValue < coinLowestLarger->txout.nValue)
+        else if (!coinLowestLarger || (coin.txout.nValue < coinLowestLarger->txout.nValue && coin.txout.nValue < nTxValueLimit))
         {
             coinLowestLarger = coin;
         }
@@ -2524,7 +2522,7 @@ bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, const int nConfMin
     // If we have a bigger coin and (either the stochastic approximation didn't find a good solution,
     //                                   or the next bigger coin is closer), return the bigger coin
     if (coinLowestLarger &&
-        ((nBest != nTargetValue && nBest < nTargetValue + MIN_CHANGE) || coinLowestLarger->txout.nValue <= nBest))
+        ((nBest != nTargetValue && nBest < nTargetValue + MIN_CHANGE) || (coinLowestLarger->txout.nValue <= nBest && nTxValueLimit <= nBest)))
     {
         setCoinsRet.insert(coinLowestLarger.get());
         nValueRet += coinLowestLarger->txout.nValue;
