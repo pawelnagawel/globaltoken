@@ -3678,6 +3678,8 @@ std::set<CTxDestination> CWallet::GetAccountAddresses(const std::string& strAcco
 
 bool CWallet::GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet, const std::string& strTxHash, const std::string& strOutputIndex)
 {
+    LOCK2(cs_main, cs_wallet);
+    
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
 
