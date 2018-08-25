@@ -2286,16 +2286,13 @@ void CWallet::AvailableCoins(std::vector<COutput> &vCoins, bool fOnlySafe, const
             }
             if(!found) continue;
             
-            if(nCoinType == ONLY_COLLATERAL)
-                continue;
-            
             if (pcoin->tx->vout[i].nValue < nMinimumAmount || pcoin->tx->vout[i].nValue > nMaximumAmount)
                 continue;
 
             if (coinControl && coinControl->HasSelected() && !coinControl->fAllowOtherInputs && !coinControl->IsSelected(COutPoint(entry.first, i)))
                 continue;
 
-            if (IsLockedCoin(entry.first, i))
+            if (IsLockedCoin(entry.first, i) && nCoinType != ONLY_COLLATERAL)
                 continue;
 
             if (IsSpent(wtxid, i))
