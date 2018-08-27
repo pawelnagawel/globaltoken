@@ -10,6 +10,7 @@
 #include <crypto/algos/hashlib/multihash.h>
 #include <globaltoken/hardfork.h>
 #include <validation.h>
+#include <wallet/wallet.h>
 #include <messagesigner.h>
 #include <net_processing.h>
 #include <netmessagemaker.h>
@@ -194,9 +195,17 @@ std::string CSporkManager::GetSporkNameByID(int nSporkID)
 }
 
 bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
+    bool fIsSporkKeySet = false;
     CTxDestination address = DecodeDestination(strAddress);
-    sporkPubKeyID = *boost::get<CKeyID>(&address);
-    if (!IsValidDestination(address) || !(&sporkPubKeyID)) {
+    for (CWalletRef pwallet : vpwallets) {
+        if(pwallet && !fIsSporkKeySet) {
+            sporkPubKeyID = GetKeyForDestination(*pwallet, address);
+            if(!sporkPubKeyID.IsNull())
+                fIsSporkKeySet = true;
+        }
+    }
+    
+    if (!IsValidDestination(address) || !fIsSporkKeySet) {
         LogPrintf("CSporkManager::SetSporkAddress -- Failed to parse spork address\n");
         return false;
     }

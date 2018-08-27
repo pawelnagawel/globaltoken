@@ -3705,6 +3705,8 @@ bool CWallet::GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubK
 
 bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet)
 {
+    AssertLockHeld(cs_wallet);
+    
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
 
@@ -3716,14 +3718,14 @@ bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpoi
     CTxDestination address1;
     ExtractDestination(pubScript, address1);
     
-    CKeyID *MasternodekeyID = boost::get<CKeyID>(&address1);
+    auto masternodekeyid = GetKeyForDestination(*this, address1);
 
-    if (!MasternodekeyID) {
+    if (masternodekeyid.IsNull()) {
         LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Address does not refer to a key\n");
         return false;
     }
 
-    if (!GetKey(*MasternodekeyID, keyRet)) {
+    if (!GetKey(masternodekeyid, keyRet)) {
         LogPrintf ("CWallet::GetOutpointAndKeysFromOutput -- Private key for address is not known\n");
         return false;
     }

@@ -1320,15 +1320,6 @@ bool AppInitMain()
         for (int i=0; i<nScriptCheckThreads-1; i++)
             threadGroup.create_thread(&ThreadScriptCheck);
     }
-    
-    if (!sporkManager.SetSporkAddress(gArgs.GetArg("-sporkaddr", Params().SporkAddress())))
-        return InitError(_("Invalid spork address specified with -sporkaddr"));
-
-    if (gArgs.IsArgSet("-sporkkey")) // spork priv key
-    {
-        if (!sporkManager.SetPrivKey(gArgs.GetArg("-sporkkey", "")))
-            return InitError(_("Unable to sign spork message, wrong key?"));
-    }
 
     // Start the lightweight task scheduler thread
     CScheduler::Function serviceLoop = boost::bind(&CScheduler::serviceQueue, &scheduler);
@@ -1829,7 +1820,17 @@ bool AppInitMain()
         return false;
     }
     
-    // ********************************************************* Step 11a: setup Masternodes
+    // ********************************************************* Step 11a: setup Masternodes & Spork
+    
+    if (!sporkManager.SetSporkAddress(gArgs.GetArg("-sporkaddr", Params().SporkAddress())))
+        return InitError(_("Invalid spork address specified with -sporkaddr"));
+
+    if (gArgs.IsArgSet("-sporkkey")) // spork priv key
+    {
+        if (!sporkManager.SetPrivKey(gArgs.GetArg("-sporkkey", "")))
+            return InitError(_("Unable to sign spork message, wrong key?"));
+    }
+    
     fMasternodeMode = gArgs.GetBoolArg("-masternode", false);
     // TODO: masternode should have no wallet
 

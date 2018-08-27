@@ -1,4 +1,5 @@
 // Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -173,8 +174,47 @@ void CActiveMasternode::ManageStateInitial(CConnman& connman)
 
     // Check socket connectivity
     LogPrintf("CActiveMasternode::ManageStateInitial -- Checking inbound connection to '%s'\n", service.ToString());
-    SOCKET hSocket;
-    bool fConnected = ConnectSocketDirectly(service, hSocket, nConnectTimeout) && IsSelectableSocket(hSocket);
+
+    bool fConnected = false;
+    SOCKET hSocket = INVALID_SOCKET;
+    proxyType proxy;
+    if (service.IsValid()) {
+        bool proxyConnectionFailed = false;
+
+        if (GetProxy(service.GetNetwork(), proxy)) {
+            hSocket = CreateSocket(proxy.proxy);
+            if (hSocket == INVALID_SOCKET) {
+                nState = ACTIVE_MASTERNODE_NOT_CAPABLE;
+                strNotCapableReason = "Invalid Socket (Proxy enabled and failed)!";
+                LogPrintf("CActiveMasternode::ManageStateInitial -- %s: %s\n", GetStateString(), strNotCapableReason);
+                return;
+            }
+            fConnected = ConnectThroughProxy(proxy, service.ToStringIP(), service.GetPort(), hSocket, nConnectTimeout, &proxyConnectionFailed);
+        } else {
+            // no proxy needed (none set for target network)
+            hSocket = CreateSocket(service);
+            if (hSocket == INVALID_SOCKET) {
+                nState = ACTIVE_MASTERNODE_NOT_CAPABLE;
+                strNotCapableReason = "Invalid Socket (Normal socket failed)!";
+                LogPrintf("CActiveMasternode::ManageStateInitial -- %s: %s\n", GetStateString(), strNotCapableReason);
+                return;
+            }
+            fConnected = ConnectSocketDirectly(service, hSocket, nConnectTimeout);
+        }
+    } else if (GetNameProxy(proxy)) {
+        hSocket = CreateSocket(proxy.proxy);
+        if (hSocket == INVALID_SOCKET) {
+            nState = ACTIVE_MASTERNODE_NOT_CAPABLE;
+            strNotCapableReason = "Invalid Socket! (Nameproxy failed)!";
+            LogPrintf("CActiveMasternode::ManageStateInitial -- %s: %s\n", GetStateString(), strNotCapableReason);
+            return;
+        }
+        std::string host;
+        int port = service.GetPort();
+        SplitHostPort(service.ToString(), port, host);
+        fConnected = ConnectThroughProxy(proxy, host, port, hSocket, nConnectTimeout, nullptr);
+    }
+    
     CloseSocket(hSocket);
 
     if (!fConnected) {

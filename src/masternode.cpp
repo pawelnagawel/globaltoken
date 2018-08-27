@@ -117,7 +117,7 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
         return COLLATERAL_INVALID_AMOUNT;
     }
 
-    if(pubkey == CPubKey() || coin.out.scriptPubKey != GetScriptForDestination(pubkey.GetID())) {
+    if(pubkey == CPubKey() && (coin.out.scriptPubKey != GetScriptForDestination(pubkey.GetID()) || coin.out.scriptPubKey != GetScriptForWitness(pubkey.GetID()))) {
         return COLLATERAL_INVALID_PUBKEY;
     }
 
