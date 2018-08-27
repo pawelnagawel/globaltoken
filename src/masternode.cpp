@@ -107,6 +107,7 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
 CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outpoint, const CPubKey& pubkey, int& nHeightRet)
 {
     AssertLockHeld(cs_main);
+    CScript scriptPubKeyMasternodes = GetScriptForRawPubKey(pubkey);
 
     Coin coin;
     if(!GetUTXOCoin(outpoint, coin)) {
@@ -117,7 +118,7 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
         return COLLATERAL_INVALID_AMOUNT;
     }
 
-    if(pubkey == CPubKey() && (coin.out.scriptPubKey != GetScriptForDestination(pubkey.GetID()) || coin.out.scriptPubKey != GetScriptForWitness(pubkey.GetID()))) {
+    if(pubkey == CPubKey() && (coin.out.scriptPubKey != GetScriptForDestination(pubkey.GetID()) || coin.out.scriptPubKey != GetScriptForWitness(scriptPubKeyMasternodes))) {
         return COLLATERAL_INVALID_PUBKEY;
     }
 
