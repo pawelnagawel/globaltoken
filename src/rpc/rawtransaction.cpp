@@ -16,6 +16,7 @@
 #include <validationinterface.h>
 #include <merkleblock.h>
 #include <net.h>
+#include <net_processing.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
 #include <primitives/transaction.h>
@@ -1108,7 +1109,7 @@ UniValue sendrawtransaction(const JSONRPCRequest& request)
     if(!g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
-    RelayTransactionFromExtern(*tx, *g_connman);
+    RelayTransactionFromExtern(*tx, g_connman.get());
 
     return hashTx.GetHex();
 }

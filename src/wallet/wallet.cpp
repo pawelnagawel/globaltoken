@@ -18,6 +18,7 @@
 #include <keystore.h>
 #include <validation.h>
 #include <net.h>
+#include <net_processing.h>
 #include <policy/fees.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -1766,7 +1767,7 @@ bool CWalletTx::RelayWalletTransaction(CConnman* connman, const std::string& str
             }
             
             if (connman) {
-                RelayTransactionFromExtern(static_cast<CTransaction>(*this), *connman);
+                RelayTransactionFromExtern(static_cast<CTransaction>(*this), connman);
                 return true;
             }
         }
