@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers
 // Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -22,6 +22,7 @@ CMasternodeMan mnodeman;
 
 const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-8";
 const int CMasternodeMan::LAST_PAID_SCAN_BLOCKS = 100;
+const int CMasternodeMan::MAX_POSE_CONNECTIONS = 10;
 
 struct CompareLastPaidBlock
 {
