@@ -55,6 +55,7 @@
 #include <gltnotificationinterface.h>
 #include <flat-database.h>
 #include <instantx.h>
+#include <masternode-helper.h>
 #include <masternode-payments.h>
 #include <masternode-sync.h>
 #include <masternodeman.h>
@@ -1939,6 +1940,10 @@ bool AppInitMain()
     // but don't call it directly to prevent triggering of other listeners like zmq etc.
     // GetMainSignals().UpdatedBlockTip(chainActive.Tip());
     pgltNotificationInterface->InitializeCurrentBlockTip();
+    
+    // ********************************************************* Step 11d: start globaltoken-helper threads
+
+    threadGroup.create_thread(boost::bind(&ThreadCheckMasternodes, boost::ref(*g_connman)));
 
     // ********************************************************* Step 12: start node
 

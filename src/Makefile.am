@@ -118,6 +118,7 @@ BITCOIN_CORE_H = \
   dbwrapper.h \
   limitedmap.h \
   masternode.h \
+  masternode-helper.h \
   masternode-payments.h \
   masternode-sync.h \
   masternodeman.h \
@@ -220,6 +221,7 @@ libbitcoin_server_a_SOURCES = \
   instantx.cpp \
   dbwrapper.cpp \
   masternode.cpp \
+  masternode-helper.cpp \
   masternode-payments.cpp \
   masternode-sync.cpp \
   masternodeconfig.cpp \

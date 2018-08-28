@@ -1219,30 +1219,59 @@ void static ProcessGetBlockData(CNode* pfrom, const Consensus::Params& consensus
                 connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::BLOCK, *pblock));
             }
         }
-        else if (inv.type == MSG_TX || inv.type == MSG_TXLOCK_REQUEST || inv.type == MSG_TXLOCK_VOTE || inv.type == MSG_SPORK ||
-                 inv.type == MSG_MASTERNODE_PAYMENT_VOTE || inv.type == MSG_MASTERNODE_PAYMENT_BLOCK || inv.type == MSG_MASTERNODE_ANNOUNCE ||
-                 inv.type == MSG_MASTERNODE_PING || inv.type == MSG_MASTERNODE_VERIFY)
+
+        // Trigger the peer node to send a getblocks request for the next batch of inventory
+        if (inv.hash == pfrom->hashContinue)
         {
+            // Bypass PushInventory, this must send even if redundant,
+            // and we want it right after the last block so they don't
+            // wait for other stuff first.
+            std::vector<CInv> vInv;
+            vInv.push_back(CInv(MSG_BLOCK, chainActive.Tip()->GetBlockHash()));
+            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::INV, vInv));
+            pfrom->hashContinue.SetNull();
+        }
+    }
+}
+
+void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParams, CConnman* connman, const std::atomic<bool>& interruptMsgProc)
+{
+    AssertLockNotHeld(cs_main);
+
+    std::deque<CInv>::iterator it = pfrom->vRecvGetData.begin();
+    std::vector<CInv> vNotFound;
+    const CNetMsgMaker msgMaker(pfrom->GetSendVersion());
+    {
+        LOCK(cs_main);
+
+        while (it != pfrom->vRecvGetData.end() && (it->type == MSG_TX || it->type == MSG_WITNESS_TX || it->type == MSG_TXLOCK_REQUEST || it->type == MSG_TXLOCK_VOTE || it->type == MSG_SPORK ||
+                 it->type == MSG_MASTERNODE_PAYMENT_VOTE || it->type == MSG_MASTERNODE_PAYMENT_BLOCK || it->type == MSG_MASTERNODE_ANNOUNCE || it->type == MSG_MASTERNODE_PING || it->type == MSG_MASTERNODE_VERIFY)) {
+            if (interruptMsgProc)
+                return;
+            // Don't bother if send buffer is too full to respond anyway
+            if (pfrom->fPauseSend)
+                break;
+
+            const CInv &inv = *it;
+            it++;
+
             // Send stream from relay memory
             bool push = false;
-            // Only serve MSG_TX from mapRelay.
-            // Otherwise we may send out a normal TX instead of a IX
-            if (inv.type == MSG_TX) {
-                auto mi = mapRelay.find(inv.hash);
-                if (mi != mapRelay.end()) {
-                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TX, *mi->second));
+            auto mi = mapRelay.find(inv.hash);
+            int nSendFlags = (inv.type == MSG_TX ? SERIALIZE_TRANSACTION_NO_WITNESS : 0);
+            if (mi != mapRelay.end()) {
+                connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::TX, *mi->second));
+                push = true;
+            } else if (pfrom->timeLastMempoolReq) {
+                auto txinfo = mempool.info(inv.hash);
+                // To protect privacy, do not answer getdata using the mempool when
+                // that TX couldn't have been INVed in reply to a MEMPOOL request.
+                if (txinfo.tx && txinfo.nTime <= pfrom->timeLastMempoolReq) {
+                    connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::TX, *txinfo.tx));
                     push = true;
-                } else if (pfrom->timeLastMempoolReq) {
-                    auto txinfo = mempool.info(inv.hash);
-                    // To protect privacy, do not answer getdata using the mempool when
-                    // that TX couldn't have been INVed in reply to a MEMPOOL request.
-                    if (txinfo.tx && txinfo.nTime <= pfrom->timeLastMempoolReq) {
-                        connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TX, *txinfo.tx));
-                        push = true;
-                    }
                 }
             }
-
+            
             if (!push && inv.type == MSG_TXLOCK_REQUEST) {
                 CTxLockRequest txLockRequest;
                 if(instantsend.GetTxLockRequest(inv.hash, txLockRequest)) {
@@ -1274,10 +1303,10 @@ void static ProcessGetBlockData(CNode* pfrom, const Consensus::Params& consensus
             }
 
             if (!push && inv.type == MSG_MASTERNODE_PAYMENT_BLOCK) {
-                BlockMap::iterator mi = mapBlockIndex.find(inv.hash);
+                BlockMap::iterator mipb = mapBlockIndex.find(inv.hash);
                 LOCK(cs_mapMasternodeBlocks);
-                if (mi != mapBlockIndex.end() && mnpayments.mapMasternodeBlocks.count(mi->second->nHeight)) {
-                    for(CMasternodePayee& payee : mnpayments.mapMasternodeBlocks[mi->second->nHeight].vecPayees) {
+                if (mipb != mapBlockIndex.end() && mnpayments.mapMasternodeBlocks.count(mipb->second->nHeight)) {
+                    for(CMasternodePayee& payee : mnpayments.mapMasternodeBlocks[mipb->second->nHeight].vecPayees) {
                         std::vector<uint256> vecVoteHashes = payee.GetVoteHashes();
                         for(uint256& hash : vecVoteHashes) {
                             if(mnpayments.HasVerifiedPaymentVote(hash)) {
@@ -1309,58 +1338,7 @@ void static ProcessGetBlockData(CNode* pfrom, const Consensus::Params& consensus
                     push = true;
                 }
             }
-        }
-
-        // Trigger the peer node to send a getblocks request for the next batch of inventory
-        if (inv.hash == pfrom->hashContinue)
-        {
-            // Bypass PushInventory, this must send even if redundant,
-            // and we want it right after the last block so they don't
-            // wait for other stuff first.
-            std::vector<CInv> vInv;
-            vInv.push_back(CInv(MSG_BLOCK, chainActive.Tip()->GetBlockHash()));
-            connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::INV, vInv));
-            pfrom->hashContinue.SetNull();
-        }
-    }
-}
-
-void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParams, CConnman* connman, const std::atomic<bool>& interruptMsgProc)
-{
-    AssertLockNotHeld(cs_main);
-
-    std::deque<CInv>::iterator it = pfrom->vRecvGetData.begin();
-    std::vector<CInv> vNotFound;
-    const CNetMsgMaker msgMaker(pfrom->GetSendVersion());
-    {
-        LOCK(cs_main);
-
-        while (it != pfrom->vRecvGetData.end() && (it->type == MSG_TX || it->type == MSG_WITNESS_TX)) {
-            if (interruptMsgProc)
-                return;
-            // Don't bother if send buffer is too full to respond anyway
-            if (pfrom->fPauseSend)
-                break;
-
-            const CInv &inv = *it;
-            it++;
-
-            // Send stream from relay memory
-            bool push = false;
-            auto mi = mapRelay.find(inv.hash);
-            int nSendFlags = (inv.type == MSG_TX ? SERIALIZE_TRANSACTION_NO_WITNESS : 0);
-            if (mi != mapRelay.end()) {
-                connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::TX, *mi->second));
-                push = true;
-            } else if (pfrom->timeLastMempoolReq) {
-                auto txinfo = mempool.info(inv.hash);
-                // To protect privacy, do not answer getdata using the mempool when
-                // that TX couldn't have been INVed in reply to a MEMPOOL request.
-                if (txinfo.tx && txinfo.nTime <= pfrom->timeLastMempoolReq) {
-                    connman->PushMessage(pfrom, msgMaker.Make(nSendFlags, NetMsgType::TX, *txinfo.tx));
-                    push = true;
-                }
-            }
+            
             if (!push) {
                 vNotFound.push_back(inv);
             }
