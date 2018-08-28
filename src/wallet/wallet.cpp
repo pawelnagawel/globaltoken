@@ -1758,19 +1758,15 @@ bool CWalletTx::RelayWalletTransaction(CConnman* connman, const std::string& str
         if (InMempool() || AcceptToMemoryPool(maxTxFee, state)) {
             LogPrintf("Relaying wtx %s\n", GetHash().ToString());
             if (strCommand == NetMsgType::TXLOCKREQUEST) {
-                if (instantsend.ProcessTxLockRequest((CTxLockRequest)*this, *connman)) {
-                    instantsend.AcceptLockRequest((CTxLockRequest)*this);
+                if (instantsend.ProcessTxLockRequest(static_cast<CTxLockRequest>(*this), *connman)) {
+                    instantsend.AcceptLockRequest(static_cast<CTxLockRequest>(*this));
                 } else {
-                    instantsend.RejectLockRequest((CTxLockRequest)*this);
+                    instantsend.RejectLockRequest(static_cast<CTxLockRequest>(*this));
                 }
             }
             
             if (connman) {
-                CInv inv(MSG_TX, GetHash());
-                connman->ForEachNode([&inv](CNode* pnode)
-                {
-                    pnode->PushInventory(inv);
-                });
+                RelayTransactionFromExtern(static_cast<CTransaction>(*this), *connman);
                 return true;
             }
         }
