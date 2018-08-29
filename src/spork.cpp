@@ -199,6 +199,7 @@ bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
     CTxDestination address = DecodeDestination(strAddress);
     for (CWalletRef pwallet : vpwallets) {
         if(pwallet && !fIsSporkKeySet) {
+            LOCK(pwallet->cs_wallet);
             sporkPubKeyID = GetKeyForDestination(*pwallet, address);
             if(!sporkPubKeyID.IsNull())
                 fIsSporkKeySet = true;

@@ -195,10 +195,19 @@ std::string CInv::GetCommand() const
     int masked = type & MSG_TYPE_MASK;
     switch (masked)
     {
-    case MSG_TX:             return cmd.append(NetMsgType::TX);
-    case MSG_BLOCK:          return cmd.append(NetMsgType::BLOCK);
-    case MSG_FILTERED_BLOCK: return cmd.append(NetMsgType::MERKLEBLOCK);
-    case MSG_CMPCT_BLOCK:    return cmd.append(NetMsgType::CMPCTBLOCK);
+    case MSG_TX:                        return cmd.append(NetMsgType::TX);
+    case MSG_BLOCK:                     return cmd.append(NetMsgType::BLOCK);
+    case MSG_FILTERED_BLOCK:            return cmd.append(NetMsgType::MERKLEBLOCK);
+    case MSG_CMPCT_BLOCK:               return cmd.append(NetMsgType::CMPCTBLOCK);
+    case MSG_TXLOCK_REQUEST:            return cmd.append(NetMsgType::TXLOCKREQUEST);
+    case MSG_TXLOCK_VOTE:               return cmd.append(NetMsgType::TXLOCKVOTE);
+    case MSG_SPORK:                     return cmd.append(NetMsgType::SPORK);
+    case MSG_MASTERNODE_PAYMENT_VOTE:   return cmd.append(NetMsgType::MASTERNODEPAYMENTVOTE);
+    case MSG_MASTERNODE_PAYMENT_BLOCK:  return cmd.append(NetMsgType::MASTERNODEPAYMENTBLOCK);
+    case MSG_MASTERNODE_QUORUM:         return cmd.append(NetMsgType::MNQUORUM);
+    case MSG_MASTERNODE_ANNOUNCE:       return cmd.append(NetMsgType::MNANNOUNCE);
+    case MSG_MASTERNODE_PING:           return cmd.append(NetMsgType::MNPING);
+    case MSG_MASTERNODE_VERIFY:         return cmd.append(NetMsgType::MNVERIFY);
     default:
         throw std::out_of_range(strprintf("CInv::GetCommand(): type=%d unknown type", type));
     }

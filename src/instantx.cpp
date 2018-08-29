@@ -49,7 +49,7 @@ CInstantSend instantsend;
 
 void CInstantSend::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all Dash specific functionality
+    if(fLiteMode) return; // disable all Globaltoken specific functionality
     if(!sporkManager.IsSporkActive(SPORK_1_INSTANTSEND_ENABLED)) return;
 
     // NOTE: NetMsgType::TXLOCKREQUEST is handled via ProcessMessage() in net_processing.cpp
@@ -92,8 +92,7 @@ bool CInstantSend::ProcessTxLockRequest(const CTxLockRequest& txLockRequest, CCo
             
 #ifdef ENABLE_WALLET
     for (CWalletRef pwallet : vpwallets) {
-        if(pwallet)
-            LOCK(pwallet->cs_wallet);
+        LOCK(pwallet->cs_wallet);
 #endif
         LOCK2(mempool.cs, cs_instantsend);
 
@@ -204,8 +203,7 @@ void CInstantSend::Vote(const uint256& txHash, CConnman& connman)
     AssertLockHeld(cs_main);
 #ifdef ENABLE_WALLET
     for (CWalletRef pwallet : vpwallets) {
-        if(pwallet)
-            LOCK(pwallet->cs_wallet);
+        LOCK(pwallet->cs_wallet);
 #endif
 
         CTxLockRequest dummyRequest;
@@ -351,8 +349,7 @@ bool CInstantSend::ProcessNewTxLockVote(CNode* pfrom, const CTxLockVote& vote, C
     LOCK(cs_main);
 #ifdef ENABLE_WALLET
     for (CWalletRef pwallet : vpwallets) {
-        if(pwallet)
-            LOCK(pwallet->cs_wallet);
+        LOCK(pwallet->cs_wallet);
 #endif
         LOCK2(mempool.cs, cs_instantsend);
 
