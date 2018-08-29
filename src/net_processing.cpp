@@ -1042,7 +1042,7 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
 static void RelayTransaction(const CTransaction& tx, CConnman* connman)
 {
     uint256 hash = tx.GetHash();
-    int nInv = static_cast<bool>(instantsend.HasTxLockRequest(hash) ? MSG_TXLOCK_REQUEST : MSG_TX);
+    int nInv = instantsend.HasTxLockRequest(hash) ? MSG_TXLOCK_REQUEST : MSG_TX;
     CInv inv(nInv, hash);
     
     connman->ForEachNode([&inv](CNode* pnode)
