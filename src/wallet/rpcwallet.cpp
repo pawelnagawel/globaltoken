@@ -90,7 +90,7 @@ void EnsureWalletIsUnlocked(CWallet * const pwallet)
 
 void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
 {
-    int confirms = wtx.GetDepthInMainChain();
+    int confirms = wtx.GetDepthInMainChain(false);
     bool fLocked = instantsend.IsLockedInstantSendTransaction(wtx.GetHash());
     entry.pushKV("confirmations", confirms);
     entry.pushKV("instantlock", fLocked);
@@ -2187,7 +2187,7 @@ UniValue listsinceblock(const JSONRPCRequest& request)
     for (const std::pair<uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         CWalletTx tx = pairWtx.second;
 
-        if (depth == -1 || tx.GetDepthInMainChain() < depth) {
+        if (depth == -1 || tx.GetDepthInMainChain(false) < depth) {
             ListTransactions(pwallet, tx, "*", 0, true, transactions, filter);
         }
     }

@@ -2354,7 +2354,7 @@ std::map<CTxDestination, std::vector<COutput>> CWallet::ListCoins() const
     for (const auto& output : lockedCoins) {
         auto it = mapWallet.find(output.hash);
         if (it != mapWallet.end()) {
-            int depth = it->second.GetDepthInMainChain();
+            int depth = it->second.GetDepthInMainChain(false);
             if (depth >= 0 && output.n < it->second.tx->vout.size() &&
                 IsMine(it->second.tx->vout[output.n]) == ISMINE_SPENDABLE) {
                 CTxDestination address;
