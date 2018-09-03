@@ -242,7 +242,7 @@ bool CSporkManager::SetPrivKey(const std::string& strPrivKey)
 
 uint256 CSporkMessage::GetHash() const
 {
-    return GlobalHash(BEGIN(nSporkID), END(nTimeSigned));
+    return SerializeHash(*this);
 }
 
 uint256 CSporkMessage::GetSignatureHash() const
