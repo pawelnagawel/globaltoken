@@ -870,62 +870,59 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
     qint64 secs = blockDate.secsTo(currentDate);
 
     tooltip = tr("Processed %n block(s) of transaction history.", "", count);
-
-    // Set icon state: spinning if catching up, tick otherwise
-    if(secs < 20*60) // 90*60 in bitcoin
+    
+#ifdef ENABLE_WALLET
+    if (walletFrame)
     {
-        tooltip = tr("Up to date") + QString(".<br>") + tooltip;
-        labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        // Set icon state: spinning if catching up, tick otherwise
+        if(secs < 20*60) // 90*60 in bitcoin
+        {
+            if(fLiteMode)
+            {
+                setAdditionalDataSyncProgress(1);
+            }
+            modalOverlay->showHide(true, true);
+            // TODO instead of hiding it forever, we should add meaningful information about MN sync to the overlay
+            modalOverlay->hideForever();
+        }
+        else
+        {
+            modalOverlay->showHide();
+        }
+    }
+#endif // ENABLE_WALLET
+    if(!masternodeSync.IsBlockchainSynced() || (fLiteMode && secs > 20*60))
+    {
+        QString timeBehindText = GUIUtil::formatNiceTimeOffset(secs);
+
+        progressBarLabel->setVisible(true);
+        progressBar->setFormat(tr("%1 behind").arg(timeBehindText));
+        progressBar->setMaximum(1000000000);
+        progressBar->setValue(nVerificationProgress * 1000000000.0 + 0.5);
+        progressBar->setVisible(true);
+
+        tooltip = tr("Catching up...") + QString("<br>") + tooltip;
+        if(count != prevBlocks)
+        {
+            labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(QString(
+                ":/movies/spinner-%1").arg(spinnerFrame, 3, 10, QChar('0')))
+                .pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+            spinnerFrame = (spinnerFrame + 1) % SPINNER_FRAMES;
+        }
+        prevBlocks = count;
 
 #ifdef ENABLE_WALLET
         if(walletFrame)
         {
-            walletFrame->showOutOfSyncWarning(false);
-            modalOverlay->showHide(true, true);
+            walletFrame->showOutOfSyncWarning(true);
+            modalOverlay->showHide();
         }
 #endif // ENABLE_WALLET
 
-        progressBarLabel->setVisible(false);
-        progressBar->setVisible(false);
-    }
-    else
-    {
-        if(!masternodeSync.IsBlockchainSynced())
-        {
-            QString timeBehindText = GUIUtil::formatNiceTimeOffset(secs);
-
-            progressBarLabel->setVisible(true);
-            progressBar->setFormat(tr("%1 behind").arg(timeBehindText));
-            progressBar->setMaximum(1000000000);
-            progressBar->setValue(nVerificationProgress * 1000000000.0 + 0.5);
-            progressBar->setVisible(true);
-
-            tooltip = tr("Catching up...") + QString("<br>") + tooltip;
-            if(count != prevBlocks)
-            {
-                labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(QString(
-                    ":/movies/spinner-%1").arg(spinnerFrame, 3, 10, QChar('0')))
-                    .pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-                spinnerFrame = (spinnerFrame + 1) % SPINNER_FRAMES;
-            }
-            prevBlocks = count;
-
-#ifdef ENABLE_WALLET
-            if(walletFrame)
-            {
-                walletFrame->showOutOfSyncWarning(true);
-                modalOverlay->showHide();
-            }
-#endif // ENABLE_WALLET
-
-            tooltip += QString("<br>");
-            tooltip += tr("Last received block was generated %1 ago.").arg(timeBehindText);
-            tooltip += QString("<br>");
-            tooltip += tr("Transactions after this will not yet be visible.");
-        }
-        else if (fLiteMode) {
-            setAdditionalDataSyncProgress(1);
-        }
+        tooltip += QString("<br>");
+        tooltip += tr("Last received block was generated %1 ago.").arg(timeBehindText);
+        tooltip += QString("<br>");
+        tooltip += tr("Transactions after this will not yet be visible.");
     }
 
     // Don't word-wrap this (fixed-width) tooltip
@@ -961,7 +958,10 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
     if(masternodeSync.IsSynced()) {
         progressBarLabel->setVisible(false);
         progressBar->setVisible(false);
-        labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
+        modalOverlay->showHide(true, true);
+        // TODO instead of hiding it forever, we should add meaningful information about MN sync to the overlay
+        modalOverlay->hideForever();
+        labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
     } else {
 
         labelBlocksIcon->setPixmap(platformStyle->SingleColorIcon(QString(
