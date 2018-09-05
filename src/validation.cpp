@@ -2086,9 +2086,25 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     if(IsHardForkActivated(block.nTime))
     {
-        if (!IsBlockPayeeValid(*block.vtx[0], pindex->nHeight, GetBlockSubsidy(pindex->nHeight, chainparams.GetConsensus()))) {
+        // Coinbase transaction must include the Treasury amount to the given Reward address, if Hardfork is activated.
+        bool found = false;
+
+        for(const CTxOut& output : block.vtx[0]->vout) {
+            if (output.scriptPubKey == Params().GetFoundersRewardScriptAtHeight(pindex->nHeight)) {
+                if (output.nValue == Params().GetTreasuryAmount(blockReward)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            return state.DoS(100, error("ConnectBlock(): couldn't find treasury payment"), REJECT_INVALID, "bad-cb-treasury");
+        }
+        
+        if (!IsBlockPayeeValid(*block.vtx[0], pindex->nHeight, blockReward)) {
             mapRejectedBlocks.insert(std::make_pair(block.GetHash(), GetTime()));
-            return state.DoS(0, error("ConnectBlock(GLOBALTOKEN): couldn't find masternode payment"),
+            return state.DoS(0, error("ConnectBlock(): couldn't find masternode payment"),
                                     REJECT_INVALID, "bad-cb-payee");
         }
     }
@@ -3398,25 +3414,6 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
         if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
-        }
-    }
-    
-    // Coinbase transaction must include the Treasury amount to the given Reward address, if Hardfork is activated.
-    if (IsHardForkActivated(block.nTime)) 
-    {
-        bool found = false;
-
-        for(const CTxOut& output : block.vtx[0]->vout) {
-            if (output.scriptPubKey == Params().GetFoundersRewardScriptAtHeight(nHeight)) {
-                if (output.nValue == Params().GetTreasuryAmount(GetBlockSubsidy(nHeight, consensusParams))) {
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-glt-notreasury", false, "block has no treasury output");
         }
     }
 

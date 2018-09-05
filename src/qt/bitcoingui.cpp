@@ -869,7 +869,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
     QDateTime currentDate = QDateTime::currentDateTime();
     qint64 secs = blockDate.secsTo(currentDate);
 
-    tooltip = tr("Processed %n block(s) of transaction history.", "", count);
+    tooltip = tr("Up to date") + QString(".<br>") + tr("Processed %n block(s) of transaction history.", "", count);
     
 #ifdef ENABLE_WALLET
     if (walletFrame)

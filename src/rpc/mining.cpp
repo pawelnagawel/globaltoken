@@ -91,16 +91,12 @@ UniValue GetNetworkHashPS(int lookup, int height) {
     return workDiff.getdouble() / timeDiff;
 }
 
-UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck)
+UniValue GetTreasuryOutput(const CBlock &block, int nHeight)
 {
-    if(IsHardForkActivated(nTime) || skipActivationCheck)
+    if(IsHardForkActivated(block.nTime))
     {
-        if(nHeight < 0)
-            return NullUniValue;
-        
         const CChainParams& params = Params();
-        CAmount blockreward = GetBlockSubsidy(nHeight, params.GetConsensus());
-        CAmount treasuryamount = params.GetTreasuryAmount(blockreward);
+        CAmount treasuryamount = params.GetTreasuryAmount(block.vtx[0]->GetValueOut());
         CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
         CScript scriptPubKey = params.GetFoundersRewardScriptAtHeight(nHeight);
         
@@ -109,16 +105,57 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         sshextxstream << out;
         
         UniValue obj(UniValue::VOBJ);
-        obj.pushKV("height",                 nHeight);
-        obj.pushKV("blockreward",            blockreward);
-        obj.pushKV("blockreward_coins",      ValueFromAmount(blockreward));
-        obj.pushKV("treasury_percentage",    params.GetConsensus().nTreasuryAmount);
-        obj.pushKV("treasury_amount",        treasuryamount);
-        obj.pushKV("treasury_value",         ValueFromAmount(treasuryamount));
-        obj.pushKV("treasury_address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
-        obj.pushKV("treasury_scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
-        obj.pushKV("hex",                    HexStr(sshextxstream.begin(), sshextxstream.end()));
+        obj.pushKV("height",        nHeight);
+        obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+        obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
+        obj.pushKV("amount",        treasuryamount);
+        obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
+    }
+    return NullUniValue;
+}
+
+UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck)
+{
+    LOCK(cs_main);
+    
+    if(IsHardForkActivated(nTime) || skipActivationCheck)
+    {
+        if(nHeight < 0)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Block height out of range");
+        
+        if(nHeight > chainActive.Tip()->nHeight)
+        {
+            const CChainParams& params = Params();
+            CAmount treasuryamount = params.GetTreasuryAmount(GetBlockSubsidy(nHeight, params.GetConsensus()));
+            CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
+            CScript scriptPubKey = params.GetFoundersRewardScriptAtHeight(nHeight);
+            
+            CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
+            
+            sshextxstream << out;
+            
+            UniValue obj(UniValue::VOBJ);
+            obj.pushKV("height",        nHeight);
+            obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+            obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
+            obj.pushKV("amount",        treasuryamount);
+            obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
+            return obj;
+        }
+        else
+        {
+            CBlock block;
+            CBlockIndex* pblockindex = chainActive[nHeight];
+
+            if (fHavePruned && !(pblockindex->nStatus & BLOCK_HAVE_DATA) && pblockindex->nTx > 0)
+                throw JSONRPCError(RPC_INTERNAL_ERROR, "Block not available (pruned data)");
+
+            if(!ReadBlockFromDisk(block, pblockindex, Params().GetConsensus()))
+                throw JSONRPCError(RPC_INTERNAL_ERROR, "Can't read block from disk");
+            
+            return GetTreasuryOutput(block, nHeight);
+        }
     }
     return NullUniValue;
 }
@@ -133,23 +170,23 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
             "1. nHeight     (numeric, optional, default=currentHeight) Calculate treasury for a given height.\n"
             "\nResult:\n"
             "{\n"
-            "  \"height\": xxxxx,                 (numeric) The height of this treasury details\n"
-            "  \"blockreward\":  xxxxx,           (numeric) The full blockreward of the given height in Satoshis (excluding fees)\n"
-            "  \"blockreward_coins\":     xxxxx,  (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
-            "  \"treasury_percentage\":   xxxxx,  (numeric) The treasury percentage\n"
-            "  \"treasury_amount\":       xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
-            "  \"treasury_value\":        xxxxx,  (numeric) The treasury amount for this height in Coins\n"
-            "  \"treasury_address\":      xxxxx,  (string)  The GlobalToken treasury address of this height\n"
-            "  \"treasury_scriptPubKey\": xxxxx,  (string)  The scriptpubkey of the treasury address\n"
-            "  \"hex\": xxxxx                     (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "  \"height\":       xxxxx,     (numeric) The height of this treasury details\n"
+            "  \"address\":      xxxxx,     (string)  The GlobalToken treasury address of this height\n"
+            "  \"scriptPubKey\": xxxxx,     (string)  The scriptpubkey of the treasury address\n"
+            "  \"amount\":       xxxxx,     (numeric) The treasury amount for this height in Satoshis\n"
+            "  \"hex\":          xxxxx      (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
             "}\n"
             + HelpExampleCli("getblocktreasury", "")
             + HelpExampleRpc("getblocktreasury", "")
        );
 
-    LOCK(cs_main);
+    uint32_t nTime = 0;
+    {
+        LOCK(cs_main);
+        nTime = chainActive.Tip()->nTime;
+    }
     int nHeight = (request.params[0].isNull()) ? chainActive.Tip()->nHeight : request.params[0].get_int();
-    return GetTreasuryOutput(chainActive.Tip()->nTime, nHeight, true);
+    return GetTreasuryOutput(nTime, nHeight, true);
 }
 
 UniValue getnetworkhashps(const JSONRPCRequest& request)
@@ -660,18 +697,13 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  },\n"
             "  \"coinbasevalue\" : n,              (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in satoshis)\n"
             "  \"coinbasetxn\" : { ... },          (json object) information for coinbase transaction\n"
-            "  \"treasury\" : {                    (json object) treasury transaction,that must be included in this block.\n"
-            "  {\n"
-            "     \"height\": xxxxx,                 (numeric) The height of this treasury details\n"
-            "     \"blockreward\":  xxxxx,           (numeric) The full blockreward of the given height in Satoshis (excluding fees)\n"
-            "     \"blockreward_coins\":     xxxxx,  (numeric) The full blockreward of the given height in Coins (excluding fees)\n"
-            "     \"treasury_percentage\":   xxxxx,  (numeric) The treasury percentage\n"
-            "     \"treasury_amount\":       xxxxx,  (numeric) The treasury amount for this height in Satoshis\n"
-            "     \"treasury_value\":        xxxxx,  (numeric) The treasury amount for this height in Coins\n"
-            "     \"treasury_address\":      xxxxx,  (string)  The GlobalToken treasury address of this height\n"
-            "     \"treasury_scriptPubKey\": xxxxx,  (string)  The scriptpubkey of the treasury address\n"
-            "     \"hex\": xxxxx                     (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
-            "  }, \n"
+            "  \"treasury\" : {\n                  (json object) treasury transaction,that must be included in this block.\n"
+            "       \"height\":       xxxxx,       (numeric) The height of this treasury details\n"
+            "       \"address\":      xxxxx,       (string)  The GlobalToken treasury address of this height\n"
+            "       \"scriptPubKey\": xxxxx,       (string)  The scriptpubkey of the treasury address\n"
+            "       \"amount\":       xxxxx,       (numeric) The treasury amount for this height in Satoshis\n"
+            "       \"hex\":          xxxxx        (string)  The hex TXOutput, that can be added to the coinbase transaction, to include treasury easily\n"
+            "  },\n"
             "  \"target\" : \"xxxx\",                (string) The hash target\n"
             "  \"mintime\" : xxx,                  (numeric) The minimum timestamp appropriate for next block time in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"mutable\" : [                     (array of string) list of ways the block template may be changed \n"
@@ -969,6 +1001,17 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     UniValue transactions(UniValue::VARR);
     UniValue txCoinbase = NullUniValue;
+    UniValue masternodeObj(UniValue::VOBJ);
+    UniValue treasuryObj(UniValue::VOBJ) = GetTreasuryOutput(pblock, pindexPrev->nHeight + 1);
+    
+    if(pblock->txoutMasternode != CTxOut()) {
+        CTxDestination address;
+        ExtractDestination(pblock->txoutMasternode.scriptPubKey, address);
+        masternodeObj.pushKV("payee", EncodeDestination(address).c_str());
+        masternodeObj.pushKV("script", HexStr(pblock->txoutMasternode.scriptPubKey));
+        masternodeObj.pushKV("amount", pblock->txoutMasternode.nValue);
+    }
+    
     std::map<uint256, int64_t> setTxIndex;
     int i = 0;
     for (const auto& it : pblock->vtx) {
@@ -1005,10 +1048,11 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
         if (tx.IsCoinBase()) 
         {
-            // Show founders' reward if it is required
-            if (pblock->vtx[0]->vout.size() > 1) {
+            // Show treasury reward if it is required and masternode payee
+            if (IsHardForkActivated(pblock->nTime)) {
                 // Correct this if GetBlockTemplate changes the order
-                entry.pushKV("foundersreward", (int64_t)tx.vout[1].nValue);
+                entry.pushKV("treasury", treasuryObj);
+                entry.pushKV("masternode", masternodeObj);
             }
             entry.pushKV("required", true);
             txCoinbase = entry;
@@ -1017,8 +1061,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         {
             transactions.push_back(entry);
         }
-        
-        //transactions.push_back(entry);
     }
 
     UniValue aux(UniValue::VOBJ);
@@ -1101,9 +1143,9 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     else 
     {
         result.pushKV("coinbaseaux", aux);
-        result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->vout[0].nValue);
+        result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->GetValueOut());
     }
-    result.pushKV("treasury", GetTreasuryOutput(pblock->nTime, pindexPrev->nHeight + 1, false));
+    result.pushKV("treasury", treasuryObj);
     result.pushKV("longpollid", chainActive.Tip()->GetBlockHash().GetHex() + i64tostr(nTransactionsUpdatedLast));
     result.pushKV("target", hashTarget.GetHex());
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
@@ -1126,14 +1168,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("bits", strprintf("%08x", pblock->nBits));
     result.pushKV("height", (int64_t)(pindexPrev->nHeight+1));
     
-    UniValue masternodeObj(UniValue::VOBJ);
-    if(pblock->txoutMasternode != CTxOut()) {
-        CTxDestination address;
-        ExtractDestination(pblock->txoutMasternode.scriptPubKey, address);
-        masternodeObj.pushKV("payee", EncodeDestination(address).c_str());
-        masternodeObj.pushKV("script", HexStr(pblock->txoutMasternode.scriptPubKey));
-        masternodeObj.pushKV("amount", pblock->txoutMasternode.nValue);
-    }
     result.pushKV("masternode", masternodeObj);
     result.pushKV("masternode_payments_started", IsHardForkActivated(pblock->nTime));
     result.pushKV("masternode_payments_enforced", sporkManager.IsSporkActive(SPORK_5_MASTERNODE_PAYMENT_ENFORCEMENT));

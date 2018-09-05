@@ -187,6 +187,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     nLastBlockTx = nBlockTx;
     nLastBlockWeight = nBlockWeight;
+    
+    // Get the current block reward.
+    CAmount blockReward = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
 
     // Create coinbase transaction.
     CMutableTransaction coinbaseTx;
@@ -194,23 +197,21 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vin[0].prevout.SetNull();
     coinbaseTx.vout.resize(1);
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-    //coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
-    coinbaseTx.vout[0].nValue = GetBlockSubsidy(nHeight, chainparams.GetConsensus());
+    coinbaseTx.vout[0].nValue = blockReward;
     
     if(IsHardForkActivated(pblock->nTime))
     {
-        CAmount nTreasuryAmount = chainparams.GetTreasuryAmount(coinbaseTx.vout[0].nValue);
+        CAmount nTreasuryAmount = chainparams.GetTreasuryAmount(blockReward);
         coinbaseTx.vout[0].nValue -= nTreasuryAmount;
         coinbaseTx.vout.push_back(CTxOut(nTreasuryAmount, chainparams.GetFoundersRewardScriptAtHeight(nHeight)));
         
         // Update coinbase transaction with additional info about masternode payments,
         // get some info back to pass to getblocktemplate
-        FillBlockPayments(coinbaseTx, nHeight, GetBlockSubsidy(nHeight, chainparams.GetConsensus()), pblock->txoutMasternode);
+        FillBlockPayments(coinbaseTx, nHeight, blockReward, pblock->txoutMasternode);
         // LogPrintf("CreateNewBlock -- nBlockHeight %d blockReward %lld txoutMasternode %s coinbaseTx %s",
         //             nHeight, GetBlockSubsidy(nHeight, chainparams.GetConsensus()), pblock->txoutMasternode.ToString(), coinbaseTx.ToString());
     }
     
-    coinbaseTx.vout[0].nValue += nFees;
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());

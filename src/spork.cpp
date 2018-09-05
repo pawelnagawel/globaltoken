@@ -7,7 +7,6 @@
 
 #include <base58.h>
 #include <chainparams.h>
-#include <crypto/algos/hashlib/multihash.h>
 #include <globaltoken/hardfork.h>
 #include <validation.h>
 #include <wallet/wallet.h>
