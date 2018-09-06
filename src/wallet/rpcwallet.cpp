@@ -3940,7 +3940,7 @@ UniValue getauxblock(const JSONRPCRequest& request)
     }
 
     if (request.fHelp
-          || (request.params.size() != 0 && request.params.size() != 2))
+          || (request.params.size() != 0 && (request.params.size() != 2 || request.params.size() != 3)))
         throw std::runtime_error(
             "getauxblock (hash auxpow)\n"
             "\nCreate or submit a merge-mined block.\n"
@@ -3948,8 +3948,9 @@ UniValue getauxblock(const JSONRPCRequest& request)
             "required to merge-mine it.  With arguments, submit a solved\n"
             "auxpow for a previously returned block.\n"
             "\nArguments:\n"
-            "1. hash      (string, optional) hash of the block to submit\n"
-            "2. auxpow    (string, optional) serialised auxpow found\n"
+            "1. hash           (string, optional) hash of the block to submit\n"
+            "2. auxpow         (string, optional) serialised auxpow found\n"
+            "3. auxpowversion  (numeric, optional, default=1) The AuxPoW Version to encode (1 = legacy, 2 = supports pos + equihash format)\n"
             "\nResult (without arguments):\n"
             "{\n"
             "  \"hash\"               (string) hash of the created block\n"
@@ -3970,6 +3971,8 @@ UniValue getauxblock(const JSONRPCRequest& request)
 
     std::shared_ptr<CReserveScript> coinbaseScript;
     pwallet->GetScriptForMining(coinbaseScript);
+    
+    const int nAuxPoWVersion =  (request.params.size() == 3) ? request.params[2].get_int() : 1;
 
     // If the keypool is exhausted, no script is returned at all.  Catch this.
     if (!coinbaseScript)
@@ -3978,6 +3981,10 @@ UniValue getauxblock(const JSONRPCRequest& request)
     //throw an error if no script was provided
     if (!coinbaseScript->reserveScript.size())
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No coinbase script available (mining requires a wallet)");
+    
+    //throw an error if the auxpow encoding version is unknown.
+    if (!(nAuxPoWVersion == 1 || nAuxPoWVersion == 2))
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown Auxpow Encoding Version.");
 
     /* Create a new block */
     if (request.params.size() == 0)
@@ -3985,9 +3992,10 @@ UniValue getauxblock(const JSONRPCRequest& request)
 
     /* Submit a block instead.  Note that this need not lock cs_main,
        since ProcessNewBlock below locks it instead.  */
-    assert(request.params.size() == 2);
+    assert(request.params.size() == 2 || request.params.size() == 3);
     bool fAccepted = AuxMiningSubmitBlock(request.params[0].get_str(), 
-                                          request.params[1].get_str());
+                                          request.params[1].get_str(),
+                                          nAuxPoWVersion);
     if (fAccepted)
         coinbaseScript->KeepScript();
 
@@ -4066,7 +4074,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "instantsendtoaddress",             &instantsendtoaddress,          {"address","amount","comment","comment_to","subtractfeefromamount","replaceable","conf_target","estimate_mode"} },
 
     { "generating",         "generate",                         &generate,                      {"nblocks","maxtries"} },
-    { "mining",             "getauxblock",                      &getauxblock,                   {"hash", "auxpow"} },
+    { "mining",             "getauxblock",                      &getauxblock,                   {"hash", "auxpow", "auxpowversion"} },
 };
 
 void RegisterWalletRPCCommands(CRPCTable &t)

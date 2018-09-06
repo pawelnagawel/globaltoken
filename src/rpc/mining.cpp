@@ -1592,6 +1592,9 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         throw std::runtime_error("invalid difficulty bits in block");
 
     UniValue result(UniValue::VOBJ);
+    result.pushKV("baseversion", (int64_t)CURRENT_AUXPOW_VERSION);
+    result.pushKV("posflag", strprintf("%08x", AUXPOW_STAKE_FLAG));
+    result.pushKV("equihashflag", strprintf("%08x", AUXPOW_EQUIHASH_FLAG));
     result.pushKV("hash", pblock->GetHash().GetHex());
     result.pushKV("chainid", pblock->GetChainId());
     result.pushKV("previousblockhash", pblock->hashPrevBlock.GetHex());
@@ -1604,7 +1607,8 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
 }
 
 bool AuxMiningSubmitBlock(const std::string& hashHex,
-                          const std::string& auxpowHex)
+                          const std::string& auxpowHex,
+                          const int nAuxPoWVersion)
 {
     AuxMiningCheck();
 
@@ -1612,28 +1616,29 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
 
     uint256 hash;
     hash.SetHex(hashHex);
+    std::string auxpowstring;
+    
+    if(nAuxPoWVersion == 1)
+    {
+        CDataStream ssAuxPow(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
+        ssAuxPow << CURRENT_AUXPOW_VERSION;
+        auxpowstring = HexStr(ssAuxPow.begin(), ssAuxPow.end()) + auxpowHex;
+    }
+    else
+    {
+        auxpowstring = auxpowHex;
+    }
 
     const std::map<uint256, CBlock*>::iterator mit = mapNewBlock.find(hash);
     if (mit == mapNewBlock.end())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
     CBlock& block = *mit->second;
 
-    CEquihashAuxPow equihashauxpow;
-    CDefaultAuxPow defaultauxpow;
-    
-    const std::vector<unsigned char> vchAuxPow = ParseHex(auxpowHex);
+    const std::vector<unsigned char> vchAuxPow = ParseHex(auxpowstring);
     CDataStream ss(vchAuxPow, SER_GETHASH, PROTOCOL_VERSION);
-    
-    if(currentAlgo == ALGO_EQUIHASH)
-    {
-        ss >> equihashauxpow;
-        block.SetAuxpow(new CEquihashAuxPow(equihashauxpow));
-    }
-    else
-    {
-        ss >> defaultauxpow;
-        block.SetAuxpow(new CDefaultAuxPow(defaultauxpow));
-    }
+    CAuxPow auxpow;
+    ss >> auxpow;
+    block.SetAuxpow(new CAuxPow(auxpow));
     
     assert(block.GetHash() == hash);
 
@@ -1684,13 +1689,14 @@ UniValue createauxblock(const JSONRPCRequest& request)
 
 UniValue submitauxblock(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 2)
+    if (request.fHelp || request.params.size() != 2 || request.params.size() != 3)
         throw std::runtime_error(
             "submitauxblock <hash> <auxpow>\n"
             "\nsubmit a solved auxpow for a previously block created by 'createauxblock'.\n"
             "\nArguments:\n"
-            "1. hash      (string, required) hash of the block to submit\n"
-            "2. auxpow    (string, required) serialised auxpow found\n"
+            "1. hash           (string, required) hash of the block to submit\n"
+            "2. auxpow         (string, required) serialised auxpow found\n"
+            "3. auxpowversion  (numeric, optional, default=1) The AuxPoW Version to encode (1 = legacy, 2 = supports pos + equihash format)\n"
             "\nResult:\n"
             "xxxxx        (boolean) whether the submitted block was correct\n"
             "\nExamples:\n"
@@ -1698,8 +1704,15 @@ UniValue submitauxblock(const JSONRPCRequest& request)
             + HelpExampleRpc("submitauxblock", "\"hash\" \"serialised auxpow\"")
             );
 
+    const int nAuxPoWVersion =  (request.params.size() == 3) ? request.params[2].get_int() : 1;
+    
+    //throw an error if the auxpow encoding version is unknown.
+    if (!(nAuxPoWVersion == 1 || nAuxPoWVersion == 2))
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown Auxpow Encoding Version.");
+    
     return AuxMiningSubmitBlock(request.params[0].get_str(), 
-                                request.params[1].get_str());
+                                request.params[1].get_str(),
+                                nAuxPoWVersion);
 }
 
 
@@ -1716,7 +1729,7 @@ static const CRPCCommand commands[] =
     { "mining",             "getblocktemplate",       &getblocktemplate,       {"template_request"} },
     { "mining",             "submitblock",            &submitblock,            {"hexdata","dummy"} },
     { "mining",             "createauxblock",         &createauxblock,         {"address"} },
-    { "mining",             "submitauxblock",         &submitauxblock,         {"hash", "auxpow"} },
+    { "mining",             "submitauxblock",         &submitauxblock,         {"hash", "auxpow", "auxpowversion"} },
 
 
     { "generating",         "generatetoaddress",      &generatetoaddress,      {"nblocks","address","maxtries"} },

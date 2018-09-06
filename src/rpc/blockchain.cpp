@@ -49,6 +49,7 @@ static std::condition_variable cond_blockchange;
 static CUpdatedBlock latestblock;
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
+extern void POSTxToJSON(const CPOSTransaction& tx, const uint256 hashBlock, UniValue& entry, const std::string hextx);
 
 /* Calculate the difficulty for a given block index,
  * or the block index of the given chain.
@@ -100,24 +101,55 @@ double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 
 namespace
 {
-UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
+UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
 {
+    uint32_t nAuxpowVersion = ((auxpow.nVersion & AUXPOW_STAKE_FLAG) || (auxpow.nVersion & AUXPOW_EQUIHASH_FLAG)) ? 2 : 1;
+    
+    bool fIsStake = auxpow.nVersion & AUXPOW_STAKE_FLAG;
+    bool fIsEquihash = auxpow.nVersion & AUXPOW_EQUIHASH_FLAG;
+    const uint256 parentBlockHash = fIsEquihash ? auxpow.getEquihashParentBlock().GetHash() : auxpow.getDefaultParentBlock().GetHash();
+    std::string hexTX;
+    
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    
+    if(fIsStake)
+        ssTx << *auxpow.coinbasePOSTx.tx;
+    else
+        ssTx << *auxpow.coinbaseTx.tx;
+    
+    hexTX = HexStr(ssTx.begin(), ssTx.end());
+    
     UniValue result(UniValue::VOBJ);
+    result.pushKV("rawversion", (int64_t)auxpow.nVersion);
+    result.pushKV("auxpow_version", nAuxpowVersion);
+    result.pushKV("auxpow_isstake", fIsStake);
+    result.pushKV("auxpow_isequihash", fIsEquihash);
     result.pushKV("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex());
+    if(fIsEquihash)
+        result.pushKV("solution", HexStr(auxpow.getEquihashParentBlock().nSolution));
 
+    if(fIsStake)
     {
         UniValue tx(UniValue::VOBJ);
-        tx.pushKV("hex", EncodeHexTx(*auxpow.tx));
-        TxToJSON(*auxpow.tx, auxpow.parentBlock.GetHash(), tx);
+        tx.pushKV("hex", hexTX);
+        POSTxToJSON(*auxpow.coinbasePOSTx.tx, parentBlockHash, tx, hexTX);
+        result.pushKV("tx", tx);
+    }
+    else
+    {
+        UniValue tx(UniValue::VOBJ);
+        tx.pushKV("hex", hexTX);
+        TxToJSON(*auxpow.coinbaseTx.tx, parentBlockHash, tx);
         result.pushKV("tx", tx);
     }
 
-    result.pushKV("index", auxpow.nIndex);
+    result.pushKV("index", fIsStake ? auxpow.coinbasePOSTx.nIndex : auxpow.coinbaseTx.nIndex);
     result.pushKV("chainindex", auxpow.nChainIndex);
 
     {
+        std::vector<uint256> vMerkleBranch = fIsStake ? auxpow.coinbasePOSTx.vMerkleBranch : auxpow.coinbaseTx.vMerkleBranch;
         UniValue branch(UniValue::VARR);
-        for (const auto& node : auxpow.vMerkleBranch)
+        for (const auto& node : vMerkleBranch)
             branch.push_back(node.GetHex());
         result.pushKV("merklebranch", branch);
     }
@@ -130,45 +162,12 @@ UniValue AuxpowToJSON(const CDefaultAuxPow& auxpow, const uint8_t nAlgo)
     }
 
     CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
-    ssParent << auxpow.parentBlock;
-    const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
-    result.pushKV("parentblock", strHex);
-
-    return result;
-}
-
-UniValue AuxpowToJSON(const CEquihashAuxPow& auxpow)
-{
-    UniValue result(UniValue::VOBJ);
-    result.pushKV("powhash", auxpow.getParentBlockHash().GetHex());
-    result.pushKV("solution", HexStr(auxpow.getParentBlock().nSolution));
-
-    {
-        UniValue tx(UniValue::VOBJ);
-        tx.pushKV("hex", EncodeHexTx(*auxpow.tx));
-        TxToJSON(*auxpow.tx, auxpow.parentBlock.GetHash(), tx);
-        result.pushKV("tx", tx);
-    }
-
-    result.pushKV("index", auxpow.nIndex);
-    result.pushKV("chainindex", auxpow.nChainIndex);
-
-    {
-        UniValue branch(UniValue::VARR);
-        for (const auto& node : auxpow.vMerkleBranch)
-            branch.push_back(node.GetHex());
-        result.pushKV("merklebranch", branch);
-    }
-
-    {
-        UniValue branch(UniValue::VARR);
-        for (const auto& node : auxpow.vChainMerkleBranch)
-            branch.push_back(node.GetHex());
-        result.pushKV("chainmerklebranch", branch);
-    }
-
-    CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
-    ssParent << auxpow.parentBlock;
+    
+    if(fIsEquihash)
+        ssParent << auxpow.getEquihashParentBlock();
+    else
+        ssParent << auxpow.getDefaultParentBlock();
+    
     const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
     result.pushKV("parentblock", strHex);
 
@@ -271,16 +270,8 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
     
-    if(algo == ALGO_EQUIHASH)
-    {
-        if (block.auxpowequihash)
-            result.pushKV("auxpow", AuxpowToJSON(*block.auxpowequihash));
-    }
-    else
-    {
-        if (block.auxpowdefault)
-            result.pushKV("auxpow", AuxpowToJSON(*block.auxpowdefault, algo));
-    }
+    if (block.auxpow)
+        result.pushKV("auxpow", AuxpowToJSON(*block.auxpow, algo));
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());

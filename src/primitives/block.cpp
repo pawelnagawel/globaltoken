@@ -15,28 +15,15 @@
 #include <tinyformat.h>
 #include <utilstrencodings.h>
 
-void CBlockHeader::SetAuxpow (CDefaultAuxPow* apow)
+void CBlockHeader::SetAuxpow (CAuxPow* apow)
 {
     if (apow)
     {
-        auxpowdefault.reset(apow);
+        auxpow.reset(apow);
         SetAuxpowVersion(true);
     } else
     {
-        auxpowdefault.reset();
-        SetAuxpowVersion(false);
-    }
-}
-
-void CBlockHeader::SetAuxpow (CEquihashAuxPow* apow)
-{
-    if (apow)
-    {
-        auxpowequihash.reset(apow);
-        SetAuxpowVersion(true);
-    } else
-    {
-        auxpowequihash.reset();
+        auxpow.reset();
         SetAuxpowVersion(false);
     }
 }

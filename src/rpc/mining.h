@@ -20,6 +20,7 @@ unsigned int ParseConfirmTarget(const UniValue& value);
 /* Creation and submission of auxpow blocks.  */
 UniValue AuxMiningCreateBlock(const CScript& scriptPubKey);
 bool AuxMiningSubmitBlock(const std::string& hashHex,
-                          const std::string& auxpowHex);
+                          const std::string& auxpowHex,
+                          const int nAuxPoWVersion);
 
 #endif

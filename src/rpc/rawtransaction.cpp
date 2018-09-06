@@ -66,6 +66,32 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
     }
 }
 
+void POSTxToJSON(const CPOSTransaction& tx, const uint256 hashBlock, UniValue& entry, const std::string hextx)
+{
+    // Call into TxToUniv() in bitcoin-common to decode the transaction hex.
+    //
+    // Blockchain contextual information (confirmations and blocktime) is not
+    // available to code in bitcoin-common, so we query them here and push the
+    // data into the returned UniValue.
+    POSTxToUniv(tx, uint256(), entry, RPCSerializationFlags());
+    entry.pushKV("hex", hextx);
+
+    if (!hashBlock.IsNull()) {
+        entry.pushKV("blockhash", hashBlock.GetHex());
+        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+        if (mi != mapBlockIndex.end() && (*mi).second) {
+            CBlockIndex* pindex = (*mi).second;
+            if (chainActive.Contains(pindex)) {
+                entry.pushKV("confirmations", 1 + chainActive.Height() - pindex->nHeight);
+                entry.pushKV("time", pindex->GetBlockTime());
+                entry.pushKV("blocktime", pindex->GetBlockTime());
+            }
+            else
+                entry.pushKV("confirmations", 0);
+        }
+    }
+}
+
 UniValue getrawtransaction(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)

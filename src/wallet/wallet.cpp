@@ -66,6 +66,8 @@ CFeeRate CWallet::fallbackFee = CFeeRate(DEFAULT_FALLBACK_FEE);
 
 CFeeRate CWallet::m_discard_rate = CFeeRate(DEFAULT_DISCARD_FEE);
 
+const uint256 CMerkleTx::ABANDON_HASH(uint256S("0000000000000000000000000000000000000000000000000000000000000001"));
+
 /** @defgroup mapWallet
  *
  * @{
@@ -4242,6 +4244,55 @@ CWalletKey::CWalletKey(int64_t nExpires)
     nTimeExpires = nExpires;
 }
 
+void CMerkleTx::SetMerkleBranch(const CBlockIndex* pindex, int posInBlock)
+{
+    // Update the tx's hashBlock
+    hashBlock = pindex->GetBlockHash();
+
+    // set the position of the transaction in the block
+    nIndex = posInBlock;
+}
+
+int CMerkleTx::GetDepthInMainChain(const CBlockIndex* &pindexRet, bool enableIX) const
+{
+    int nResult;
+    
+    if (hashUnset())
+        nResult = 0;
+    else
+    {
+        AssertLockHeld(cs_main);
+
+        // Find the block it claims to be in
+        BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+        if (mi == mapBlockIndex.end())
+            nResult = 0;
+        else
+        {
+            CBlockIndex* pindex = (*mi).second;
+            if (!pindex || !chainActive.Contains(pindex))
+                nResult = 0;
+            else
+            {
+                pindexRet = pindex;
+                nResult = ((nIndex == -1) ? (-1) : 1) * (chainActive.Height() - pindex->nHeight + 1);
+            }
+        }
+    
+    }
+    
+    if(enableIX && nResult < 6 && instantsend.IsLockedInstantSendTransaction(GetHash()))
+        return nInstantSendDepth + nResult;
+    
+    return nResult;
+}
+
+int CMerkleTx::GetBlocksToMaturity() const
+{
+    if (!IsCoinBase())
+        return 0;
+    return std::max(0, (COINBASE_MATURITY+1) - GetDepthInMainChain(false));
+}
 
 bool CWalletTx::AcceptToMemoryPool(const CAmount& nAbsurdFee, CValidationState& state)
 {

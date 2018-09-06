@@ -13,6 +13,7 @@
 #include <uint256.h>
 
 /** 2 Different Block classes for Equihash & normal blocks.
+ *  + 2 classes for auxpow pos parent blocks.
  */
 class CDefaultBlockHeader : public CPureBlockVersion
 {
@@ -213,6 +214,213 @@ public:
     CEquihashBlockHeader GetEquihashBlockHeader() const
     {
         CEquihashBlockHeader block;
+        block.nVersion       = nVersion;
+        block.hashPrevBlock  = hashPrevBlock;
+        block.hashMerkleRoot = hashMerkleRoot;
+        block.hashReserved   = hashReserved;
+        block.nTime          = nTime;
+        block.nBits          = nBits;
+        block.nNonce         = nNonce;
+        block.nSolution      = nSolution;
+        return block;
+    }
+
+    std::string ToString() const;
+};
+
+class CPOSDefaultBlockHeader : public CPureBlockVersion
+{
+public:
+    // header
+    uint256 hashPrevBlock;
+    uint256 hashMerkleRoot;
+    uint32_t nTime;
+    uint32_t nBits;
+    uint32_t nNonce;
+
+    CPOSDefaultBlockHeader()
+    {
+        SetNull();
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*(CPureBlockVersion*)this);
+        READWRITE(hashPrevBlock);
+        READWRITE(hashMerkleRoot);
+        READWRITE(nTime);
+        READWRITE(nBits);
+        READWRITE(nNonce);
+    }
+
+    void SetNull()
+    {
+        CPureBlockVersion::SetNull();
+        hashPrevBlock.SetNull();
+        hashMerkleRoot.SetNull();
+        nTime = 0;
+        nBits = 0;
+        nNonce = 0;
+    }
+
+    bool IsNull() const
+    {
+        return (nBits == 0);
+    }
+
+    int64_t GetBlockTime() const
+    {
+        return (int64_t)nTime;
+    }
+};
+
+
+class CPOSDefaultBlock : public CPOSDefaultBlockHeader
+{
+public:
+    // network and disk
+    std::vector<CPOSTransactionRef> vtx;
+
+    // memory only
+    mutable bool fChecked;
+
+    CPOSDefaultBlock()
+    {
+        SetNull();
+    }
+
+    CPOSDefaultBlock(const CPOSDefaultBlockHeader &header)
+    {
+        SetNull();
+        *(static_cast<CPOSDefaultBlockHeader*>(this)) = header;
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*static_cast<CPOSDefaultBlockHeader*>(this));
+        READWRITE(vtx);
+    }
+
+    void SetNull()
+    {
+        CPOSDefaultBlockHeader::SetNull();
+        vtx.clear();
+        fChecked = false;
+    }
+
+    CPOSDefaultBlockHeader GetDefaultBlockHeader() const
+    {
+        CPOSDefaultBlockHeader block;
+        block.nVersion       = nVersion;
+        block.hashPrevBlock  = hashPrevBlock;
+        block.hashMerkleRoot = hashMerkleRoot;
+        block.nTime          = nTime;
+        block.nBits          = nBits;
+        block.nNonce         = nNonce;
+        return block;
+    }
+    
+    std::string ToString() const;
+};
+
+class CPOSEquihashBlockHeader : public CPureBlockVersion
+{
+public:
+    // header
+    static const size_t HEADER_SIZE=4+32+32+32+4+4+32; // excluding Equihash solution
+    uint256 hashPrevBlock;
+    uint256 hashMerkleRoot;
+    uint256 hashReserved;
+    uint32_t nTime;
+    uint32_t nBits;
+    uint256 nNonce;
+    std::vector<unsigned char> nSolution; // Equihash solution.
+
+    CPOSEquihashBlockHeader()
+    {
+        SetNull();
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*(CPureBlockVersion*)this);
+        READWRITE(hashPrevBlock);
+        READWRITE(hashMerkleRoot);
+        READWRITE(hashReserved);
+        READWRITE(nTime);
+        READWRITE(nBits);
+        READWRITE(nNonce);
+        READWRITE(nSolution);
+    }
+
+    void SetNull()
+    {
+        CPureBlockVersion::SetNull();
+        hashPrevBlock.SetNull();
+        hashMerkleRoot.SetNull();
+        hashReserved.SetNull();
+        nTime = 0;
+        nBits = 0;
+        nNonce.SetNull();
+        nSolution.clear();
+    }
+
+    bool IsNull() const
+    {
+        return (nBits == 0);
+    }
+
+    int64_t GetBlockTime() const
+    {
+        return (int64_t)nTime;
+    }
+};
+
+
+class CPOSEquihashBlock : public CPOSEquihashBlockHeader
+{
+public:
+    // network and disk
+    std::vector<CPOSTransactionRef> vtx;
+
+    // memory only
+    mutable bool fChecked;
+
+    CPOSEquihashBlock()
+    {
+        SetNull();
+    }
+
+    CPOSEquihashBlock(const CPOSEquihashBlockHeader &header)
+    {
+        SetNull();
+        *(static_cast<CPOSEquihashBlockHeader*>(this)) = header;
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*static_cast<CPOSEquihashBlockHeader*>(this));
+        READWRITE(vtx);
+    }
+
+    void SetNull()
+    {
+        CPOSEquihashBlockHeader::SetNull();
+        vtx.clear();
+        fChecked = false;
+    }
+
+    CPOSEquihashBlockHeader GetEquihashBlockHeader() const
+    {
+        CPOSEquihashBlockHeader block;
         block.nVersion       = nVersion;
         block.hashPrevBlock  = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;
