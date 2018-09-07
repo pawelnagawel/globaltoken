@@ -103,25 +103,25 @@ namespace
 {
 UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
 {
-    uint32_t nAuxpowVersion = ((auxpow.nVersion & AUXPOW_STAKE_FLAG) || (auxpow.nVersion & AUXPOW_EQUIHASH_FLAG)) ? 2 : 1;
+    uint32_t nAuxpowVersion = ((auxpow.getVersion() & AUXPOW_STAKE_FLAG) || (auxpow.getVersion() & AUXPOW_EQUIHASH_FLAG)) ? 2 : 1;
     
-    bool fIsStake = auxpow.nVersion & AUXPOW_STAKE_FLAG;
-    bool fIsEquihash = auxpow.nVersion & AUXPOW_EQUIHASH_FLAG;
+    bool fIsStake = auxpow.getVersion() & AUXPOW_STAKE_FLAG;
+    bool fIsEquihash = auxpow.getVersion() & AUXPOW_EQUIHASH_FLAG;
     const uint256 parentBlockHash = fIsEquihash ? auxpow.getEquihashParentBlock().GetHash() : auxpow.getDefaultParentBlock().GetHash();
     std::string hexTX;
     
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
     
     if(fIsStake)
-        ssTx << *auxpow.coinbasePOSTx.tx;
+        ssTx << *auxpow.getPOSTransaction().tx;
     else
-        ssTx << *auxpow.coinbaseTx.tx;
+        ssTx << *auxpow.getTransaction().tx;
     
     hexTX = HexStr(ssTx.begin(), ssTx.end());
     
     UniValue result(UniValue::VOBJ);
-    result.pushKV("rawversion", (int64_t)auxpow.nVersion);
-    result.pushKV("auxpow_version", nAuxpowVersion);
+    result.pushKV("rawversion", (int64_t)auxpow.getVersion());
+    result.pushKV("auxpow_version", (int64_t)nAuxpowVersion);
     result.pushKV("auxpow_isstake", fIsStake);
     result.pushKV("auxpow_isequihash", fIsEquihash);
     result.pushKV("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex());
@@ -132,22 +132,22 @@ UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
     {
         UniValue tx(UniValue::VOBJ);
         tx.pushKV("hex", hexTX);
-        POSTxToJSON(*auxpow.coinbasePOSTx.tx, parentBlockHash, tx, hexTX);
+        POSTxToJSON(*auxpow.getPOSTransaction().tx, parentBlockHash, tx, hexTX);
         result.pushKV("tx", tx);
     }
     else
     {
         UniValue tx(UniValue::VOBJ);
         tx.pushKV("hex", hexTX);
-        TxToJSON(*auxpow.coinbaseTx.tx, parentBlockHash, tx);
+        TxToJSON(*auxpow.getTransaction().tx, parentBlockHash, tx);
         result.pushKV("tx", tx);
     }
 
-    result.pushKV("index", fIsStake ? auxpow.coinbasePOSTx.nIndex : auxpow.coinbaseTx.nIndex);
-    result.pushKV("chainindex", auxpow.nChainIndex);
+    result.pushKV("index", fIsStake ? auxpow.getPOSTransaction().nIndex : auxpow.getTransaction().nIndex);
+    result.pushKV("chainindex", auxpow.GetChainIndex());
 
     {
-        std::vector<uint256> vMerkleBranch = fIsStake ? auxpow.coinbasePOSTx.vMerkleBranch : auxpow.coinbaseTx.vMerkleBranch;
+        std::vector<uint256> vMerkleBranch = fIsStake ? auxpow.getPOSTransaction().vMerkleBranch : auxpow.getTransaction().vMerkleBranch;
         UniValue branch(UniValue::VARR);
         for (const auto& node : vMerkleBranch)
             branch.push_back(node.GetHex());
@@ -181,7 +181,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = blockindex->GetAlgo();
     CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
-    bool isauxpow = (header.auxpowequihash || header.auxpowdefault);
+    bool isauxpow = header.auxpow && (header.auxpow != nullptr);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
@@ -226,7 +226,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = block.GetAlgo();
-    bool isauxpow = (block.auxpowequihash || block.auxpowdefault);
+    bool isauxpow = block.auxpow && (block.auxpow != nullptr);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);

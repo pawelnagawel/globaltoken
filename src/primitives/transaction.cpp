@@ -134,3 +134,82 @@ std::string CTransaction::ToString() const
         str += "    " + tx_out.ToString() + "\n";
     return str;
 }
+
+/** AUXPOW Transaction POS stuff */
+CMutablePOSTransaction::CMutablePOSTransaction() : nVersion(CTransaction::CURRENT_VERSION), nTime(0), nLockTime(0) {}
+CMutablePOSTransaction::CMutablePOSTransaction(const CPOSTransaction& tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nTime(tx.nTime), nLockTime(tx.nLockTime) {}
+
+uint256 CMutablePOSTransaction::GetHash() const
+{
+    return SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
+}
+
+std::string CMutablePOSTransaction::ToString() const
+{
+    std::string str;
+    str += strprintf("CMutablePOSTransaction(hash=%s, ver=%d, nTime=%u, vin.size=%u, vout.size=%u, nLockTime=%u)\n",
+        GetHash().ToString().substr(0,10),
+        nVersion,
+        nTime,
+        vin.size(),
+        vout.size(),
+        nLockTime);
+    for (unsigned int i = 0; i < vin.size(); i++)
+        str += "    " + vin[i].ToString() + "\n";
+    for (unsigned int i = 0; i < vout.size(); i++)
+        str += "    " + vout[i].ToString() + "\n";
+    return str;
+}
+
+uint256 CPOSTransaction::ComputeHash() const
+{
+    return SerializeHash(*this, SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
+}
+
+uint256 CPOSTransaction::GetWitnessHash() const
+{
+    if (!HasWitness()) {
+        return GetHash();
+    }
+    return SerializeHash(*this, SER_GETHASH, 0);
+}
+
+/* For backward compatibility, the hash is initialized to 0. TODO: remove the need for this default constructor entirely. */
+CPOSTransaction::CPOSTransaction() : vin(), vout(), nVersion(CPOSTransaction::CURRENT_VERSION), nTime(0), nLockTime(0), hash() {}
+CPOSTransaction::CPOSTransaction(const CMutablePOSTransaction &tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nTime(tx.nTime), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
+CPOSTransaction::CPOSTransaction(CMutablePOSTransaction &&tx) : vin(std::move(tx.vin)), vout(std::move(tx.vout)), nVersion(tx.nVersion), nTime(tx.nTime), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
+
+CAmount CPOSTransaction::GetValueOut() const
+{
+    CAmount nValueOut = 0;
+    for (const auto& tx_out : vout) {
+        nValueOut += tx_out.nValue;
+        if (!MoneyRange(tx_out.nValue) || !MoneyRange(nValueOut))
+            throw std::runtime_error(std::string(__func__) + ": value out of range");
+    }
+    return nValueOut;
+}
+
+unsigned int CPOSTransaction::GetTotalSize() const
+{
+    return ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION);
+}
+
+std::string CPOSTransaction::ToString() const
+{
+    std::string str;
+    str += strprintf("CPOSTransaction(hash=%s, ver=%d, nTime=%u, vin.size=%u, vout.size=%u, nLockTime=%u)\n",
+        GetHash().ToString().substr(0,10),
+        nVersion,
+        nTime,
+        vin.size(),
+        vout.size(),
+        nLockTime);
+    for (const auto& tx_in : vin)
+        str += "    " + tx_in.ToString() + "\n";
+    for (const auto& tx_in : vin)
+        str += "    " + tx_in.scriptWitness.ToString() + "\n";
+    for (const auto& tx_out : vout)
+        str += "    " + tx_out.ToString() + "\n";
+    return str;
+}

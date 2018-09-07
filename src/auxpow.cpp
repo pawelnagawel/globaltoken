@@ -26,12 +26,12 @@ void CBaseMerkleTx::InitMerkleBranch(const CBlock& block, int posInBlock)
     vMerkleBranch = BlockMerkleBranch (block, nIndex);
 }
 
-bool CAuxPow::isAuxPowEquihash()
+bool CAuxPow::isAuxPowEquihash() const
 {
     return nVersion & AUXPOW_EQUIHASH_FLAG;
 }
 
-bool CAuxPow::isAuxPowPOS()
+bool CAuxPow::isAuxPowPOS() const
 {
     return nVersion & AUXPOW_STAKE_FLAG;
 }
@@ -40,9 +40,9 @@ bool
 CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
                 const Consensus::Params& params) const
 {
-    bool fSameChainId = isAuxPowEquihash ? (getEquihashParentBlock().GetChainId () == nChainId) : (getDefaultParentBlock().GetChainId () == nChainId);
+    bool fSameChainId = isAuxPowEquihash() ? (getEquihashParentBlock().GetChainId () == nChainId) : (getDefaultParentBlock().GetChainId () == nChainId);
     
-    int nIndex = isAuxPowPOS ? coinbasePOSTx.nIndex : coinbaseTx.nIndex;
+    int nIndex = isAuxPowPOS() ? coinbasePOSTx.nIndex : coinbaseTx.nIndex;
     if (nIndex != 0)
         return error("AuxPow is not a generate");
 
@@ -55,13 +55,13 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
     // Check that the chain merkle root is in the coinbase
     const uint256 nRootHash
       = CheckMerkleBranch (hashAuxBlock, vChainMerkleBranch, nChainIndex);
-    valtype vchRootHash(nRootHash.begin (), nRootHash.end ());
+    std::vector<unsigned char> vchRootHash(nRootHash.begin (), nRootHash.end ());
     std::reverse (vchRootHash.begin (), vchRootHash.end ()); // correct endian
 
-    const uint256 blockMerkleRoot = isAuxPowEquihash ? getEquihashParentBlock().hashMerkleRoot : getDefaultParentBlock().hashMerkleRoot;
+    const uint256 blockMerkleRoot = isAuxPowEquihash() ? getEquihashParentBlock().hashMerkleRoot : getDefaultParentBlock().hashMerkleRoot;
     
-    const std::vector<uint256> vMerkleBranch = isAuxPowPOS ? coinbasePOSTx.vMerkleBranch : coinbaseTx.vMerkleBranch;
-    uint256 coinbaseTxHash = isAuxPowPOS ? coinbasePOSTx.GetHash() : coinbaseTx.GetHash();
+    const std::vector<uint256> vMerkleBranch = isAuxPowPOS() ? coinbasePOSTx.vMerkleBranch : coinbaseTx.vMerkleBranch;
+    uint256 coinbaseTxHash = isAuxPowPOS() ? coinbasePOSTx.GetHash() : coinbaseTx.GetHash();
     
     // Check that we are in the parent block merkle tree
     if (CheckMerkleBranch(coinbaseTxHash, vMerkleBranch,
@@ -200,7 +200,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           parent.nVersion = 1;
           parent.vtx.resize (1);
           parent.vtx[0] = coinbaseRef;
-          parent.hashMerkleRoot = BlockMerkleRoot (parent);
+          parent.hashMerkleRoot = EquihashPOSBlockMerkleRoot (parent);
           
           /* Convert parent Block now into CDefaultBlock */
           CEquihashBlockHeader equihashblock;
@@ -239,7 +239,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           parent.nVersion = 1;
           parent.vtx.resize (1);
           parent.vtx[0] = coinbaseRef;
-          parent.hashMerkleRoot = BlockMerkleRoot (parent);
+          parent.hashMerkleRoot = EquihashBlockMerkleRoot (parent);
 
           /* Construct the auxpow object.  */
           header.SetAuxpow (new CAuxPow (coinbaseRef));
@@ -248,7 +248,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           header.auxpow->nChainIndex = 0;
           assert (header.auxpow->coinbaseTx.vMerkleBranch.empty ());
           header.auxpow->coinbaseTx.nIndex = 0;
-          header.auxpow->defaultparentBlock = parent;
+          header.auxpow->equihashparentBlock = parent;
       }
   }
   else
@@ -276,7 +276,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           parent.nVersion = 1;
           parent.vtx.resize (1);
           parent.vtx[0] = coinbaseRef;
-          parent.hashMerkleRoot = BlockMerkleRoot (parent);
+          parent.hashMerkleRoot = DefaultPOSBlockMerkleRoot (parent);
           
           /* Convert parent Block now into CDefaultBlock */
           CDefaultBlockHeader defaultblock;
@@ -290,7 +290,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           header.auxpow->nChainIndex = 0;
           assert (header.auxpow->coinbasePOSTx.vMerkleBranch.empty ());
           header.auxpow->coinbasePOSTx.nIndex = 0;
-          header.auxpow->getDefaultParentBlock() = defaultblock;
+          header.auxpow->defaultparentBlock = defaultblock;
       }
       else
       {
@@ -315,7 +315,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           parent.nVersion = 1;
           parent.vtx.resize (1);
           parent.vtx[0] = coinbaseRef;
-          parent.hashMerkleRoot = BlockMerkleRoot (parent);
+          parent.hashMerkleRoot = DefaultBlockMerkleRoot (parent);
 
           /* Construct the auxpow object.  */
           header.SetAuxpow (new CAuxPow (coinbaseRef));
@@ -324,7 +324,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           header.auxpow->nChainIndex = 0;
           assert (header.auxpow->coinbaseTx.vMerkleBranch.empty ());
           header.auxpow->coinbaseTx.nIndex = 0;
-          header.auxpow->getDefaultParentBlock() = parent;
+          header.auxpow->defaultparentBlock = parent;
       }
   }
 }

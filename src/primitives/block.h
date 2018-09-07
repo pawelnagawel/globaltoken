@@ -52,8 +52,7 @@ public:
     void SetNull()
     {
         CPureBlockHeader::SetNull();
-        auxpowdefault.reset();
-        auxpowequihash.reset();
+        auxpow.reset();
     }
 
     /**

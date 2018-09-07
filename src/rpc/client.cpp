@@ -96,7 +96,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "listunspent", 2, "addresses" },
     { "listunspent", 3, "include_unsafe" },
     { "listunspent", 4, "query_options" },
-    { "getauxblock", 2, "auxpowversion"}
+    { "getauxblock", 2, "auxpowversion"},
     { "getblock", 1, "verbosity" },
     { "getblock", 1, "verbose" },
     { "getblockheader", 1, "verbose" },
@@ -116,7 +116,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "signrawtransactionwithwallet", 1, "prevtxs" },
     { "sendrawtransaction", 1, "allowhighfees" },
     { "sendrawtransaction", 2, "instantsend" },
-    { "submitauxblock", 2, "auxpowversion"}
+    { "submitauxblock", 2, "auxpowversion"},
     { "combinerawtransaction", 0, "txs" },
     { "fundrawtransaction", 1, "options" },
     { "fundrawtransaction", 2, "iswitness" },

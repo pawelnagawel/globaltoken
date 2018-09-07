@@ -155,11 +155,11 @@ CAuxpowBuilder::get (const CTransactionRef tx) const
 {
   LOCK(cs_main);
   CAuxPow res(tx);
-  res.InitMerkleBranch (defaultparentBlock, 0);
+  res.coinbaseTx.InitMerkleBranch (defaultparentBlock, 0);
 
-  res.vChainMerkleBranch = auxpowChainMerkleBranch;
-  res.nChainIndex = auxpowChainIndex;
-  res.defaultparentBlock = defaultparentBlock;
+  res.vChainMerkleBranch     = auxpowChainMerkleBranch;
+  res.nChainIndex            = auxpowChainIndex;
+  res.defaultparentBlock     = defaultparentBlock.GetDefaultBlockHeader();
 
   return res;
 }
@@ -339,6 +339,7 @@ mineBlock (CBlockHeader& block, bool ok, int nBits = -1)
   target.SetCompact (nBits);
 
   block.nNonce = 0;
+  const uint8_t algo = block.GetAlgo();
   while (true)
     {
       const bool nowOk = (UintToArith256 (block.GetHash ()) <= target);
@@ -349,9 +350,9 @@ mineBlock (CBlockHeader& block, bool ok, int nBits = -1)
     }
 
   if (ok)
-    BOOST_CHECK (CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus()));
+    BOOST_CHECK (CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus(), algo));
   else
-    BOOST_CHECK (!CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus()));
+    BOOST_CHECK (!CheckProofOfWork (block.GetHash (), nBits, Params().GetConsensus(), algo));
 }
 
 BOOST_AUTO_TEST_CASE (auxpow_pow)

@@ -423,12 +423,12 @@ public:
         return (vin.size() == 1 && vin[0].prevout.IsNull());
     }
 
-    friend bool operator==(const CTransaction& a, const CTransaction& b)
+    friend bool operator==(const CPOSTransaction& a, const CPOSTransaction& b)
     {
         return a.hash == b.hash;
     }
 
-    friend bool operator!=(const CTransaction& a, const CTransaction& b)
+    friend bool operator!=(const CPOSTransaction& a, const CPOSTransaction& b)
     {
         return a.hash != b.hash;
     }
@@ -596,7 +596,7 @@ struct CMutableTransaction
     }
 };
 
-/** A mutable version of CTransaction. */
+/** A mutable version of CPOSTransaction. */
 struct CMutablePOSTransaction
 {
     uint32_t nTime;
@@ -605,8 +605,8 @@ struct CMutablePOSTransaction
     int32_t nVersion;
     uint32_t nLockTime;
 
-    CMutableTransaction();
-    CMutableTransaction(const CTransaction& tx);
+    CMutablePOSTransaction();
+    CMutablePOSTransaction(const CPOSTransaction& tx);
 
     template <typename Stream>
     inline void Serialize(Stream& s) const {
@@ -620,17 +620,17 @@ struct CMutablePOSTransaction
     }
 
     template <typename Stream>
-    CMutableTransaction(deserialize_type, Stream& s) {
+    CMutablePOSTransaction(deserialize_type, Stream& s) {
         Unserialize(s);
     }
 
-    /** Compute the hash of this CMutableTransaction. This is computed on the
+    /** Compute the hash of this CMutablePOSTransaction. This is computed on the
      * fly, as opposed to GetHash() in CTransaction, which uses a cached result.
      */
     uint256 GetHash() const;
     std::string ToString() const;
 
-    friend bool operator==(const CMutableTransaction& a, const CMutableTransaction& b)
+    friend bool operator==(const CMutablePOSTransaction& a, const CMutablePOSTransaction& b)
     {
         return a.GetHash() == b.GetHash();
     }

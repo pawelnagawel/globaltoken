@@ -1002,7 +1002,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     UniValue transactions(UniValue::VARR);
     UniValue txCoinbase = NullUniValue;
     UniValue masternodeObj(UniValue::VOBJ);
-    UniValue treasuryObj(UniValue::VOBJ) = GetTreasuryOutput(pblock, pindexPrev->nHeight + 1);
+    UniValue treasuryObj(UniValue::VOBJ);
+    treasuryObj = GetTreasuryOutput(*pblock, pindexPrev->nHeight + 1);
     
     if(pblock->txoutMasternode != CTxOut()) {
         CTxDestination address;

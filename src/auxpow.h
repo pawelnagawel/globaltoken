@@ -158,7 +158,7 @@ class CAuxPow
 {
 
 /* Public for the unit tests.  */
-private:
+public:
 
   /** The Auxpow Version */
   uint32_t nVersion;
@@ -167,7 +167,7 @@ private:
    * The parent block's coinbase tx, which is used to link the auxpow from
    * the tx input to the parent block header.
    */
-  CMerkleTx coinbaseTx;
+  CBaseMerkleTx coinbaseTx;
 
   /** The merkle branch connecting the aux block to our coinbase.  */
   std::vector<uint256> vChainMerkleBranch;
@@ -181,14 +181,6 @@ private:
   
   /** CPOSMerkleTx to save the POS coinbase tx. */
   CPOSMerkleTx            coinbasePOSTx;
-  
-  /**
-   * Check a merkle branch.  This used to be in CBlock, but was removed
-   * upstream.  Thus include it here now.
-   */
-  static uint256 CheckMerkleBranch (uint256 hash,
-                                    const std::vector<uint256>& vMerkleBranch,
-                                    int nIndex);
 
 public:
 
@@ -200,6 +192,11 @@ public:
   /* Prevent accidental conversion.  */
   inline explicit CAuxPow (CPOSTransactionRef txIn)
     : coinbasePOSTx (txIn)
+  {}
+  
+  /* Prevent accidental conversion.  */
+  inline explicit CAuxPow ()
+    : coinbaseTx(), coinbasePOSTx ()
   {}
 
   ADD_SERIALIZE_METHODS;
@@ -274,6 +271,49 @@ public:
   {
     return equihashparentBlock;
   }
+  
+  /* get the version of auxpow. */
+  inline const uint32_t
+  getVersion() const
+  {
+    return nVersion;
+  }
+  
+  /* get the coinbase POSTransaction of auxpow. */
+  inline const CPOSMerkleTx&
+  getPOSTransaction() const
+  {
+    return coinbasePOSTx;
+  }
+  
+  /* get the coinbase Transaction of auxpow. */
+  inline const CBaseMerkleTx&
+  getTransaction() const
+  {
+    return coinbaseTx;
+  }
+  
+  /* get the chain merkle branch of auxpow. */
+  inline const std::vector<uint256>
+  GetChainMerkleBranch() const
+  {
+    return vChainMerkleBranch;
+  }
+  
+  /* get the chain index of auxpow. */
+  inline const int
+  GetChainIndex() const
+  {
+    return nChainIndex;
+  }
+  
+  /**
+   * Check a merkle branch.  This used to be in CBlock, but was removed
+   * upstream.  Thus include it here now.
+   */
+  static uint256 CheckMerkleBranch (uint256 hash,
+                                    const std::vector<uint256>& vMerkleBranch,
+                                    int nIndex);
 
   /**
    * Calculate the expected index in the merkle tree.  This is also used
