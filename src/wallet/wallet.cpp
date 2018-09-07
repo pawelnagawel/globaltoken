@@ -3718,6 +3718,12 @@ bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpoi
     ExtractDestination(pubScript, address1);
     
     auto masternodekeyid = GetKeyForDestination(*this, address1);
+    
+    if(boost::get<CKeyID>(&address1) != masternodekeyid)
+    {
+        LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Unsupported keyID! Globaltoken supports only the legacy-address format for masternodes!\n");
+        return false;
+    }
 
     if (masternodekeyid.IsNull()) {
         LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Address does not refer to a key\n");
