@@ -295,7 +295,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);
                 
                 if ((pindexNew->GetAlgo() == ALGO_EQUIHASH || pindexNew->GetAlgo() == ALGO_ZHASH) && !equihashvalidator) {
-                    return error("%s: %s solution invalid at: %s", __func__, GetAlgoName(nAlgo), pindexNew->ToString());
+                    return error("%s: %s solution invalid at: %s", __func__, GetAlgoName(pindexNew->GetAlgo()), pindexNew->ToString());
                 }
 
                 if (!checkresult)

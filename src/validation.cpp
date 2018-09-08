@@ -3167,7 +3167,7 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     
     if (fCheckPOW && (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)) 
     {
-        const size_t sol_size = consensusParams.EquihashSolutionWidth(nAlgo);
+        const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
         if(block.nSolution.size() != sol_size) {
             return state.DoS(
                 100, error("CheckBlockHeader(): %s solution has invalid size have %d need %d",
