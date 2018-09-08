@@ -185,10 +185,11 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params)
+bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, bool fisZhash)
 {
-    unsigned int n = params.EquihashN();
-    unsigned int k = params.EquihashK();
+    // if fisZhash is true, this is a Zhash Block, otherwhise Equihash.
+    unsigned int n = fisZhash ? params.ZhashN() : params.EquihashN();
+    unsigned int k = fisZhash ? params.ZhashK() : params.EquihashK();
 
     // Hash state
     crypto_generichash_blake2b_state state;
@@ -216,7 +217,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
 {
     CEquihashBlockHeader pequihashblock;
     pequihashblock = pblock->GetEquihashBlockHeader();
-    return CheckEquihashSolution(&pequihashblock, params);
+    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
@@ -270,12 +271,12 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         
         if(hardfork)
         {
-            if(nAlgo == ALGO_EQUIHASH)
+            if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
             {
                 // Check Equihash solution
                 if (!CheckEquihashSolution(&block, Params())) {
                     ehsolutionvalid = false;
-                    return error("%s: non-AUX proof of work : bad Equihash solution", __func__);
+                    return error("%s: non-AUX proof of work : bad %s solution", __func__, GetAlgoName(nAlgo));
                 }
                 
                 // Check the header
@@ -312,7 +313,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     if(!hardfork)
         return error("%s : Found AuxPOW! - AuxPOW not valid yet, It will be activated with the Hardfork.", __func__);
 
-    if(nAlgo == ALGO_EQUIHASH)
+    if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
     {
         if (!block.IsAuxpow())
             return error("%s : auxpow on block with non-auxpow version", __func__);
@@ -327,9 +328,9 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
             return error("%s : AUX POW is not valid", __func__);
 
         // Check Equihash solution
-        if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params())) {
+        if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo == ALGO_ZHASH)) {
             ehsolutionvalid = false;
-            return error("%s: AUX proof of work - Equihash solution failed. (bad Equihash solution)", __func__);
+            return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
         }
         
         // Check the header

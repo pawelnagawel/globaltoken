@@ -248,7 +248,7 @@ public:
   inline uint256
   getParentBlockPoWHash (uint8_t nAlgo) const
   {
-    if(isAuxPowEquihash() && nAlgo == ALGO_EQUIHASH)
+    if(isAuxPowEquihash() && (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH))
         return getEquihashParentBlock().GetHash ();
     else
         return getDefaultParentBlock().GetPoWHash (nAlgo);

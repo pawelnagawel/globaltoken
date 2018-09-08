@@ -175,7 +175,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
   
-  if(header.GetAlgo() == ALGO_EQUIHASH && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG))
+  if((header.GetAlgo() == ALGO_EQUIHASH || header.GetAlgo() == ALGO_ZHASH) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG))
   {
       if(nAuxPowVersion & AUXPOW_STAKE_FLAG)
       {

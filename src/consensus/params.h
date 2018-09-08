@@ -101,7 +101,7 @@ struct Params {
     uint256 powLimit_PADIHASH;
     uint256 powLimit_JEONGHASH;
     uint256 powLimit_KECCAK;
-    uint256 powLimit_ARCTICHASH;
+    uint256 powLimit_ZHASH;
     uint256 powLimit_GLOBALHASH;
     uint256 powLimit_QUBIT;
     uint256 powLimit_SKEIN;

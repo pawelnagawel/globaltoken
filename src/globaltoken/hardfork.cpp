@@ -52,8 +52,8 @@ arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusPa
         return UintToArith256(consensusParams.powLimit_PADIHASH);
     else if (algo == ALGO_JEONGHASH)
         return UintToArith256(consensusParams.powLimit_JEONGHASH);
-    else if (algo == ALGO_ARCTICHASH)
-        return UintToArith256(consensusParams.powLimit_ARCTICHASH);
+    else if (algo == ALGO_ZHASH)
+        return UintToArith256(consensusParams.powLimit_ZHASH);
     else if (algo == ALGO_KECCAK)
         return UintToArith256(consensusParams.powLimit_KECCAK);
     else if (algo == ALGO_GLOBALHASH)

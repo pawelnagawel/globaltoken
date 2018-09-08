@@ -125,9 +125,9 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return HashKeccak(BEGIN(nVersion), END(nNonce));
         }
-        case ALGO_ARCTICHASH:
+        case ALGO_ZHASH:
         {
-            return ArcticHash(BEGIN(nVersion), END(nNonce));
+            return GetHash();
         }
         case ALGO_GLOBALHASH:
         {

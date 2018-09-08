@@ -47,7 +47,7 @@ uint256 CPureBlockHeader::GetPoWHash() const
 
 uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
 {
-    if(nAlgo == ALGO_EQUIHASH)
+    if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
     {
         CEquihashBlockHeader block;
         block = CPureBlockHeader::GetEquihashBlockHeader();
@@ -109,8 +109,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_JEONGHASH;
         case BLOCK_VERSION_KECCAK:
             return ALGO_KECCAK;
-        case BLOCK_VERSION_ARCTICHASH:
-            return ALGO_ARCTICHASH;
+        case BLOCK_VERSION_ZHASH:
+            return ALGO_ZHASH;
         case BLOCK_VERSION_GLOBALHASH:
             return ALGO_GLOBALHASH;
         case BLOCK_VERSION_GROESTL:

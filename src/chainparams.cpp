@@ -124,7 +124,7 @@ public:
         consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ARCTICHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_ZHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -186,9 +186,13 @@ public:
         nDefaultPort = 9319;
         nPruneAfterHeight = 750000;
         const size_t N = 200, K = 9;
+        const size_t ZN = 144, ZK = 5;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         nEquihashN = N;
         nEquihashK = K;
+        nZhashN = ZN;
+        nZhashK = ZK;
 
         genesis = CreateGenesisBlock(1480961109, 2864352084, 0x1d00ffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -550,7 +554,7 @@ public:
         consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ARCTICHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_ZHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -607,9 +611,13 @@ public:
         nDefaultPort = 19319;
         nPruneAfterHeight = 1000;
         const size_t N = 200, K = 9;  // Same as mainchain.
+        const size_t ZN = 144, ZK = 5;  // Same as mainchain.
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         nEquihashN = N;
         nEquihashK = K;
+        nZhashN = ZN;
+        nZhashK = ZK;
 
         genesis = CreateGenesisBlock(1480961109, 2864352084, 0x1d00ffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -964,7 +972,7 @@ public:
         consensus.powLimit_ASTRALHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_PADIHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ARCTICHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_ZHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
         consensus.powLimit_KECCAK = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -1005,9 +1013,13 @@ public:
         nDefaultPort = 20144;
         nPruneAfterHeight = 1000;
         const size_t N = 48, K = 5;
+        const size_t ZN = 96, ZK = 5;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         nEquihashN = N;
         nEquihashK = K;
+        nZhashN = ZN;
+        nZhashK = ZK;
 
         genesis = CreateGenesisBlock(1480961109, 2, 0x207fffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -1372,6 +1384,16 @@ std::string CChainParams::GetFoundersRewardAddressAtIndex(int i) const {
 CAmount CChainParams::GetTreasuryAmount(CAmount coinAmount) const
 {
     return ((coinAmount / 100) * consensus.nTreasuryAmount);
+}
+
+unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const
+{
+    assert(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH);
+    
+    if(nAlgo == ALGO_EQUIHASH)
+        return EhSolutionWidth(EquihashN(), EquihashK());
+    else if(nAlgo == ALGO_ZHASH)
+        return EhSolutionWidth(ZhashN(), ZhashK());
 }
 
 void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)

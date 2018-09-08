@@ -230,8 +230,8 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
     unsigned int nExtraNonce = 0;
     UniValue blockHashes(UniValue::VARR);
 	const CChainParams& params = Params();
-	unsigned int n = params.EquihashN();
-    unsigned int k = params.EquihashK();
+	unsigned int n;
+    unsigned int k;
     while (nHeight < nHeightEnd)
     {
         std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(Params()).CreateNewBlock(coinbaseScript->reserveScript, currentAlgo));
@@ -294,12 +294,14 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         }
 		if(IsHardForkActivated(pblock->nTime))
 		{
-			if(currentAlgo == ALGO_EQUIHASH)
+			if(currentAlgo == ALGO_EQUIHASH || currentAlgo == ALGO_ZHASH)
 			{
                 CEquihashBlock equihashblock = pblock->GetEquihashBlockHeader();
                 equihashblock.vtx = pblock->vtx;
 				nInnerLoopMask = nInnerLoopEquihashMask;
 				nInnerLoopCount = nInnerLoopEquihashCount;
+                n = ALGO_EQUIHASH ? params.EquihashN() : params.ZhashN();
+                k = ALGO_EQUIHASH ? params.EquihashK() : params.ZhashK();
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
 				EhInitialiseState(n, k, eh_state);
@@ -379,10 +381,10 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         if (nMaxTries == 0) {
             break;
         }
-        if (pblock->GetAlgo() == ALGO_EQUIHASH && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
+        if ((pblock->GetAlgo() == ALGO_EQUIHASH || pblock->GetAlgo() == ALGO_ZHASH) && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
-        if (pblock->GetAlgo() != ALGO_EQUIHASH && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
+        if (!(pblock->GetAlgo() == ALGO_EQUIHASH || pblock->GetAlgo() == ALGO_ZHASH) && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
@@ -492,7 +494,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
     obj.pushKV("difficulty_PADIHASH", (double)GetDifficulty(NULL, ALGO_PADIHASH));
     obj.pushKV("difficulty_JEONGHASH", (double)GetDifficulty(NULL, ALGO_JEONGHASH));
     obj.pushKV("difficulty_KECCAK", (double)GetDifficulty(NULL, ALGO_KECCAK));
-    obj.pushKV("difficulty_ARCTICHASH", (double)GetDifficulty(NULL, ALGO_ARCTICHASH));
+    obj.pushKV("difficulty_ZHASH", (double)GetDifficulty(NULL, ALGO_ZHASH));
     obj.pushKV("difficulty_GLOBALHASH", (double)GetDifficulty(NULL, ALGO_GLOBALHASH));
     obj.pushKV("difficulty_SKEIN", (double)GetDifficulty(NULL, ALGO_SKEIN));
     obj.pushKV("difficulty_GROESTL", (double)GetDifficulty(NULL, ALGO_GROESTL));
@@ -1565,7 +1567,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         nStart = GetTime();
 	    
         // If new block is an Equihash block, set the nNonce to null, because it is randomized by default.
-        if(currentAlgo == ALGO_EQUIHASH)
+        if(currentAlgo == ALGO_EQUIHASH || currentAlgo == ALGO_ZHASH)
             newBlock->block.nBigNonce.SetNull();
 
         // Finalise it by setting the version and building the merkle root

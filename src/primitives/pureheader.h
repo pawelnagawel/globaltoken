@@ -44,17 +44,17 @@ public:
         READWRITE(*(CPureBlockVersion*)this);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
-        if (GetAlgo() == ALGO_EQUIHASH) {
+        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH) {
             READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (GetAlgo() == ALGO_EQUIHASH)
+        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH)
         {
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(GetAlgo() != ALGO_EQUIHASH)
+        if(!(GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH))
         {
             READWRITE(nNonce);
         }
@@ -154,8 +154,8 @@ public:
             case ALGO_KECCAK:
                 nVersion |= BLOCK_VERSION_KECCAK;
                 break;
-            case ALGO_ARCTICHASH:
-                nVersion |= BLOCK_VERSION_ARCTICHASH;
+            case ALGO_ZHASH:
+                nVersion |= BLOCK_VERSION_ZHASH;
                 break;
             case ALGO_GLOBALHASH:
                 nVersion |= BLOCK_VERSION_GLOBALHASH;

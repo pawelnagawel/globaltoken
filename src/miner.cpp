@@ -220,7 +220,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
    arith_uint256 nonce;
-   if (IsHardForkActivated(pblock->nTime) && algo == ALGO_EQUIHASH) {
+   if (IsHardForkActivated(pblock->nTime) && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)) {
 	 // Randomise nonce for new block format.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)
