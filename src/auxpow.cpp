@@ -69,7 +69,7 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
           != blockMerkleRoot)
         return error("Aux POW merkle root incorrect");
 
-    const CScript script = coinbaseTx.tx->vin[0].scriptSig;
+    const CScript script = isAuxPowPOS() ? coinbasePOSTx.tx->vin[0].scriptSig : coinbaseTx.tx->vin[0].scriptSig;
 
     // Check that the same work is not submitted twice to our chain.
     //
