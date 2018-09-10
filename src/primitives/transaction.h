@@ -387,7 +387,7 @@ public:
 
     template <typename Stream>
     inline void Serialize(Stream& s) const {
-        SerializeTransaction(*this, s);
+        SerializePOSTransaction(*this, s);
     }
 
     /** This deserializing constructor is provided instead of an Unserialize method.

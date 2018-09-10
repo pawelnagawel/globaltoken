@@ -186,12 +186,12 @@ public:
 
   /* Prevent accidental conversion.  */
   inline explicit CAuxPow (CTransactionRef txIn)
-    : coinbaseTx (txIn)
+    : coinbaseTx (txIn), coinbasePOSTx()
   {}
   
   /* Prevent accidental conversion.  */
   inline explicit CAuxPow (CPOSTransactionRef txIn)
-    : coinbasePOSTx (txIn)
+    : coinbasePOSTx (txIn), coinbaseTx()
   {}
   
   /* Prevent accidental conversion.  */

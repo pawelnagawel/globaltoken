@@ -1620,22 +1620,26 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
     uint256 hash;
     hash.SetHex(hashHex);
     std::string auxpowstring;
+    uint32_t nVersion = CURRENT_AUXPOW_VERSION;
+
+    const std::map<uint256, CBlock*>::iterator mit = mapNewBlock.find(hash);
+    if (mit == mapNewBlock.end())
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
+    CBlock& block = *mit->second;
     
     if(nAuxPoWVersion == 1)
     {
+        if(block.GetAlgo() == ALGO_EQUIHASH || block.GetAlgo() == ALGO_ZHASH)
+            nVersion |= AUXPOW_EQUIHASH_FLAG;
+        
         CDataStream ssAuxPow(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
-        ssAuxPow << CURRENT_AUXPOW_VERSION;
+        ssAuxPow << nVersion;
         auxpowstring = HexStr(ssAuxPow.begin(), ssAuxPow.end()) + auxpowHex;
     }
     else
     {
         auxpowstring = auxpowHex;
     }
-
-    const std::map<uint256, CBlock*>::iterator mit = mapNewBlock.find(hash);
-    if (mit == mapNewBlock.end())
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
-    CBlock& block = *mit->second;
 
     const std::vector<unsigned char> vchAuxPow = ParseHex(auxpowstring);
     CDataStream ss(vchAuxPow, SER_GETHASH, PROTOCOL_VERSION);
