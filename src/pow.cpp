@@ -217,7 +217,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
 {
     CEquihashBlockHeader pequihashblock;
     pequihashblock = pblock->GetEquihashBlockHeader();
-    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH, pblock->GetAlgo() == ALGO_ZHASH ? strZhashPersonalize : strZcashDefaultPersonalize);
+    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH, pblock->GetAlgo() == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
@@ -338,7 +338,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         else
         {
             // Check Equihash solution
-            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), false, strZcashDefaultPersonalize)) {
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), false, DEFAULT_EQUIHASH_PERSONALIZE)) {
                 ehsolutionvalid = false;
                 return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
             }

@@ -304,7 +304,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 k = ALGO_EQUIHASH ? params.EquihashK() : params.ZhashK();
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
-                EhInitialiseState(n, k, eh_state, currentAlgo == ALGO_ZHASH ? strZhashPersonalize : strZcashDefaultPersonalize);
+                EhInitialiseState(n, k, eh_state, currentAlgo == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
 
 				// I = the block header minus nonce and solution.
 				CEquihashInput I{equihashblock};
