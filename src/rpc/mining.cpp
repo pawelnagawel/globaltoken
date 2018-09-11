@@ -1696,7 +1696,7 @@ UniValue createauxblock(const JSONRPCRequest& request)
 
 UniValue submitauxblock(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 2 || request.params.size() != 3)
+    if (request.fHelp || (request.params.size() != 2 && request.params.size() != 3))
         throw std::runtime_error(
             "submitauxblock <hash> <auxpow>\n"
             "\nsubmit a solved auxpow for a previously block created by 'createauxblock'.\n"

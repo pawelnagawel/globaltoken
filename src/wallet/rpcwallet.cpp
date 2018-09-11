@@ -3940,7 +3940,7 @@ UniValue getauxblock(const JSONRPCRequest& request)
     }
 
     if (request.fHelp
-          || (request.params.size() != 0 && (request.params.size() != 2 || request.params.size() != 3)))
+          || (request.params.size() == 1 || request.params.size() > 3))
         throw std::runtime_error(
             "getauxblock (hash auxpow)\n"
             "\nCreate or submit a merge-mined block.\n"

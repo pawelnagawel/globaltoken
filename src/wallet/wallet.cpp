@@ -3718,13 +3718,6 @@ bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpoi
     ExtractDestination(pubScript, address1);
     
     CKeyID masternodekeyid = GetKeyForDestination(*this, address1);
-    CKeyID masternodeallowedkeyid = *boost::get<CKeyID>(&address1);
-    
-    if(masternodeallowedkeyid != masternodekeyid)
-    {
-        LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Unsupported keyID! Globaltoken supports only the legacy-address format for masternodes!\n");
-        return false;
-    }
 
     if (masternodekeyid.IsNull()) {
         LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Address does not refer to a key\n");
@@ -3733,6 +3726,14 @@ bool CWallet::GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpoi
 
     if (!GetKey(masternodekeyid, keyRet)) {
         LogPrintf ("CWallet::GetOutpointAndKeysFromOutput -- Private key for address is not known\n");
+        return false;
+    }
+    
+    CTxDestination expectedScript = CTxDestination(keyRet.GetPubKey().GetID());
+    
+    if(expectedScript != address1)
+    {
+        LogPrintf("CWallet::GetOutpointAndKeysFromOutput -- Unsupported collateral-address format! Globaltoken supports only the legacy-address format for masternodes! (Expected output: %s | Got : %s)\n", EncodeDestination(expectedScript), EncodeDestination(address1));
         return false;
     }
 
