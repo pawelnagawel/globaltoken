@@ -228,7 +228,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           {
               // Set the Zhash personalization string.
               assert (strZhashPersonalize.length() == 8);
-              strZhashConfig = strZhashPersonalize;
+              header.auxpow->strZhashConfig = strZhashPersonalize;
               assert (header.auxpow->strZhashConfig.length() == 8);
           }
       }
@@ -270,7 +270,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           {
               // Set the Zhash personalization string.
               assert (strZhashPersonalize.length() == 8);
-              strZhashConfig = strZhashPersonalize;
+              header.auxpow->strZhashConfig = strZhashPersonalize;
               assert (header.auxpow->strZhashConfig.length() == 8);
           }
       }
