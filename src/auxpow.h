@@ -23,9 +23,14 @@ class CValidationState;
 /** Header for merge-mining data in the coinbase.  */
 static const unsigned char pchMergedMiningHeader[] = { 0xfa, 0xbe, 'm', 'm' };
 
+/** Zhash & Equihash default string for personalization  */
+static const std::string strZhashPersonalize = "GLTPoWZh";
+static const std::string strZcashDefaultPersonalize = "ZcashPoW";
+
 /** Operation flags */
-static const int AUXPOW_STAKE_FLAG    = 0x00002000;
-static const int AUXPOW_EQUIHASH_FLAG = 0x00020000;
+static const int AUXPOW_STAKE_FLAG    = 0x00001000;
+static const int AUXPOW_EQUIHASH_FLAG = 0x00002000;
+static const int AUXPOW_ZHASH_FLAG    = 0x00004000;
 static const uint32_t CURRENT_AUXPOW_VERSION = 1;
 
 /**
@@ -181,6 +186,9 @@ public:
   
   /** CPOSMerkleTx to save the POS coinbase tx. */
   CPOSMerkleTx            coinbasePOSTx;
+  
+  /** Zhash personalization string */
+  std::string strZhashConfig;
 
 public:
 
@@ -210,6 +218,8 @@ public:
         READWRITE (coinbasePOSTx);
     else
         READWRITE (coinbaseTx);
+    if(isAuxPowZhash())
+        READWRITE(strZhashConfig);
     READWRITE (vChainMerkleBranch);
     READWRITE (nChainIndex);
     if(isAuxPowEquihash())
@@ -239,6 +249,7 @@ public:
    */   
   bool isAuxPowEquihash() const;
   bool isAuxPowPOS() const;
+  bool isAuxPowZhash() const;
 
   /**
    * Get the parent block's hash.  This is used to verify that it

@@ -185,7 +185,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, bool fisZhash)
+bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, bool fisZhash, const std::string stateString)
 {
     // if fisZhash is true, this is a Zhash Block, otherwhise Equihash.
     unsigned int n = fisZhash ? params.ZhashN() : params.EquihashN();
@@ -193,7 +193,7 @@ bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParam
 
     // Hash state
     crypto_generichash_blake2b_state state;
-    EhInitialiseState(n, k, state);
+    EhInitialiseState(n, k, state, stateString);
 
     // I = the block header minus nonce and solution.
     CEquihashInput I{*pblock};
@@ -217,7 +217,7 @@ bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& param
 {
     CEquihashBlockHeader pequihashblock;
     pequihashblock = pblock->GetEquihashBlockHeader();
-    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH);
+    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH, pblock->GetAlgo() == ALGO_ZHASH ? strZhashPersonalize : strZcashDefaultPersonalize);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
@@ -327,10 +327,21 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
             return error("%s : AUX POW is not valid", __func__);
 
-        // Check Equihash solution
-        if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo == ALGO_ZHASH)) {
-            ehsolutionvalid = false;
-            return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
+        if(nAlgo == ALGO_ZHASH)
+        {
+            // Check Zhash solution
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), true, block.auxpow->strZhashConfig)) {
+                ehsolutionvalid = false;
+                return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
+            }
+        }
+        else
+        {
+            // Check Equihash solution
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), false, strZcashDefaultPersonalize)) {
+                ehsolutionvalid = false;
+                return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
+            }
         }
         
         // Check the header

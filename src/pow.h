@@ -27,7 +27,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params&);
 
 /** Check whether the Equihash solution in a block header is valid */
-bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams&, bool fisZhash);
+bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams&, bool fisZhash, const std::string stateString);
 bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams&);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */

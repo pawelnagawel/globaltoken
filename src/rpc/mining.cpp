@@ -304,7 +304,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 k = ALGO_EQUIHASH ? params.EquihashK() : params.ZhashK();
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
-				EhInitialiseState(n, k, eh_state);
+                EhInitialiseState(n, k, eh_state, currentAlgo == ALGO_ZHASH ? strZhashPersonalize : strZcashDefaultPersonalize);
 
 				// I = the block header minus nonce and solution.
 				CEquihashInput I{equihashblock};
@@ -1598,6 +1598,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
     result.pushKV("baseversion", (int64_t)CURRENT_AUXPOW_VERSION);
     result.pushKV("posflag", strprintf("%08x", AUXPOW_STAKE_FLAG));
     result.pushKV("equihashflag", strprintf("%08x", AUXPOW_EQUIHASH_FLAG));
+    result.pushKV("zhashflag", strprintf("%08x", AUXPOW_ZHASH_FLAG));
     result.pushKV("hash", pblock->GetHash().GetHex());
     result.pushKV("chainid", pblock->GetChainId());
     result.pushKV("previousblockhash", pblock->hashPrevBlock.GetHex());
@@ -1631,6 +1632,9 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
     {
         if(block.GetAlgo() == ALGO_EQUIHASH || block.GetAlgo() == ALGO_ZHASH)
             nVersion |= AUXPOW_EQUIHASH_FLAG;
+        
+        if(block.GetAlgo() == ALGO_ZHASH)
+            nVersion |= AUXPOW_ZHASH_FLAG;
         
         CDataStream ssAuxPow(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());
         ssAuxPow << nVersion;
@@ -1715,7 +1719,7 @@ UniValue submitauxblock(const JSONRPCRequest& request)
     
     //throw an error if the auxpow encoding version is unknown.
     if (!(nAuxPoWVersion == 1 || nAuxPoWVersion == 2))
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown Auxpow Encoding Version.");
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown auxpow version.");
     
     return AuxMiningSubmitBlock(request.params[0].get_str(), 
                                 request.params[1].get_str(),

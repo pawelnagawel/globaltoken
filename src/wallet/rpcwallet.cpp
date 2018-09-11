@@ -3984,7 +3984,7 @@ UniValue getauxblock(const JSONRPCRequest& request)
     
     //throw an error if the auxpow encoding version is unknown.
     if (!(nAuxPoWVersion == 1 || nAuxPoWVersion == 2))
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown Auxpow Encoding Version.");
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "Unknown auxpow version.");
 
     /* Create a new block */
     if (request.params.size() == 0)

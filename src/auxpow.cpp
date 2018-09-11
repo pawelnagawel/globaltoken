@@ -31,6 +31,11 @@ bool CAuxPow::isAuxPowEquihash() const
     return nVersion & AUXPOW_EQUIHASH_FLAG;
 }
 
+bool CAuxPow::isAuxPowZhash() const
+{
+    return nVersion & AUXPOW_ZHASH_FLAG;
+}
+
 bool CAuxPow::isAuxPowPOS() const
 {
     return nVersion & AUXPOW_STAKE_FLAG;
@@ -51,6 +56,9 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
 
     if (vChainMerkleBranch.size() > 30)
         return error("Aux POW chain merkle branch too long");
+    
+    if(isAuxPowZhash() && strZhashConfig.length() != 8)
+        return error("Aux POW Zhash personalization string size has wrong size.");
 
     // Check that the chain merkle root is in the coinbase
     const uint256 nRootHash
@@ -175,7 +183,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
   
-  if((header.GetAlgo() == ALGO_EQUIHASH || header.GetAlgo() == ALGO_ZHASH) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG))
+  if((header.GetAlgo() == ALGO_EQUIHASH || header.GetAlgo() == ALGO_ZHASH) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG || nAuxPowVersion & AUXPOW_ZHASH_FLAG))
   {
       if(nAuxPowVersion & AUXPOW_STAKE_FLAG)
       {
@@ -215,6 +223,14 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           assert (header.auxpow->coinbasePOSTx.vMerkleBranch.empty ());
           header.auxpow->coinbasePOSTx.nIndex = 0;
           header.auxpow->equihashparentBlock = equihashblock;
+          
+          if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
+          {
+              // Set the Zhash personalization string.
+              assert (strZhashPersonalize.length() == 8);
+              strZhashConfig = strZhashPersonalize;
+              assert (header.auxpow->strZhashConfig.length() == 8);
+          }
       }
       else
       {
@@ -249,6 +265,14 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           assert (header.auxpow->coinbaseTx.vMerkleBranch.empty ());
           header.auxpow->coinbaseTx.nIndex = 0;
           header.auxpow->equihashparentBlock = parent;
+          
+          if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
+          {
+              // Set the Zhash personalization string.
+              assert (strZhashPersonalize.length() == 8);
+              strZhashConfig = strZhashPersonalize;
+              assert (header.auxpow->strZhashConfig.length() == 8);
+          }
       }
   }
   else
