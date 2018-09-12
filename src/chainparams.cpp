@@ -122,7 +122,7 @@ public:
         consensus.powLimit_BLAKE2S = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_BLAKE2B = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_PADIHASH = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ZHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -552,7 +552,7 @@ public:
         consensus.powLimit_BLAKE2S = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_BLAKE2B = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PADIHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_PADIHASH = uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ZHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");

@@ -248,6 +248,8 @@ public:
      * value is zero.
      */
     unsigned int bits() const;
+    
+    base_uint ApproxNthRoot(int n) const;
 
     uint64_t GetLow64() const
     {
