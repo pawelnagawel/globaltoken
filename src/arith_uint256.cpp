@@ -198,32 +198,6 @@ unsigned int base_uint<BITS>::bits() const
     return 0;
 }
 
-template <unsigned int BITS>
-base_uint<BITS> base_uint<BITS>::ApproxNthRoot(int n) const
-{
-    assert(1 < n && n < 64);
-    int nLength = bits();
-    int nShifts = std::max(0, ((nLength-1)/n)+1-(64/n));
-
-    base_uint<BITS> shifted = *this >> (n * nShifts);
-    uint64_t nHead = shifted.GetLow64();
-
-    // Just binary search the answer
-    uint64_t nRoot = 0;
-    for (int i = 64/n - 1; i >= 0; i--)
-    {
-        uint64_t nNext = nRoot | ((uint64_t)1 << i);
-        uint64_t nPower = nNext;
-        for (int j = 1; j < n; j++)
-            nPower *= nNext;
-        if (nPower <= nHead)
-            nRoot = nNext;
-    }
-    base_uint<BITS> res(nRoot);
-    res <<= nShifts;
-    return res;
-}
-
 // Explicit instantiations for base_uint<256>
 template base_uint<256>::base_uint(const std::string&);
 template base_uint<256>& base_uint<256>::operator<<=(unsigned int);
@@ -239,7 +213,6 @@ template std::string base_uint<256>::ToString() const;
 template void base_uint<256>::SetHex(const char*);
 template void base_uint<256>::SetHex(const std::string&);
 template unsigned int base_uint<256>::bits() const;
-template base_uint<256> base_uint<256>::ApproxNthRoot(int n) const;
 
 // Explicit instantiations for base_uint<512>
 template base_uint<512>::base_uint(const std::string&);
@@ -255,7 +228,6 @@ template std::string base_uint<512>::ToString() const;
 //template void base_uint<512>::SetHex(const char*);
 template void base_uint<512>::SetHex(const std::string&);
 template unsigned int base_uint<512>::bits() const;
-template base_uint<512> base_uint<512>::ApproxNthRoot(int n) const;
 
 // This implementation directly uses shifts instead of going
 // through an intermediate MPI representation.
