@@ -249,7 +249,6 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 {
     bool hardfork = IsHardForkActivated(block.nTime);
     uint8_t nAlgo = block.GetAlgo();
-    const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
     ehsolutionvalid = true;
     
     /* Except for legacy blocks with full version 1, ensure that
@@ -274,6 +273,8 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         {
             if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
             {
+                const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
+                
                 // Check Equihash solution
                 if (!CheckEquihashSolution(&block, Params())) {
                     ehsolutionvalid = false;
@@ -321,6 +322,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 
     if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
     {
+        const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
         if (!block.IsAuxpow())
             return error("%s : auxpow on block with non-auxpow version", __func__);
 
