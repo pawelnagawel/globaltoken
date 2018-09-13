@@ -390,6 +390,8 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t a
 	{
 		if (!pindex)
 			return nullptr;
+        if (!IsHardForkActivated(pindex->nTime) && algo != ALGO_SHA256D)
+            return nullptr;
 		if (pindex->GetAlgo() == algo)
 			return pindex;
 		pindex = pindex->pprev;

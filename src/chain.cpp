@@ -1,10 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2017 The MyriadCoin Core developers
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chain.h>
+#include <bignum.h>
 #include <globaltoken/hardfork.h>
 #include <validation.h>
 
@@ -160,36 +161,64 @@ arith_uint256 GetBlockProofBase(const CBlockIndex& block)
     return (~bnTarget / (bnTarget + 1)) + 1;
 }
 
+arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo)
+{
+    int nDistance = 0;
+    arith_uint256 nWork;
+    const CBlockIndex* pindex = &block;
+    while (pindex != nullptr)
+    {
+        if (nDistance > 100 || (!IsHardForkActivated(pindex->nTime) && algo != ALGO_SHA256D))
+        {
+            return arith_uint256(0);
+        }
+        if (pindex->GetAlgo() == algo)
+        {
+            arith_uint256 nWork = GetBlockProofBase(*pindex);
+            nWork *= (100 - nDistance);
+            nWork /= 100;
+            return nWork;
+        }
+        pindex = pindex->pprev;
+        nDistance++;
+    }
+    return arith_uint256(0);
+}
+
+arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
+{
+    //arith_uint256 bnRes;
+    arith_uint256 nBlockWork = GetBlockProofBase(block);
+    CBigNum bnBlockWork = CBigNum(ArithToUint256(nBlockWork));
+    int nAlgo = block.GetAlgo();
+    
+    for (int algo = 0; algo < NUM_ALGOS_IMPL; algo++)
+    {
+        if (algo != nAlgo)
+        {
+            arith_uint256 nBlockWorkAlt = GetPrevWorkForAlgoWithDecay(block, algo);
+            CBigNum bnBlockWorkAlt = CBigNum(ArithToUint256(nBlockWorkAlt));
+            if (bnBlockWorkAlt != 0)
+                bnBlockWork *= bnBlockWorkAlt;
+        }
+    }
+    // Compute the geometric mean
+    CBigNum bnRes = bnBlockWork.nthRoot(NUM_ALGOS);
+    
+    // Scale to roughly match the old work calculation
+    bnRes <<= 8;
+    
+    //return bnRes;
+    return UintToArith256(bnRes.getuint256());
+}
+
 arith_uint256 GetBlockProof(const CBlockIndex& block)
 {
     const Consensus::Params& params = Params().GetConsensus();
-    CBlockHeader header = block.GetBlockHeader(params);
 
     if (IsHardForkActivated(block.nTime))
     {
-        // Compute the geometric mean of the block targets for each individual algorithm.
-        arith_uint256 bnAvgTarget(1);
-
-        for (int i = 0; i < NUM_ALGOS; i++)
-        {
-            unsigned int nBits = GetNextWorkRequired(block.pprev, &header, params, i);
-            arith_uint256 bnTarget;
-            bool fNegative;
-            bool fOverflow;
-            bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
-            if (fNegative || fOverflow || bnTarget == 0)
-                return 0;
-            // Instead of multiplying them all together and then taking the
-            // nth root at the end, take the roots individually then multiply so
-            // that all intermediate values fit in 256-bit integers.
-            bnAvgTarget *= bnTarget.ApproxNthRoot(NUM_ALGOS);
-        }
-        // see comment in GetProofBase
-        arith_uint256 bnRes = (~bnAvgTarget / (bnAvgTarget + 1)) + 1;
-        // Scale to roughly match the old work calculation
-        bnRes <<= 7;
-
-        return bnRes;
+        return GetGeometricMeanPrevWork(block);
     }
     else
     {
