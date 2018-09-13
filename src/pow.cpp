@@ -249,6 +249,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 {
     bool hardfork = IsHardForkActivated(block.nTime);
     uint8_t nAlgo = block.GetAlgo();
+    const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
     ehsolutionvalid = true;
     
     /* Except for legacy blocks with full version 1, ensure that
@@ -277,6 +278,11 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
                 if (!CheckEquihashSolution(&block, Params())) {
                     ehsolutionvalid = false;
                     return error("%s: non-AUX proof of work : bad %s solution", __func__, GetAlgoName(nAlgo));
+                }
+                
+                if(block.nSolution.size() != sol_size) {
+                    ehsolutionvalid = false;
+                    return error("%s: non-AUX proof of work : %s solution has invalid size have %d need %d", __func__, GetAlgoName(nAlgo), block.nSolution.size(), sol_size);
                 }
                 
                 // Check the header
@@ -326,6 +332,11 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 
         if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
             return error("%s : AUX POW is not valid", __func__);
+        
+        if(block.auxpow->getEquihashParentBlock().nSolution.size() != sol_size) {
+            ehsolutionvalid = false;
+            return error("%s: AUX proof of work - %s solution has invalid size have %d need %d", __func__, GetAlgoName(nAlgo), block.nSolution.size(), sol_size);
+        }
 
         if(nAlgo == ALGO_ZHASH)
         {

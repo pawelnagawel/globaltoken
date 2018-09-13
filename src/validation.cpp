@@ -3165,21 +3165,10 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     if (fCheckPOW)
         checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
     
-    if (fCheckPOW && (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)) 
+    if (fCheckPOW && (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH) && !equihashvalidator) 
     {
-        const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
-        if(block.nSolution.size() != sol_size) {
-            return state.DoS(
-                100, error("CheckBlockHeader(): %s solution has invalid size have %d need %d",
-                           GetAlgoName(nAlgo), block.nSolution.size(), sol_size),
-                REJECT_INVALID, "invalid-solution-size");
-        }
-        
-        if(!equihashvalidator)
-        {
-            return state.DoS(100, error("CheckBlockHeader(): %s solution invalid", GetAlgoName(nAlgo)),
-                             REJECT_INVALID, "invalid-solution");
-        }
+        return state.DoS(100, error("CheckBlockHeader(): %s solution invalid", GetAlgoName(nAlgo)),
+                         REJECT_INVALID, "invalid-solution");
     }
 			
     // Check proof of work matches claimed amount

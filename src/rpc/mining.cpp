@@ -91,9 +91,9 @@ UniValue GetNetworkHashPS(int lookup, int height) {
     return workDiff.getdouble() / timeDiff;
 }
 
-UniValue GetTreasuryOutput(const CBlock &block, int nHeight)
+UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivationCheck)
 {
-    if(IsHardForkActivated(block.nTime))
+    if(IsHardForkActivated(block.nTime) || skipActivationCheck)
     {
         const CChainParams& params = Params();
         CAmount treasuryamount = params.GetTreasuryAmount(block.vtx[0]->GetValueOut());
@@ -154,7 +154,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
             if(!ReadBlockFromDisk(block, pblockindex, Params().GetConsensus()))
                 throw JSONRPCError(RPC_INTERNAL_ERROR, "Can't read block from disk");
             
-            return GetTreasuryOutput(block, nHeight);
+            return GetTreasuryOutput(block, nHeight, skipActivationCheck);
         }
     }
     return NullUniValue;
@@ -164,7 +164,7 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() > 1)
         throw std::runtime_error(
-            "getblocktreasury ( nblocks height )\n"
+            "getblocktreasury ( nheight )\n"
             "\nReturns a json object containing treasury-related information, that must be included in Hardfork blocks.\n"
             "\nArguments:\n"
             "1. nHeight     (numeric, optional, default=currentHeight) Calculate treasury for a given height.\n"
@@ -181,11 +181,12 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
        );
 
     uint32_t nTime = 0;
+    int nHeight = 0;
     {
         LOCK(cs_main);
         nTime = chainActive.Tip()->nTime;
+        nHeight = (request.params[0].isNull()) ? chainActive.Tip()->nHeight : request.params[0].get_int();
     }
-    int nHeight = (request.params[0].isNull()) ? chainActive.Tip()->nHeight : request.params[0].get_int();
     return GetTreasuryOutput(nTime, nHeight, true);
 }
 
@@ -1005,7 +1006,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     UniValue txCoinbase = NullUniValue;
     UniValue masternodeObj(UniValue::VOBJ);
     UniValue treasuryObj(UniValue::VOBJ);
-    treasuryObj = GetTreasuryOutput(*pblock, pindexPrev->nHeight + 1);
+    treasuryObj = GetTreasuryOutput(*pblock, pindexPrev->nHeight + 1, false);
     
     if(pblock->txoutMasternode != CTxOut()) {
         CTxDestination address;
