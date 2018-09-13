@@ -368,47 +368,6 @@ BOOST_AUTO_TEST_CASE( divide )
     BOOST_CHECK_THROW(R2L / ZeroL, uint_error);
 }
 
-void CheckNthRoot(arith_uint256 x, int n)
-{
-    arith_uint256 root = x.ApproxNthRoot(n);
-    arith_uint256 power = 1;
-    arith_uint256 penultimate = 1;
-    for (int i = 0; i < n; i++)
-    {
-        penultimate = power;
-        power *= root;
-    }
-    // second condition is overflow check
-    BOOST_CHECK(power <= x && power / root == penultimate);
-    int roundingPos = std::max<int>(0, root.bits() - 64/n);
-    root += OneL << roundingPos;
-    // root should be too big now
-    power = 1;
-    for (int i = 0; i < n; i++)
-    {
-        penultimate = power;
-        power *= root;
-    }
-    BOOST_CHECK(!(power <= x && power / root == penultimate));
-}
-
-BOOST_AUTO_TEST_CASE( root )
-{
-    for (int n = 2; n <= 5; n++)
-    {
-        BOOST_CHECK(ZeroL.ApproxNthRoot(n) == ZeroL);
-        for (int shift = 0; shift < 2*n; shift++)
-        {
-            CheckNthRoot(MaxL >> shift, n);
-            CheckNthRoot(R1L >> shift, n);
-            CheckNthRoot(R2L >> shift, n);
-        }
-        for (int shift = 0; shift < 70; shift++)
-        {
-            CheckNthRoot(OneL << shift, n);
-        }
-    }
-}
 
 bool almostEqual(double d1, double d2)
 {

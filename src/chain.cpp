@@ -214,8 +214,6 @@ arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
 
 arith_uint256 GetBlockProof(const CBlockIndex& block)
 {
-    const Consensus::Params& params = Params().GetConsensus();
-
     if (IsHardForkActivated(block.nTime))
     {
         return GetGeometricMeanPrevWork(block);
