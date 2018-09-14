@@ -9,6 +9,7 @@
 #include <primitives/block.h>
 #include <uint256.h>
 
+#include <sstream>
 #include <string>
 
 arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusParams)
