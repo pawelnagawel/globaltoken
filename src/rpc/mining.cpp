@@ -1514,7 +1514,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
     result.pushKV("hash", pblock->GetHash().GetHex());
     result.pushKV("chainid", pblock->GetChainId());
     result.pushKV("previousblockhash", pblock->hashPrevBlock.GetHex());
-    result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->vout[0].nValue);
+    result.pushKV("coinbasevalue", (int64_t)pblock->vtx[0]->GetValueOut());
     result.pushKV("bits", strprintf("%08x", pblock->nBits));
     result.pushKV("height", static_cast<int64_t> (pindexPrev->nHeight + 1));
     result.pushKV("target", HexStr(BEGIN(target), END(target)));
