@@ -90,15 +90,20 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		// Special difficulty rule for testnet:
 		// If the new block's timestamp is more than 2* 10 minutes
 		// then allow mining of a min-difficulty block.
-		if (pblock->nTime > pindexLast->nTime + params.nTargetSpacing*2)
+		if (pblock->nTime > pindexLast->nTime + params.nTargetSpacing*5)
 			return npowWorkLimit;
 		else
 		{
 			// Return the last non-special-min-difficulty-rules-block
-			const CBlockIndex* pindex = pindexLast;
-			while (pindex->pprev && pindex->nHeight % params.nInterval != 0 && pindex->nBits == npowWorkLimit)
-				pindex = pindex->pprev;
-			return pindex->nBits;
+			const CBlockIndex* pindex = GetLastBlockIndexForAlgo(pindexLast, algo);
+            
+			while (pindex != nullptr && pindex->pprev && pindex->nHeight % params.nInterval != 0 && pindex->nBits == npowWorkLimit)
+				pindex = GetLastBlockIndexForAlgo(pindex->pprev, algo);
+            
+            if (pindex == nullptr)
+                return npowWorkLimit;
+            else
+                return pindex->nBits;
 		}
 	}
 

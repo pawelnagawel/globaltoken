@@ -546,7 +546,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-whitelistrelay", strprintf(_("Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)"), DEFAULT_WHITELISTRELAY));
 
     strUsage += HelpMessageGroup(_("Block creation options:"));
-    strUsage += HelpMessageOpt("-accepttreasury", strprintf(_("You need to pay the dev tax fee if you like to mine GlobalTokens. If this is enabled, you agree to pay the treasury. This is a network rule, everyone who wants to mine must pay the treasury. (default: %u)"), false));
+    strUsage += HelpMessageOpt("-acceptdividedcoinbase", strprintf(_("You must pay the founders reward and masternode reward from coinbase. If you enable this argument then you accept to pay this fee. (default: %u)"), false));
     strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithms: astralhash, blake2b, blake2s, equihash, globalhash, groestl, hmq1725, jeonghash, keccak, lyra2re, neoscrypt, nist5, padihash, pawelhash, quark, qubit, scrypt, sha256d, skein, skunkhash, timetravel10, x11, x13, x14, x15, x16r, x17, xevan, yescrypt, zhash"));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");

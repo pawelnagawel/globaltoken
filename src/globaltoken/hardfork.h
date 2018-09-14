@@ -11,9 +11,17 @@ namespace Consensus {
     struct Params;
 };
 
+enum {
+    DIVIDEDPAYMENTS_BLOCK_WARNING,
+    DIVIDEDPAYMENTS_GENERATE_WARNING,
+    DIVIDEDPAYMENTS_BLOCKTEMPLATE_WARNING,
+    DIVIDEDPAYMENTS_AUXPOW_WARNING
+};
+
 arith_uint256 GetAlgoPowLimit(uint8_t algo, const Consensus::Params& consensusParams);
 arith_uint256 GetAlgoPowLimit(uint8_t algo);
 bool IsHardForkActivated(uint32_t blocktime, const Consensus::Params& consensusParams);
 bool IsHardForkActivated(uint32_t blocktime);
+std::string GetCoinbaseFeeString(int type);
 
 #endif // GLOBALTOKEN_HARDFORK_PARAMS_H

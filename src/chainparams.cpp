@@ -519,12 +519,12 @@ public:
         consensus.nSubsidyHalvingInterval = 840000;
         consensus.nMasternodeMinimumConfirmations = 1;
         consensus.nMasternodeColleteralPaymentAmount = 12500;
-        consensus.nMasternodePayeeReward = 35;
+        consensus.nMasternodePayeeReward = 32;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nTreasuryAddressChange = 600000;
         consensus.nTreasuryAddressChangeStart = 100000;
-        consensus.nTreasuryAmount = 15;
+        consensus.nTreasuryAmount = 18;
         consensus.BIP16Height = 1;
         consensus.BIP34Height = 1;
         // consensus.BIP34Hash = uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"); // not hashed
@@ -1327,11 +1327,14 @@ const CChainParams &Params() {
     return *globalChainParams;
 }
 
-const CChainParams &CreateNetworkParams(const std::string& network) {
-    static std::unique_ptr<CChainParams> networkparams; 
-    networkparams = CreateChainParams(network);
-    assert(networkparams);    
-    return *networkparams;
+const CChainParams CreateNetworkParams(const std::string& network) {
+    if (network == CBaseChainParams::MAIN)
+        return CMainParams();
+    else if (network == CBaseChainParams::TESTNET)
+        return CTestNetParams();
+    else if (network == CBaseChainParams::REGTEST)
+        return CRegTestParams();
+    throw std::runtime_error(strprintf("%s: Unknown network %s.", __func__, network));
 }
 
 std::unique_ptr<CChainParams> CreateChainParams(const std::string& chain)

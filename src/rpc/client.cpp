@@ -58,6 +58,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "listreceivedbyaccount", 2, "include_empty" },
     { "listreceivedbyaccount", 3, "include_watchonly" },
     { "getbalance", 1, "minconf" },
+    { "getbalance", 2, "addlockconf" },
     { "getbalance", 3, "include_watchonly" },
     { "getblockhash", 0, "height" },
     { "waitforblockheight", 0, "height" },

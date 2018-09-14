@@ -133,7 +133,7 @@ const CChainParams &Params();
  * Return params for a selected network.
  * Can be useful to get ports for other networks, masternodes require this.
  */
-const CChainParams &CreateNetworkParams(const std::string& network);
+const CChainParams CreateNetworkParams(const std::string& network);
 
 /**
  * Sets the params returned by Params() to those for the given BIP70 chain name.
