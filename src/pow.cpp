@@ -342,6 +342,10 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         /* FIXME: Remove this check with a hardfork later on.  */
         if (block.auxpow->getEquihashParentBlock().IsAuxpow())
             return error("%s : auxpow parent block has auxpow version", __func__);
+        
+        // The GLT block should have no nonce, just the auxpow block stores it.
+        if (block.nBigNonce != uint256())
+            return error("%s : auxpow - Found nonce in GlobalToken block!", __func__);
 
         if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
             return error("%s : AUX POW is not valid", __func__);

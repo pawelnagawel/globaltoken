@@ -187,6 +187,11 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
   {
       if(nAuxPowVersion & AUXPOW_STAKE_FLAG)
       {
+          // Convert parent's uint256 nonce to this nonce.
+          // Equihash nonce is randomized by default, so we take it into the auxpow block, and reset it on parent block.
+          const uint256 cachedNonce = header.nBigNonce;
+          header.nBigNonce = uint256();
+          
           /* Build a minimal coinbase script input for merge-mining.  */
           const uint256 blockHash = header.GetHash ();
           std::vector<unsigned char> inputData(blockHash.begin (), blockHash.end ());
@@ -214,6 +219,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           CEquihashBlockHeader equihashblock;
           equihashblock.nVersion = parent.nVersion;
           equihashblock.hashMerkleRoot = parent.hashMerkleRoot;
+          equihashblock.nNonce = cachedNonce;
 
           /* Construct the auxpow object.  */
           header.SetAuxpow (new CAuxPow (coinbaseRef));
@@ -234,6 +240,11 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
       }
       else
       {
+          // Convert parent's uint256 nonce to this nonce.
+          // Equihash nonce is randomized by default, so we take it into the auxpow block, and reset it on parent block.
+          const uint256 cachedNonce = header.nBigNonce;
+          header.nBigNonce = uint256();
+          
           /* Build a minimal coinbase script input for merge-mining.  */
           const uint256 blockHash = header.GetHash ();
           std::vector<unsigned char> inputData(blockHash.begin (), blockHash.end ());
@@ -256,6 +267,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           parent.vtx.resize (1);
           parent.vtx[0] = coinbaseRef;
           parent.hashMerkleRoot = EquihashBlockMerkleRoot (parent);
+          parent.nNonce = cachedNonce;
 
           /* Construct the auxpow object.  */
           header.SetAuxpow (new CAuxPow (coinbaseRef));

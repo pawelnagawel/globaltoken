@@ -214,12 +214,12 @@ public:
     SerializationOp (Stream& s, Operation ser_action)
   {
     READWRITE (this->nVersion);
+    if(isAuxPowZhash())
+        READWRITE(strZhashConfig);
     if(isAuxPowPOS())
         READWRITE (coinbasePOSTx);
     else
         READWRITE (coinbaseTx);
-    if(isAuxPowZhash())
-        READWRITE(strZhashConfig);
     READWRITE (vChainMerkleBranch);
     READWRITE (nChainIndex);
     if(isAuxPowEquihash())
