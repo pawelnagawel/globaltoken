@@ -3378,6 +3378,10 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
             return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
 
+    // Reject reserved / unused algo-IDs!
+    if(IsHardForkActivated(block.nTime, consensusParams) && block.GetAlgo() == ALGO_SHA256D && ((block.nVersion & BLOCK_VERSION_ALGO) != BLOCK_VERSION_SHA256D))
+        return state.Invalid(false, REJECT_INVALID, "invalid-multialgo-id", strprintf("Invalid block algo-ID! nVersion = %u, expected ID: %d, got: %d", block.nVersion, BLOCK_VERSION_SHA256D, block.nVersion & BLOCK_VERSION_ALGO));
+
     return true;
 }
 

@@ -531,7 +531,7 @@ public:
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
         consensus.HardforkHeight = 2999; // not final
-        consensus.HardforkTime = 1535781600;
+        consensus.HardforkTime = 1537185600;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -949,7 +949,7 @@ public:
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.HardforkHeight = 15; // not final
-        consensus.HardforkTime = 1534305600;
+        consensus.HardforkTime = 1537048800;
         consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated after height
         consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
