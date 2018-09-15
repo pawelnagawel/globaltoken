@@ -119,14 +119,12 @@ struct Params {
     int64_t nPowTargetSpacing;
     int64_t nPowTargetSpacingV2;
     int64_t nPowTargetTimespan;
-    int64_t nPowTargetTimespanV2;
     int64_t nMaxAdjustDown;
     int64_t nMaxAdjustUp;
     int64_t nMinActualTimespan;
     int64_t nMaxActualTimespan;
     int64_t nLocalTargetAdjustment;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
-    int64_t DifficultyAdjustmentIntervalV2() const { return nPowTargetTimespanV2 / nPowTargetSpacingV2; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
     

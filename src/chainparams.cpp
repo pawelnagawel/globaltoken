@@ -137,7 +137,6 @@ public:
         consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-        consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
         consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
         consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
         consensus.nAveragingInterval = 5; // 5 blocks
@@ -567,8 +566,7 @@ public:
         consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-        consensus.nPowTargetTimespanV2 = 5 * 60; // just changed to faster retargeting (5 minutes)
-        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS;
+        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
         consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
         consensus.nAveragingInterval = 5; // 5 blocks
         consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
