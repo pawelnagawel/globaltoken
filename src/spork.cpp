@@ -194,8 +194,11 @@ std::string CSporkManager::GetSporkNameByID(int nSporkID)
 }
 
 bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
+    
     bool fIsSporkKeySet = false;
     CTxDestination address = DecodeDestination(strAddress);
+    
+#ifdef ENABLE_WALLET
     for (CWalletRef pwallet : vpwallets) {
         if(pwallet && !fIsSporkKeySet) {
             LOCK(pwallet->cs_wallet);
@@ -204,6 +207,14 @@ bool CSporkManager::SetSporkAddress(const std::string& strAddress) {
                 fIsSporkKeySet = true;
         }
     }
+#else
+    
+    sporkPubKeyID = *boost::get<CKeyID>(&address);
+    
+    if(!sporkPubKeyID.IsNull())
+        fIsSporkKeySet = true;
+
+#endif // ENABLE_WALLET
     
     if (!IsValidDestination(address) || !fIsSporkKeySet) {
         LogPrintf("CSporkManager::SetSporkAddress -- Failed to parse spork address\n");

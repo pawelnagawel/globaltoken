@@ -2040,7 +2040,7 @@ void CConnman::OpenNetworkConnection(const CAddress& addrConnect, bool fCountFai
         if (!fAllowLocal && IsLocal(addrConnect))
             return;
         
-        if (!Params().AllowMultiplePorts() && FindNode(static_cast<CNetAddr>(addrConnect)) ||
+        if ((!Params().AllowMultiplePorts() && FindNode(static_cast<CNetAddr>(addrConnect))) ||
             (Params().AllowMultiplePorts() && FindNode(static_cast<CService>(addrConnect))))
             return;
     } else if (FindNode(std::string(pszDest)))

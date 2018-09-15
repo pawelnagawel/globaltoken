@@ -91,7 +91,6 @@ private:
 #endif
     int64_t GetAverageMasternodeOrphanVoteTime();
 
-    void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate);
 #ifdef ENABLE_WALLET
     void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate, CWallet *wallet);
 #else

@@ -143,12 +143,9 @@ bool CInstantSend::ProcessTxLockRequest(const CTxLockRequest& txLockRequest, CCo
         TryToFinalizeLockCandidate(itLockCandidate->second, pwallet);
 #else
         TryToFinalizeLockCandidate(itLockCandidate->second);
-#endif
-
-        return true;
-#ifdef ENABLE_WALLET
     }
 #endif
+    return true;
 }
 
 bool CInstantSend::CreateTxLockCandidate(const CTxLockRequest& txLockRequest)
@@ -414,12 +411,9 @@ bool CInstantSend::ProcessNewTxLockVote(CNode* pfrom, const CTxLockVote& vote, C
         TryToFinalizeLockCandidate(txLockCandidate, pwallet);
 #else
         TryToFinalizeLockCandidate(txLockCandidate);
-#endif
-
-        return true;
-#ifdef ENABLE_WALLET
     }
 #endif
+    return true;
 }
 
 #ifdef ENABLE_WALLET
