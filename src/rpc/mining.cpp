@@ -1,6 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2016-2017 The Zcash developers
+// Copyright (c) 2018 The Bitcoin Private developers
+// Copyright (c) 2017-2018 The Bitcoin Gold developers
 // Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -107,7 +111,7 @@ UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivation
         obj.pushKV("height",        nHeight);
         obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
         obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
-        obj.pushKV("amount",        treasuryamount);
+        obj.pushKV("amount",        (int64_t)treasuryamount);
         obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
     }
@@ -138,7 +142,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
             obj.pushKV("height",        nHeight);
             obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
             obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
-            obj.pushKV("amount",        treasuryamount);
+            obj.pushKV("amount",        (int64_t)treasuryamount);
             obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
             return obj;
         }
@@ -307,6 +311,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
+                    --nMaxTries;
 					if (found) {
 						break;
 					}
@@ -949,7 +954,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         ExtractDestination(pblock->txoutMasternode.scriptPubKey, address);
         masternodeObj.pushKV("payee", EncodeDestination(address).c_str());
         masternodeObj.pushKV("script", HexStr(pblock->txoutMasternode.scriptPubKey));
-        masternodeObj.pushKV("amount", pblock->txoutMasternode.nValue);
+        masternodeObj.pushKV("amount", (int64_t)pblock->txoutMasternode.nValue);
     }
     
     std::map<uint256, int64_t> setTxIndex;

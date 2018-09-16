@@ -1,11 +1,14 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2012 The DigiByte developers
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2016-2018 The CryptoCoderz Team / Espers
+// Copyright (c) 2017-2018 The AmsterdamCoin developers
+// Copyright (c) 2017 The Raven Core developers
+// Copyright (c) 2014-2017 The Mun Core developers
 // Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-// some parts are from dash's hash.h
 
 #ifndef MULTIHASH_H
 #define MULTIHASH_H
@@ -1741,7 +1744,6 @@ inline uint256 JeongHash(const T1 pbegin, const T1 pend)
     sph_sha512_context       ctx_sha2;
     sph_whirlpool_context    ctx_whirlpool;
     sph_skein512_context     ctx_skein;
-    sph_gost512_context      ctx_gost;
 
     static unsigned char pblank[1];
     uint512 hash[24];

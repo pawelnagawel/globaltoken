@@ -1,5 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2013-2014 Phoenixcoin Developers
+// Copyright (c) 2016-2018 The CryptoCoderz Team / Espers
+// Copyright (c) 2017-2018 The AmsterdamCoin developers
+// Copyright (c) 2009-2016 The Litecoin Core developers
+// Copyright (c) 2014-2017 The Mun Core developers
+// Copyright (c) 2017 The Raven Core developers
 // Copyright (c) 2018 The GlobalToken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.

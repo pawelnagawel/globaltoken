@@ -900,6 +900,8 @@ int CInstantSend::GetTransactionLockSignatures(const uint256& txHash)
     return -1;
 }
 
+// Not used in GLT Source Code
+// It was part of the Governance System in DASH, but could be useful in the future.
 int CInstantSend::GetConfirmations(const uint256 &nTXHash)
 {
     return IsLockedInstantSendTransaction(nTXHash) ? nInstantSendDepth : 0;

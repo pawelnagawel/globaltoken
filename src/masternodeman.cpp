@@ -1662,15 +1662,6 @@ void CMasternodeMan::WarnMasternodeDaemonUpdates()
 
 void CMasternodeMan::NotifyMasternodeUpdates(CConnman& connman)
 {
-    // Avoid double locking
-    bool fMasternodesAddedLocal = false;
-    bool fMasternodesRemovedLocal = false;
-    {
-        LOCK(cs);
-        fMasternodesAddedLocal = fMasternodesAdded;
-        fMasternodesRemovedLocal = fMasternodesRemoved;
-    }
-
     LOCK(cs);
     fMasternodesAdded = false;
     fMasternodesRemoved = false;

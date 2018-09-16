@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 Daniel Kraft
+// Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -199,7 +200,7 @@ public:
   
   /* Prevent accidental conversion.  */
   inline explicit CAuxPow (CPOSTransactionRef txIn)
-    : coinbasePOSTx (txIn), coinbaseTx()
+    : coinbaseTx(), coinbasePOSTx (txIn)
   {}
   
   /* Prevent accidental conversion.  */
@@ -284,7 +285,7 @@ public:
   }
   
   /* get the version of auxpow. */
-  inline const uint32_t
+  inline const uint32_t&
   getVersion() const
   {
     return nVersion;
@@ -305,14 +306,14 @@ public:
   }
   
   /* get the chain merkle branch of auxpow. */
-  inline const std::vector<uint256>
+  inline const std::vector<uint256>&
   GetChainMerkleBranch() const
   {
     return vChainMerkleBranch;
   }
   
   /* get the chain index of auxpow. */
-  inline const int
+  inline const int&
   GetChainIndex() const
   {
     return nChainIndex;
