@@ -9,7 +9,7 @@
 #include <map>
 
 /** What block version to use for new blocks (pre versionbits) */
-static const int32_t VERSIONBITS_LAST_OLD_BLOCK_VERSION = 4;
+static const int32_t VERSIONBITS_LAST_OLD_BLOCK_VERSION = 0x20000000UL;
 /** What bits to set in version for versionbits blocks */
 static const int32_t VERSIONBITS_TOP_BITS = 0x20000000UL;
 /** What bitmask determines whether versionbits is in use */
@@ -35,6 +35,8 @@ struct VBDeploymentInfo {
     const char *name;
     /** Whether GBT clients can safely ignore this rule in simplified usage */
     bool gbt_force;
+    /** Whether to check current MN protocol or not */
+    bool check_mn_protocol;
 };
 
 struct BIP9Stats {

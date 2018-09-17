@@ -211,6 +211,9 @@ private:
 
     //! last time Good was called (memory only)
     int64_t nLastGood;
+    
+    // discriminate entries based on port. Should be false on mainnet/testnet and can be true on devnet/regtest
+    bool discriminatePorts;
 
 protected:
     //! secret key to randomize bucket select with
@@ -477,7 +480,8 @@ public:
         mapAddr.clear();
     }
 
-    CAddrMan()
+    CAddrMan(bool _discriminatePorts = false) :
+        discriminatePorts(_discriminatePorts)
     {
         Clear();
     }

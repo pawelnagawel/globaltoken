@@ -4,6 +4,33 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chain.h>
+#include <bignum.h>
+#include <globaltoken/hardfork.h>
+#include <validation.h>
+
+CBlockHeader CBlockIndex::GetBlockHeader(const Consensus::Params& consensusParams) const
+{
+    CBlockHeader block;
+    block.nVersion       = nVersion;
+    /* The CBlockIndex object's block header is missing the auxpow.
+       So if this is an auxpow block, read it from disk instead.  We only
+       have to read the actual *header*, not the full block.  */
+    if (block.IsAuxpow())
+    {
+        ReadBlockHeaderFromDisk(block, this, consensusParams);
+        return block;
+    }
+    if (pprev)
+        block.hashPrevBlock = pprev->GetBlockHash();
+    block.hashMerkleRoot = hashMerkleRoot;
+    block.hashReserved   = hashReserved;
+    block.nTime          = nTime;
+    block.nBits          = nBits;
+    block.nNonce         = nNonce;
+    block.nBigNonce      = nBigNonce;
+    block.nSolution      = nSolution;
+    return block;
+}
 
 /**
  * CChain implementation
@@ -118,7 +145,7 @@ void CBlockIndex::BuildSkip()
         pskip = pprev->GetAncestor(GetSkipHeight(nHeight));
 }
 
-arith_uint256 GetBlockProof(const CBlockIndex& block)
+arith_uint256 GetBlockProofBase(const CBlockIndex& block)
 {
     arith_uint256 bnTarget;
     bool fNegative;
@@ -132,6 +159,70 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
     // or ~bnTarget / (bnTarget+1) + 1.
     return (~bnTarget / (bnTarget + 1)) + 1;
 }
+
+arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo)
+{
+    int nDistance = 0;
+    arith_uint256 nWork;
+    const CBlockIndex* pindex = &block;
+    while (pindex != nullptr)
+    {
+        if (nDistance > 100 || (!IsHardForkActivated(pindex->nTime) && algo != ALGO_SHA256D))
+        {
+            return arith_uint256(0);
+        }
+        if (pindex->GetAlgo() == algo)
+        {
+            arith_uint256 nWork = GetBlockProofBase(*pindex);
+            nWork *= (100 - nDistance);
+            nWork /= 100;
+            return nWork;
+        }
+        pindex = pindex->pprev;
+        nDistance++;
+    }
+    return arith_uint256(0);
+}
+
+arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
+{
+    //arith_uint256 bnRes;
+    arith_uint256 nBlockWork = GetBlockProofBase(block);
+    CBigNum bnBlockWork = CBigNum(ArithToUint256(nBlockWork));
+    int nAlgo = block.GetAlgo();
+    
+    for (int algo = 0; algo < NUM_ALGOS_IMPL; algo++)
+    {
+        if (algo != nAlgo)
+        {
+            arith_uint256 nBlockWorkAlt = GetPrevWorkForAlgoWithDecay(block, algo);
+            CBigNum bnBlockWorkAlt = CBigNum(ArithToUint256(nBlockWorkAlt));
+            if (bnBlockWorkAlt != 0)
+                bnBlockWork *= bnBlockWorkAlt;
+        }
+    }
+    // Compute the geometric mean
+    CBigNum bnRes = bnBlockWork.nthRoot(NUM_ALGOS);
+    
+    // Scale to roughly match the old work calculation
+    bnRes <<= 8;
+    
+    //return bnRes;
+    return UintToArith256(bnRes.getuint256());
+}
+
+arith_uint256 GetBlockProof(const CBlockIndex& block)
+{
+    if (IsHardForkActivated(block.nTime))
+    {
+        return GetGeometricMeanPrevWork(block);
+    }
+    else
+    {
+        return GetBlockProofBase(block);
+    }
+}
+
 
 int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params& params)
 {

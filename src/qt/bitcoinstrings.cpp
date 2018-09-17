@@ -58,6 +58,9 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Delete all wallet transactions and only recover those parts of the "
 "blockchain through -rescan on startup"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Disable all Globaltoken specific functionality (Masternodes, "
+"InstantSend) (0-1, default: %u)"),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Discover own IP addresses (default: 1 when listening and no -externalip or -"
 "proxy)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
@@ -65,6 +68,9 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "%s"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Do not keep transactions in the mempool longer than <n> hours (default: %u)"),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Enable InstantSend, show confirmations for locked transactions (0-1, "
+"default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Equivalent bytes per sigop in transactions for relay and mining (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
@@ -84,6 +90,9 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Execute command when a relevant alert is received or we see a really long "
 "fork (%s in cmd is replaced by message)"),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Execute command when a wallet InstantSend transaction is successfully locked "
+"(%s in cmd is replaced by TxID)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Execute command when a wallet transaction changes (%s in cmd is replaced by "
 "TxID)"),
@@ -114,6 +123,12 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "If this block is in the chain assume that it and its ancestors are valid and "
 "potentially skip their script verification (0 to verify all, default: %s, "
 "testnet: %s)"),
+QT_TRANSLATE_NOOP("the-core", ""
+"InstantSend doesn't support sending values that high yet. Transactions are "
+"currently limited to %1 GLT."),
+QT_TRANSLATE_NOOP("the-core", ""
+"InstantSend requires inputs with at least %d confirmations, you might need "
+"to wait a few minutes and try again."),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay "
 "fee of %s to prevent stuck transactions)"),
@@ -134,6 +149,9 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Number of seconds to keep misbehaving peers from reconnecting (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Output debugging information (default: %u, supplying <category> is optional)"),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Override spork address. Only useful for regtest. Using this on "
+"mainnet or testnet will ban you."),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Please check that your computer's date and time are correct! If your clock "
 "is wrong, %s will not work properly."),
@@ -239,6 +257,13 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Wallet will not create transactions that violate mempool chain limits "
 "(default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Warning: At least %d of %d masternodes are running on a newer software "
+"version. Please check latest releases, you might need to update too."),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
+"Warning: Every masternode (out of %d known ones) is running on a newer "
+"software version. Please check latest releases, it's very likely that you "
+"missed a major/critical update."),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Warning: The network does not appear to fully agree! Some miners appear to "
 "be experiencing issues."),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
@@ -260,6 +285,9 @@ QT_TRANSLATE_NOOP("bitcoin-core", ""
 "Whitelisted peers cannot be DoS banned and their transactions are always "
 "relayed, even if they are already in the mempool, useful e.g. for a gateway"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""
+"You must specify a masternodeprivkey in the configuration. Please see "
+"documentation for help."),
+QT_TRANSLATE_NOOP("bitcoin-core", ""
 "You need to rebuild the database using -reindex to go back to unpruned "
 "mode.  This will redownload the entire blockchain"),
 QT_TRANSLATE_NOOP("bitcoin-core", "%d of last 100 blocks have unexpected version"),
@@ -278,6 +306,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Append comment to the user agent string"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Attempt to recover private keys from a corrupt wallet on startup"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Automatically create Tor hidden service (default: %d)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Block creation options:"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Can't find random Masternode."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Cannot downgrade wallet"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Cannot resolve -%s address: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Chain selection options:"),
@@ -287,14 +316,18 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Connect to a node to retrieve peer addresses,
 QT_TRANSLATE_NOOP("bitcoin-core", "Connection options:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Copyright (C) %i-%i"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Corrupted block database detected"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Could not parse masternode.conf"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Debugging/Testing options:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Do not load the wallet and disable wallet RPC calls"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Do you want to rebuild the block database now?"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Done loading"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish hash block in <address>"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish hash transaction (locked via InstantSend) in <address>"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish hash transaction in <address>"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish raw block in <address>"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish raw transaction (locked via InstantSend) in <address>"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Enable publish raw transaction in <address>"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Enable the client to act as a masternode (0-1, default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Enable transaction replacement in the memory pool (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Error creating %s: You can't create non-HD wallets with this version."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Error initializing block database"),
@@ -315,6 +348,8 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Error: A fatal internal error occurred, see d
 QT_TRANSLATE_NOOP("bitcoin-core", "Error: Disk space is low!"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Failed to listen on any port. Use -listen=0 if you want this."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Failed to rescan the wallet during initialization"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Failed to load masternode cache from"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Failed to load masternode payments cache from"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Fee (in %s/kB) to add to transactions you send (default: %s)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "How many blocks to check at startup (default: %u, 0 = all)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Importing..."),
@@ -323,6 +358,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Include IP addresses in debug output (default
 QT_TRANSLATE_NOOP("bitcoin-core", "Incorrect or no genesis block found. Wrong datadir for network?"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Information"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Initialization sanity check failed. %s is shutting down."),
+QT_TRANSLATE_NOOP("bitcoin-core", "InstantSend options:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Insufficient funds"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid -onion address or hostname: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid -proxy address or hostname: '%s'"),
@@ -330,7 +366,10 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Invalid amount for -%s=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid amount for -discardfee=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid amount for -fallbackfee=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid amount for -paytxfee=<amount>: '%s' (must be at least %s)"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Invalid masternodeprivkey. Please see documenation."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Invalid netmask specified in -whitelist: '%s'"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Invalid port detected in masternode.conf"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Invalid spork address specified with -sporkaddr"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Keep at most <n> unconnectable transactions in memory (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Keep the transaction memory pool below <n> megabytes (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Keypool ran out, please call keypoolrefill first"),
@@ -339,15 +378,25 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Listen for connections on <port> (default: %u
 QT_TRANSLATE_NOOP("bitcoin-core", "Loading P2P addresses..."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Loading banlist..."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Loading block index..."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Loading masternode cache..."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Loading masternode payment cache..."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Loading wallet..."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Location of the auth cookie (default: data dir)"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Lock masternodes from masternode configuration file (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Maintain at most <n> connections to peers (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Make the wallet broadcast transactions"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Masternode cache is empty, skipping payments cache..."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Masternode options:"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Masternode queue is full."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Masternode:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Maximum per-connection receive buffer, <n>*1000 bytes (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Maximum per-connection send buffer, <n>*1000 bytes (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Need to specify a port with -whitebind: '%s'"),
+QT_TRANSLATE_NOOP("bitcoin-core", "No Masternodes detected."),
+QT_TRANSLATE_NOOP("bitcoin-core", "No compatible Masternode found."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Node relay options:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Not enough file descriptors available."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Not in the Masternode list."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Only connect to nodes in network <net> (ipv4, ipv6 or onion)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Options:"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Password for JSON-RPC connections"),
@@ -373,6 +422,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Send transactions with full-RBF opt-in enable
 QT_TRANSLATE_NOOP("bitcoin-core", "Set database cache size in megabytes (%d to %d, default: %d)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Set key pool size to <n> (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Set maximum BIP141 block weight (default: %d)"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Set the masternode private key"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Set the number of threads to service RPC calls (default: %d)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Show all debugging options (usage: --help -help-debug)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Shrink debug.log file on client startup (default: 1 when no -debug)"),
@@ -383,15 +433,22 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Specified -walletdir \"%s\" is not a director
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify configuration file (default: %s)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify connection timeout in milliseconds (minimum: 1, default: %d)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify data directory"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Specify masternode configuration file (default: %s)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify pid file (default: %s)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify wallet file (within data directory)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Specify your own public address"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Spend unconfirmed change when sending transactions (default: %u)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Starting network threads..."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Submitted following entries to masternode: %u / %d"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Submitted to masternode, waiting for more entries ( %u / %d ) %s"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Submitted to masternode, waiting in queue %s"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Synchronizing masternode payments..."),
+QT_TRANSLATE_NOOP("bitcoin-core", "Synchronizing masternodes..."),
 QT_TRANSLATE_NOOP("bitcoin-core", "The source code is available from %s."),
 QT_TRANSLATE_NOOP("bitcoin-core", "The transaction amount is too small to pay the fee"),
 QT_TRANSLATE_NOOP("bitcoin-core", "The wallet will avoid paying less than the minimum relay fee."),
 QT_TRANSLATE_NOOP("bitcoin-core", "This is experimental software."),
+QT_TRANSLATE_NOOP("bitcoin-core", "This is not a Masternode."),
 QT_TRANSLATE_NOOP("bitcoin-core", "This is the minimum transaction fee you pay on every transaction."),
 QT_TRANSLATE_NOOP("bitcoin-core", "This is the transaction fee you will pay if you send a transaction."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Threshold for disconnecting misbehaving peers (default: %u)"),
@@ -407,6 +464,7 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Transaction too large"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unable to bind to %s on this computer (bind returned error %s)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unable to bind to %s on this computer. %s is probably already running."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unable to generate initial keys"),
+QT_TRANSLATE_NOOP("bitcoin-core", "Unable to sign spork message, wrong key?"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unable to start HTTP server. See debug log for details."),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unknown network specified in -onlynet: '%s'"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Unsupported argument -benchmark ignored, use -debug=bench."),

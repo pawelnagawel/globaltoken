@@ -1,7 +1,7 @@
 dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
 AC_PREREQ([2.60])
-define(_CLIENT_VERSION_MAJOR, 2)
-define(_CLIENT_VERSION_MINOR, 1)
+define(_CLIENT_VERSION_MAJOR, 3)
+define(_CLIENT_VERSION_MINOR, 0)
 define(_CLIENT_VERSION_REVISION, 0)
 define(_CLIENT_VERSION_BUILD, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
@@ -32,6 +32,7 @@ AC_CANONICAL_HOST
 AH_TOP([#ifndef BITCOIN_CONFIG_H])
 AH_TOP([#define BITCOIN_CONFIG_H])
 AH_BOTTOM([#endif //BITCOIN_CONFIG_H])
+AM_PROG_AS
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
@@ -206,6 +207,24 @@ AC_ARG_ENABLE([zmq],
   [use_zmq=$enableval],
   [use_zmq=yes])
 
+AC_ARG_ENABLE([sse2],
+    [AS_HELP_STRING([--enable-sse2],
+    [enable SSE2 instructions in the scrypt library. (default is disabled)])],
+    [use_sse2=$enableval],
+    [use_sse2=no])
+    
+AC_ARG_ENABLE([sse4],
+    [AS_HELP_STRING([--enable-sse4],
+    [enable SSE4.1 instructions in the yescrypt library. (default is disabled)])],
+    [use_sse4_1=$enableval],
+    [use_sse4_1=no])
+    
+AC_ARG_ENABLE([openmp],
+    [AS_HELP_STRING([--enable-openmp],
+    [enable OpenMP while linking. (default is disabled)])],
+    [use_openmp=$enableval],
+    [use_openmp=no])
+  
 AC_ARG_WITH([protoc-bindir],[AS_HELP_STRING([--with-protoc-bindir=BIN_DIR],[specify protoc bin path])], [protoc_bin_path=$withval], [])
 
 AC_ARG_ENABLE(man,
@@ -272,7 +291,7 @@ fi
 # Check for optional instruction set support. Enabling these does _not_ imply that all code will
 # be compiled with them, rather that specific objects/libs may use them after checking for runtime
 # compatibility.
-AX_CHECK_COMPILE_FLAG([-msse4.2],[[SSE42_CXXFLAGS="-msse4.2"]],,[[$CXXFLAG_WERROR]])
+AX_CHECK_COMPILE_FLAG([-msse4.2],[[SSE42_CXXFLAGS="$SSE42_CXXFLAGS -msse4.2"]],,[[$CXXFLAG_WERROR]])
 
 TEMP_CXXFLAGS="$CXXFLAGS"
 CXXFLAGS="$CXXFLAGS $SSE42_CXXFLAGS"
@@ -583,7 +602,11 @@ if test x$use_hardening != xno; then
   AX_CHECK_LINK_FLAG([[-Wl,-z,now]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,now"])
 
   if test x$TARGET_OS != xwindows; then
-    AX_CHECK_COMPILE_FLAG([-fPIE],[PIE_FLAGS="-fPIE"])
+    if test "$use_asm" = "yes"; then
+        AX_CHECK_COMPILE_FLAG([-fPIC],[HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fPIC" && CFLAGS="$CFLAGS -fPIC"])
+    else
+        AX_CHECK_COMPILE_FLAG([-fPIE],[PIE_FLAGS="-fPIE"])
+    fi
     AX_CHECK_LINK_FLAG([[-pie]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pie"])
   fi
 
@@ -752,6 +775,21 @@ if test x$use_upnp != xno; then
     [have_miniupnpc=no]
   )
 fi
+
+dnl Check to find the libsodium headers/libraries
+AC_CHECK_LIB(sodium, sodium_init,[],
+[AC_MSG_ERROR([The Sodium crypto library libraries not found.])]
+)
+
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+#include <sodium.h>
+], [
+#if SODIUM_LIBRARY_VERSION_MAJOR < 9 || SODIUM_LIBRARY_VERSION_MAJOR == 9 && SODIUM_LIBRARY_VERSION_MINOR < 5
+# error
+#endif
+])],
+[AC_MSG_RESULT([checking for version of libsodium... yes])],
+[AC_MSG_ERROR([Wrong libsodium: version >= 1.0.13 required])])
 
 BITCOIN_QT_INIT
 
@@ -1067,6 +1105,14 @@ AC_SUBST(UNIVALUE_LIBS)
 
 BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
+LIBEQUIHASH_LIBS="-lcrypto -lsodium"
+if test x$use_asm = xyes; then
+	NEOSCRYPT_FLAGS="$NEOSCRYPT_FLAGS -DSHA256 -DOPT"
+    # -DASM -DMINER_4WAY deleted temporary, because ASM mode does not support neoscrypt()
+else
+	NEOSCRYPT_FLAGS="$NEOSCRYPT_FLAGS -DSHA256 -DOPT"
+fi
+
 AC_MSG_CHECKING([whether to build globaltokend])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
@@ -1192,6 +1238,36 @@ else
   BUILD_TEST=""
 fi
 
+AC_MSG_CHECKING([whether to enable sse2 instructions])
+if test x$use_sse2 != xno; then
+  AC_MSG_RESULT(yes)
+  AX_CHECK_COMPILE_FLAG([-msse2],[[YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -msse2"]],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-msse2],[[SCRYPT_FLAGS="$SCRYPT_FLAGS -msse2 -DUSE_SSE2=1"]],,[[$CXXFLAG_WERROR]])
+  AC_DEFINE([USE_SSE2],[1],[Define if SSE2 support should be compiled in])
+  use_sse2=yes
+else
+  AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to enable sse4.1 instructions])
+if test x$use_sse4_1 != xno; then
+  AC_MSG_RESULT(yes)
+  AX_CHECK_COMPILE_FLAG([-msse4.1],[[YESCRYPT_COMPILE_FLAGS="$YESCRYPT_COMPILE_FLAGS -msse4.1"]],,[[$CXXFLAG_WERROR]])
+  AC_DEFINE([USE_SSE4_1],[1],[Define if SSE4.1 support should be compiled in])
+  use_sse4_1=yes
+else
+  AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to enable OpenMP])
+if test x$use_openmp != xno; then
+  AC_MSG_RESULT(yes)
+  AX_CHECK_LINK_FLAG([[-fopenmp]],[YESCRYPT_LDFLAGS="$YESCRYPT_LDFLAGS -fopenmp"])
+  use_openmp=yes
+else
+  AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([whether to reduce exports])
 if test x$use_reduce_exports = xyes; then
   AC_MSG_RESULT([yes])
@@ -1212,6 +1288,8 @@ AM_CONDITIONAL([ENABLE_QT],[test x$bitcoin_enable_qt = xyes])
 AM_CONDITIONAL([ENABLE_QT_TESTS],[test x$BUILD_TEST_QT = xyes])
 AM_CONDITIONAL([ENABLE_BENCH],[test x$use_bench = xyes])
 AM_CONDITIONAL([USE_QRCODE], [test x$use_qr = xyes])
+AM_CONDITIONAL([USE_SSE2], [test x$use_sse2 = xyes])
+AM_CONDITIONAL([USE_SSE4_1], [test x$use_sse4_1 = xyes])
 AM_CONDITIONAL([USE_LCOV],[test x$use_lcov = xyes])
 AM_CONDITIONAL([GLIBC_BACK_COMPAT],[test x$use_glibc_compat = xyes])
 AM_CONDITIONAL([HARDEN],[test x$use_hardening = xyes])
@@ -1259,6 +1337,8 @@ AC_SUBST(SSE42_CXXFLAGS)
 AC_SUBST(LIBTOOL_APP_LDFLAGS)
 AC_SUBST(USE_UPNP)
 AC_SUBST(USE_QRCODE)
+AC_SUBST(USE_SSE2)
+AC_SUBST(USE_SSE4_1)
 AC_SUBST(BOOST_LIBS)
 AC_SUBST(TESTDEFS)
 AC_SUBST(LEVELDB_TARGET_FLAGS)
@@ -1269,6 +1349,11 @@ AC_SUBST(SSL_LIBS)
 AC_SUBST(EVENT_LIBS)
 AC_SUBST(EVENT_PTHREADS_LIBS)
 AC_SUBST(ZMQ_LIBS)
+AC_SUBST(LIBEQUIHASH_LIBS)
+AC_SUBST(YESCRYPT_LDFLAGS)
+AC_SUBST(YESCRYPT_COMPILE_FLAGS)
+AC_SUBST(NEOSCRYPT_FLAGS)
+AC_SUBST(SCRYPT_FLAGS)
 AC_SUBST(PROTOBUF_LIBS)
 AC_SUBST(QR_LIBS)
 AC_CONFIG_FILES([Makefile src/Makefile doc/man/Makefile share/setup.nsi share/qt/Info.plist test/config.ini])

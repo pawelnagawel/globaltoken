@@ -41,11 +41,31 @@ void URITests::uriTests()
     QVERIFY(rv.label == QString());
     QVERIFY(rv.amount == 100100000);
 
-    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?amount=100&label=Wikipedia Example"));
+    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?amount=100&label=Wikipedia Example&IS=1"));
     QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));
     QVERIFY(rv.address == QString("GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe"));
     QVERIFY(rv.amount == 10000000000LL);
     QVERIFY(rv.label == QString("Wikipedia Example"));
+    QVERIFY(rv.fUseInstantSend == 1);
+    
+    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?amount=100&label=Wikipedia Example&IS=Something Invalid"));
+    QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));
+    QVERIFY(rv.address == QString("GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe"));
+    QVERIFY(rv.amount == 10000000000LL);
+    QVERIFY(rv.label == QString("Wikipedia Example"));
+    QVERIFY(rv.fUseInstantSend != 1);
+    
+    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?IS=1"));
+    QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));
+    QVERIFY(rv.fUseInstantSend == 1);
+    
+    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?IS=0"));
+    QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));
+    QVERIFY(rv.fUseInstantSend != 1);
+
+    uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe"));
+    QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));
+    QVERIFY(rv.fUseInstantSend != 1);
 
     uri.setUrl(QString("globaltoken:GbMJLn3fyMoZChhTLsUrmWmEQnoKsJAPpe?message=Wikipedia Example Address"));
     QVERIFY(GUIUtil::parseBitcoinURI(uri, &rv));

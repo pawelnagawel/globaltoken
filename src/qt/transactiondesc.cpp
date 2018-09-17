@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,6 +19,8 @@
 #include <wallet/db.h>
 #include <wallet/wallet.h>
 
+#include <instantx.h>
+
 #include <stdint.h>
 #include <string>
 
@@ -33,17 +36,36 @@ QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
     }
     else
     {
+        QString strTxStatus;
         int nDepth = wtx.GetDepthInMainChain();
+        
         if (nDepth < 0)
-            return tr("conflicted with a transaction with %1 confirmations").arg(-nDepth);
+            strTxStatus = tr("conflicted with a transaction with %1 confirmations").arg(-nDepth);
         else if (GetAdjustedTime() - wtx.nTimeReceived > 2 * 60 && wtx.GetRequestCount() == 0)
-            return tr("%1/offline").arg(nDepth);
+            strTxStatus = tr("%1/offline").arg(nDepth);
         else if (nDepth == 0)
-            return tr("0/unconfirmed, %1").arg((wtx.InMempool() ? tr("in memory pool") : tr("not in memory pool"))) + (wtx.isAbandoned() ? ", "+tr("abandoned") : "");
+            strTxStatus = tr("0/unconfirmed, %1").arg((wtx.InMempool() ? tr("in memory pool") : tr("not in memory pool"))) + (wtx.isAbandoned() ? ", "+tr("abandoned") : "");
         else if (nDepth < 6)
-            return tr("%1/unconfirmed").arg(nDepth);
+            strTxStatus = tr("%1/unconfirmed").arg(nDepth);
         else
-            return tr("%1 confirmations").arg(nDepth);
+            strTxStatus = tr("%1 confirmations").arg(nDepth);
+        
+        if(!instantsend.HasTxLockRequest(wtx.GetHash())) return strTxStatus; // regular tx
+
+        int nSignatures = instantsend.GetTransactionLockSignatures(wtx.GetHash());
+        int nSignaturesMax = CTxLockRequest(wtx).GetMaxSignatures();
+        // InstantSend
+        strTxStatus += " (";
+        if(instantsend.IsLockedInstantSendTransaction(wtx.GetHash())) {
+            strTxStatus += tr("verified via InstantSend");
+        } else if(!instantsend.IsTxLockCandidateTimedOut(wtx.GetHash())) {
+            strTxStatus += tr("InstantSend verification in progress - %1 of %2 signatures").arg(nSignatures).arg(nSignaturesMax);
+        } else {
+            strTxStatus += tr("InstantSend verification failed");
+        }
+        strTxStatus += ")";
+        
+        return strTxStatus;
     }
 }
 

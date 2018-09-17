@@ -59,6 +59,7 @@ private:
     ClientModel *clientModel;
     WalletModel *model;
     bool fNewRecipientAllowed;
+    void send(QList<SendCoinsRecipient> recipients, QString strFunds);
     bool fFeeMinimized;
     const PlatformStyle *platformStyle;
 
@@ -78,6 +79,7 @@ private Q_SLOTS:
     void removeEntry(SendCoinsEntry* entry);
     void useAvailableBalance(SendCoinsEntry* entry);
     void updateDisplayUnit();
+    void updateInstantSend();
     void coinControlFeatureChanged(bool);
     void coinControlButtonClicked();
     void coinControlChangeChecked(int);

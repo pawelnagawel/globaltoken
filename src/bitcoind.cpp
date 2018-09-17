@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -16,6 +17,7 @@
 #include <init.h>
 #include <noui.h>
 #include <util.h>
+#include <masternodeconfig.h>
 #include <httpserver.h>
 #include <httprpc.h>
 #include <utilstrencodings.h>
@@ -106,6 +108,13 @@ bool AppInit(int argc, char* argv[])
             SelectParams(ChainNameFromCommandLine());
         } catch (const std::exception& e) {
             fprintf(stderr, "Error: %s\n", e.what());
+            return false;
+        }
+        
+        // parse masternode.conf
+        std::string strErr;
+        if(!masternodeConfig.read(strErr)) {
+            fprintf(stderr,"Error reading masternode configuration file: %s\n", strErr.c_str());
             return false;
         }
 

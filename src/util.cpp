@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
-// Copyright (c) 2017 The Globaltoken Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -84,6 +85,10 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
+//Globaltoken only features
+bool fMasternodeMode = false;
+bool fLiteMode = false;
+
 const char * const BITCOIN_CONF_FILENAME = "globaltoken.conf";
 const char * const BITCOIN_PID_FILENAME = "globaltokend.pid";
 const char * const DEFAULT_DEBUGLOGFILE = "debug.log";
@@ -97,6 +102,8 @@ bool fLogTimeMicros = DEFAULT_LOGTIMEMICROS;
 bool fLogIPs = DEFAULT_LOGIPS;
 std::atomic<bool> fReopenDebugLog(false);
 CTranslationInterface translationInterface;
+
+uint8_t currentAlgo = 0;
 
 /** Log categories bitfield. */
 std::atomic<uint32_t> logCategories(0);
@@ -250,6 +257,13 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::COINDB, "coindb"},
     {BCLog::QT, "qt"},
     {BCLog::LEVELDB, "leveldb"},
+	{BCLog::POW, "pow"},
+    {BCLog::INSTANTSEND, "instantsend"},
+    {BCLog::MASTERNODE, "masternode"},
+    {BCLog::MNPAYMENTS, "mnpayments"},
+    {BCLog::MNSYNC, "mnsync"},
+    {BCLog::SPORK, "spork"},
+    {BCLog::GLOBALTOKEN, "globaltoken"},
     {BCLog::ALL, "1"},
     {BCLog::ALL, "all"},
 };
@@ -277,7 +291,7 @@ std::string ListLogCategories()
     int outcount = 0;
     for (unsigned int i = 0; i < ARRAYLEN(LogCategories); i++) {
         // Omit the special cases.
-        if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL) {
+        if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL && LogCategories[i].flag != BCLog::GLOBALTOKEN) {
             if (outcount != 0) ret += ", ";
             ret += LogCategories[i].category;
             outcount++;
@@ -291,7 +305,7 @@ std::vector<CLogCategoryActive> ListActiveLogCategories()
     std::vector<CLogCategoryActive> ret;
     for (unsigned int i = 0; i < ARRAYLEN(LogCategories); i++) {
         // Omit the special cases.
-        if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL) {
+        if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL && LogCategories[i].flag != BCLog::GLOBALTOKEN) {
             CLogCategoryActive catActive;
             catActive.category = LogCategories[i].category;
             catActive.active = LogAcceptCategory(LogCategories[i].flag);
@@ -646,6 +660,14 @@ void ClearDatadirCache()
 fs::path GetConfigFile(const std::string& confPath)
 {
     return AbsPathForConfigVal(fs::path(confPath), false);
+}
+
+boost::filesystem::path GetMasternodeConfigFile()
+{
+    boost::filesystem::path pathConfigFile(gArgs.GetArg("-mnconf", "masternode.conf"));
+    if (!pathConfigFile.is_complete())
+        pathConfigFile = GetDataDir() / pathConfigFile;
+    return pathConfigFile;
 }
 
 void ArgsManager::ReadConfigFile(const std::string& confPath)

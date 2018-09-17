@@ -5,6 +5,7 @@
 #include <core_io.h>
 
 #include <primitives/block.h>
+#include <primitives/mining_block.h>
 #include <primitives/transaction.h>
 #include <script/script.h>
 #include <serialize.h>

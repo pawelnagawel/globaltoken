@@ -6,6 +6,7 @@
 #include <txdb.h>
 
 #include <chainparams.h>
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <random.h>
 #include <pow.h>
@@ -281,13 +282,23 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nUndoPos       = diskindex.nUndoPos;
                 pindexNew->nVersion       = diskindex.nVersion;
                 pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
+                pindexNew->hashReserved   = diskindex.hashReserved;
                 pindexNew->nTime          = diskindex.nTime;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
+                pindexNew->nBigNonce      = diskindex.nBigNonce;
+                pindexNew->nSolution      = diskindex.nSolution;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
+				
+                bool equihashvalidator;
+                bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);
+                
+                if ((pindexNew->GetAlgo() == ALGO_EQUIHASH || pindexNew->GetAlgo() == ALGO_ZHASH) && !equihashvalidator) {
+                    return error("%s: %s solution invalid at: %s", __func__, GetAlgoName(pindexNew->GetAlgo()), pindexNew->ToString());
+                }
 
-                if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits, consensusParams))
+                if (!checkresult)
                     return error("%s: CheckProofOfWork failed: %s", __func__, pindexNew->ToString());
 
                 pcursor->Next();

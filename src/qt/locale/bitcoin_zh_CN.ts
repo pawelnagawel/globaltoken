@@ -262,6 +262,14 @@
         <translation>查看交易历史</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>主节点(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>浏览主节点</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>退出(&amp;X)</translation>
     </message>
@@ -304,6 +312,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>更改密码(&amp;C)...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>打开主节点配置文件(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>打开主节点配置文件</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -892,6 +908,157 @@
     </message>
     </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>表单</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>我的主节点</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>注意：本地钱包中的主节点状态可能会稍有误差。&lt;br /&gt;总是等待钱包同步完额外的数据后再从另一个节点重新检查&lt;br /&gt;如果您的主节点应该已经运行，但您仍然在“状态”栏看不到“启用”的话。</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>别名</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>地址</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>协议</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>状态</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>工作中</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>最后在线</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>收款人</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>启动别名(&amp;T)</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>启动遗漏(&amp;M)</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>更新状态(&amp;U)</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>显示附加的主节点信息</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>显示 &amp;信息...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>状态将在数秒后自动更新：</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>所有主节点</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>筛选列表：</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>筛选主节点列表</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>节点数：</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>启动别名</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>确认启动主节点</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>您确定要启动主节点%1吗？</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>确认启动所有的主节点</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>您确定要启动所有主节点吗？</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>命令目前不可使用</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>在主节点列表同步之前您无法使用此命令</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>确认启动遗漏的主节点</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>你确定要启动遗漏的主节点吗？</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>主节点 %1 的附加信息</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>主节点私钥</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>私钥</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>抵押</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>未知</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1042,6 +1209,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>钱包(&amp;A)</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>显示其他标签，在第一个子标签列出所有您的主节点&lt;br/&gt;在第二个子标签列出所有网络上的主节点。</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>显示主节点标签页</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1393,6 +1568,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>读取主节点配置文件时出错：%1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>金额</translation>
     </message>
@@ -1473,6 +1652,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>二维码标题</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>二维码</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>保存图片(&amp;S)...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>生成二维码错误</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1540,6 +1738,10 @@
     <message>
         <source>Block chain</source>
         <translation>数据链</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>主节点数量</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1809,6 +2011,10 @@
         <translation>清除</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>要求即时到帐付款</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>请求付款的历史</translation>
     </message>
@@ -1894,6 +2100,10 @@
     <message>
         <source>Message</source>
         <translation>消息</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>即时到账</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2010,6 +2220,10 @@
         <translation>收起  费用设置 </translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>即时到账</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>每kb</translation>
     </message>
@@ -2104,6 +2318,10 @@
     <message>
         <source>Copy change</source>
         <translation>复制找零金额</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>和即时支付</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2485,6 +2703,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 个确认</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>经即时发送系统核实</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>即时发送验证正在进行 - %2个签署中的第%1个</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>即时发送验证失败</translation>
     </message>
     <message>
         <source>Status</source>
@@ -2909,6 +3139,14 @@
         <translation>发送</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>即时发送功能目前还不支持发送如此高的金额。目前限制在%1达世币。</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>这个即时发送交易使用过多的输入（&gt;%1），费用可能很大。</translation>
+    </message>
+    <message>
         <source>Increasing transaction fee failed</source>
         <translation>增加交易费失败</translation>
     </message>
@@ -2991,6 +3229,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>指定您的公共地址</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>您必须在配置中指定一个主节点密钥。请参阅文档以获得帮助。</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3452,12 +3694,24 @@
         <translation>通过 SOCKS5 代理连接</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>激活客户端，使其作为主节点(0-1，默认：%u)</translation>
+    </message>
+    <message>
         <source>Error reading from database, shutting down.</source>
         <translation>读取数据库出错，关闭中。</translation>
     </message>
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>升级链状态数据库出错</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>无法加载主节点缓存</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>无法加载主节点付款缓存</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3488,8 +3742,32 @@
         <translation>内存中最多保留 &lt;n&gt; 笔孤立的交易 (默认: %u) </translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>正在读取主节点缓存...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>正在读取主节点付款缓存...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>根据主节点的配置文件锁定主节点(默认：%u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>-whitebind: '%s' 需要指定一个端口</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>没有检测到任何主节点。</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>没有找到任何兼容的主节点。</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>在主节点列表中不存在。</translation>
     </message>
     <message>
         <source>Node relay options:</source>
@@ -3522,6 +3800,30 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>签署交易失败</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>指定主节点配置文件 (默认：%s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>己经提交下列条目到主节点：%u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>己经提交到主节点，正在等候更多条目（%u / %d）%s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>提交到主节点，在队列 %s 中等待</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>正在同步主节点...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>这并不是一个主节点。</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -3823,6 +4125,98 @@
     <message>
         <source>Error</source>
         <translation>错误</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>无效主节点私钥。请查阅文档。</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>无法找到随机主节点。</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>无法解析主节点配置文件</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>在主节点配置文件中检测到无效端口</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>禁用所有全局令牌特定功能（主节点，即时发送）（0-1，默认：%u）</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>启用即时发送，显示锁定交易的确认次数（0-1，默认：%u）</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>当钱包有交易改变时要执行的指令（命令中的%s会被取代成交易识别码）</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>即时发送系统暂时并不支持这么高的交易金额。目前的金额仅限于%1达世币。</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>即时发送系统要求输入的资金最少要有%d个确认，您可能需要等待数分钟然后再重试。</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>主节点缓存为空并跳过付款缓存…</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>主节点选项：</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>主节点列队已满。</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>主节点：</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>警告: 至少有 %d 分之 %d 的主节点正在运行新版本软件. 请检查最新版本, 您可能也需要更新.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>警告: 每个主节点 ( %d 个已知的) 正在运行新版本软件. 请检查最新版本, 您很有可能错过了重大/关键更新.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>设置主节点私钥</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>正在同步主节点付款信息…</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>允许在&lt;address&gt;中发布哈希交易（通过即时发送来锁定）</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>允许在&lt;address&gt;中发布原始交易（通过即时发送来锁定）</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>即时发送选项：</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>覆盖spork地址. 仅对regtest有用. 在主网或测试网络使用会被封.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>使用 -sporkaddr 指定的spork地址无效</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>无法签署交叉信息，错误的密钥？</translation>
     </message>
 </context>
 </TS>

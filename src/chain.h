@@ -12,6 +12,7 @@
 #include <pow.h>
 #include <tinyformat.h>
 #include <uint256.h>
+#include <chainparams.h>
 
 #include <vector>
 
@@ -210,9 +211,12 @@ public:
     //! block header
     int32_t nVersion;
     uint256 hashMerkleRoot;
+	uint256 hashReserved;
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+    uint256 nBigNonce;
+	std::vector<unsigned char> nSolution;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId;
@@ -238,9 +242,12 @@ public:
 
         nVersion       = 0;
         hashMerkleRoot = uint256();
+		hashReserved   = uint256();
         nTime          = 0;
         nBits          = 0;
         nNonce         = 0;
+        nBigNonce      = uint256();
+		nSolution.clear();
     }
 
     CBlockIndex()
@@ -254,9 +261,12 @@ public:
 
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
+		hashReserved   = block.hashReserved;
         nTime          = block.nTime;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
+        nBigNonce      = block.nBigNonce;
+		nSolution      = block.nSolution;
     }
 
     CDiskBlockPos GetBlockPos() const {
@@ -276,23 +286,37 @@ public:
         }
         return ret;
     }
-
-    CBlockHeader GetBlockHeader() const
-    {
-        CBlockHeader block;
-        block.nVersion       = nVersion;
-        if (pprev)
-            block.hashPrevBlock = pprev->GetBlockHash();
-        block.hashMerkleRoot = hashMerkleRoot;
-        block.nTime          = nTime;
-        block.nBits          = nBits;
-        block.nNonce         = nNonce;
-        return block;
-    }
+    
+    CBlockHeader GetBlockHeader(const Consensus::Params& consensusParams) const;
 
     uint256 GetBlockHash() const
     {
         return *phashBlock;
+    }
+	
+	uint256 GetBlockPoWHash() const
+    {
+        CBlockHeader block = GetBlockHeader(Params().GetConsensus());
+        return block.GetPoWHash();
+    }
+
+    uint8_t GetAlgo() const
+    {
+        /* create a dummy blockheader and set the nVersion known from CBlockIndex into the block version.
+         * nVersion is required because we need the block algo, which is calculated through nVersion.
+         * So we don't need the full GetBlockHeader Command, because it will fail while linking and 
+         * the LoadBlockIndex will fail if it tries to get a BlockHeader with consensusParams.
+         */ 
+        CBlockHeader block;
+        block.nVersion = nVersion;
+        return block.GetAlgo();
+    }
+    
+    int32_t GetAuxpowVersion() const
+    {
+        CPureBlockVersion block;
+        block.nVersion = nVersion;
+        return block.GetAuxpowVersion();
     }
 
     int64_t GetBlockTime() const
@@ -403,9 +427,20 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
+        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH) {
+            READWRITE(hashReserved);
+        }
         READWRITE(nTime);
         READWRITE(nBits);
-        READWRITE(nNonce);
+        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH)
+        {
+            READWRITE(nBigNonce);
+            READWRITE(nSolution);
+        }
+        if(!(GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH))
+        {
+            READWRITE(nNonce);
+        }
     }
 
     uint256 GetBlockHash() const
@@ -414,9 +449,12 @@ public:
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;
+		block.hashReserved    = hashReserved;
         block.nTime           = nTime;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
+        block.nBigNonce       = nBigNonce;
+		block.nSolution       = nSolution;
         return block.GetHash();
     }
 

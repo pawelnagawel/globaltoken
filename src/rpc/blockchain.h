@@ -4,7 +4,7 @@
 
 #ifndef BITCOIN_RPC_BLOCKCHAIN_H
 #define BITCOIN_RPC_BLOCKCHAIN_H
-
+#include <stdint.h>
 class CBlock;
 class CBlockIndex;
 class UniValue;
@@ -16,7 +16,7 @@ class UniValue;
  * @return A floating point number that is a multiple of the main net minimum
  * difficulty (4295032833 hashes).
  */
-double GetDifficulty(const CBlockIndex* blockindex = nullptr);
+double GetDifficulty(const CBlockIndex* blockindex = nullptr, uint8_t algo = 0);
 
 /** Callback for when block tip changed. */
 void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);
@@ -34,4 +34,3 @@ UniValue mempoolToJSON(bool fVerbose = false);
 UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
 #endif
-

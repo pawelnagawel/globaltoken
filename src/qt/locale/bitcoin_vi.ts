@@ -258,6 +258,14 @@
         <translation>Trình duyệt lịch sử giao dịch</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodes</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Hiển thị các masternode</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>T&amp;hoát</translation>
     </message>
@@ -300,6 +308,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Thay Đổi Cụm Mật Khẩu...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Mở file cấu hình &amp;Masternode</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Mở file cấu hình Masternode</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -912,6 +928,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Từ</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Các Masternode của tôi</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>Chú ý: Trạng thái của các masternode của bạn ở ví cục bộ có thể có tiềm năng hơi không chính xác. &lt;br /&gt;Luôn luôn đợi ví của bạn đồng bộ dữ liệu thêm và sau đó kiểm tra kém nút khác&lt;br /&gt;nếu masternode của bạn đang chạy nhưng bạn vẫn không thấy nó "ENABLED" trong trường "Trạng thái".</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Bí danh</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Địa chỉ</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Giao thức</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Trạng thái</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Hoạt động</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Lần cuối thấy</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Người nhận</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>Khởi động bí danh</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>Khởi động tất cả</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>Khởi động masternode THIẾU</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>Cập nhật trạng thái</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Hiển thị thông tin thêm về Masternode</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Hiển thị &amp;Thông tin...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Trạng thái sẽ được cập nhật tự động trong vòng (giây):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Tất cả các masternode</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Lọc danh sách:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Lọc danh sách masternode</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Số lượng các nút:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Khởi động bí danh</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Xác nhận khởi động masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Bạn có chắc muốn khởi động masternode %1?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Xác nhận khởi động tất cả các masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Bạn có chắc là bạn muốn khởi động TẤT CẢ các masternode?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Lệnh này chưa sẵn sàng bây giờ</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>Bạn không thể sử dụng lệnh này đến tận khi danh sách masternode được đồng bộ</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Xác nhận khởi động các masternode còn thiếu</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Bạn có chắc là bạn muốn khởi động những masternode CÒN THIẾU?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Thông tin thêm về Masternode %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Khoá riêng của Masternode</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Khoá riêng</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Đặt cọc</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Phiên bản</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Không biết</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1062,6 +1233,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>W&amp;allet</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Hiện thêm trang có danh sách tất cả các masternodes của bạn trong trang con thứ nhất &lt;br/&gt; và tất cả các masternode trên mạng trong trang con thứ hai.</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Hiển thị trang Masternodes</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1416,6 +1595,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Lỗi khi đọc file cấu hình masternode: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Số lượng</translation>
     </message>
@@ -1520,6 +1703,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>Tiêu đề mã QR</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>Mã QR</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Lưu ảnh...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Lỗi khi tạo mã QR.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1587,6 +1789,10 @@
     <message>
         <source>Block chain</source>
         <translation>Block chain</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Số lượng Masternodes</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1860,6 +2066,10 @@
         <translation>Xóa</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Yêu cầu InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>Yêu cầu lịch sử giao dịch</translation>
     </message>
@@ -1945,6 +2155,10 @@
     <message>
         <source>Message</source>
         <translation>Tin nhắn</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2061,6 +2275,10 @@
         <translation>gộp fee-settings</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>trên mỗi kilobyte</translation>
     </message>
@@ -2155,6 +2373,10 @@
     <message>
         <source>Copy change</source>
         <translation>Sao chép thay đổi</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>và InstantSend</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2544,6 +2766,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 confirmations</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>đã được kiểm tra bởi InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>Việc kiểm chứng InstantSend đang trong tiến trình - %1 của %2 các chữ ký</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>Kiểm chứng InstantSend thất bại</translation>
     </message>
     <message>
         <source>Status</source>
@@ -2980,6 +3214,14 @@
         <translation>Gửi Coins</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend không hỗ trợ gửi giá trị lớn đến vậy. Các giao dịch hiện giới hạn với %1 GLT.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Sử dụng quá nhiều đầu vào (&gt;%1) cho giao dịch InstantSend này, phí giao dịch có thể rất lớn.</translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>Fee bơm error</translation>
     </message>
@@ -3068,6 +3310,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Specify your own public address</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>Bạn cần chỉ rõ masternodeprivkey trong tệp cấu hình. Hãy xem tài liệu để có hướng dẫn.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3586,6 +3832,10 @@
         <translation>Connect through SOCKS5 proxy</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Cho phép phần mềm hoạt động như là masternode (0-1, ngầm định: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Error loading %s: You can't disable HD on an already existing HD wallet</translation>
     </message>
@@ -3596,6 +3846,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>Error upgrading chainstate database</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Không thể tải cache dữ liệu về masternode từ</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Không thể tải được cache dữ liệu về các giao dịch từ</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3626,8 +3884,32 @@
         <translation>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Đang tải cache cho masternode...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Đang tải bộ đệm thanh toán cho masternode...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Khoá các masternode từ tệp cấu hình masternode (ngầm định: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Need to specify a port with -whitebind: '%s'</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Không tìm thấy các Master node.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Không tìm thấy Masternode tương thích.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Không có trong danh sách Masternode.</translation>
     </message>
     <message>
         <source>Node relay options:</source>
@@ -3660,6 +3942,30 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Signing transaction failed</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Hãy chỉ ra tệp cấu hình masternode (ngầm định: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Đã gửi các những thành phần sau tới masternode: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Đã gửi đến masternode, đang đợi các đầu vào khác nữa (%u / %d) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Đã được gửi cho masternode, đang đợi trong hàng đợi %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Đang đồng bộ các masternode...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Đây không phải là một Masternode.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4008,6 +4314,98 @@
     <message>
         <source>Error</source>
         <translation>Lỗi</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Masternodeprivkey không hợp lệ. Hãy xem lại tài liệu.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Không tìm thấy Masternode ngẫu nhiên.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Không hiểu được tệp masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Phát hiện thấy cổng không hợp lệ trong tệp masternode.conf</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Tắt tất cả các chức năng đắc trưng của Globaltoken (Masternode, InstantSend) (0-1, ngầm định: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Bật InstantSend, hiển thị các xác thực cho các giao dịch bị khoá (0-1, ngầm định: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Thực hiện lên khi một giao dịch InstantSend được khoá thành công (%s trong cmd được thay thế bằng TxID)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend chưa hỗ trợ việc gửi những giá trị lớn như vậy. Các giao dịch hiện tại bị giới hạn đến %1 GLT.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend cần các đầu vào ít nhất %d xác thực, bạn cần đợi thêm vài phút nữa và thử lại.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Bộ đệm Masternode đang trống, bỏ qua các bộ đệm thanh toán...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Tuỳ chọn Masternode:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Danh sách hàng đợi Masternode đã đầy.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Cảnh báo: Có ít nhất %d của %d các masternode đang chạy trên phiên bản phần mềm mới hơn. Hãy kiểm tra lại phiên bản mới ra nhất, bạn có thể cũng cần phải update.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Cảnh báo: Mỗi một masternode (trong số %d được biết) đang chạy trên phiên bản phần mềm mới hơn. Hãy kiểm tra lại phiên bản phần mềm mới nhất, có vẻ như bạn đã bỏ sót một đợt nâng cấp chính/nâng cấp quan trọng.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Đặt khoá riêng cho masternode</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Đang đồng bộ các giao dịch masternode...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Cho phép công bố hash transaction (khoá thông qua InstantSend) trong &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Cho phép công bố các giao dịch raw (được khoá qua InstantSend) trong &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>Các tuỳ chọn InstantSend:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Ghi đè địa chỉ spork. Chỉ hữu ích với regtest. Sử dụng nó với mainnet và testnet sẽ cấm bạn.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>Địa chỉ spork được chỉ ra không hợp lệ với -sporkaddr</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Không thể ký vào thông điệp phân nhánh, sai khoá?</translation>
     </message>
 </context>
 </TS>

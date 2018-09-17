@@ -52,6 +52,7 @@ public:
     }
 
     std::string ToString() const;
+    std::string ToStringShort() const;
 };
 
 /** An input of a transaction.  It contains the location of the previous
@@ -175,6 +176,7 @@ public:
 };
 
 struct CMutableTransaction;
+struct CMutablePOSTransaction;
 
 /**
  * Basic transaction serialization format:
@@ -198,6 +200,60 @@ inline void UnserializeTransaction(TxType& tx, Stream& s) {
     const bool fAllowWitness = !(s.GetVersion() & SERIALIZE_TRANSACTION_NO_WITNESS);
 
     s >> tx.nVersion;
+    unsigned char flags = 0;
+    tx.vin.clear();
+    tx.vout.clear();
+    /* Try to read the vin. In case the dummy is there, this will be read as an empty vector. */
+    s >> tx.vin;
+    if (tx.vin.size() == 0 && fAllowWitness) {
+        /* We read a dummy or an empty vin. */
+        s >> flags;
+        if (flags != 0) {
+            s >> tx.vin;
+            s >> tx.vout;
+        }
+    } else {
+        /* We read a non-empty vin. Assume a normal vout follows. */
+        s >> tx.vout;
+    }
+    if ((flags & 1) && fAllowWitness) {
+        /* The witness flag is present, and we support witnesses. */
+        flags ^= 1;
+        for (size_t i = 0; i < tx.vin.size(); i++) {
+            s >> tx.vin[i].scriptWitness.stack;
+        }
+    }
+    if (flags) {
+        /* Unknown flag in the serialization */
+        throw std::ios_base::failure("Unknown transaction optional data");
+    }
+    s >> tx.nLockTime;
+}
+
+/**
+ * Basic transaction serialization format:
+ * - int32_t nVersion
+ * - uint32_t nTime
+ * - std::vector<CTxIn> vin
+ * - std::vector<CTxOut> vout
+ * - uint32_t nLockTime
+ *
+ * Extended transaction serialization format:
+ * - int32_t nVersion
+ * - unsigned char dummy = 0x00
+ * - unsigned char flags (!= 0)
+ * - std::vector<CTxIn> vin
+ * - std::vector<CTxOut> vout
+ * - if (flags & 1):
+ *   - CTxWitness wit;
+ * - uint32_t nLockTime
+ */
+template<typename Stream, typename TxType>
+inline void UnserializePOSTransaction(TxType& tx, Stream& s) {
+    const bool fAllowWitness = !(s.GetVersion() & SERIALIZE_TRANSACTION_NO_WITNESS);
+
+    s >> tx.nVersion;
+    s >> tx.nTime;
     unsigned char flags = 0;
     tx.vin.clear();
     tx.vout.clear();
@@ -256,6 +312,139 @@ inline void SerializeTransaction(const TxType& tx, Stream& s) {
     }
     s << tx.nLockTime;
 }
+
+template<typename Stream, typename TxType>
+inline void SerializePOSTransaction(const TxType& tx, Stream& s) {
+    const bool fAllowWitness = !(s.GetVersion() & SERIALIZE_TRANSACTION_NO_WITNESS);
+
+    s << tx.nVersion;
+    s << tx.nTime;
+    unsigned char flags = 0;
+    // Consistency check
+    if (fAllowWitness) {
+        /* Check whether witnesses need to be serialized. */
+        if (tx.HasWitness()) {
+            flags |= 1;
+        }
+    }
+    if (flags) {
+        /* Use extended format in case witnesses are to be serialized. */
+        std::vector<CTxIn> vinDummy;
+        s << vinDummy;
+        s << flags;
+    }
+    s << tx.vin;
+    s << tx.vout;
+    if (flags & 1) {
+        for (size_t i = 0; i < tx.vin.size(); i++) {
+            s << tx.vin[i].scriptWitness.stack;
+        }
+    }
+    s << tx.nLockTime;
+}
+
+/** A class for Auxpow POS-Transactions.  
+ * Some coins use Proof of Stake for the Coinbase, which means they have an additional datafield,
+ * that we need to provide here, to En/Decode the Transaction successfully
+ * A transaction can contain multiple inputs and outputs.
+ */
+class CPOSTransaction
+{
+public:
+    // Default transaction version.
+    static const int32_t CURRENT_VERSION=2;
+
+    // Changing the default transaction version requires a two step process: first
+    // adapting relay policy by bumping MAX_STANDARD_VERSION, and then later date
+    // bumping the default CURRENT_VERSION at which point both CURRENT_VERSION and
+    // MAX_STANDARD_VERSION will be equal.
+    static const int32_t MAX_STANDARD_VERSION=2;
+
+    // The local variables are made const to prevent unintended modification
+    // without updating the cached hash value. However, CPOSTransaction is not
+    // actually immutable; deserialization and assignment are implemented,
+    // and bypass the constness. This is safe, as they update the entire
+    // structure, including the hash.
+    const std::vector<CTxIn> vin;
+    const std::vector<CTxOut> vout;
+    const int32_t nVersion;
+    const uint32_t nTime;
+    const uint32_t nLockTime;
+
+private:
+    /** Memory only. */
+    const uint256 hash;
+
+    uint256 ComputeHash() const;
+
+public:
+    /** Construct a CPOSTransaction that qualifies as IsNull() */
+    CPOSTransaction();
+
+    /** Convert a CMutablePOSTransaction into a CPOSTransaction. */
+    CPOSTransaction(const CMutablePOSTransaction &tx);
+    CPOSTransaction(CMutablePOSTransaction &&tx);
+
+    template <typename Stream>
+    inline void Serialize(Stream& s) const {
+        SerializePOSTransaction(*this, s);
+    }
+
+    /** This deserializing constructor is provided instead of an Unserialize method.
+     *  Unserialize is not possible, since it would require overwriting const fields. */
+    template <typename Stream>
+    CPOSTransaction(deserialize_type, Stream& s) : CPOSTransaction(CMutablePOSTransaction(deserialize, s)) {}
+
+    bool IsNull() const {
+        return vin.empty() && vout.empty();
+    }
+
+    const uint256& GetHash() const {
+        return hash;
+    }
+
+    // Compute a hash that includes both transaction and witness data
+    uint256 GetWitnessHash() const;
+
+    // Return sum of txouts.
+    CAmount GetValueOut() const;
+    // GetValueIn() is a method on CCoinsViewCache, because
+    // inputs must be known to compute value in.
+
+    /**
+     * Get the total transaction size in bytes, including witness data.
+     * "Total Size" defined in BIP141 and BIP144.
+     * @return Total transaction size in bytes
+     */
+    unsigned int GetTotalSize() const;
+
+    bool IsCoinBase() const
+    {
+        return (vin.size() == 1 && vin[0].prevout.IsNull());
+    }
+
+    friend bool operator==(const CPOSTransaction& a, const CPOSTransaction& b)
+    {
+        return a.hash == b.hash;
+    }
+
+    friend bool operator!=(const CPOSTransaction& a, const CPOSTransaction& b)
+    {
+        return a.hash != b.hash;
+    }
+
+    std::string ToString() const;
+
+    bool HasWitness() const
+    {
+        for (size_t i = 0; i < vin.size(); i++) {
+            if (!vin[i].scriptWitness.IsNull()) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
 
 
 /** The basic transaction that is broadcasted on the network and contained in
@@ -389,8 +578,59 @@ struct CMutableTransaction
      * fly, as opposed to GetHash() in CTransaction, which uses a cached result.
      */
     uint256 GetHash() const;
+    std::string ToString() const;
 
     friend bool operator==(const CMutableTransaction& a, const CMutableTransaction& b)
+    {
+        return a.GetHash() == b.GetHash();
+    }
+
+    bool HasWitness() const
+    {
+        for (size_t i = 0; i < vin.size(); i++) {
+            if (!vin[i].scriptWitness.IsNull()) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+/** A mutable version of CPOSTransaction. */
+struct CMutablePOSTransaction
+{
+    std::vector<CTxIn> vin;
+    std::vector<CTxOut> vout;
+    int32_t nVersion;
+    uint32_t nTime;
+    uint32_t nLockTime;
+
+    CMutablePOSTransaction();
+    CMutablePOSTransaction(const CPOSTransaction& tx);
+
+    template <typename Stream>
+    inline void Serialize(Stream& s) const {
+        SerializePOSTransaction(*this, s);
+    }
+
+
+    template <typename Stream>
+    inline void Unserialize(Stream& s) {
+        UnserializePOSTransaction(*this, s);
+    }
+
+    template <typename Stream>
+    CMutablePOSTransaction(deserialize_type, Stream& s) {
+        Unserialize(s);
+    }
+
+    /** Compute the hash of this CMutablePOSTransaction. This is computed on the
+     * fly, as opposed to GetHash() in CTransaction, which uses a cached result.
+     */
+    uint256 GetHash() const;
+    std::string ToString() const;
+
+    friend bool operator==(const CMutablePOSTransaction& a, const CMutablePOSTransaction& b)
     {
         return a.GetHash() == b.GetHash();
     }
@@ -409,5 +649,9 @@ struct CMutableTransaction
 typedef std::shared_ptr<const CTransaction> CTransactionRef;
 static inline CTransactionRef MakeTransactionRef() { return std::make_shared<const CTransaction>(); }
 template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
+
+typedef std::shared_ptr<const CPOSTransaction> CPOSTransactionRef;
+static inline CPOSTransactionRef MakePOSTransactionRef() { return std::make_shared<const CPOSTransaction>(); }
+template <typename Tx> static inline CPOSTransactionRef MakePOSTransactionRef(Tx&& txIn) { return std::make_shared<const CPOSTransaction>(std::forward<Tx>(txIn)); }
 
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H

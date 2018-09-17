@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
-// Copyright (c) 2017 The Globaltoken Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -31,8 +32,23 @@
 #include <boost/signals2/signal.hpp>
 #include <boost/thread/condition_variable.hpp> // for boost::thread_interrupted
 
+// Debugging macros
+
+// Uncomment the following line to enable debugging messages
+// or enable on a per file basis prior to inclusion of util.h
+//#define ENABLE_GLOBALTOKEN_DEBUG
+#ifdef ENABLE_GLOBALTOKEN_DEBUG
+#define DBG( x ) x
+#else
+#define DBG( x ) 
+#endif
+
 // Application startup time (used for uptime calculation)
 int64_t GetStartupTime();
+
+//Globaltoken only features
+extern bool fMasternodeMode;
+extern bool fLiteMode;
 
 static const bool DEFAULT_LOGTIMEMICROS = false;
 static const bool DEFAULT_LOGIPS        = false;
@@ -59,6 +75,7 @@ extern CTranslationInterface translationInterface;
 extern const char * const BITCOIN_CONF_FILENAME;
 extern const char * const BITCOIN_PID_FILENAME;
 
+extern uint8_t currentAlgo;
 extern std::atomic<uint32_t> logCategories;
 
 /**
@@ -83,27 +100,34 @@ struct CLogCategoryActive
 namespace BCLog {
     enum LogFlags : uint32_t {
         NONE        = 0,
-        NET         = (1 <<  0),
-        TOR         = (1 <<  1),
-        MEMPOOL     = (1 <<  2),
-        HTTP        = (1 <<  3),
-        BENCH       = (1 <<  4),
-        ZMQ         = (1 <<  5),
-        DB          = (1 <<  6),
-        RPC         = (1 <<  7),
-        ESTIMATEFEE = (1 <<  8),
-        ADDRMAN     = (1 <<  9),
-        SELECTCOINS = (1 << 10),
-        REINDEX     = (1 << 11),
-        CMPCTBLOCK  = (1 << 12),
-        RAND        = (1 << 13),
-        PRUNE       = (1 << 14),
-        PROXY       = (1 << 15),
-        MEMPOOLREJ  = (1 << 16),
-        LIBEVENT    = (1 << 17),
-        COINDB      = (1 << 18),
-        QT          = (1 << 19),
-        LEVELDB     = (1 << 20),
+        INSTANTSEND = (1 <<  0),
+        MASTERNODE  = (1 <<  1),
+        MNPAYMENTS  = (1 <<  2),
+        MNSYNC      = (1 <<  3),
+        SPORK       = (1 <<  4),
+        GLOBALTOKEN = INSTANTSEND | MASTERNODE | MNPAYMENTS | MNSYNC | SPORK,
+        NET         = (1 <<  6),
+        TOR         = (1 <<  7),
+        MEMPOOL     = (1 <<  8),
+        HTTP        = (1 <<  9),
+        BENCH       = (1 << 10),
+        ZMQ         = (1 << 11),
+        DB          = (1 << 12),
+        RPC         = (1 << 13),
+        ESTIMATEFEE = (1 << 14),
+        ADDRMAN     = (1 << 15),
+        SELECTCOINS = (1 << 16),
+        REINDEX     = (1 << 17),
+        CMPCTBLOCK  = (1 << 18),
+        RAND        = (1 << 19),
+        PRUNE       = (1 << 20),
+        PROXY       = (1 << 21),
+        MEMPOOLREJ  = (1 << 22),
+        LIBEVENT    = (1 << 23),
+        COINDB      = (1 << 24),
+        QT          = (1 << 25),
+        LEVELDB     = (1 << 26),
+        POW         = (1 << 27),
         ALL         = ~(uint32_t)0,
     };
 }
@@ -186,6 +210,7 @@ fs::path GetDefaultDataDir();
 const fs::path &GetDataDir(bool fNetSpecific = true);
 void ClearDatadirCache();
 fs::path GetConfigFile(const std::string& confPath);
+boost::filesystem::path GetMasternodeConfigFile();
 #ifndef WIN32
 fs::path GetPidFile();
 void CreatePidFile(const fs::path &path, pid_t pid);

@@ -11,6 +11,8 @@
 #include <checkpoints.h>
 #include <coins.h>
 #include <consensus/validation.h>
+#include <instantx.h>
+#include <globaltoken/hardfork.h>
 #include <validation.h>
 #include <core_io.h>
 #include <policy/feerate.h>
@@ -47,23 +49,36 @@ static std::condition_variable cond_blockchange;
 static CUpdatedBlock latestblock;
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
+extern void POSTxToJSON(const CPOSTransaction& tx, const uint256 hashBlock, UniValue& entry, const std::string hextx);
 
 /* Calculate the difficulty for a given block index,
  * or the block index of the given chain.
  */
-double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex)
+double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, uint8_t algo)
 {
+    unsigned int nBits;
+    unsigned int powLimit = GetAlgoPowLimit(algo).GetCompact();
+	
     if (blockindex == nullptr)
     {
         if (chain.Tip() == nullptr)
-            return 1.0;
+            nBits = powLimit;
         else
-            blockindex = chain.Tip();
+        {
+            //blockindex = chainActive.Tip();
+            blockindex = GetLastBlockIndexForAlgo(chain.Tip(), algo);
+            if (blockindex == nullptr)
+                nBits = powLimit;
+            else
+                nBits = blockindex->nBits;
+        }  
     }
+    else
+    nBits = blockindex->nBits;
 
-    int nShift = (blockindex->nBits >> 24) & 0xff;
+    int nShift = (nBits >> 24) & 0xff;
     double dDiff =
-        (double)0x0000ffff / (double)(blockindex->nBits & 0x00ffffff);
+        (double)0x0000ffff / (double)(nBits & 0x00ffffff);
 
     while (nShift < 29)
     {
@@ -79,16 +94,106 @@ double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex)
     return dDiff;
 }
 
-double GetDifficulty(const CBlockIndex* blockindex)
+double GetDifficulty(const CBlockIndex* blockindex, uint8_t algo)
 {
-    return GetDifficulty(chainActive, blockindex);
+    return GetDifficulty(chainActive, blockindex, algo);
 }
+
+namespace
+{
+UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
+{
+    uint32_t nAuxpowVersion = (auxpow.isAuxPowEquihash() || auxpow.isAuxPowPOS() || auxpow.isAuxPowZhash()) ? 2 : 1;
+    
+    bool fIsStake = auxpow.isAuxPowPOS();
+    bool fIsEquihash = auxpow.isAuxPowEquihash();
+    bool fIsZhash = auxpow.isAuxPowZhash();
+    const uint256 parentBlockHash = fIsEquihash ? auxpow.getEquihashParentBlock().GetHash() : auxpow.getDefaultParentBlock().GetHash();
+    std::string hexTX;
+    
+    CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
+    
+    if(fIsStake)
+        ssTx << *auxpow.getPOSTransaction().tx;
+    else
+        ssTx << *auxpow.getTransaction().tx;
+    
+    hexTX = HexStr(ssTx.begin(), ssTx.end());
+    
+    UniValue result(UniValue::VOBJ);
+    result.pushKV("rawversion", (int64_t)auxpow.getVersion());
+    result.pushKV("auxpow_version", (int64_t)nAuxpowVersion);
+    result.pushKV("auxpow_isstake", fIsStake);
+    result.pushKV("auxpow_isequihash", fIsEquihash);
+    result.pushKV("auxpow_iszhash", fIsZhash);
+    result.pushKV("auxpow_zhash_personalization", auxpow.strZhashConfig);
+    result.pushKV("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex());
+    if(fIsEquihash)
+        result.pushKV("solution", HexStr(auxpow.getEquihashParentBlock().nSolution));
+
+    if(fIsStake)
+    {
+        UniValue tx(UniValue::VOBJ);
+        tx.pushKV("hex", hexTX);
+        POSTxToJSON(*auxpow.getPOSTransaction().tx, parentBlockHash, tx, hexTX);
+        result.pushKV("tx", tx);
+    }
+    else
+    {
+        UniValue tx(UniValue::VOBJ);
+        tx.pushKV("hex", hexTX);
+        TxToJSON(*auxpow.getTransaction().tx, parentBlockHash, tx);
+        result.pushKV("tx", tx);
+    }
+
+    result.pushKV("index", fIsStake ? auxpow.getPOSTransaction().nIndex : auxpow.getTransaction().nIndex);
+    result.pushKV("chainindex", auxpow.GetChainIndex());
+
+    {
+        std::vector<uint256> vMerkleBranch = fIsStake ? auxpow.getPOSTransaction().vMerkleBranch : auxpow.getTransaction().vMerkleBranch;
+        UniValue branch(UniValue::VARR);
+        for (const auto& node : vMerkleBranch)
+            branch.push_back(node.GetHex());
+        result.pushKV("merklebranch", branch);
+    }
+
+    {
+        UniValue branch(UniValue::VARR);
+        for (const auto& node : auxpow.vChainMerkleBranch)
+            branch.push_back(node.GetHex());
+        result.pushKV("chainmerklebranch", branch);
+    }
+
+    CDataStream ssParent(SER_NETWORK, PROTOCOL_VERSION);
+    
+    if(fIsEquihash)
+        ssParent << auxpow.getEquihashParentBlock();
+    else
+        ssParent << auxpow.getDefaultParentBlock();
+    
+    const std::string strHex = HexStr(ssParent.begin(), ssParent.end());
+    result.pushKV("parentblock", strHex);
+
+    return result;
+}
+} // anonymous namespace
 
 UniValue blockheaderToJSON(const CBlockIndex* blockindex)
 {
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
+	uint8_t algo = blockindex->GetAlgo();
+    CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
+    bool isauxpow = header.auxpow && (header.auxpow != nullptr);
+	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
+	result.pushKV("algo", GetAlgoName(algo));
+	result.pushKV("algoid", algo);
+    result.pushKV("isauxpow", isauxpow);
+    if(!isauxpow)
+        result.pushKV("algopowhash", blockindex->GetBlockPoWHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
     if (chainActive.Contains(blockindex))
@@ -101,15 +206,21 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("time", (int64_t)blockindex->nTime);
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)blockindex->nNonce);
+    result.pushKV("bignonce", blockindex->nBigNonce.GetHex());
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
-    result.pushKV("difficulty", GetDifficulty(blockindex));
+    result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
-    CBlockIndex *pnext = chainActive.Next(blockindex);
+	if (plastAlgo != nullptr)
+		result.pushKV("previousalgohash", plastAlgo->GetBlockHash().GetHex());
     if (pnext)
         result.pushKV("nextblockhash", pnext->GetBlockHash().GetHex());
+	if (pnextAlgo != nullptr)
+		result.pushKV("nextalgohash", pnextAlgo->GetBlockHash().GetHex());
     return result;
 }
 
@@ -117,6 +228,11 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
 {
     AssertLockHeld(cs_main);
     UniValue result(UniValue::VOBJ);
+	uint8_t algo = block.GetAlgo();
+    bool isauxpow = block.auxpow && (block.auxpow != nullptr);
+	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
     int confirmations = -1;
     // Only report confirmations if the block is on the main chain
@@ -127,6 +243,10 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("size", (int)::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION));
     result.pushKV("weight", (int)::GetBlockWeight(block));
     result.pushKV("height", blockindex->nHeight);
+    result.pushKV("algo", GetAlgoName(algo));
+	result.pushKV("algoid", algo);
+    if(!isauxpow)
+        result.pushKV("algopowhash", block.GetPoWHash().GetHex());
     result.pushKV("version", block.nVersion);
     result.pushKV("versionHex", strprintf("%08x", block.nVersion));
     result.pushKV("merkleroot", block.hashMerkleRoot.GetHex());
@@ -146,15 +266,24 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("time", block.GetBlockTime());
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
     result.pushKV("nonce", (uint64_t)block.nNonce);
+    result.pushKV("bignonce", block.nBigNonce.GetHex());
+    if(!isauxpow)
+        result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
-    result.pushKV("difficulty", GetDifficulty(blockindex));
+    result.pushKV("difficulty", GetDifficulty(blockindex, algo));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
+    
+    if (block.auxpow)
+        result.pushKV("auxpow", AuxpowToJSON(*block.auxpow, algo));
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
-    CBlockIndex *pnext = chainActive.Next(blockindex);
+	if (plastAlgo != nullptr)
+		result.pushKV("previousalgohash", plastAlgo->GetBlockHash().GetHex());
     if (pnext)
         result.pushKV("nextblockhash", pnext->GetBlockHash().GetHex());
+	if (pnextAlgo != nullptr)
+		result.pushKV("nextalgohash", pnextAlgo->GetBlockHash().GetHex());
     return result;
 }
 
@@ -372,7 +501,9 @@ std::string EntryDescriptionString()
            "    \"wtxid\" : hash,         (string) hash of serialized transaction, including witness data\n"
            "    \"depends\" : [           (array) unconfirmed transactions used as inputs for this transaction\n"
            "        \"transactionid\",    (string) parent transaction id\n"
-           "       ... ]\n";
+           "       ... ],\n"
+            "    \"instantsend\" : true|false, (boolean) True if this transaction was sent as an InstantSend one\n"
+            "    \"instantlock\" : true|false  (boolean) True if this transaction was locked via InstantSend\n";
 }
 
 void entryToJSON(UniValue &info, const CTxMemPoolEntry &e)
@@ -406,6 +537,8 @@ void entryToJSON(UniValue &info, const CTxMemPoolEntry &e)
     }
 
     info.pushKV("depends", depends);
+    info.pushKV("instantsend", instantsend.HasTxLockRequest(tx.GetHash()));
+    info.pushKV("instantlock", instantsend.IsLockedInstantSendTransaction(tx.GetHash()));
 }
 
 UniValue mempoolToJSON(bool fVerbose)
@@ -679,7 +812,9 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"0000...1f3\"     (string) Expected number of hashes required to produce the current chain (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
+            "  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\",      (string) The hash of the next block\n"
+            "  \"nextalgohash\" : \"hash\",       (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbose=false):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
@@ -705,7 +840,7 @@ UniValue getblockheader(const JSONRPCRequest& request)
     if (!fVerbose)
     {
         CDataStream ssBlock(SER_NETWORK, PROTOCOL_VERSION);
-        ssBlock << pblockindex->GetBlockHeader();
+        ssBlock << pblockindex->GetBlockHeader(Params().GetConsensus());
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end());
         return strHex;
     }
@@ -748,7 +883,9 @@ UniValue getblock(const JSONRPCRequest& request)
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"chainwork\" : \"xxxx\",  (string) Expected number of hashes required to produce the chain up to this block (in hex)\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
+            "  \"previousalgohash\" : \"hash\",   (string) The hash of the previous block with the same algo\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
+            "  \"nextalgohash\" : \"hash\"        (string) The hash of the next block with the same algo\n"
             "}\n"
             "\nResult (for verbosity = 2):\n"
             "{\n"
@@ -1191,7 +1328,14 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "           \"possible\": xx       (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
             "        }\n"
             "     }\n"
-            "  }\n"
+            "  },\n"
+			"  \"hardforks\": {                     (object) status hardforks\n"
+            "     \"xx\" : {                        (numeric) number of the hardfork (ID)\n"
+            "        \"activated\": \"xx\",           (boolean) returns if hardfork is activated \"true\" (activated) or \"false\" (deactivated)\n"
+            "        \"softfork_activated\": xx,    (boolean) returns if a softfork of this hardfork is activated  \"true\" (activated) or \"false\" (deactivated)\n"
+            "        \"activation_time\": xx,       (numeric) the activation time of this hardfork ID\n"
+            "     }\n"
+            "  },\n"
             "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
             "}\n"
             "\nExamples:\n"
@@ -1206,7 +1350,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     obj.pushKV("blocks",                (int)chainActive.Height());
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
     obj.pushKV("bestblockhash",         chainActive.Tip()->GetBlockHash().GetHex());
-    obj.pushKV("difficulty",            (double)GetDifficulty());
+    obj.pushKV("difficulty",            (double)GetDifficulty(NULL, currentAlgo));
     obj.pushKV("mediantime",            (int64_t)chainActive.Tip()->GetMedianTimePast());
     obj.pushKV("verificationprogress",  GuessVerificationProgress(Params().TxData(), chainActive.Tip()));
     obj.pushKV("initialblockdownload",  IsInitialBlockDownload());
@@ -1234,6 +1378,11 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     CBlockIndex* tip = chainActive.Tip();
     UniValue softforks(UniValue::VARR);
     UniValue bip9_softforks(UniValue::VOBJ);
+    UniValue globaltoken_hardfork(UniValue::VOBJ);
+    UniValue globaltoken_hardfork_id_1(UniValue::VOBJ);
+    globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
+    globaltoken_hardfork_id_1.pushKV("activation_time", (int64_t)consensusParams.HardforkTime);
+    globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip65", 4, tip, consensusParams));
@@ -1242,6 +1391,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     }
     obj.pushKV("softforks",             softforks);
     obj.pushKV("bip9_softforks", bip9_softforks);
+    obj.pushKV("hardforks", globaltoken_hardfork);
 
     obj.pushKV("warnings", GetWarnings("statusbar"));
     return obj;
@@ -1540,7 +1690,6 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
         );
 
     const CBlockIndex* pindex;
-    int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
 
     if (request.params[1].isNull()) {
         LOCK(cs_main);
@@ -1559,6 +1708,7 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
     }
 
     assert(pindex != nullptr);
+	int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
 
     if (request.params[0].isNull()) {
         blockcount = std::max(0, std::min(blockcount, pindex->nHeight - 1));

@@ -29,6 +29,8 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
+LIBBITCOIN_ALGOS=crypto/algos/libglobaltoken_algos.a
+LIBBITCOIN_GLOBALTOKEN_HARDFORK=globaltoken/libglobaltoken_hardfork.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -49,9 +51,11 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_ALGOS) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_CONSENSUS) \
+  $(LIBBITCOIN_GLOBALTOKEN_HARDFORK) \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_CLI) \
   $(LIBBITCOIN_WALLET) \
@@ -76,9 +80,12 @@ endif
 # globaltoken core #
 BITCOIN_CORE_H = \
   addrdb.h \
+  activemasternode.h \
   addrman.h \
+  auxpow.h \
   base58.h \
   bech32.h \
+  bignum.h \
   bloom.h \
   blockencodings.h \
   chain.h \
@@ -99,22 +106,33 @@ BITCOIN_CORE_H = \
   core_io.h \
   core_memusage.h \
   cuckoocache.h \
+  flat-database.h \
   fs.h \
+  gltnotificationinterface.h \
   httprpc.h \
   httpserver.h \
   indirectmap.h \
   init.h \
+  instantx.h \
   key.h \
   keystore.h \
   dbwrapper.h \
   limitedmap.h \
+  masternode.h \
+  masternode-helper.h \
+  masternode-payments.h \
+  masternode-sync.h \
+  masternodeman.h \
+  masternodeconfig.h \
   memusage.h \
   merkleblock.h \
+  messagesigner.h \
   miner.h \
   net.h \
   net_processing.h \
   netaddress.h \
   netbase.h \
+  netfulfilledman.h \
   netmessagemaker.h \
   noui.h \
   policy/feerate.h \
@@ -140,6 +158,7 @@ BITCOIN_CORE_H = \
   script/sigcache.h \
   script/sign.h \
   script/standard.h \
+  spork.h \
   streams.h \
   support/allocators/secure.h \
   support/allocators/zeroafterfree.h \
@@ -185,9 +204,10 @@ obj/build.h: FORCE
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
 # server: shared between globaltokend and globaltoken-qt
-libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS) $(SCRYPT_FLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
+  activemasternode.cpp \
   addrdb.cpp \
   addrman.cpp \
   bloom.cpp \
@@ -195,13 +215,23 @@ libbitcoin_server_a_SOURCES = \
   chain.cpp \
   checkpoints.cpp \
   consensus/tx_verify.cpp \
+  gltnotificationinterface.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
+  instantx.cpp \
   dbwrapper.cpp \
+  masternode.cpp \
+  masternode-helper.cpp \
+  masternode-payments.cpp \
+  masternode-sync.cpp \
+  masternodeconfig.cpp \
+  masternodeman.cpp \
   merkleblock.cpp \
+  messagesigner.cpp \
   miner.cpp \
   net.cpp \
+  netfulfilledman.cpp \
   net_processing.cpp \
   noui.cpp \
   policy/fees.cpp \
@@ -210,6 +240,7 @@ libbitcoin_server_a_SOURCES = \
   pow.cpp \
   rest.cpp \
   rpc/blockchain.cpp \
+  rpc/masternode.cpp \
   rpc/mining.cpp \
   rpc/misc.cpp \
   rpc/net.cpp \
@@ -217,6 +248,7 @@ libbitcoin_server_a_SOURCES = \
   rpc/safemode.cpp \
   rpc/server.cpp \
   script/sigcache.cpp \
+  spork.cpp \
   timedata.cpp \
   torcontrol.cpp \
   txdb.cpp \
@@ -280,6 +312,81 @@ if USE_ASM
 crypto_libbitcoin_crypto_a_SOURCES += crypto/sha256_sse4.cpp
 endif
 
+# crypto algos library
+crypto_algos_libglobaltoken_algos_a_CPPFLAGS = $(AM_CPPFLAGS) $(SCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CFLAGS = $(NEOSCRYPT_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+crypto_algos_libglobaltoken_algos_a_CCASFLAGS = $(NEOSCRYPT_FLAGS)
+crypto_algos_libglobaltoken_algos_a_SOURCES = \
+  crypto/algos/hashlib/blake.c \
+  crypto/algos/hashlib/bmw.c \
+  crypto/algos/hashlib/cubehash.c \
+  crypto/algos/hashlib/echo.c \
+  crypto/algos/hashlib/fugue.c \
+  crypto/algos/hashlib/gost.c \
+  crypto/algos/hashlib/groestl.c \
+  crypto/algos/hashlib/hamsi.c \
+  crypto/algos/hashlib/haval.c \
+  crypto/algos/hashlib/jh.c \
+  crypto/algos/hashlib/keccak.c \
+  crypto/algos/hashlib/luffa.c \
+  crypto/algos/hashlib/sha2big.c \
+  crypto/algos/hashlib/shabal.c \
+  crypto/algos/hashlib/shavite.c \
+  crypto/algos/hashlib/simd.c \
+  crypto/algos/hashlib/skein.c \
+  crypto/algos/hashlib/sph_blake.h \
+  crypto/algos/hashlib/sph_bmw.h \
+  crypto/algos/hashlib/sph_cubehash.h \
+  crypto/algos/hashlib/sph_echo.h \
+  crypto/algos/hashlib/sph_fugue.h \
+  crypto/algos/hashlib/sph_gost.h \
+  crypto/algos/hashlib/sph_groestl.h \
+  crypto/algos/hashlib/sph_hamsi.h \
+  crypto/algos/hashlib/sph_haval.h \
+  crypto/algos/hashlib/sph_jh.h \
+  crypto/algos/hashlib/sph_keccak.h \
+  crypto/algos/hashlib/sph_luffa.h \
+  crypto/algos/hashlib/sph_sha2.h \
+  crypto/algos/hashlib/sph_shabal.h \
+  crypto/algos/hashlib/sph_shavite.h \
+  crypto/algos/hashlib/sph_simd.h \
+  crypto/algos/hashlib/sph_skein.h \
+  crypto/algos/hashlib/sph_types.h \
+  crypto/algos/hashlib/sph_whirlpool.h \
+  crypto/algos/hashlib/whirlpool.c \
+  crypto/algos/hashlib/aes_helper.c \
+  crypto/algos/hashlib/multihash.h \
+  crypto/algos/Lyra2RE/Lyra2.c \
+  crypto/algos/Lyra2RE/Lyra2.h \
+  crypto/algos/Lyra2RE/Lyra2RE.c \
+  crypto/algos/Lyra2RE/Lyra2RE.h \
+  crypto/algos/Lyra2RE/Sponge.c \
+  crypto/algos/Lyra2RE/Sponge.h \
+  crypto/algos/blake/blake2.h \
+  crypto/algos/blake/blake2-impl.h \
+  crypto/algos/blake/blake2b-ref.c \
+  crypto/algos/blake/blake2s-ref.c \
+  crypto/algos/blake/hashblake.h \
+  crypto/algos/neoscrypt/neoscrypt.c \
+  crypto/algos/neoscrypt/neoscrypt.h \
+  crypto/algos/scrypt/scrypt.cpp \
+  crypto/algos/scrypt/scrypt-sse2.cpp \
+  crypto/algos/scrypt/scrypt.h \
+  crypto/algos/equihash/equihash.cpp \
+  crypto/algos/equihash/equihash.h \
+  crypto/algos/equihash/equihash.tcc \
+  crypto/algos/yescrypt/sha256_Y.c \
+  crypto/algos/yescrypt/sha256_Y.h \
+  crypto/algos/yescrypt/sysendian.h \
+  crypto/algos/yescrypt/yescrypt.h \
+  crypto/algos/yescrypt/yescrypt-best.c \
+  crypto/algos/yescrypt/yescryptcommon.c
+
+if USE_ASM
+crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
+endif
+
 # consensus: shared between all executables that validate any consensus rules.
 libbitcoin_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -296,6 +403,12 @@ libbitcoin_consensus_a_SOURCES = \
   prevector.h \
   primitives/block.cpp \
   primitives/block.h \
+  primitives/block_dependencies.cpp \
+  primitives/block_dependencies.h \
+  primitives/mining_block.cpp \
+  primitives/mining_block.h \
+  primitives/pureheader.cpp \
+  primitives/pureheader.h \
   primitives/transaction.cpp \
   primitives/transaction.h \
   pubkey.cpp \
@@ -314,11 +427,23 @@ libbitcoin_consensus_a_SOURCES = \
   utilstrencodings.cpp \
   utilstrencodings.h \
   version.h
+  
+# hardfork library
+globaltoken_libglobaltoken_hardfork_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+globaltoken_libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+globaltoken_libglobaltoken_hardfork_a_SOURCES = \
+  globaltoken/hardfork.cpp \
+  globaltoken/hardfork.h \
+  arith_uint256.cpp \
+  arith_uint256.h \
+  uint256.cpp \
+  uint256.h
 
 # common: shared between globaltokend, and globaltoken-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
+  auxpow.cpp \
   base58.cpp \
   bech32.cpp \
   chainparams.cpp \
@@ -382,7 +507,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 globaltokend_SOURCES = bitcoind.cpp
 globaltokend_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 globaltokend_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+globaltokend_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS) $(YESCRYPT_LDFLAGS)
 
 if TARGET_WINDOWS
 globaltokend_SOURCES += bitcoind-res.rc
@@ -396,13 +521,15 @@ globaltokend_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_CONSENSUS) \
+  $(LIBBITCOIN_GLOBALTOKEN_HARDFORK) \
   $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_ALGOS) \
   $(LIBLEVELDB) \
   $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-globaltokend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+globaltokend_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(LIBEQUIHASH_LIBS)
 
 # globaltoken-cli binary #
 globaltoken_cli_SOURCES = bitcoin-cli.cpp
@@ -418,15 +545,16 @@ globaltoken_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO)
+  $(LIBBITCOIN_CRYPTO) \
+  $(LIBBITCOIN_ALGOS)
 
-globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+globaltoken_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS) $(LIBEQUIHASH_LIBS)
 #
 
 # globaltoken-tx binary #
 globaltoken_tx_SOURCES = bitcoin-tx.cpp
-globaltoken_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-globaltoken_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+globaltoken_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(YESCRYPT_COMPILE_FLAGS)
+globaltoken_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 globaltoken_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
@@ -438,8 +566,11 @@ globaltoken_tx_LDADD = \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CONSENSUS) \
+  $(LIBBITCOIN_GLOBALTOKEN_HARDFORK) \
   $(LIBBITCOIN_CRYPTO) \
-  $(LIBSECP256K1)
+  $(LIBBITCOIN_ALGOS) \
+  $(LIBSECP256K1) \
+  $(LIBEQUIHASH_LIBS)
 
 globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
@@ -447,16 +578,18 @@ globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_algos_libglobaltoken_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1)
-libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS) $(LIBEQUIHASH_LIBS)
+libbitcoinconsensus_la_CPPFLAGS =  $(AM_CPPFLAGS) $(SCRYPT_FLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG
+libbitcoinconsensus_la_CXXFLAGS =  $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+libbitcoinconsensus_la_CFLAGS =    $(NEOSCRYPT_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
+libbitcoinconsensus_la_CCASFLAGS = $(NEOSCRYPT_FLAGS)
 
 endif
 #
@@ -467,12 +600,17 @@ CTAES_DIST += crypto/ctaes/ctaes.h
 CTAES_DIST += crypto/ctaes/README.md
 CTAES_DIST += crypto/ctaes/test.c
 
+YESCRYPT_DIST = crypto/algos/yescrypt/yescrypt-platform.c
+YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-opt.c
+YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-simd.c
+
 CLEANFILES = $(EXTRA_LIBRARIES)
 
 CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += globaltoken/*.gcda globaltoken/*.gcno
 CLEANFILES += policy/*.gcda policy/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
 CLEANFILES += script/*.gcda script/*.gcno
@@ -483,7 +621,7 @@ CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += obj/build.h
 
-EXTRA_DIST = $(CTAES_DIST)
+EXTRA_DIST = $(CTAES_DIST) $(YESCRYPT_DIST)
 
 
 config/bitcoin-config.h: config/stamp-h1

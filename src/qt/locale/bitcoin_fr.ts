@@ -266,6 +266,14 @@
         <translation>Parcourir l’historique transactionnel</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodes</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Consulter les masternodes</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>Q&amp;uitter</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Changer la phrase de passe...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Ouvrir le fichier de configuration des &amp;masternodes</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Ouvrir le fichier de configuration des masternodes</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -916,6 +932,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Formulaire</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Mes masternodes</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>À noter : l'état de vos masternodes dans ce portefeuille local peut être légèrement erroné.&lt;br /&gt;Veuillez toujours attendre que votre portefeuille soit synchronisé au réseau, et vérifiez votre masternode depuis un autre nœud&lt;br /&gt;s'il est censé tourner mais que vous ne voyez toujours pas "ENABLED" dans le champ "État".</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Adresse</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protocole</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>État</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Actif</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Dernière vérification</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Bénéficiaire</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>“S&amp;tart-alias”</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>“Start-&amp;all”</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>“Start-&amp;missing”</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>Rafraîchir l'état</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Afficher des infos supplémentaires sur le masternode</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Afficher des &amp;Informations...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>L'état sera mis à jour automatiquement dans (sec.) :</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Tous les masternodes</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Filtrer la liste :</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Filtrer la liste des masternodes</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Nombre de nœuds :</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Start-alias</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Confirmer le démarrage du masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Êtes-vous certain de vouloir démarrer le masternode %1 ?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Confirmer le démarrage de tous les masternodes</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Êtes-vous certain de vouloir démarrer TOUS les masternodes ?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Cette commande n'est pas immédiatement disponible.</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>Impossible d'utiliser cette commande avant que la liste des masternodes soit synchronisée.</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Confirmer le démarrage des masternodes manquants</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Êtes-vous certain de vouloir démarrer les masternodes MANQUANTS ?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Informations supplémentaires sur le masternode %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Clé privée du masternode</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Clé privée</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Caution</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Inconnu</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1022,6 +1193,14 @@
     <message>
         <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
         <translation>Adresse IP du mandataire (p. ex. IPv4 : 127.0.0.1 / IPv6 : ::1)</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Ajouter un onglet montrant tous vos masternodes dans le premier sous-onglet&lt;br/&gt;et tous les masternodes du réseau dans le second.</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Afficher l'onglet Masternodes</translation>
     </message>
     <message>
         <source>Shows if the supplied default SOCKS5 proxy is used to reach peers via this network type.</source>
@@ -1444,6 +1623,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Erreur de lecture du fichier de configuration du masternode : %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Montant</translation>
     </message>
@@ -1548,6 +1731,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>Titre QR-code</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>Code QR</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Enregistrer l’image...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Erreur à la création du QR-code.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1615,6 +1817,10 @@
     <message>
         <source>Block chain</source>
         <translation>Chaîne de blocs</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Nombre de masternodes</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1896,6 +2102,10 @@
         <translation>Effacer</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Demander un paiement InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>Historique des paiements demandés</translation>
     </message>
@@ -1989,6 +2199,10 @@
     <message>
         <source>Message</source>
         <translation>Message</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2105,6 +2319,10 @@
         <translation>réduire les paramètres des frais</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>par kilo-octet</translation>
     </message>
@@ -2207,6 +2425,10 @@
     <message>
         <source>Copy change</source>
         <translation>Copier la monnaie</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>et InstantSend</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2608,6 +2830,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 confirmations</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>vérifié via InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>Vérification InstantSend en cours - %1 de %2 signatures</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>Echec de la vérification InstantSend</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3048,6 +3282,14 @@
         <translation>Envoyer des pièces</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ne supporte pas des transferts aussi élevés. Les transactions sont pour le moment limitées à %1 GLT.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Vous avez utilisé bien trop d'entrées (&gt;%1) pour cette transaction InstantSend, les frais peuvent être énormes.</translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>Erreur d’augmentation des frais</translation>
     </message>
@@ -3136,6 +3378,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Indiquer votre propre adresse publique</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>Vous devez définir "masternodeprivkey" dans la configuration. Veuillez consulter la documentation pour obtenir plus d'aide.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3674,6 +3920,10 @@
         <translation>Se connecter par un mandataire SOCKS5</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Autoriser le client à agir en tant que masternode (0-1, par défaut : %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Erreur de chargement de %s : vous ne pouvez pas désactiver HD sur un porte-monnaie HD existant</translation>
     </message>
@@ -3684,6 +3934,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>Erreur de mise à niveau de la base de données d’état de la chaîne</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Échec du chargement du cache des masternodes depuis</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Échec du chargement du cache des paiements de masternode depuis</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3710,6 +3968,18 @@
         <translation>Masque réseau invalide indiqué dans -whitelist : « %s »</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Chargement du cache de masternode...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Chargement du cache de paiement masternode...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Vérouiller les masternodes depuis le fichier de configuration masternode (par défaut : %u)</translation>
+    </message>
+    <message>
         <source>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</source>
         <translation>Garder au plus &lt;n&gt; transactions non connectables en mémoire (par défaut : %u)</translation>
     </message>
@@ -3720,6 +3990,18 @@
     <message>
         <source>Node relay options:</source>
         <translation>Options de relais du nœud :</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Aucun masternode détecté.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Aucun masternode compatible trouvé.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Absent de la liste des masternodes.</translation>
     </message>
     <message>
         <source>RPC server options:</source>
@@ -3748,6 +4030,30 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Échec de signature de la transaction</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Définir le fichier de configuration du masternode (par défaut : %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Les entrées suivantes ont été envoyées au masternode: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Envoyé au masternode, en attente d'entrées supplémentaires ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Soumis au masternode, dans la file d'attente %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Synchronisation des masternodes...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Ceci n'est pas un masternode.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4112,6 +4418,98 @@
     <message>
         <source>Error</source>
         <translation>Erreur</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>masternodeprivkey invalide. Veuillez vous référer à la documentation.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Masternode aléatoire introuvable.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Impossible d'analyser masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Port invalide détecté dans masternode.conf</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Désactiver toutes les fonctionnalités liées à Globaltoken (masternodes, InstantSend) (0-1, par défaut : %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Activer InstantSend, montrer les confirmations pour les transactions verrouillées (0-1, par défaut : %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Exécuter la commande lorsqu'une transaction InstantSend de portefeuille est bloquée avec succès (%s dans la commande est remplacée par TxID)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ne supporte pas encore des transferts aussi élevés. Les transactions sont pour le moment limitées à %1 GLT.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend nécessite des entrées avec au moins %d confirmations. Vous devriez attendre quelques minutes avant de réessayer.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Le cache de masternode est vide, omission du cache des paiements...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Options masternode :</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>La file d'attente du masternode est pleine.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode :</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Avertissement : au moins %d masternodes sur %d tournent sur une version logicielle plus récente. Veuillez vérifier les dernières mises à jour, car vous pourriez aussi avoir besoin de les appliquer.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Avertissement : chaque masternode (sur un total de %d connus) tourne sur une version logicielle plus récente. Veuillez vérifier les dernières mises à jour, car il est très probable que vous ayez manqué une mise à jour majeure ou critique.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Définir la clef privée du masternode</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Synchronisation du paiement des masternodes...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Activer la publication du hachage de transaction (verrouillée via InstantSend) dans &lt;address&gt; </translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Activer la publication de la transaction brute (verrouillée via InstantSend) dans &lt;address&gt; </translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>Options InstantSend :</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Ignorer l'adresse spork. Utile seulement pour regtest. L'utilisation sur mainnet ou testnet entraîne un banissement.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>L'adresse spork spécifiée avec -sporkaddr est invalide</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Impossible de signer le message spork, mauvaise clef ?</translation>
     </message>
 </context>
 </TS>

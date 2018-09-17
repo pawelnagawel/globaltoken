@@ -1,11 +1,16 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2016-2017 The Zcash developers
+// Copyright (c) 2018 The Bitcoin Private developers
+// Copyright (c) 2017-2018 The Bitcoin Gold developers
+// Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CHAINPARAMS_H
 #define BITCOIN_CHAINPARAMS_H
 
+#include <amount.h>
 #include <chainparamsbase.h>
 #include <consensus/params.h>
 #include <primitives/block.h>
@@ -61,8 +66,15 @@ public:
     /** Policy: Filter transactions that do not match well-defined patterns */
     bool RequireStandard() const { return fRequireStandard; }
     uint64_t PruneAfterHeight() const { return nPruneAfterHeight; }
+	unsigned int EquihashN() const { return nEquihashN; }
+    unsigned int EquihashK() const { return nEquihashK; }
+    unsigned int ZhashN() const { return nZhashN; }
+    unsigned int ZhashK() const { return nZhashK; }
+    unsigned int EquihashSolutionWidth(uint8_t nAlgo) const;
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }
+    /** Allow nodes with the same address and multiple ports */
+    bool AllowMultiplePorts() const { return fAllowMultiplePorts; }
     /** Return the BIP70 network string (main, test or regtest) */
     std::string NetworkIDString() const { return strNetworkID; }
     /** Return the list of hostnames to look up for DNS seeds */
@@ -71,8 +83,15 @@ public:
     const std::string& Bech32HRP() const { return bech32_hrp; }
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
+    /** Return the founder's reward address and script for a given block height */
+    std::string GetFoundersRewardAddressAtHeight(int height) const;
+    CScript GetFoundersRewardScriptAtHeight(int height) const;
+    std::string GetFoundersRewardAddressAtIndex(int i) const;
+    CAmount GetTreasuryAmount(CAmount coinAmount) const;
     const ChainTxData& TxData() const { return chainTxData; }
+    int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
+    const std::string& SporkAddress() const { return strSporkAddress; }
 protected:
     CChainParams() {}
 
@@ -80,6 +99,10 @@ protected:
     CMessageHeader::MessageStartChars pchMessageStart;
     int nDefaultPort;
     uint64_t nPruneAfterHeight;
+	unsigned int nEquihashN = 0;
+    unsigned int nEquihashK = 0;
+    unsigned int nZhashN = 0;
+    unsigned int nZhashK = 0;
     std::vector<std::string> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
     std::string bech32_hrp;
@@ -89,8 +112,12 @@ protected:
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fMineBlocksOnDemand;
+    bool fAllowMultiplePorts;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
+    int nFulfilledRequestExpireTime;
+    std::string strSporkAddress;
+    std::vector<std::string> vFoundersRewardAddress;
 };
 
 /**
@@ -105,6 +132,12 @@ std::unique_ptr<CChainParams> CreateChainParams(const std::string& chain);
  * startup, except for unit tests.
  */
 const CChainParams &Params();
+
+/**
+ * Return params for a selected network.
+ * Can be useful to get ports for other networks, masternodes require this.
+ */
+const CChainParams CreateNetworkParams(const std::string& network);
 
 /**
  * Sets the params returned by Params() to those for the given BIP70 chain name.

@@ -266,6 +266,14 @@
         <translation>Prechádzať históriu transakcií</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodes</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Prechádzať masternodes</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>U&amp;končiť</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Zmena Hesla...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Otvoriť konfiguračný súbor &amp;Masternode</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Otvoriť konfiguračný súbor Masternode</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -916,6 +932,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Od</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Moje Masternodes</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>Poznámka: Stav Vášho Masternode v lokálnej peňaženke môže byť potencionálne trochu nepresný.&lt;br /&gt;Vždy počkajte na peňaženku pokým nestiahne dodatočné dáta a opätovne neoverí y druhého uzlu,&lt;br /&gt;ak by Váš Maternode mal bežať, ale stále nevidíte "Zapnuté" v poli "Stav".</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Adresa</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protokol</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Stav</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Aktívne</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Naposledy videné</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Príjemca</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>&amp;Začať alias</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>Začať &amp;všetko</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>Začať &amp;CHÝBAJÚCE</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>&amp;Aktualizovať stav</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Zobraziť ďalšie informácie o Masternode</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Zobraziť &amp;informácie...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Stav bude automaticky aktualizovaný za (sekúnd):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Všetky  Masternode</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Zoznam filtrov:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Filtrovať zoznam Masternode.</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Počet uzlov:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Začať alias</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Potvrdiť spustenie Masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Ste si istý, že chcete spustiť Masternode %1?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Potvrdiť spustenie všetkých Masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Ste si istý, že chcete spustiť VŠETKY masternodes?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Príkaz je momentálne nedostupný</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>Tento príkaz nemôžete použiť pokým sa nesynchronizuje zoznam Masternode</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Potvrdiť spustenie chýbajúcich Masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Ste si istý, že chcete spustiť CHÝBAJÚCE Masternodes?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Ďalšie informácie o Masternode %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Súkromný kľúč Masternode </translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Súkromný kľúč</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Zaistenie</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Verzia</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Neznáme</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1078,6 +1249,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>&amp;Peňaženka</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Zobraziť dodatočnú záložku, ktorá vypíše všetky Vaše Masternode v prvej pod-zložke&lt;br/&gt;- a všetky Masternode v druhej pod-zložke. </translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Ukázať záložku Masternodes</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1444,6 +1623,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Chyba pri načítaní konfiguračného súboru Masternode: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Suma</translation>
     </message>
@@ -1548,6 +1731,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>Názov QR-kódu</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>QR kód</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Uložiť obrázok...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Chyba pri vytváraní QR kódu.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1615,6 +1817,10 @@
     <message>
         <source>Block chain</source>
         <translation>Reťazec blokov</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Počet Mastenode</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1897,6 +2103,10 @@
         <translation>Vyčistiť</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Vyžiadať InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>História vyžiadaných platieb</translation>
     </message>
@@ -1990,6 +2200,10 @@
     <message>
         <source>Message</source>
         <translation>Správa</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2106,6 +2320,10 @@
         <translation>zbaliť nastavenia poplatkov</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>za kilobajt</translation>
     </message>
@@ -2204,6 +2422,10 @@
     <message>
         <source>Copy change</source>
         <translation>Kopírovať zmenu</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>a InstantSend</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2605,6 +2827,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 potvrdení</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>overené cez InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>Prebieha overovanie InstantSend - %1 z %2 podpisov</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>Overenie InstantSend zlyhalo</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3045,6 +3279,14 @@
         <translation>Poslať mince</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend zatiaľ nepodporuje posielanie takto vysokých čiastok. Transakcie sú limitované na %1 GLT.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Pre InstantSend transakciu bolo použitých príliš veľa vstupov (&gt;%1), poplatok by mohol byť obrovský. </translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>Chyba pri navyšovaní poplatku</translation>
     </message>
@@ -3133,6 +3375,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Určite vašu vlastnú verejnú adresu</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>V konfigurácii musíte špecifikovať masternodeprivkey. Pre pomoc sa prosím pozrite do dokumentácie.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3659,6 +3905,10 @@
         <translation>Pripojiť cez proxy server SOCKS5</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Povoliť klientovi aby vystupoval ako masternode (0-1, predvolené: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Chyba pri načítání %s: nemôžeš vypnúť HD u existujúcej HD peňaženky</translation>
     </message>
@@ -3669,6 +3919,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>Chyba pri vylepšení databáze reťzcov blokov</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Chyba pri načítaní vyrovnávajúcej pamäti Masternode z</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Chyba pri načítaní vyrovnávajúcej pamäti platieb Masternode z</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3699,8 +3957,32 @@
         <translation>V pamäti udržiavať najviac &lt;n&gt; nepotvrdených transakcií (predvolené: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Načíta sa vyrovnávacia pamäť masternode...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Načíta sa vyrovnávacia pamäť platieb masternode...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Zamknúť masternody z konfiguračného súboru masternode (predvolené: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Je potrebné zadať port s -whitebind: '%s'</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Nezistený žiadny Masternode.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Nekompatibilný Masternode zdroj.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Nie je v zozname Masternode.</translation>
     </message>
     <message>
         <source>Node relay options:</source>
@@ -3745,6 +4027,30 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>Uvedený -walletdir "%s" nie je priečinok</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Zadať konfiguračný súbor masternode (predvolené: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Položky odoslané na masternode: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Odoslané na masternode, čaká na viac položiek ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Odoslané na masternode, čaká vo fronte %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Synchronizujú sa masternode...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Toto nie je Masternode.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4113,6 +4419,98 @@
     <message>
         <source>Error</source>
         <translation>Chyba</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Neplatný masternodeprivkey. Prosím pozrite do dokumentácie.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Nedá sa nájsť náhodný Masternode.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Nedá sa analyzovať masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Zistený neplatný port v masternode.conf</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Vypnúť všetky funkcie špecifické pre Globaltoken (Masternodes, InstantSend) (0-1, predvolené: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Zapnúť InstantSend, ukázať potvrdenia pre zamknuté transakcie (0-1, predvolené: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Spustiť príkaz keď je InstantSend zmení úspešne zamknutá (%s v cmd sa nahrádza TxID)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend zatiaľ nepodporuje posielanie takto vysokých čiastok. Transakcie sú limitované na %1 GLT.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend vyžaduje vstupy s aspoň %d potvrdeniami, môžete počkať pár minút a skúsiť znova.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Vyrovnávacia pamäť Masternode je prázdna, preskočenie vyrovnávacej pamäte platieb...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Možnosti Masternode:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Fronta Masternode je plná</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Upozornenie: Aspoň %d z %d masternode beží na novšej verzii softvéru. Skontrolujte najnovšie verzie, možno budete musieť tiež aktualizovať.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Upozornenie: Každý masternode (z %d známych) beží na novšej verzii softvéru. Skontrolujte najnovšie verzie, je veľmi pravdepodobné, že ste vynechali hlavnú/kritickú aktualizáciu.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Nastaviť súkromný kľúč masternode</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Synchronizujú sa masternode platby...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Povoliť publikovanie transformačných transakcií (zamknutých cez InstantSend) v &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Povoliť publikovanie nespracovaných transakcií (zamknutých cez InstantSend) v &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>Možnosti InstantSend:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Prepísať spork adresu. Použiteľné iba pre regtest. Použitie tejto funkcie na hlavnej alebo testovacej vás zablokuje.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>Neplatná spork adresa určená pomocou -sporkaddr</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Nedá sa podpísať spork správa, žeby zlý kľúč?</translation>
     </message>
 </context>
 </TS>

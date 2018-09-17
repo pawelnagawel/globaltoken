@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +11,7 @@
 #include <blockencodings.h>
 #include <chainparams.h>
 #include <consensus/validation.h>
+#include <globaltoken/hardfork.h>
 #include <hash.h>
 #include <init.h>
 #include <validation.h>
@@ -29,6 +31,12 @@
 #include <util.h>
 #include <utilmoneystr.h>
 #include <utilstrencodings.h>
+
+#include <spork.h>
+#include <instantx.h>
+#include <masternode-payments.h>
+#include <masternode-sync.h>
+#include <masternodeman.h>
 
 #if defined(NDEBUG)
 # error "Globaltoken cannot be compiled without assertions."
@@ -657,7 +665,7 @@ bool AddOrphanTx(const CTransactionRef& tx, NodeId peer) EXCLUSIVE_LOCKS_REQUIRE
     // 100 orphans, each of which is at most 99,999 bytes big is
     // at most 10 megabytes of orphans and somewhat more byprev index (in the worst case):
     unsigned int sz = GetTransactionWeight(*tx);
-    if (sz >= MAX_STANDARD_TX_WEIGHT)
+    if (sz >= MaxStandardTransactionWeight(CheckCurrentHardforkState()))
     {
         LogPrint(BCLog::MEMPOOL, "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
         return false;
@@ -915,7 +923,7 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
         });
         connman->WakeMessageHandler();
     }
-
+    
     nTimeBestReceived = GetTime();
 }
 
@@ -989,18 +997,63 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
     case MSG_BLOCK:
     case MSG_WITNESS_BLOCK:
         return mapBlockIndex.count(inv.hash);
+    
+    /* 
+        GlobalToken Related Inventory Messages
+
+        --
+
+        We shouldn't update the sync times for each of the messages when we already have it. 
+        We're going to be asking many nodes upfront for the full inventory list, so we'll get duplicates of these.
+        We want to only update the time on new hits, so that we can time out appropriately if needed.
+    */
+    case MSG_TXLOCK_REQUEST:
+        return instantsend.AlreadyHave(inv.hash);
+
+    case MSG_TXLOCK_VOTE:
+        return instantsend.AlreadyHave(inv.hash);
+
+    case MSG_SPORK:
+        return mapSporks.count(inv.hash);
+
+    case MSG_MASTERNODE_PAYMENT_VOTE:
+        return mnpayments.mapMasternodePaymentVotes.count(inv.hash);
+
+    case MSG_MASTERNODE_PAYMENT_BLOCK:
+        {
+            BlockMap::iterator mi = mapBlockIndex.find(inv.hash);
+            return mi != mapBlockIndex.end() && mnpayments.mapMasternodeBlocks.find(mi->second->nHeight) != mnpayments.mapMasternodeBlocks.end();
+        }
+
+    case MSG_MASTERNODE_ANNOUNCE:
+        return mnodeman.mapSeenMasternodeBroadcast.count(inv.hash) && !mnodeman.IsMnbRecoveryRequested(inv.hash);
+
+    case MSG_MASTERNODE_PING:
+        return mnodeman.mapSeenMasternodePing.count(inv.hash);
+
+    case MSG_MASTERNODE_VERIFY:
+        return mnodeman.mapSeenMasternodeVerification.count(inv.hash);
     }
+    
     // Don't know what it is, just say we already got one
     return true;
 }
 
 static void RelayTransaction(const CTransaction& tx, CConnman* connman)
 {
-    CInv inv(MSG_TX, tx.GetHash());
+    uint256 hash = tx.GetHash();
+    int nInv = instantsend.HasTxLockRequest(hash) ? MSG_TXLOCK_REQUEST : MSG_TX;
+    CInv inv(nInv, hash);
+    
     connman->ForEachNode([&inv](CNode* pnode)
     {
         pnode->PushInventory(inv);
     });
+}
+
+void RelayTransactionFromExtern(const CTransaction& tx, CConnman* connman)
+{
+    RelayTransaction(tx, connman);
 }
 
 static void RelayAddress(const CAddress& addr, bool fReachable, CConnman* connman)
@@ -1191,7 +1244,8 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
     {
         LOCK(cs_main);
 
-        while (it != pfrom->vRecvGetData.end() && (it->type == MSG_TX || it->type == MSG_WITNESS_TX)) {
+        while (it != pfrom->vRecvGetData.end() && (it->type == MSG_TX || it->type == MSG_WITNESS_TX || it->type == MSG_TXLOCK_REQUEST || it->type == MSG_TXLOCK_VOTE || it->type == MSG_SPORK ||
+                 it->type == MSG_MASTERNODE_PAYMENT_VOTE || it->type == MSG_MASTERNODE_PAYMENT_BLOCK || it->type == MSG_MASTERNODE_ANNOUNCE || it->type == MSG_MASTERNODE_PING || it->type == MSG_MASTERNODE_VERIFY)) {
             if (interruptMsgProc)
                 return;
             // Don't bother if send buffer is too full to respond anyway
@@ -1217,6 +1271,74 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
                     push = true;
                 }
             }
+            
+            if (!push && inv.type == MSG_TXLOCK_REQUEST) {
+                CTxLockRequest txLockRequest;
+                if(instantsend.GetTxLockRequest(inv.hash, txLockRequest)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TXLOCKREQUEST, txLockRequest));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_TXLOCK_VOTE) {
+                CTxLockVote vote;
+                if(instantsend.GetTxLockVote(inv.hash, vote)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TXLOCKVOTE, vote));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_SPORK) {
+                if(mapSporks.count(inv.hash)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::SPORK, mapSporks[inv.hash]));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_MASTERNODE_PAYMENT_VOTE) {
+                if(mnpayments.HasVerifiedPaymentVote(inv.hash)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTVOTE, mnpayments.mapMasternodePaymentVotes[inv.hash]));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_MASTERNODE_PAYMENT_BLOCK) {
+                BlockMap::iterator mipb = mapBlockIndex.find(inv.hash);
+                LOCK(cs_mapMasternodeBlocks);
+                if (mipb != mapBlockIndex.end() && mnpayments.mapMasternodeBlocks.count(mipb->second->nHeight)) {
+                    for(CMasternodePayee& payee : mnpayments.mapMasternodeBlocks[mipb->second->nHeight].vecPayees) {
+                        std::vector<uint256> vecVoteHashes = payee.GetVoteHashes();
+                        for(uint256& hash : vecVoteHashes) {
+                            if(mnpayments.HasVerifiedPaymentVote(hash)) {
+                                connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTVOTE, mnpayments.mapMasternodePaymentVotes[hash]));
+                            }
+                        }
+                    }
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_MASTERNODE_ANNOUNCE) {
+                if(mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)){
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::MNANNOUNCE, mnodeman.mapSeenMasternodeBroadcast[inv.hash].second));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_MASTERNODE_PING) {
+                if(mnodeman.mapSeenMasternodePing.count(inv.hash)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::MNPING, mnodeman.mapSeenMasternodePing[inv.hash]));
+                    push = true;
+                }
+            }
+
+            if (!push && inv.type == MSG_MASTERNODE_VERIFY) {
+                if(mnodeman.mapSeenMasternodeVerification.count(inv.hash)) {
+                    connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::MNVERIFY, mnodeman.mapSeenMasternodeVerification[inv.hash]));
+                    push = true;
+                }
+            }
+            
             if (!push) {
                 vNotFound.push_back(inv);
             }
@@ -2089,7 +2211,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         LogPrint(BCLog::NET, "getheaders %d to %s from peer=%d\n", (pindex ? pindex->nHeight : -1), hashStop.IsNull() ? "end" : hashStop.ToString(), pfrom->GetId());
         for (; pindex; pindex = chainActive.Next(pindex))
         {
-            vHeaders.push_back(pindex->GetBlockHeader());
+            vHeaders.push_back(pindex->GetBlockHeader(chainparams.GetConsensus()));
             if (--nLimit <= 0 || pindex->GetBlockHash() == hashStop)
                 break;
         }
@@ -2110,7 +2232,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
     }
 
 
-    else if (strCommand == NetMsgType::TX)
+    else if (strCommand == NetMsgType::TX || strCommand == NetMsgType::TXLOCKREQUEST)
     {
         // Stop processing the transaction early if
         // We are in blocks only mode and peer is either not whitelisted or whitelistrelay is off
@@ -2123,11 +2245,30 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         std::deque<COutPoint> vWorkQueue;
         std::vector<uint256> vEraseQueue;
         CTransactionRef ptx;
-        vRecv >> ptx;
+        CTxLockRequest txLockRequest;
+        int nInvType = MSG_TX;
+        
+        // Read data and assign inv type
+        if(strCommand == NetMsgType::TX) {
+            vRecv >> ptx;
+        } else if(strCommand == NetMsgType::TXLOCKREQUEST) {
+            vRecv >> txLockRequest;
+            ptx = txLockRequest.tx;
+            nInvType = MSG_TXLOCK_REQUEST;
+        }
         const CTransaction& tx = *ptx;
 
-        CInv inv(MSG_TX, tx.GetHash());
+        CInv inv(nInvType, tx.GetHash());
         pfrom->AddInventoryKnown(inv);
+        pfrom->setAskFor.erase(inv.hash);
+        
+        // Process custom logic, no matter if tx will be accepted to mempool later or not
+        if (strCommand == NetMsgType::TXLOCKREQUEST) {
+            if(!instantsend.ProcessTxLockRequest(txLockRequest, *connman)) {
+                LogPrint(BCLog::INSTANTSEND, "TXLOCKREQUEST -- failed %s\n", txLockRequest.GetHash().ToString());
+                return false;
+            }
+        }
 
         LOCK2(cs_main, g_cs_orphans);
 
@@ -2141,6 +2282,14 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         if (!AlreadyHave(inv) &&
             AcceptToMemoryPool(mempool, state, ptx, &fMissingInputs, &lRemovedTxn, false /* bypass_limits */, 0 /* nAbsurdFee */)) {
+            // Process custom txes, this changes AlreadyHave to "true"
+            if (strCommand == NetMsgType::TXLOCKREQUEST) {
+                LogPrintf("TXLOCKREQUEST -- Transaction Lock Request accepted, txid=%s, peer=%d\n",
+                        tx.GetHash().ToString(), pfrom->GetId());
+                instantsend.AcceptLockRequest(txLockRequest);
+                instantsend.Vote(tx.GetHash(), *connman);
+            }            
+                
             mempool.check(pcoinsTip.get());
             RelayTransaction(tx, connman);
             for (unsigned int i = 0; i < tx.vout.size(); i++) {
@@ -2257,6 +2406,19 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 }
             } else if (tx.HasWitness() && RecursiveDynamicUsage(*ptx) < 100000) {
                 AddToCompactExtraTransactions(ptx);
+            }
+            
+            if (strCommand == NetMsgType::TXLOCKREQUEST && !AlreadyHave(inv)) {
+                // i.e. AcceptToMemoryPool failed, probably because it's conflicting
+                // with existing normal tx or tx lock for another tx. For the same tx lock
+                // AlreadyHave would have return "true" already.
+
+                // It's the first time we failed for this tx lock request,
+                // this should switch AlreadyHave to "true".
+                instantsend.RejectLockRequest(txLockRequest);
+                // this lets other nodes to create lock request candidate i.e.
+                // this allows multiple conflicting lock requests to compete for votes
+                RelayTransaction(tx, connman);
             }
 
             if (pfrom->fWhitelisted && gArgs.GetBoolArg("-whitelistforcerelay", DEFAULT_WHITELISTFORCERELAY)) {
@@ -2848,8 +3010,29 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
     }
 
     else {
-        // Ignore unknown commands for extensibility
-        LogPrint(BCLog::NET, "Unknown command \"%s\" from peer=%d\n", SanitizeString(strCommand), pfrom->GetId());
+        bool found = false;
+        const std::vector<std::string> &allMessages = getAllNetMessageTypes();
+        for(const std::string msg : allMessages) {
+            if(msg == strCommand) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            //probably one the extensions
+            mnodeman.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            mnpayments.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            instantsend.ProcessMessage(pfrom, strCommand, vRecv, *connman);
+            sporkManager.ProcessSpork(pfrom, strCommand, vRecv, *connman);
+            masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
+        }
+        else
+        {
+            // Ignore unknown commands for extensibility
+            LogPrint(BCLog::NET, "Unknown command \"%s\" from peer=%d\n", SanitizeString(strCommand), pfrom->GetId());
+        }
     }
 
 
@@ -3322,14 +3505,14 @@ bool PeerLogicValidation::SendMessages(CNode* pto, std::atomic<bool>& interruptM
                     pBestIndex = pindex;
                     if (fFoundStartingHeader) {
                         // add this to the headers message
-                        vHeaders.push_back(pindex->GetBlockHeader());
+                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
                     } else if (PeerHasHeader(&state, pindex)) {
                         continue; // keep looking for the first new block
                     } else if (pindex->pprev == nullptr || PeerHasHeader(&state, pindex->pprev)) {
                         // Peer doesn't have this header but they do have the prior one.
                         // Start sending headers.
                         fFoundStartingHeader = true;
-                        vHeaders.push_back(pindex->GetBlockHeader());
+                        vHeaders.push_back(pindex->GetBlockHeader(consensusParams));
                     } else {
                         // Peer doesn't have this header or the prior one -- nothing will
                         // connect, so bail out.
@@ -3542,6 +3725,16 @@ bool PeerLogicValidation::SendMessages(CNode* pto, std::atomic<bool>& interruptM
                     pto->filterInventoryKnown.insert(hash);
                 }
             }
+            
+            // Send non-tx/non-block inventory items
+            for (const auto& inv : pto->vInventoryOtherToSend) {
+                vInv.push_back(inv);
+                if (vInv.size() == MAX_INV_SZ) {
+                    connman->PushMessage(pto, msgMaker.Make(NetMsgType::INV, vInv));
+                    vInv.clear();
+                }
+            }
+            pto->vInventoryOtherToSend.clear();
         }
         if (!vInv.empty())
             connman->PushMessage(pto, msgMaker.Make(NetMsgType::INV, vInv));

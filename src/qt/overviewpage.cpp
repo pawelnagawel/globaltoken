@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2017 The Bitcoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +15,8 @@
 #include <qt/transactionfilterproxy.h>
 #include <qt/transactiontablemodel.h>
 #include <qt/walletmodel.h>
+
+#include <instantx.h>
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
@@ -186,6 +189,13 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelWatchImmature->setVisible(showWatchOnlyImmature); // show watch-only immature balance
+    
+    static int cachedTxLocks = 0;
+
+    if(cachedTxLocks != nCompleteTXLocks){
+        cachedTxLocks = nCompleteTXLocks;
+        ui->listTransactions->update();
+    }
 }
 
 // show/hide watch-only labels

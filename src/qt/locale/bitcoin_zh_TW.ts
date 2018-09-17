@@ -266,6 +266,14 @@
         <translation>瀏覽交易紀錄</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>主節點(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>瀏覽主節點</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>結束</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>改變密碼...</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>開啟主節點配置文件(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>開啟主節點配置文件</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -916,6 +932,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>表單</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>我的主節點</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>注意: 本地錢包中的主節點狀態可能略有不正確。&lt;br /&gt;總是等待錢包同步額外的數據，然後再從另一個節點多檢查一次&lt;br /&gt;如果您的主節點應該已經運行，但您仍然在“狀態”欄看不到“ENABLED” 的字樣的話。</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>別名</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>位址</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>協議</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>狀態</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>活躍</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>最後一次在線</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>收款人</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>啟動別名(&amp;t)</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>啟動所有(&amp;a)</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>啟動遺漏(&amp;M)</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>更新狀態(&amp;U)</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>顯示額外的主節點信息</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>顯示 &amp;信息...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>狀態將在數 (秒) 內自動更新:</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>所有主節點</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>篩選列表:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>篩選主節點列表</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>節點數:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>啟動別名</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>確認啟動主節點</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>您確定要啟動主節點 %1嗎?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>確認啟動所有的主節點</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>您確定要啟動所有的主節點嗎?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>命令目前不可使用</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>在與主節點列表同步之前，您不能使用此命令</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>確認啟動遺漏的主節點</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>您確定要啟動所有遺漏的主節點嗎?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation> 關於主節點%1 的附加信息</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>主節點私鑰</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>私鑰</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>抵押品</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>不明</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1078,6 +1249,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>錢包</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>顯示其他標籤，在第一個子標籤列出所有您的主節點&lt;br/&gt;在第二個子標籤列出所有網絡上的主節點。</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>顯示主節點標籤頁</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1444,6 +1623,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>讀取主節點配置文件時出錯: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>金額</translation>
     </message>
@@ -1548,6 +1731,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>QR 碼標題</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>QR Code</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>儲存圖片(&amp;S)...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>創建QR碼時出錯</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1615,6 +1817,10 @@
     <message>
         <source>Block chain</source>
         <translation>區塊鏈</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>主節點數目</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1896,6 +2102,10 @@
         <translation>清空</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>要求即時到帳付款</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>先前要求付款的記錄</translation>
     </message>
@@ -1989,6 +2199,10 @@
     <message>
         <source>Message</source>
         <translation>訊息</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>即時到帳</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2105,6 +2319,10 @@
         <translation>展開手續費設定</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>即時到帳</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>每千位元組</translation>
     </message>
@@ -2215,6 +2433,10 @@
     <message>
         <source>%1 to %2</source>
         <translation>%1 給 %2</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>和 即時到帳</translation>
     </message>
     <message>
         <source>Are you sure you want to send?</source>
@@ -2604,6 +2826,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>確認 %1 次</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>經即時到帳系統核實</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>即時到帳驗證正在進行- %2 個簽署中的第 %1 個</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>即時到帳驗證失敗</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3044,6 +3278,14 @@
         <translation>付款</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>即時到帳系統暫時並不支援這麼高的交易金額。目前的金額僅限於%1 GLT。</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>這個即時到帳交易使用過多的輸入 (&gt;%1)，費用可能很大。</translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>手續費提升失敗</translation>
     </message>
@@ -3132,6 +3374,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>指定自己的公開位址</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>您必須在配置文件中指定一個masternodeprivkey。請參閱文檔以獲得幫助。</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3675,6 +3921,10 @@
         <translation>透過 SOCKS5 代理伺服器連線</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>啟用客戶端作為一個主節點 (0-1, 預設值: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>載入 %s 發生錯誤：不能對已存在的 HD 錢包停用 HD 功能。</translation>
     </message>
@@ -3685,6 +3935,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>升級區塊鏈狀態資料庫時發生錯誤</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>無法載入主節點緩存</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>無法載入主節點付款緩存</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3715,12 +3973,36 @@
         <translation>保持最多 &lt;n&gt; 無法連結的交易在記憶體 (預設: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>正在載入主節點緩存...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>正在載入主節點付款緩存...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>根據主節點的配置文件鎖定主節點 (預設值: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>指定 -whitebind 時必須包含通訊埠: '%s'</translation>
     </message>
     <message>
         <source>Node relay options:</source>
         <translation>節點轉發選項:</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>沒有檢測到主節點。</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>沒有找到相容的主節點。</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>不在主節點列表中。</translation>
     </message>
     <message>
         <source>RPC server options:</source>
@@ -3761,6 +4043,26 @@
     <message>
         <source>Specified -walletdir "%s" is not a directory</source>
         <translation>以 -walletdir 指定的路徑 "%s" 不是個目錄</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>指定主節點配置文件(預設值: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>己經提交到主節點，正在等候更多條目 ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>己經提交到主節點，在隊列%s 中等待 </translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>正在跟主節點網絡進行同步...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>這並不是一個主節點。</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4129,6 +4431,98 @@
     <message>
         <source>Error</source>
         <translation>錯誤</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>無效的主節點私鑰。請參閱文檔。</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>找不到隨機主節點。</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>無法解析 masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>在 masternode.conf 檢測到無效的端口</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>禁用所有全局令牌特定功能 （主节点，即时发送） (0-1，預設值: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>啟用即時到帳，顯示鎖定交易的確認次數 (0-1, 預設值: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>當錢包有交易改變時要執行的指令(指令中的 %s 會被取代成交易識別碼)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>即時到帳系統暫時並不支援這麼高的交易金額。目前的金額僅限於%1 GLT。</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>即時到帳系統要求輸入的資金最少要有%d個確認，你可能需要等待數分鐘然後再重試。</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>主节点缓存为空，跳过付款缓存...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>主節點選項:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>主節點隊列已滿。</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>主節點:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>警告: 至少有 %d 之 %d 的主節點正在運行新的軟件版本。請檢查最新版本，您可能也需要更新。</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>警告: 每個主節點 (共 %d 個已知的) 都運行在新版本的軟件。請檢查最新版本，很可能是您錯過了重大/關鍵更新。</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>設置主節點私鑰</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>正在同步主節點付款資訊...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>在 &lt;address&gt; 中啟用發布哈希交易 (通過InstantSend來鎖定)</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>在 &lt;address&gt; 中啟用發布原始交易 (通過 InstantSend 來鎖定)</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>即時到帳選項:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>覆蓋spork地址。 只對regtest有用。 在mainnet或testnet上使用它的話將封鎖你。</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>使用參數 -sporkaddr 時指定的spork地址無效</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>無法簽署叉勺訊息訊息，錯誤的密鑰？</translation>
     </message>
 </context>
 </TS>

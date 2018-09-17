@@ -1,5 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
 // Copyright (c) 2017-2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -12,6 +14,7 @@
 
 #include <addrman.h>
 #include <amount.h>
+#include <base58.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <checkpoints.h>
@@ -46,7 +49,22 @@
 #include <validationinterface.h>
 #ifdef ENABLE_WALLET
 #include <wallet/init.h>
+#include <wallet/wallet.h>
 #endif
+
+#include <activemasternode.h>
+#include <gltnotificationinterface.h>
+#include <flat-database.h>
+#include <instantx.h>
+#include <masternode-helper.h>
+#include <masternode-payments.h>
+#include <masternode-sync.h>
+#include <masternodeman.h>
+#include <masternodeconfig.h>
+#include <messagesigner.h>
+#include <netfulfilledman.h>
+#include <spork.h>
+
 #include <warnings.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -68,6 +86,10 @@
 #include <zmq/zmqnotificationinterface.h>
 #endif
 
+#ifdef USE_SSE2
+#include <crypto/algos/scrypt/scrypt.h>
+#endif
+
 bool fFeeEstimatesInitialized = false;
 static const bool DEFAULT_PROXYRANDOMIZE = true;
 static const bool DEFAULT_REST_ENABLE = false;
@@ -79,6 +101,8 @@ std::unique_ptr<PeerLogicValidation> peerLogic;
 #if ENABLE_ZMQ
 static CZMQNotificationInterface* pzmqNotificationInterface = nullptr;
 #endif
+
+static CGLTNotificationInterface* pgltNotificationInterface = nullptr;
 
 #ifdef WIN32
 // Win32 LevelDB doesn't use filedescriptors, and the ones used for
@@ -201,6 +225,16 @@ void Shutdown()
     if (g_connman) g_connman->Stop();
     peerLogic.reset();
     g_connman.reset();
+    
+    // STORE DATA CACHES INTO SERIALIZED DAT FILES
+    if (!fLiteMode) {
+        CFlatDB<CMasternodeMan> flatdb1("mncache.dat", "magicMasternodeCache");
+        flatdb1.Dump(mnodeman);
+        CFlatDB<CMasternodePayments> flatdb2("mnpayments.dat", "magicMasternodePaymentsCache");
+        flatdb2.Dump(mnpayments);
+        CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
+        flatdb4.Dump(netfulfilledman);
+    }
 
     StopTorControl();
 
@@ -261,6 +295,12 @@ void Shutdown()
         pzmqNotificationInterface = nullptr;
     }
 #endif
+
+    if (pgltNotificationInterface) {
+        UnregisterValidationInterface(pgltNotificationInterface);
+        delete pgltNotificationInterface;
+        pgltNotificationInterface = nullptr;
+    }
 
 #ifndef WIN32
     try {
@@ -424,8 +464,10 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageGroup(_("ZeroMQ notification options:"));
     strUsage += HelpMessageOpt("-zmqpubhashblock=<address>", _("Enable publish hash block in <address>"));
     strUsage += HelpMessageOpt("-zmqpubhashtx=<address>", _("Enable publish hash transaction in <address>"));
+    strUsage += HelpMessageOpt("-zmqpubhashtxlock=<address>", _("Enable publish hash transaction (locked via InstantSend) in <address>"));
     strUsage += HelpMessageOpt("-zmqpubrawblock=<address>", _("Enable publish raw block in <address>"));
     strUsage += HelpMessageOpt("-zmqpubrawtx=<address>", _("Enable publish raw transaction in <address>"));
+    strUsage += HelpMessageOpt("-zmqpubrawtxlock=<address>", _("Enable publish raw transaction (locked via InstantSend) in <address>"));
 #endif
 
     strUsage += HelpMessageGroup(_("Debugging/Testing options:"));
@@ -474,6 +516,20 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-uacomment=<cmt>", _("Append comment to the user agent string"));
 
     AppendParamsHelpMessages(strUsage, showDebug);
+    
+    strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-sporkaddr=<hex>", strprintf(_("Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.")));
+    
+    strUsage += HelpMessageGroup(_("Masternode options:"));
+    strUsage += HelpMessageOpt("-masternode=<n>", strprintf(_("Enable the client to act as a masternode (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-mnconf=<file>", strprintf(_("Specify masternode configuration file (default: %s)"), "masternode.conf"));
+    strUsage += HelpMessageOpt("-mnconflock=<n>", strprintf(_("Lock masternodes from masternode configuration file (default: %u)"), 1));
+    strUsage += HelpMessageOpt("-masternodeprivkey=<n>", _("Set the masternode private key"));
+    
+    strUsage += HelpMessageGroup(_("InstantSend options:"));
+    strUsage += HelpMessageOpt("-enableinstantsend=<n>", strprintf(_("Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-instantsenddepth=<n>", strprintf(_("Show N confirmations for a successfully locked transaction (%u-%u, default: %u)"), MIN_INSTANTSEND_DEPTH, MAX_INSTANTSEND_DEPTH, DEFAULT_INSTANTSEND_DEPTH));
+    strUsage += HelpMessageOpt("-instantsendnotify=<cmd>", _("Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)"));
 
     strUsage += HelpMessageGroup(_("Node relay options:"));
     if (showDebug) {
@@ -491,13 +547,16 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-whitelistrelay", strprintf(_("Accept relayed transactions received from whitelisted peers even when not relaying transactions (default: %d)"), DEFAULT_WHITELISTRELAY));
 
     strUsage += HelpMessageGroup(_("Block creation options:"));
+    strUsage += HelpMessageOpt("-acceptdividedcoinbase", strprintf(_("You must pay the founders reward and masternode reward from coinbase. If you enable this argument then you accept to pay this fee. (default: %u)"), false));
+    strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithms: astralhash, blake2b, blake2s, equihash, globalhash, groestl, hmq1725, jeonghash, keccak, lyra2re, neoscrypt, nist5, padihash, pawelhash, quark, qubit, scrypt, sha256d, skein, skunkhash, timetravel10, x11, x13, x14, x15, x16r, x17, xevan, yescrypt, zhash"));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");
-    strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DEFAULT_BLOCK_MAX_WEIGHT));
+    strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DefaultMaxBlockWeight(false)));
     strUsage += HelpMessageOpt("-blockmintxfee=<amt>", strprintf(_("Set lowest fee rate (in %s/kB) for transactions to be included in block creation. (default: %s)"), CURRENCY_UNIT, FormatMoney(DEFAULT_BLOCK_MIN_TX_FEE)));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockversion=<n>", "Override block version to test forking scenarios");
-
+		
+    strUsage += HelpMessageOpt("-coinbasetxnaddress=<address>", _("If you mine with getblocktemplate coinbasetxn, you need to paste an address here. It will be used to generate the coinbasetxn"));
     strUsage += HelpMessageGroup(_("RPC server options:"));
     strUsage += HelpMessageOpt("-rest", strprintf(_("Accept public REST requests (default: %u)"), DEFAULT_REST_ENABLE));
     strUsage += HelpMessageOpt("-rpcallowip=<ip>", _("Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"));
@@ -749,6 +808,17 @@ void InitParameterInteraction()
         if (gArgs.SoftSetBoolArg("-listen", true))
             LogPrintf("%s: parameter interaction: -whitebind set -> setting -listen=1\n", __func__);
     }
+    
+    if (gArgs.GetBoolArg("-masternode", false)) {
+        // masternodes MUST accept connections from outside
+        gArgs.ForceSetArg("-listen", "1");
+        LogPrintf("%s: parameter interaction: -masternode=1 -> setting -listen=1\n", __func__);
+        if (gArgs.GetArg("-maxconnections", DEFAULT_MAX_PEER_CONNECTIONS) < DEFAULT_MAX_PEER_CONNECTIONS) {
+            // masternodes MUST be able to handle at least DEFAULT_MAX_PEER_CONNECTIONS connections
+            gArgs.ForceSetArg("-maxconnections", itostr(DEFAULT_MAX_PEER_CONNECTIONS));
+            LogPrintf("%s: parameter interaction: -masternode=1 -> setting -maxconnections=%d\n", __func__, DEFAULT_MAX_PEER_CONNECTIONS);
+        }
+    }
 
     if (gArgs.IsArgSet("-connect")) {
         // when only connecting to trusted nodes, do not seed via DNS, or listen by default
@@ -797,6 +867,11 @@ void InitParameterInteraction()
     if (gArgs.GetBoolArg("-whitelistforcerelay", DEFAULT_WHITELISTFORCERELAY)) {
         if (gArgs.SoftSetBoolArg("-whitelistrelay", true))
             LogPrintf("%s: parameter interaction: -whitelistforcerelay=1 -> setting -whitelistrelay=1\n", __func__);
+    }
+    
+    if(!gArgs.GetBoolArg("-enableinstantsend", fEnableInstantSend)){
+        if (gArgs.SoftSetArg("-instantsenddepth", "0"))
+            LogPrintf("%s: parameter interaction: -enableinstantsend=false -> setting -nInstantSendDepth=0\n", __func__);
     }
 
     if (gArgs.IsArgSet("-blockmaxsize")) {
@@ -1277,6 +1352,11 @@ bool AppInitMain()
 
     int64_t nStart;
 
+#if defined(USE_SSE2)
+    std::string sse2detect = scrypt_detect_sse2();
+    LogPrintf("%s\n", sse2detect);
+#endif
+
     // ********************************************************* Step 5: verify wallet database integrity
 #ifdef ENABLE_WALLET
     if (!VerifyWallets())
@@ -1367,6 +1447,77 @@ bool AppInitMain()
             SetLimited(NET_TOR, false);
         }
     }
+	
+    // Algo
+    std::string strAlgo = gArgs.GetArg("-algo", "sha256d");
+    transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
+    if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
+        currentAlgo = ALGO_SHA256D;
+    else if (strAlgo == "scrypt")
+        currentAlgo = ALGO_SCRYPT;
+    else if (strAlgo == "neoscrypt")
+        currentAlgo = ALGO_NEOSCRYPT;
+    else if (strAlgo == "equihash")
+        currentAlgo = ALGO_EQUIHASH;
+    else if (strAlgo == "yescrypt")
+        currentAlgo = ALGO_YESCRYPT;
+    else if (strAlgo == "hmq1725")
+        currentAlgo = ALGO_HMQ1725;
+    else if (strAlgo == "xevan")
+        currentAlgo = ALGO_XEVAN;
+    else if (strAlgo == "nist5")
+        currentAlgo = ALGO_NIST5;
+    else if (strAlgo == "timetravel" || strAlgo == "timetravel10")
+        currentAlgo = ALGO_TIMETRAVEL10;
+    else if (strAlgo == "pawelhash")
+        currentAlgo = ALGO_PAWELHASH;
+    else if (strAlgo == "x11")
+        currentAlgo = ALGO_X11;
+    else if (strAlgo == "x13")
+        currentAlgo = ALGO_X13;
+    else if (strAlgo == "x14")
+        currentAlgo = ALGO_X14;
+    else if (strAlgo == "x15")
+        currentAlgo = ALGO_X15;
+    else if (strAlgo == "x16r")
+        currentAlgo = ALGO_X16R;
+    else if (strAlgo == "x17")
+        currentAlgo = ALGO_X17;
+    else if (strAlgo == "lyra" || strAlgo == "lyra2re" || strAlgo == "lyra2" || strAlgo == "lyra2rev2")
+        currentAlgo = ALGO_LYRA2RE;
+    else if (strAlgo == "blake2s")
+        currentAlgo = ALGO_BLAKE2S;
+    else if (strAlgo == "blake2b" || strAlgo == "sia")
+        currentAlgo = ALGO_BLAKE2B;
+    else if (strAlgo == "astralhash")
+        currentAlgo = ALGO_ASTRALHASH;
+    else if (strAlgo == "padihash")
+        currentAlgo = ALGO_PADIHASH;
+    else if (strAlgo == "jeonghash")
+        currentAlgo = ALGO_JEONGHASH;
+    else if (strAlgo == "keccak")
+        currentAlgo = ALGO_KECCAK;
+    else if (strAlgo == "zhash" || strAlgo == "equihash1445" || strAlgo == "equihash144.5")
+        currentAlgo = ALGO_ZHASH;
+    else if (strAlgo == "globalhash")
+        currentAlgo = ALGO_GLOBALHASH;
+    else if (strAlgo == "groestl" || strAlgo == "groestlsha2")
+        currentAlgo = ALGO_GROESTL;
+    else if (strAlgo == "skein" || strAlgo == "skeinsha2")
+        currentAlgo = ALGO_SKEIN;
+    else if (strAlgo == "q2c" || strAlgo == "qubit")
+        currentAlgo = ALGO_QUBIT;
+    else if (strAlgo == "skunk" || strAlgo == "skunkhash")
+        currentAlgo = ALGO_SKUNKHASH;
+    else if (strAlgo == "quark")
+        currentAlgo = ALGO_QUARK;
+    else
+    {
+        currentAlgo = ALGO_SHA256D;
+        LogPrintf("Unknown mining algorithm: (%s) ~ Auto choosing (%s) instead\n", strAlgo, GetAlgoName(currentAlgo));
+    }
+
+    LogPrintf("Mining Algorithm %s (ID : %d) selected\n", GetAlgoName(currentAlgo), currentAlgo);
 
     // see Step 2: parameter interactions for more information about these
     fListen = gArgs.GetBoolArg("-listen", DEFAULT_LISTEN);
@@ -1388,6 +1539,10 @@ bool AppInitMain()
         RegisterValidationInterface(pzmqNotificationInterface);
     }
 #endif
+
+    pgltNotificationInterface = new CGLTNotificationInterface(connman);
+    RegisterValidationInterface(pgltNotificationInterface);
+
     uint64_t nMaxOutboundLimit = 0; //unlimited unless -maxuploadtarget is set
     uint64_t nMaxOutboundTimeframe = MAX_UPLOAD_TIMEFRAME;
 
@@ -1666,8 +1821,132 @@ bool AppInitMain()
     if (ShutdownRequested()) {
         return false;
     }
+    
+    // ********************************************************* Step 11a: setup Masternodes & Spork
+    
+    if (!sporkManager.SetSporkAddress(gArgs.GetArg("-sporkaddr", Params().SporkAddress())))
+        return InitError(_("Invalid spork address specified with -sporkaddr"));
 
-    // ********************************************************* Step 11: start node
+    if (gArgs.IsArgSet("-sporkkey")) // spork priv key
+    {
+        if (!sporkManager.SetPrivKey(gArgs.GetArg("-sporkkey", "")))
+            return InitError(_("Unable to sign spork message, wrong key?"));
+    }
+    
+    fMasternodeMode = gArgs.GetBoolArg("-masternode", false);
+    // TODO: masternode should have no wallet
+
+    //lite mode disables all Dash-specific functionality
+    fLiteMode = gArgs.GetBoolArg("-litemode", false);
+
+    if(fLiteMode) {
+        InitWarning(_("You are starting in lite mode, all Globaltoken-specific functionality is disabled."));
+    }
+
+    if((!fLiteMode && fTxIndex == false)
+       && chainparams.NetworkIDString() != CBaseChainParams::REGTEST) { // TODO remove this when pruning is fixed. See https://github.com/dashpay/dash/pull/1817 and https://github.com/dashpay/dash/pull/1743
+        return InitError(_("Transaction index can't be disabled in full mode. Either start with -litemode command line switch or enable transaction index."));
+    }
+
+    if(fLiteMode && fMasternodeMode) {
+        return InitError(_("You can not start a masternode in lite mode."));
+    }
+
+    if(fMasternodeMode) {
+        LogPrintf("MASTERNODE:\n");
+
+        std::string strMasterNodePrivKey = gArgs.GetArg("-masternodeprivkey", "");
+        if(!strMasterNodePrivKey.empty()) {
+            if(!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, activeMasternode.keyMasternode, activeMasternode.pubKeyMasternode))
+                return InitError(_("Invalid masternodeprivkey. Please see documenation."));
+
+            LogPrintf("  pubKeyMasternode: %s\n", EncodeDestination(activeMasternode.pubKeyMasternode.GetID()));
+        } else {
+            return InitError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
+        }
+    }
+
+#ifdef ENABLE_WALLET
+    LogPrintf("Using masternode config file %s\n", GetMasternodeConfigFile().string());
+    
+    for (CWalletRef pwallet : vpwallets) {
+        if(gArgs.GetBoolArg("-mnconflock", true) && pwallet && (masternodeConfig.getCount() > 0)) {
+            LOCK(pwallet->cs_wallet);
+            LogPrintf("Locking Masternodes:\n");
+            uint256 mnTxHash;
+            uint32_t outputIndex;
+            for (const auto& mne : masternodeConfig.getEntries()) {
+                mnTxHash.SetHex(mne.getTxHash());
+                outputIndex = (uint32_t)atoi(mne.getOutputIndex());
+                COutPoint outpoint = COutPoint(mnTxHash, outputIndex);
+                // don't lock non-spendable outpoint (i.e. it's already spent or it's not from this wallet at all)
+                if(pwallet->IsMine(CTxIn(outpoint)) != ISMINE_SPENDABLE) {
+                    LogPrintf("  %s %s - IS NOT SPENDABLE, was not locked\n", mne.getTxHash(), mne.getOutputIndex());
+                    continue;
+                }
+                pwallet->LockCoin(outpoint);
+                LogPrintf("  %s %s - locked successfully\n", mne.getTxHash(), mne.getOutputIndex());
+            }
+        }
+    }
+
+#endif // ENABLE_WALLET
+
+    fEnableInstantSend = gArgs.GetBoolArg("-enableinstantsend", 1);
+    nInstantSendDepth = gArgs.GetArg("-instantsenddepth", DEFAULT_INSTANTSEND_DEPTH);
+    nInstantSendDepth = std::min(std::max(nInstantSendDepth, MIN_INSTANTSEND_DEPTH), MAX_INSTANTSEND_DEPTH);
+
+    LogPrintf("fLiteMode %d\n", fLiteMode);
+    LogPrintf("nInstantSendDepth %d\n", nInstantSendDepth);
+
+    // ********************************************************* Step 11b: Load cache data
+
+    // LOAD SERIALIZED DAT FILES INTO DATA CACHES FOR INTERNAL USE
+
+    if (!fLiteMode) {
+        boost::filesystem::path pathDB = GetDataDir();
+        std::string strDBName;
+
+        strDBName = "mncache.dat";
+        uiInterface.InitMessage(_("Loading masternode cache..."));
+        CFlatDB<CMasternodeMan> flatdb1(strDBName, "magicMasternodeCache");
+        if(!flatdb1.Load(mnodeman)) {
+            return InitError(_("Failed to load masternode cache from") + "\n" + (pathDB / strDBName).string());
+        }
+
+        if(mnodeman.size()) {
+            strDBName = "mnpayments.dat";
+            uiInterface.InitMessage(_("Loading masternode payment cache..."));
+            CFlatDB<CMasternodePayments> flatdb2(strDBName, "magicMasternodePaymentsCache");
+            if(!flatdb2.Load(mnpayments)) {
+                return InitError(_("Failed to load masternode payments cache from") + "\n" + (pathDB / strDBName).string());
+            }
+
+        } else {
+            uiInterface.InitMessage(_("Masternode cache is empty, skipping payments cache..."));
+        }
+
+        strDBName = "netfulfilled.dat";
+        uiInterface.InitMessage(_("Loading fulfilled requests cache..."));
+        CFlatDB<CNetFulfilledRequestManager> flatdb4(strDBName, "magicFulfilledCache");
+        if(!flatdb4.Load(netfulfilledman)) {
+            return InitError(_("Failed to load fulfilled requests cache from") + "\n" + (pathDB / strDBName).string());
+        }
+    }
+
+
+    // ********************************************************* Step 11c: update block tip in Globaltoken modules
+
+    // force UpdatedBlockTip to initialize nCachedBlockHeight for DS and MN payments
+    // but don't call it directly to prevent triggering of other listeners like zmq etc.
+    // GetMainSignals().UpdatedBlockTip(chainActive.Tip());
+    pgltNotificationInterface->InitializeCurrentBlockTip();
+    
+    // ********************************************************* Step 11d: start globaltoken-helper threads
+
+    threadGroup.create_thread(boost::bind(&ThreadCheckMasternodes, boost::ref(*g_connman)));
+
+    // ********************************************************* Step 12: start node
 
     int chain_active_height;
 
@@ -1745,7 +2024,7 @@ bool AppInitMain()
         return false;
     }
 
-    // ********************************************************* Step 12: finished
+    // ********************************************************* Step 13: finished
 
     SetRPCWarmupFinished();
     uiInterface.InitMessage(_("Done loading"));

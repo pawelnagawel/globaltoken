@@ -1574,6 +1574,10 @@
         <translation>Cadeia de blocos</translation>
     </message>
     <message>
+        <source>Number of Masternodes</source>
+        <translation>Número de Masternodes</translation>
+    </message>
+    <message>
         <source>Current number of blocks</source>
         <translation>Número actual de blocos</translation>
     </message>
@@ -2074,6 +2078,10 @@
         <translation>Adicionar &amp;Destinatário</translation>
     </message>
     <message>
+        <source>InstantX</source>
+        <translation>InstantX</translation>
+    </message>
+    <message>
         <source>Clear all fields of the form.</source>
         <translation>Limpar todos os campos do formulário.</translation>
     </message>
@@ -2128,6 +2136,10 @@
     <message>
         <source>Copy change</source>
         <translation>Copiar troco</translation>
+    </message>
+    <message>
+        <source>and InstantX</source>
+        <translation>e InstantX</translation>
     </message>
     <message>
         <source>%1 to %2</source>
@@ -2682,6 +2694,38 @@
         <translation>Incompatível</translation>
     </message>
     <message>
+        <source>%1/offline (verified via instantx)</source>
+        <translation>%1/desligado (verificado através de instantx)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (verified via instantx)</source>
+        <translation>%1/confirmado (verificado através de instantx)</translation>
+    </message>
+    <message>
+        <source>%1 confirmations (verified via instantx)</source>
+        <translation>%1 confirmações (verificado através de instantx)</translation>
+    </message>
+    <message>
+        <source>%1/offline (InstantX verification in progress - %2 of %3 signatures)</source>
+        <translation>%1/desligado (verificação InstantX em progresso - %2 de %3 assinaturas)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (InstantX verification in progress - %2 of %3 signatures )</source>
+        <translation>%1/confirmada (verificação InstantX em progresso - %2 de %3 assinaturas)</translation>
+    </message>
+    <message>
+        <source>%1 confirmations (InstantX verification in progress - %2 of %3 signatures)</source>
+        <translation>%1 confirmações (verificação InstantX em progresso - %2 de %3 assinaturas)</translation>
+    </message>
+    <message>
+        <source>%1/offline (InstantX verification failed)</source>
+        <translation>%1/desligado (a verificação InstantX falhou)</translation>
+    </message>
+    <message>
+        <source>%1/confirmed (InstantX verification failed)</source>
+        <translation>%1/confirmada (a verificação InstantX falhou)</translation>
+    </message>
+    <message>
         <source>This block was not received by any other nodes and will probably not be accepted!</source>
         <translation>Este bloco não foi recepcionado por outro nó e provavelente não será aceite!</translation>
     </message>
@@ -2906,6 +2950,10 @@
         <translation>Enviar Moedas</translation>
     </message>
     <message>
+        <source>InstantX doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>O InstantX não suporta valores tão elevados neste momento. As transacções estão limitadas a %1 GLT.</translation>
+    </message>
+    <message>
         <source>Current fee:</source>
         <translation>Taxa atual:</translation>
     </message>
@@ -2970,6 +3018,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Especifique o seu endereço público</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>Tem que especificar uma masternodeprivkey na configuração. Por favor verifique a documentação para ajuda.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3038,6 +3090,10 @@
     <message>
         <source>Delete all wallet transactions and only recover those parts of the blockchain through -rescan on startup</source>
         <translation>Apague todas as transações da carteira e somente restore aquelas que façam parte do blockchain através de re-scan ao reiniciar o programa</translation>
+    </message>
+    <message>
+        <source>Enable instantx, show confirmations for locked transactions (bool, default: %s)</source>
+        <translation>Activar instantx, mostrar confirmações para transacções bloqueadas (bool, default: %s)</translation>
     </message>
     <message>
         <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>
@@ -3364,6 +3420,14 @@
         <translation>Ligar através de um proxy SOCKS5</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Permitir ao cliente actuar como um masternode (0-1, omissão: %u)</translation>
+    </message>
+    <message>
+        <source>Error connecting to Masternode.</source>
+        <translation>Erro conectando ao Masternode</translation>
+    </message>
+    <message>
         <source>Error reading from database, shutting down.</source>
         <translation>Erro ao ler da base de dados, encerrando.</translation>
     </message>
@@ -3392,12 +3456,36 @@
         <translation>Manter no máximo &lt;n&gt; transacções órfãs em memória (padrão: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>A carregar a cache de masternodes...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Carregando cache de pagamento de maternodes...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Bloquear masternode presentes no ficheiro de configuração (omissão: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Necessário especificar uma porta com -whitebind: '%s'</translation>
     </message>
     <message>
         <source>Node relay options:</source>
         <translation>Opções da transmissão de nós:</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Nenhum Masternode detectado.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Nenhum Masternode compatível encontrado.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Não está na lista de Masternodes.</translation>
     </message>
     <message>
         <source>RPC server options:</source>
@@ -3426,6 +3514,42 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Falhou assinatura da transação</translation>
+    </message>
+    <message>
+        <source>Set external address:port to get to this masternode (example: %s)</source>
+        <translation>Definir endereço:porta externo para ligação a este masternode (ex: %s)</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Especificar ficheiro de configuração masternode (default: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>Apresentadas as seguintes entradas ao masternode:  %u / %d </translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Apresentado ao masternode, esperando por mais entradas ( %u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Apresentado ao masternode, esperando na fila %s </translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode winners...</source>
+        <translation>A sincronizar masternodes vencedores...</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>A sincronizar masternodes...</translation>
+    </message>
+    <message>
+        <source>Synchronizing sporks...</source>
+        <translation>A sincronizar sporks...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Este não é um Masternode</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -3458,6 +3582,10 @@
     <message>
         <source>Unable to bind to %s on this computer (bind returned error %s)</source>
         <translation>Incapaz de vincular à porta %s neste computador (vínculo retornou erro %s)</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Não foi possível assinar a mensagem spork, chave incorrecta?</translation>
     </message>
     <message>
         <source>Upgrade wallet to latest format on startup</source>
@@ -3498,6 +3626,10 @@
     <message>
         <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
         <translation>Executar o comando quando o melhor bloco muda (no comando, %s é substituído pela hash do bloco)</translation>
+    </message>
+    <message>
+        <source>InstantX requires inputs with at least 6 confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>O InstantX necessita de entradas com pelo menos 6 confirmações, pode ser necessário aguardar mais uns minutos e tentar de novo.</translation>
     </message>
     <message>
         <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
@@ -3706,6 +3838,42 @@
     <message>
         <source>Error</source>
         <translation>Erro</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>masternodeprivkey inválida. Por favor reveja a documentação.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Incapaz de encontrar Masternode aleatório.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Incapaz de analizar masternode.conf</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Port inválido detectado em masternode.conf</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Opções de masternode:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>A fila do masternode está cheia.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Define a chave privada do masternode</translation>
+    </message>
+    <message>
+        <source>InstantX options:</source>
+        <translation>Opções InstantX</translation>
     </message>
 </context>
 </TS>

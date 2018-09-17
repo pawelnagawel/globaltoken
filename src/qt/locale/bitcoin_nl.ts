@@ -266,6 +266,14 @@
         <translation>Blader door transactiegescheidenis</translation>
     </message>
     <message>
+        <source>&amp;Masternodes</source>
+        <translation>&amp;Masternodes</translation>
+    </message>
+    <message>
+        <source>Browse masternodes</source>
+        <translation>Blader door masternodes</translation>
+    </message>
+    <message>
         <source>E&amp;xit</source>
         <translation>A&amp;fsluiten</translation>
     </message>
@@ -308,6 +316,14 @@
     <message>
         <source>&amp;Change Passphrase...</source>
         <translation>&amp;Wijzig Wachtwoord</translation>
+    </message>
+    <message>
+        <source>Open &amp;Masternode Configuration File</source>
+        <translation>Open &amp;Masternode configuratie bestand</translation>
+    </message>
+    <message>
+        <source>Open Masternode configuration file</source>
+        <translation>Open Masternode configuratie bestand</translation>
     </message>
     <message>
         <source>&amp;Sending addresses...</source>
@@ -916,6 +932,161 @@
     </message>
 </context>
 <context>
+    <name>MasternodeList</name>
+    <message>
+        <source>Form</source>
+        <translation>Formulier</translation>
+    </message>
+    <message>
+        <source>My Masternodes</source>
+        <translation>Mijn Masternodes</translation>
+    </message>
+    <message>
+        <source>Note: Status of your masternodes in local wallet can potentially be slightly incorrect.&lt;br /&gt;Always wait for wallet to sync additional data and then double check from another node&lt;br /&gt;if your masternode should be running but you still do not see "ENABLED" in "Status" field.</source>
+        <translation>Opmerking: Status van uw masternodes in de lokale portemonnee kan mogelijk licht afwijkend zijn.&lt;br /&gt;Wacht steeds tot de portemonnee extra gegevens synchroniseert en controleer daarna een ander knooppunt&lt;br /&gt;Als jouw masternode moet werken, maar je ziet nog steeds niet 'Ingeschakeld' in het 'Status' veld.</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation>Adres</translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation>Protocol</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>Actief</translation>
+    </message>
+    <message>
+        <source>Last Seen</source>
+        <translation>Laatst gezien</translation>
+    </message>
+    <message>
+        <source>Payee</source>
+        <translation>Begunstigde</translation>
+    </message>
+    <message>
+        <source>S&amp;tart alias</source>
+        <translation>S&amp;tart alias</translation>
+    </message>
+    <message>
+        <source>Start &amp;all</source>
+        <translation>Start &amp;alle</translation>
+    </message>
+    <message>
+        <source>Start &amp;MISSING</source>
+        <translation>Start &amp;ONTBREKEND</translation>
+    </message>
+    <message>
+        <source>&amp;Update status</source>
+        <translation>&amp;Vernieuw status</translation>
+    </message>
+    <message>
+        <source>Show additional Masternode information</source>
+        <translation>Toon aanvullende Masternode informatie</translation>
+    </message>
+    <message>
+        <source>Show &amp;Info...</source>
+        <translation>Toon &amp;Info...</translation>
+    </message>
+    <message>
+        <source>Status will be updated automatically in (sec):</source>
+        <translation>Status wordt automatisch bijgewerkt in (sec):</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
+        <source>All Masternodes</source>
+        <translation>Alle Masternodes</translation>
+    </message>
+    <message>
+        <source>Filter List:</source>
+        <translation>Filter Lijst:</translation>
+    </message>
+    <message>
+        <source>Filter masternode list</source>
+        <translation>Filter masternode lijst</translation>
+    </message>
+    <message>
+        <source>Node Count:</source>
+        <translation>Aantal Nodes:</translation>
+    </message>
+    <message>
+        <source>Start alias</source>
+        <translation>Start alias</translation>
+    </message>
+    <message>
+        <source>Confirm masternode start</source>
+        <translation>Bevestig opstarten van Masternode</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start masternode %1?</source>
+        <translation>Weet u zeker dat u Masternode %1 wenst op te starten?</translation>
+    </message>
+    <message>
+        <source>Confirm all masternodes start</source>
+        <translation>Bevestig het opstarten van alle Masternodes</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start ALL masternodes?</source>
+        <translation>Weet u zeker dat u ALLE masternodes wenst te starten?</translation>
+    </message>
+    <message>
+        <source>Command is not available right now</source>
+        <translation>Dit commando is momenteel niet beschikbaar</translation>
+    </message>
+    <message>
+        <source>You can't use this command until masternode list is synced</source>
+        <translation>U kunt dit commando niet gebruiken totdat de Masternode lijst is gesynchroniseerd</translation>
+    </message>
+    <message>
+        <source>Confirm missing masternodes start</source>
+        <translation>Bevestig starten van ontbrekende masternodes</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to start MISSING masternodes?</source>
+        <translation>Weet u zeker dat u de ONTBREKENDE masternodes wenst te starten?</translation>
+    </message>
+    <message>
+        <source>Additional information for Masternode %1</source>
+        <translation>Aanvullende informatie voor Masternode %1</translation>
+    </message>
+    <message>
+        <source>Masternode Private Key</source>
+        <translation>Geheime sleutel van de Masternode</translation>
+    </message>
+    <message>
+        <source>Private Key</source>
+        <translation>Geheime sleutel</translation>
+    </message>
+    <message>
+        <source>Collateral</source>
+        <translation>Onderpand</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Versie</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Onbekend</translation>
+    </message>
+</context>
+<context>
     <name>ModalOverlay</name>
     <message>
         <source>Form</source>
@@ -1074,6 +1245,14 @@
     <message>
         <source>W&amp;allet</source>
         <translation>W&amp;allet</translation>
+    </message>
+    <message>
+        <source>Show additional tab listing all your masternodes in first sub-tab&lt;br/&gt;and all masternodes on the network in second sub-tab.</source>
+        <translation>Toon extra tabblad waarin je al jouw masternodes toont in de eerste sub-tab&lt;br/&gt; en alle masternodes op het netwerk in het tweede sub-tabblad.</translation>
+    </message>
+    <message>
+        <source>Show Masternodes Tab</source>
+        <translation>Toon Masternodes tab</translation>
     </message>
     <message>
         <source>Expert</source>
@@ -1440,6 +1619,10 @@
 <context>
     <name>QObject</name>
     <message>
+        <source>Error reading masternode configuration file: %1</source>
+        <translation>Fout in het lezen van masternode configuratie bestand: %1</translation>
+    </message>
+    <message>
         <source>Amount</source>
         <translation>Bedrag</translation>
     </message>
@@ -1544,6 +1727,25 @@
     </message>
 </context>
 <context>
+    <name>QRDialog</name>
+    <message>
+        <source>QR-Code Title</source>
+        <translation>QR-Code titel</translation>
+    </message>
+    <message>
+        <source>QR Code</source>
+        <translation>QR-code</translation>
+    </message>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>&amp;Sla afbeelding op...</translation>
+    </message>
+    <message>
+        <source>Error creating QR Code.</source>
+        <translation>Fout bij het Creëren van QR Code.</translation>
+    </message>
+</context>
+<context>
     <name>QRImageWidget</name>
     <message>
         <source>&amp;Save Image...</source>
@@ -1611,6 +1813,10 @@
     <message>
         <source>Block chain</source>
         <translation>Blokketen</translation>
+    </message>
+    <message>
+        <source>Number of Masternodes</source>
+        <translation>Aantal Masternodes</translation>
     </message>
     <message>
         <source>Current number of blocks</source>
@@ -1884,6 +2090,10 @@
         <translation>Wissen</translation>
     </message>
     <message>
+        <source>Request InstantSend</source>
+        <translation>Verzoek InstantSend</translation>
+    </message>
+    <message>
         <source>Requested payments history</source>
         <translation>Geschiedenis van de betalingsverzoeken</translation>
     </message>
@@ -1973,6 +2183,10 @@
     <message>
         <source>Message</source>
         <translation>Bericht</translation>
+    </message>
+    <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
     </message>
     <message>
         <source>Resulting URI too long, try to reduce the text for label / message.</source>
@@ -2089,6 +2303,10 @@
         <translation>verberg kosteninstellingen</translation>
     </message>
     <message>
+        <source>InstantSend</source>
+        <translation>InstantSend</translation>
+    </message>
+    <message>
         <source>per kilobyte</source>
         <translation>per kilobyte</translation>
     </message>
@@ -2183,6 +2401,10 @@
     <message>
         <source>Copy change</source>
         <translation>Kopieer wijziging</translation>
+    </message>
+    <message>
+        <source>and InstantSend</source>
+        <translation>en InstantSend</translation>
     </message>
     <message>
         <source>%1 (%2 blocks)</source>
@@ -2572,6 +2794,18 @@
     <message>
         <source>%1 confirmations</source>
         <translation>%1 bevestigingen</translation>
+    </message>
+    <message>
+        <source>verified via InstantSend</source>
+        <translation>geverifieerd met InstantSend</translation>
+    </message>
+    <message>
+        <source>InstantSend verification in progress - %1 of %2 signatures</source>
+        <translation>Bezig met InstantSend verficatie - %1 van %2 ondertekeningen</translation>
+    </message>
+    <message>
+        <source>InstantSend verification failed</source>
+        <translation>InstantSend verificatie mislukt</translation>
     </message>
     <message>
         <source>Status</source>
@@ -3008,6 +3242,14 @@
         <translation>Verstuur munten</translation>
     </message>
     <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ondersteund het verzenden van zulke hoge bedragen nog niet. Transacties zijn momenteel gelimiteerd tot %1 Dash.</translation>
+    </message>
+    <message>
+        <source>Used way too many inputs (&gt;%1) for this InstantSend transaction, fees could be huge.</source>
+        <translation>Er worden veel te veel inputs (&gt;%1) gebruikt voor deze InstantSend transactie, de vergoeding kan enorm zijn.</translation>
+    </message>
+    <message>
         <source>Fee bump error</source>
         <translation>Kosten stoot fout</translation>
     </message>
@@ -3096,6 +3338,10 @@
     <message>
         <source>Specify your own public address</source>
         <translation>Specificeer uw eigen publieke adres</translation>
+    </message>
+    <message>
+        <source>You must specify a masternodeprivkey in the configuration. Please see documentation for help.</source>
+        <translation>U moet een geheime sleutel van een Masternode invoeren. Raadpleeg de documentatie voor hulp.</translation>
     </message>
     <message>
         <source>Accept command line and JSON-RPC commands</source>
@@ -3614,6 +3860,10 @@
         <translation>Verbind door SOCKS5 proxy</translation>
     </message>
     <message>
+        <source>Enable the client to act as a masternode (0-1, default: %u)</source>
+        <translation>Stel de client toe om te handelen als een masternode (0-1, standaard: %u)</translation>
+    </message>
+    <message>
         <source>Error loading %s: You can't disable HD on an already existing HD wallet</source>
         <translation>Fout bij het laden van %s: Je kan HD niet deactiveren voor een reeds bestaande niet-HD-portemonnee</translation>
     </message>
@@ -3624,6 +3874,14 @@
     <message>
         <source>Error upgrading chainstate database</source>
         <translation>Fout bij het upgraden van de ketenstaat database</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode cache from</source>
+        <translation>Fout bij het inladen van de masternode cache uit</translation>
+    </message>
+    <message>
+        <source>Failed to load masternode payments cache from</source>
+        <translation>Fout bij het inladen van de masternode betalingen cache uit</translation>
     </message>
     <message>
         <source>Imports blocks from external blk000??.dat file on startup</source>
@@ -3654,12 +3912,36 @@
         <translation>Houd maximaal &lt;n&gt; onverbonden transacties in geheugen (standaard: %u)</translation>
     </message>
     <message>
+        <source>Loading masternode cache...</source>
+        <translation>Laden masternode cache...</translation>
+    </message>
+    <message>
+        <source>Loading masternode payment cache...</source>
+        <translation>Laden masternode payment cache...</translation>
+    </message>
+    <message>
+        <source>Lock masternodes from masternode configuration file (default: %u)</source>
+        <translation>Vergrendel masternodes vanuit het masternode configuratiebestand (standaard: %u)</translation>
+    </message>
+    <message>
         <source>Need to specify a port with -whitebind: '%s'</source>
         <translation>Verplicht een poort met -whitebind op te geven: '%s'</translation>
     </message>
     <message>
         <source>Node relay options:</source>
         <translation>Nodedoorgeefopties:</translation>
+    </message>
+    <message>
+        <source>No Masternodes detected.</source>
+        <translation>Geen Masternodes gedetecteerd.</translation>
+    </message>
+    <message>
+        <source>No compatible Masternode found.</source>
+        <translation>Geen compatibele Masternode gevonden.</translation>
+    </message>
+    <message>
+        <source>Not in the Masternode list.</source>
+        <translation>Niet in de Masternode lijst.</translation>
     </message>
     <message>
         <source>RPC server options:</source>
@@ -3688,6 +3970,30 @@
     <message>
         <source>Signing transaction failed</source>
         <translation>Ondertekenen van transactie mislukt</translation>
+    </message>
+    <message>
+        <source>Specify masternode configuration file (default: %s)</source>
+        <translation>Kies masternodeconfiguratiebeastand (standaard: %s)</translation>
+    </message>
+    <message>
+        <source>Submitted following entries to masternode: %u / %d</source>
+        <translation>De volgende gegevens zijn ingediend bij masternode: %u / %d</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting for more entries ( %u / %d ) %s</source>
+        <translation>Ingediend bij masternode, wachtende op meer gegevens (%u / %d ) %s</translation>
+    </message>
+    <message>
+        <source>Submitted to masternode, waiting in queue %s</source>
+        <translation>Ingediend bij masternode, wachten in de wachtrij %s</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternodes...</source>
+        <translation>Masternodes synchroniseren...</translation>
+    </message>
+    <message>
+        <source>This is not a Masternode.</source>
+        <translation>Dit is geen Masternode.</translation>
     </message>
     <message>
         <source>The transaction amount is too small to pay the fee</source>
@@ -4040,6 +4346,98 @@
     <message>
         <source>Error</source>
         <translation>Fout</translation>
+    </message>
+    <message>
+        <source>Invalid masternodeprivkey. Please see documenation.</source>
+        <translation>Ongeldige geheime sleutel voor de masternode. Raadpleeg de documentatie alstublieft.</translation>
+    </message>
+    <message>
+        <source>Can't find random Masternode.</source>
+        <translation>Kan Masternode niet vinden.</translation>
+    </message>
+    <message>
+        <source>Could not parse masternode.conf</source>
+        <translation>Kan masternode.conf niet lezen</translation>
+    </message>
+    <message>
+        <source>Invalid port detected in masternode.conf</source>
+        <translation>Ongeldige poort gevonden in masternode.conf</translation>
+    </message>
+    <message>
+        <source>Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)</source>
+        <translation>Uitschakelen van alle Globaltoken specifieke functies (Masternodes, InstantSend) (0-1, standaard: %u)</translation>
+    </message>
+    <message>
+        <source>Enable InstantSend, show confirmations for locked transactions (0-1, default: %u)</source>
+        <translation>Inschakelen van InstantSend, toon bevestigingen van vastgezette transacties (0-1, standaard: %u)</translation>
+    </message>
+    <message>
+        <source>Execute command when a wallet InstantSend transaction is successfully locked (%s in cmd is replaced by TxID)</source>
+        <translation>Voer opdracht uit zodra een wallettransactie succesvol vastgezet is (%s in cmd wordt vervangen door TxID)</translation>
+    </message>
+    <message>
+        <source>InstantSend doesn't support sending values that high yet. Transactions are currently limited to %1 GLT.</source>
+        <translation>InstantSend ondersteund het verzenden van zulke hoge bedragen nog niet. Transacties zijn momenteel gelimiteerd tot %1 Dash.</translation>
+    </message>
+    <message>
+        <source>InstantSend requires inputs with at least %d confirmations, you might need to wait a few minutes and try again.</source>
+        <translation>InstantSend vereist dat inputs ten minste %d bevestigingen hebben, u zult een paar minuten moeten wachten en opnieuw moeten proberen.</translation>
+    </message>
+    <message>
+        <source>Masternode cache is empty, skipping payments cache...</source>
+        <translation>Masternode cache is leeg, betalingcache worden overgeslagen...</translation>
+    </message>
+    <message>
+        <source>Masternode options:</source>
+        <translation>Masternode-opties:</translation>
+    </message>
+    <message>
+        <source>Masternode queue is full.</source>
+        <translation>Masternode wachtrij is vol.</translation>
+    </message>
+    <message>
+        <source>Masternode:</source>
+        <translation>Masternode:</translation>
+    </message>
+    <message>
+        <source>Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too.</source>
+        <translation>Waarschuwing: Ten minste %d van de %d masternodes werken met een nieuwere softwareversie. Controleer alstublieft de nieuwste releases, misschien moet u ook updaten.</translation>
+    </message>
+    <message>
+        <source>Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update.</source>
+        <translation>Waarschuwing: Alle masternodes (van de %d bekende) werken met een nieuwere softwareversie. Controleer alstublieft de nieuwste releases, het is zeer waarschijnlijk dat u een belangrijke/kritische update mist.</translation>
+    </message>
+    <message>
+        <source>Set the masternode private key</source>
+        <translation>Stel de masternode private key in</translation>
+    </message>
+    <message>
+        <source>Synchronizing masternode payments...</source>
+        <translation>Synchroniseren masternode betalingen...</translation>
+    </message>
+    <message>
+        <source>Enable publish hash transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Inschakelen publiceren van de hashtransactie (vastgezet met InstantSend) in &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>Enable publish raw transaction (locked via InstantSend) in &lt;address&gt;</source>
+        <translation>Inschakelen het publiceren van de ruwe transactie (vastgezet via InstantSend) in &lt;address&gt;</translation>
+    </message>
+    <message>
+        <source>InstantSend options:</source>
+        <translation>InstantSend-opties:</translation>
+    </message>
+    <message>
+        <source>Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.</source>
+        <translation>Overschrijf spork adres. Alleen bruikbaar voor regtest. Dit gebruiken op mainnet of testnet zal u een ban opleveren.</translation>
+    </message>
+    <message>
+        <source>Invalid spork address specified with -sporkaddr</source>
+        <translation>Ongeldig sporkadres opgegeven met -sporkaddr</translation>
+    </message>
+    <message>
+        <source>Unable to sign spork message, wrong key?</source>
+        <translation>Niet in staat om het sporkbericht te ondertekenen, verkeerde sleutel?</translation>
     </message>
 </context>
 </TS>
