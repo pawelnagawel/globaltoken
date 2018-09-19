@@ -52,7 +52,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QString font            = QApplication::font().toString();
 
     // create a bitmap according to device pixelratio
-    QSize splashSize(480*devicePixelRatio,320*devicePixelRatio);
+    QSize splashSize(520*devicePixelRatio,320*devicePixelRatio);
     pixmap = QPixmap(splashSize);
 
 #if QT_VERSION > 0x050100
@@ -70,7 +70,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QRect rGradient(QPoint(0,0), splashSize);
     pixPaint.fillRect(rGradient, gradient);
 
-    // draw the bitcoin icon, expected size of PNG: 1024x1024
+    // draw the globaltoken icon, expected size of PNG: 1024x1024
     QRect rectIcon(QPoint(-150,-122), QSize(430,430));
 
     const QSize requiredSize(1024,1024);
@@ -104,7 +104,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
 
     // draw copyright stuff
     {
-        pixPaint.setFont(QFont(font, 10*fontFactor));
+        pixPaint.setFont(QFont(font, 15*fontFactor));
         const int x = pixmap.width()/devicePixelRatio-titleTextWidth-paddingRight;
         const int y = paddingTop+titleCopyrightVSpace;
 		const int y_glt = paddingTop+titleCopyrightVSpace+12;
