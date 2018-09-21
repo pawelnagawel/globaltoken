@@ -1217,8 +1217,14 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64)
         return 0;
+    
+    CAmount nSubsidy;
+        
+    if((nHeight >= 350000 && nHeight <= 366448) && Params().NetworkIDString() == CBaseChainParams::MAIN)   
+        nSubsidy = 200 * COIN;
+    else
+        nSubsidy = 100 * COIN;
 
-    CAmount nSubsidy = 100 * COIN;
     // Subsidy is cut in half every 840,000 blocks
     nSubsidy >>= halvings;
     return nSubsidy;

@@ -225,6 +225,14 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
                 REJECT_INVALID, "bad-txns-premature-spend-of-coinbase",
                 strprintf("tried to spend coinbase at depth %d", nSpendHeight - coin.nHeight));
         }
+        
+        // timestamp attack, reverse timestamp hack attack, and burn the inputs, make them unspendable.
+        if (coin.IsCoinBase() && (HexStr(coin.out.scriptPubKey.begin(), coin.out.scriptPubKey.end()) == "76a9148d429be7d11e1d42f6b498a2cd856972622d564188ac"
+            || HexStr(coin.out.scriptPubKey.begin(), coin.out.scriptPubKey.end()) == "76a9140146b062c27a3ffeae2a665eb0a080b51cded2ee88ac")) {
+            return state.Invalid(false,
+                REJECT_INVALID, "bad-txns-hacked-coinbase",
+                strprintf("Hackers keep out! Coinbase marked as a hacked one ... coinbase nHeight = %d", coin.nHeight));
+        }
 
         // Check for negative or overflow input values
         nValueIn += coin.out.nValue;
