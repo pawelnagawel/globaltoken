@@ -1434,7 +1434,7 @@ std::string CChainParams::GetFoundersRewardAddressAtIndex(int i) const {
 
 CAmount CChainParams::GetTreasuryAmount(CAmount coinAmount) const
 {
-    return ((coinAmount / 100) * consensus.nTreasuryAmount);
+    return ((coinAmount / 100.0) * consensus.nTreasuryAmount);
 }
 
 unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const

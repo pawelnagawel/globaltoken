@@ -1220,7 +1220,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     
     CAmount nSubsidy;
         
-    if((nHeight >= 350000 && nHeight <= 366448) && Params().NetworkIDString() == CBaseChainParams::MAIN)   
+    if((nHeight >= 400000 && nHeight <= 416448) && Params().NetworkIDString() == CBaseChainParams::MAIN)   
         nSubsidy = 200 * COIN;
     else
         nSubsidy = 100 * COIN;
@@ -1232,7 +1232,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
 {
-    return ((blockValue / 100) * Params().GetConsensus().nMasternodePayeeReward);
+    return ((blockValue / 100.0) * Params().GetConsensus().nMasternodePayeeReward);
 }
 
 bool IsInitialBlockDownload()
