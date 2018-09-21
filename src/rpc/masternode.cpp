@@ -1,4 +1,6 @@
 // Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2018 The Globaltoken Core developers
+// Copyright (c) 2018 PM-Tech
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -303,13 +305,12 @@ UniValue masternode(const JSONRPCRequest& request)
             std::string strStatus = fFound ? mn.GetStatus() : "MISSING";
 
             UniValue mnObj(UniValue::VOBJ);
-            mnObj.pushKV("alias", mne.getAlias());
             mnObj.pushKV("address", mne.getIp());
             mnObj.pushKV("privateKey", mne.getPrivKey());
             mnObj.pushKV("txHash", mne.getTxHash());
             mnObj.pushKV("outputIndex", mne.getOutputIndex());
             mnObj.pushKV("status", strStatus);
-            resultObj.pushKV("masternode", mnObj);
+            resultObj.pushKV(mne.getAlias(), mnObj);
         }
 
         return resultObj;
