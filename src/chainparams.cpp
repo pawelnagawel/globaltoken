@@ -105,7 +105,7 @@ public:
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
         consensus.HardforkHeight = 300000; // not final
-        consensus.HardforkTime = 1538395200;
+        consensus.HardforkTime = 1537617600;
         // not hashed yet ... consensus.HardforkHash = uint256S("0x00");	
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
