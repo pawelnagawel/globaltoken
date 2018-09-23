@@ -101,12 +101,12 @@ public:
         consensus.nTreasuryAmount = 15;
         consensus.BIP16Height = 100000;
         consensus.BIP34Height = 299999;
-        // not hashed yet ... consensus.BIP34Hash = uint256S("0x00");
+        consensus.BIP34Hash = uint256S("0x0000000000000181717c02ef5cebbfb3568887de4e6cb30525ac7b6f5a0b998c");
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
-        consensus.HardforkHeight = 300000; // not final
+        consensus.HardforkHeight = 327036;
         consensus.HardforkTime = 1537617600;
-        // not hashed yet ... consensus.HardforkHash = uint256S("0x00");	
+        consensus.HardforkHash = uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56");	
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
@@ -262,15 +262,18 @@ public:
                 {214590, uint256S("0x00000000000003886a3080ff818eb6027a98f1ac33c532b730fbe4c0fde704ca")},
                 {282595, uint256S("0x00000000000000e335a60ca393eee3445f551d5bf6987e47d3a70e043b8dff5b")},
                 {300000, uint256S("0x00000000000000c22e9be2faab7b2f05b0e834f434b0a82b0a12b55351b9d3c4")},
+                {327035, uint256S("0x0000000000000072f4e5960b252d812991c4c13810b2324d623f824572cb5251")}, // last old chain height
+                {327036, uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56")}, // firt hardfork chain block
+                {328101, uint256S("0x320c067ac8c5cdebbd12df990556b1237f0b41c7dac54a232906f4ce7a180655")},
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 000000000000007ec4f3626d60d50098ba6d6a91981d0267ecb5848bbc2a2002 (height 305029).
-            1537097666, // * UNIX timestamp of last known number of transactions
-            369384,  // * total number of transactions between genesis and that timestamp
+            // Data as of block 320c067ac8c5cdebbd12df990556b1237f0b41c7dac54a232906f4ce7a180655 (height 328101).
+            1537709820, // * UNIX timestamp of last known number of transactions
+            393073,     // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            0.0019        // * estimated number of transactions per second after that timestamp
+            0.0022863   // * estimated number of transactions per second after that timestamp
         };
         
         // Founders reward script expects a vector of 4-of-6 multisig addresses
@@ -554,12 +557,12 @@ public:
         consensus.nTreasuryAmount = 18;
         consensus.BIP16Height = 1;
         consensus.BIP34Height = 1;
-        // consensus.BIP34Hash = uint256S("0x00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6"); // not hashed
+        consensus.BIP34Hash = uint256S("00000000238f0fdbc6d992a183ecf735ce0009f5ae2088ce8014370fcaaec7e8");
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
-        consensus.HardforkHeight = 2999; // not final
+        consensus.HardforkHeight = 2153; // not final
         consensus.HardforkTime = 1537185600;
-        // not hashed yet ... consensus.HardforkHash = uint256S("0x00");
+        consensus.HardforkHash = uint256S("0x944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733");
         consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
@@ -582,7 +585,7 @@ public:
         consensus.powLimit_PADIHASH = uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_ZHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.powLimit_KECCAK = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SKEIN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -701,14 +704,16 @@ public:
                 {0, uint256S("00000000fe3e3e93344a6b73888137397413eb11f601b4231b5196390d24d3b6")},
                 {1000, uint256S("00000000001f423e19a5ce9d10a1263dfbd83654da9183c25f7fcfd7fc25e458")},
                 {2152, uint256S("000000002439acbc366328335e435f25e78ff1f884fabd00f359a66c7865a1f2")},
+                {2153, uint256S("944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733")},
+                {2155, uint256S("41b4196ea0d0b0c3651e3129d5757f0336f7f016f75a5e14e37988d5f1e35173")},
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 000000002439acbc366328335e435f25e78ff1f884fabd00f359a66c7865a1f2 (height 2152)
-            1480961109,
-            2212,
-            0.000541
+            // Data as of block 41b4196ea0d0b0c3651e3129d5757f0336f7f016f75a5e14e37988d5f1e35173 (height 2155)
+            1537710402,
+            2215,
+            0.0005422
         };
         
         vFoundersRewardAddress = {
@@ -996,9 +1001,9 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
-        consensus.HardforkHeight = 15; // not final
+        consensus.HardforkHeight = 100000000; // activate hardfork here by the given timestamp.
         consensus.HardforkTime = 1537048800;
-        consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated after height
+        consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated with the timestamp.
         consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.powLimit_X11 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");

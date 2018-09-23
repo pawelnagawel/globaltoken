@@ -15,6 +15,7 @@
 #include <masternodeconfig.h>
 #include <masternodeman.h>
 #include <rpc/server.h>
+#include <script/standard.h>
 #include <util.h>
 #include <utilmoneystr.h>
 
@@ -56,19 +57,20 @@ UniValue masternode(const JSONRPCRequest& request)
                 "\nArguments:\n"
                 "1. \"command\"        (string or set of strings, required) The command to execute\n"
                 "\nAvailable commands:\n"
-                "  count        - Get information about number of masternodes (DEPRECATED options: 'total', 'enabled', 'qualify', 'all')\n"
-                "  current      - Print info on current masternode winner to be paid the next block (calculated locally)\n"
-                "  genkey       - Generate new masternodeprivkey\n"
+                "  count            - Get information about number of masternodes (DEPRECATED options: 'total', 'enabled', 'qualify', 'all')\n"
+                "  current          - Print info on current masternode winner to be paid the next block (calculated locally)\n"
+                "  genkey           - Generate new masternodeprivkey\n"
 #ifdef ENABLE_WALLET
-                "  outputs      - Print masternode compatible outputs\n"
-                "  start-alias  - Start single remote masternode by assigned alias configured in masternode.conf\n"
-                "  start-<mode> - Start remote masternodes configured in masternode.conf (<mode>: 'all', 'missing', 'disabled')\n"
+                "  outputs          - Print masternode compatible outputs\n"
+                "  outputsbyaddress - Print masternode compatible outputs by a given address as second argument.\n"
+                "  start-alias      - Start single remote masternode by assigned alias configured in masternode.conf\n"
+                "  start-<mode>     - Start remote masternodes configured in masternode.conf (<mode>: 'all', 'missing', 'disabled')\n"
 #endif // ENABLE_WALLET
-                "  status       - Print masternode status information\n"
-                "  list         - Print list of all known masternodes (see masternodelist for more info)\n"
-                "  list-conf    - Print masternode.conf in JSON format\n"
-                "  winner       - Print info on next masternode winner to vote for\n"
-                "  winners      - Print list of masternode winners\n"
+                "  status           - Print masternode status information\n"
+                "  list             - Print list of all known masternodes (see masternodelist for more info)\n"
+                "  list-conf        - Print masternode.conf in JSON format\n"
+                "  winner           - Print info on next masternode winner to vote for\n"
+                "  winners          - Print list of masternode winners\n"
                 );
 
     if (strCommand == "list")
@@ -330,8 +332,52 @@ UniValue masternode(const JSONRPCRequest& request)
         pwallet->AvailableCoins(vPossibleCoins, true, nullptr, 1, MAX_MONEY, MAX_MONEY, 0, 0, 9999999, ONLY_COLLATERAL, false);
 
         UniValue obj(UniValue::VOBJ);
+        int counter = 0;
         for (const auto& out : vPossibleCoins) {
-            obj.pushKV(out.tx->GetHash().ToString(), strprintf("%d", out.i));
+            counter++;
+            UniValue entries(UniValue::VOBJ);
+            entries.pushKV("txhash", out.tx->GetHash().ToString());
+            entries.pushKV("txoutput", strprintf("%d", out.i));
+            obj.pushKV(strprintf("%d", counter), entries);
+        }
+
+        return obj;
+    }
+    
+    if (strCommand == "outputsbyaddress") {
+        CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
+        if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+            return NullUniValue;
+        }
+
+        if (request.params.size() < 2)
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Please specify an address");
+        
+        LOCK2(cs_main, pwallet->cs_wallet);
+        EnsureWalletIsUnlocked(pwallet);
+
+        // Find possible candidates
+        std::vector<COutput> vPossibleCoins;
+        pwallet->AvailableCoins(vPossibleCoins, true, nullptr, 1, MAX_MONEY, MAX_MONEY, 0, 0, 9999999, ONLY_COLLATERAL, false);
+        
+        CTxDestination destination = DecodeDestination(request.params[2].get_str());
+        if (!IsValidDestination(destination)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
+        }
+        
+        UniValue obj(UniValue::VOBJ);
+        int counter = 0;
+        for (const auto& out : vPossibleCoins) {
+            CTxDestination address;
+            ExtractDestination(out.tx->scriptPubKey, address);
+            if(EncodeDestination(address) == request.params[2].get_str())
+            {
+                counter++;
+                UniValue entries(UniValue::VOBJ);
+                entries.pushKV("txhash", out.tx->GetHash().ToString());
+                entries.pushKV("txoutput", strprintf("%d", out.i));
+                obj.pushKV(strprintf("%s-%d", EncodeDestination(out.tx->scriptPubKey), counter), entries);
+            }
         }
 
         return obj;

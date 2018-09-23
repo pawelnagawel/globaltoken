@@ -1983,7 +1983,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     assert(pindex->pprev);
     CBlockIndex *pindexBIP34height = pindex->pprev->GetAncestor(chainparams.GetConsensus().BIP34Height);
     //Only continue to enforce if we're below BIP34 activation height or the block hash at that height doesn't correspond.
-    fEnforceBIP30 = fEnforceBIP30 && (!pindexBIP34height /* || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash) Disabled because Blocks with V.2 should be longer active. */);
+    fEnforceBIP30 = fEnforceBIP30 && (!pindexBIP34height || !(pindexBIP34height->GetBlockHash() == chainparams.GetConsensus().BIP34Hash));
 
     if (fEnforceBIP30) {
         for (const auto& tx : block.vtx) {
@@ -3366,6 +3366,11 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
         if (pcheckpoint && nHeight < pcheckpoint->nHeight)
             return state.DoS(100, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-checkpoint");
     }
+    
+    // Check against hardfork activation
+    // Don't accept any forks from the main chain prior to hardcoded hardfork.
+    if (IsHardForkActivated(block.nTime, consensusParams) && nHeight == consensusParams.HardforkHeight && block.GetHash() != consensusParams.HardforkHash)
+        return state.DoS(100, error("%s: Invalid Hardfork-fork! Expected hash = %s, Got hash = %s at height = %d", __func__, consensusParams.HardforkHash.GetHex(), block.GetHash().GetHex(), nHeight), REJECT_INVALID, "bad-hardfork-fork");
 
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())

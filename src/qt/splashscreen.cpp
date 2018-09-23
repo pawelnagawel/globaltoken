@@ -104,10 +104,10 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
 
     // draw copyright stuff
     {
-        pixPaint.setFont(QFont(font, 15*fontFactor));
+        pixPaint.setFont(QFont(font, 16*fontFactor));
         const int x = pixmap.width()/devicePixelRatio-titleTextWidth-paddingRight;
         const int y = paddingTop+titleCopyrightVSpace;
-		const int y_glt = paddingTop+titleCopyrightVSpace+12;
+		const int y_glt = paddingTop+titleCopyrightVSpace+24;
         QRect copyrightRect(x, y, pixmap.width() - x - paddingRight, pixmap.height() - y);
 		QRect copyrightRect_GLT(x, y_glt, pixmap.width() - x - paddingRight, pixmap.height() - y_glt);
         pixPaint.drawText(copyrightRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, copyrightText);
