@@ -290,6 +290,18 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 pindexNew->nSolution      = diskindex.nSolution;
                 pindexNew->nStatus        = diskindex.nStatus;
                 pindexNew->nTx            = diskindex.nTx;
+                
+                CPureBlockVersion versionverify = pindexNew->nVersion;
+
+                // We may not have enough data, to validate auxpow, if the block header was saved, but not the full block.
+                // Skip validation here and let it continue syncing this Block.
+                // The block will be verified anyways, so skip the validation this time for this block.
+                if(versionverify.IsAuxpow() && pindexNew->GetBlockPos().nFile == -1)
+                {
+                    LogPrintf("%s: Not enough data to verify auxpow ... Skipping block powcheck for : %s with Blockpos %s\n", __func__, pindexNew->ToString(), pindexNew->GetBlockPos().ToString());
+                    pcursor->Next();
+                    continue;
+                }
 				
                 bool equihashvalidator;
                 bool checkresult = CheckProofOfWork(pindexNew->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);

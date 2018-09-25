@@ -369,14 +369,14 @@ UniValue masternode(const JSONRPCRequest& request)
         int counter = 0;
         for (const auto& out : vPossibleCoins) {
             CTxDestination address;
-            ExtractDestination(out.tx->scriptPubKey, address);
+            ExtractDestination(out.tx->tx->vout[out.i].scriptPubKey, address);
             if(EncodeDestination(address) == request.params[2].get_str())
             {
                 counter++;
                 UniValue entries(UniValue::VOBJ);
                 entries.pushKV("txhash", out.tx->GetHash().ToString());
                 entries.pushKV("txoutput", strprintf("%d", out.i));
-                obj.pushKV(strprintf("%s-%d", EncodeDestination(out.tx->scriptPubKey), counter), entries);
+                obj.pushKV(strprintf("%s-%d", EncodeDestination(out.tx->tx->vout[out.i].scriptPubKey), counter), entries);
             }
         }
 

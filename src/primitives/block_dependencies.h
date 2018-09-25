@@ -104,6 +104,11 @@ public:
     {
         SetNull();
     }
+    
+    CPureBlockVersion(int32_t nBlockVersion)
+    {
+        nVersion = nBlockVersion;
+    }
 
     ADD_SERIALIZE_METHODS;
 
