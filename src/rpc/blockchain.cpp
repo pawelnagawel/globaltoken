@@ -1334,6 +1334,9 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
             "        \"activated\": \"xx\",           (boolean) returns if hardfork is activated \"true\" (activated) or \"false\" (deactivated)\n"
             "        \"softfork_activated\": xx,    (boolean) returns if a softfork of this hardfork is activated  \"true\" (activated) or \"false\" (deactivated)\n"
             "        \"activation_time\": xx,       (numeric) the activation time of this hardfork ID\n"
+            "        \"activation_height\": xx,     (numeric) the activation block height of this hardfork ID\n"
+            "        \"activation_blockhash\": xx,  (string) the activation blockhash of this hardfork ID\n"
+            "        \"blocks_since_hardfork\": xx  (numeric) blockcount since hardfork height \n"
             "     }\n"
             "  },\n"
             "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
@@ -1382,6 +1385,9 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     UniValue globaltoken_hardfork_id_1(UniValue::VOBJ);
     globaltoken_hardfork_id_1.pushKV("activated", IsHardForkActivated(tip->nTime));
     globaltoken_hardfork_id_1.pushKV("activation_time", (int64_t)consensusParams.HardforkTime);
+    globaltoken_hardfork_id_1.pushKV("activation_height", (int64_t)consensusParams.HardforkHeight);
+    globaltoken_hardfork_id_1.pushKV("activation_blockhash", consensusParams.HardforkHash.GetHex());
+    globaltoken_hardfork_id_1.pushKV("blocks_since_hardfork", tip.nHeight - consensusParams.HardforkHeight);
     globaltoken_hardfork.pushKV("1", globaltoken_hardfork_id_1);
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));

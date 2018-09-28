@@ -3366,11 +3366,6 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
         if (pcheckpoint && nHeight < pcheckpoint->nHeight)
             return state.DoS(100, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-checkpoint");
     }
-    
-    // Check against hardfork activation
-    // Don't accept any forks from the main chain prior to hardcoded hardfork.
-    if (IsHardForkActivated(block.nTime, consensusParams) && nHeight == consensusParams.HardforkHeight && block.GetHash() != consensusParams.HardforkHash)
-        return state.DoS(100, error("%s: Invalid Hardfork-fork! Expected hash = %s, Got hash = %s at height = %d", __func__, consensusParams.HardforkHash.GetHex(), block.GetHash().GetHex(), nHeight), REJECT_INVALID, "bad-hardfork-fork");
 
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
