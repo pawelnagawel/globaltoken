@@ -482,7 +482,7 @@ UniValue getdifficulty(const JSONRPCRequest& request)
         );
 
     LOCK(cs_main);
-    return GetDifficulty();
+    return GetDifficulty(NULL, currentAlgo);
 }
 
 std::string EntryDescriptionString()
