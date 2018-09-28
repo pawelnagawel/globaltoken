@@ -46,7 +46,7 @@ UniValue masternode(const JSONRPCRequest& request)
         (
 #ifdef ENABLE_WALLET
             strCommand != "start-alias" && strCommand != "start-all" && strCommand != "start-missing" &&
-         strCommand != "start-disabled" && strCommand != "outputs" &&
+         strCommand != "start-disabled" && strCommand != "outputs" && strCommand != "outputsbyaddress" && 
 #endif // ENABLE_WALLET
          strCommand != "list" && strCommand != "list-conf" && strCommand != "count" &&
          strCommand != "debug" && strCommand != "current" && strCommand != "winner" && strCommand != "winners" && strCommand != "genkey" &&
