@@ -354,13 +354,12 @@ UniValue masternode(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Please specify an address");
         
         LOCK2(cs_main, pwallet->cs_wallet);
-        EnsureWalletIsUnlocked(pwallet);
 
         // Find possible candidates
         std::vector<COutput> vPossibleCoins;
         pwallet->AvailableCoins(vPossibleCoins, true, nullptr, 1, MAX_MONEY, MAX_MONEY, 0, 0, 9999999, ONLY_COLLATERAL, false);
         
-        CTxDestination destination = DecodeDestination(request.params[2].get_str());
+        CTxDestination destination = DecodeDestination(request.params[1].get_str());
         if (!IsValidDestination(destination)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
         }
@@ -370,7 +369,7 @@ UniValue masternode(const JSONRPCRequest& request)
         for (const auto& out : vPossibleCoins) {
             CTxDestination address;
             ExtractDestination(out.tx->tx->vout[out.i].scriptPubKey, address);
-            if(EncodeDestination(address) == request.params[2].get_str())
+            if(EncodeDestination(address) == request.params[1].get_str())
             {
                 counter++;
                 UniValue entries(UniValue::VOBJ);
