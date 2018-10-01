@@ -375,7 +375,7 @@ UniValue masternode(const JSONRPCRequest& request)
                 UniValue entries(UniValue::VOBJ);
                 entries.pushKV("txhash", out.tx->GetHash().ToString());
                 entries.pushKV("txoutput", strprintf("%d", out.i));
-                obj.pushKV(strprintf("%s-%d", EncodeDestination(out.tx->tx->vout[out.i].scriptPubKey), counter), entries);
+                obj.pushKV(strprintf("%s-%d", EncodeDestination(address), counter), entries);
             }
         }
 
