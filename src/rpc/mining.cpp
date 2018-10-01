@@ -1572,7 +1572,7 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
         throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
     CBlock& block = *mit->second;
     
-    if(nAuxPoWVersion == 1 && ALGO_ZHASH)
+    if(nAuxPoWVersion == 1 && block.GetAlgo() == ALGO_ZHASH)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Zhash is not mineable with Auxpow 1.0, use Auxpow 2.0 for Zhash!");
     
     if(nAuxPoWVersion == 1)
