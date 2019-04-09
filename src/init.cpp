@@ -584,7 +584,7 @@ std::string LicenseInfo()
     const std::string URL_SOURCE_CODE = "<https://github.com/globaltoken/globaltoken>";
     const std::string URL_WEBSITE = "<https://globaltoken.org>";
 
-    return CopyrightHolders(strprintf(_("Copyright (C) %i-%i"), 2009, COPYRIGHT_YEAR) + " ") + "\n" + CopyrightHoldersGLT(strprintf(_("Copyright (C) %i-%i"), COPYRIGHT_GLT_START, COPYRIGHT_YEAR) + " ") + "\n" +
+    return CopyrightHolders(strprintf(_("Copyright (C) %i-%i"), 2009, COPYRIGHT_YEAR) + " ") + "\n" + CopyrightHoldersGLT(strprintf(_("Copyright (C) %i-%i"), COPYRIGHT_GLT_START, COPYRIGHT_YEAR_GLT) + " ") + "\n" +
            "\n" +
            strprintf(_("Please contribute if you find %s useful. "
                        "Visit %s for further information about the software."),

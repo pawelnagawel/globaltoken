@@ -46,7 +46,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QString titleText       = tr(PACKAGE_NAME);
     QString versionText     = QString("Version %1").arg(QString::fromStdString(FormatFullVersion()));
     QString copyrightText   = QString::fromUtf8(CopyrightHolders(strprintf("\xc2\xA9 %u-%u ", 2009, COPYRIGHT_YEAR)).c_str());
-	QString globaltokenText = QString::fromUtf8(CopyrightHoldersGLT(strprintf("\xc2\xA9 %u-%u ", COPYRIGHT_GLT_START, COPYRIGHT_YEAR)).c_str());
+	QString globaltokenText = QString::fromUtf8(CopyrightHoldersGLT(strprintf("\xc2\xA9 %u-%u ", COPYRIGHT_GLT_START, COPYRIGHT_YEAR_GLT)).c_str());
     QString titleAddText    = networkStyle->getTitleAddText();
 
     QString font            = QApplication::font().toString();

@@ -10,7 +10,7 @@
 #endif //HAVE_CONFIG_H
 
 // Check that required client information is defined
-#if !defined(CLIENT_VERSION_MAJOR) || !defined(CLIENT_VERSION_MINOR) || !defined(CLIENT_VERSION_REVISION) || !defined(CLIENT_VERSION_BUILD) || !defined(CLIENT_VERSION_IS_RELEASE) || !defined(COPYRIGHT_YEAR)
+#if !defined(CLIENT_VERSION_MAJOR) || !defined(CLIENT_VERSION_MINOR) || !defined(CLIENT_VERSION_REVISION) || !defined(CLIENT_VERSION_BUILD) || !defined(CLIENT_VERSION_IS_RELEASE) || !defined(COPYRIGHT_YEAR) || !defined(COPYRIGHT_YEAR_GLT)
 #error Client version information missing: version is not defined by bitcoin-config.h or in any other way
 #endif
 
@@ -22,7 +22,7 @@
 #define DO_STRINGIZE(X) #X
 
 //! Copyright string used in Windows .rc files
-#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " " COPYRIGHT_HOLDERS_FINAL "\n2017 " COPYRIGHT_HOLDERS_FINAL_GLT
+#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " " COPYRIGHT_HOLDERS_FINAL "\n2017-" STRINGIZE(COPYRIGHT_YEAR_GLT) " " COPYRIGHT_HOLDERS_FINAL_GLT
 
 /**
  * globaltokend-res.rc includes this file, but it cannot cope with real c++ code.
