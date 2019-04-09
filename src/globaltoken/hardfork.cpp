@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Globaltoken Core developers
+// Copyright (c) 2018-2019 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -97,6 +97,11 @@ bool IsHardForkActivated(uint32_t blocktime)
 {
 	const Consensus::Params& consensusParams = Params().GetConsensus();
 	return IsHardForkActivated(blocktime, consensusParams);
+}
+
+bool CHardforkProperties::IsActivated(uint32_t nTimeCheck)
+{
+    return (nTimeCheck >= nActivationTime);
 }
 
 std::string GetCoinbaseFeeString(int type)
