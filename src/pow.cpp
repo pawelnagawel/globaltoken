@@ -23,7 +23,7 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-    if(IsHardForkActivated(pblock->nTime))
+    if(params.Hardfork1.IsActivated(pblock->nTime))
        return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
     else
        return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
@@ -32,7 +32,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = GetAlgoPowLimit(ALGO_SHA256D).GetCompact(); // Before the Hardfork starts, there is just SHA256D
+    unsigned int nProofOfWorkLimit = params.vPOWAlgos[ALGO_SHA256D].GetPowLimit().GetCompact(); // Before the Hardfork starts, there is just SHA256D
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -67,7 +67,7 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
 
 unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-	unsigned int npowWorkLimit = GetAlgoPowLimit(algo).GetCompact();
+	unsigned int npowWorkLimit = params.vPOWAlgos[algo].GetPowLimit().GetCompact();
 
 	// Genesis block
 	if (pindexLast == nullptr)
@@ -75,7 +75,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		
 	if (params.fPowNoRetargeting)
 	{
-		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
+		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
 		if(pindexLastAlgo == nullptr)
 		{
 		    return npowWorkLimit;
@@ -88,7 +88,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 
 	if (params.fPowAllowMinDifficultyBlocks)
 	{
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
 		if(pindexLastAlgo == nullptr)
 		{
 		    return npowWorkLimit;
@@ -105,7 +105,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 			const CBlockIndex* pindex = pindexLastAlgo;
             
 			while (pindex != nullptr && pindex->pprev && pindex->nHeight % params.nInterval != 0 && pindex->nBits == npowWorkLimit)
-				pindex = GetLastBlockIndexForAlgo(pindex->pprev, algo);
+				pindex = GetLastBlockIndexForAlgo(pindex->pprev, algo, params);
             
             if (pindex == nullptr)
                 return npowWorkLimit;
@@ -122,7 +122,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		pindexFirst = pindexFirst->pprev;
 	}
 
-	const CBlockIndex* pindexPrevAlgo = GetLastBlockIndexForAlgo(pindexLast, algo);
+	const CBlockIndex* pindexPrevAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
 	if (pindexPrevAlgo == nullptr || pindexFirst == nullptr)
 	{
 		return npowWorkLimit;
@@ -164,9 +164,9 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		}
 	}
 
-	if (bnNew > GetAlgoPowLimit(algo))
+	if (bnNew > params.vPOWAlgos[algo].GetArithPowLimit())
 	{
-		bnNew = GetAlgoPowLimit(algo);
+		bnNew = params.vPOWAlgos[algo].GetArithPowLimit();
 	}
 
 	return bnNew.GetCompact();
@@ -185,7 +185,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
         nActualTimespan = params.nPowTargetTimespan*4;
 
     // Retarget
-    const arith_uint256 bnPowLimit = GetAlgoPowLimit(ALGO_SHA256D);
+    const arith_uint256 bnPowLimit = params.vPOWAlgos[ALGO_SHA256D].GetArithPowLimit();
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
@@ -241,7 +241,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > GetAlgoPowLimit(algo))
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > params.vPOWAlgos[algo].GetArithPowLimit())
         return false;
 
     // Check proof of work matches claimed amount
@@ -259,7 +259,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params, bool &ehsolutionvalid)
 {
-    bool hardfork = IsHardForkActivated(block.nTime);
+    bool hardfork = params.Hardfork1.IsActivated(block.nTime);
     uint8_t nAlgo = block.GetAlgo();
     ehsolutionvalid = true;
     
@@ -400,13 +400,13 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     return true;
 }
 
-const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo)
+const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t algo, const Consensus::Params& params)
 {
 	for (;;)
 	{
 		if (!pindex)
 			return nullptr;
-        if (!IsHardForkActivated(pindex->nTime) && algo != ALGO_SHA256D)
+        if (!params.Hardfork1.IsActivated(pindex->nTime) && algo != ALGO_SHA256D)
             return nullptr;
 		if (pindex->GetAlgo() == algo)
 			return pindex;
@@ -434,11 +434,11 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, u
     if (params.fPowNoRetargeting)
 	    return 0;
 	
-	const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo);
+	const CBlockIndex* pindexAlgo = GetLastBlockIndexForAlgo(pindex, algo, params);
     const CBlockIndex* pindexLastAlgo;
     if(pindexAlgo != nullptr)
         if(pindexAlgo->pprev)
-            pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+            pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo, params);
         else
             pindexLastAlgo = nullptr;
     else
@@ -457,7 +457,7 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, u
 				return pindexAlgo->nHeight;	
 		
 			pindexAlgo = pindexLastAlgo;
-			pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+			pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo, params);
 		}
 		return -3;
 	}
@@ -521,7 +521,7 @@ int CalculateDiffRetargetingBlock(const CBlockIndex* pindex, int retargettype, u
                     }
 				}
 				pindexAlgo = pindexLastAlgo;
-                pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo);
+                pindexLastAlgo = GetLastBlockIndexForAlgo(pindexAlgo->pprev, algo, params);
 	    }
 	    return -3;
     }

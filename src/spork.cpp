@@ -132,7 +132,7 @@ bool CSporkManager::UpdateSpork(int nSporkID, int64_t nValue, CConnman& connman)
 // grab the spork, otherwise say it's off
 bool CSporkManager::IsSporkActive(int nSporkID)
 {
-    if(!IsHardForkActivated((uint32_t)GetAdjustedTime()))
+    if(!Params().GetConsensus().Hardfork1.IsActivated((uint32_t)GetAdjustedTime()))
         return false;
     
     int64_t r = -1;

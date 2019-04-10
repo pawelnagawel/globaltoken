@@ -160,14 +160,14 @@ arith_uint256 GetBlockProofBase(const CBlockIndex& block)
     return (~bnTarget / (bnTarget + 1)) + 1;
 }
 
-arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo)
+arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo, const Consensus::Params& params)
 {
     int nDistance = 0;
     arith_uint256 nWork;
     const CBlockIndex* pindex = &block;
     while (pindex != nullptr)
     {
-        if (nDistance > 100 || (!IsHardForkActivated(pindex->nTime) && algo != ALGO_SHA256D))
+        if (nDistance > 100 || (!params.Hardfork1.IsActivated(pindex->nTime) && algo != ALGO_SHA256D))
         {
             return arith_uint256(0);
         }
@@ -184,7 +184,7 @@ arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo)
     return arith_uint256(0);
 }
 
-arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
+arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block, const Consensus::Params& params)
 {
     //arith_uint256 bnRes;
     arith_uint256 nBlockWork = GetBlockProofBase(block);
@@ -195,7 +195,7 @@ arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
     {
         if (algo != nAlgo)
         {
-            arith_uint256 nBlockWorkAlt = GetPrevWorkForAlgoWithDecay(block, algo);
+            arith_uint256 nBlockWorkAlt = GetPrevWorkForAlgoWithDecay(block, algo, params);
             CBigNum bnBlockWorkAlt = CBigNum(ArithToUint256(nBlockWorkAlt));
             if (bnBlockWorkAlt != 0)
                 bnBlockWork *= bnBlockWorkAlt;
@@ -213,7 +213,12 @@ arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block)
 
 arith_uint256 GetBlockProof(const CBlockIndex& block)
 {
-    if (IsHardForkActivated(block.nTime))
+	return GetBlockProof(block, Params().GetConsensus());
+}
+
+arith_uint256 GetBlockProof(const CBlockIndex& block, const Consensus::Params& params)
+{
+    if (params.Hardfork1.IsActivated(block.nTime))
     {
         return GetGeometricMeanPrevWork(block);
     }
@@ -234,7 +239,7 @@ int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& fr
         r = from.nChainWork - to.nChainWork;
         sign = -1;
     }
-    r = r * arith_uint256(params.nPowTargetSpacing) / GetBlockProof(tip);
+    r = r * arith_uint256(params.nPowTargetSpacing) / GetBlockProof(tip, params);
     if (r.bits() > 63) {
         return sign * std::numeric_limits<int64_t>::max();
     }

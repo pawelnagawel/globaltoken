@@ -5,7 +5,7 @@
 // Copyright (c) 2016-2017 The Zcash developers
 // Copyright (c) 2018 The Bitcoin Private developers
 // Copyright (c) 2017-2018 The Bitcoin Gold developers
-// Copyright (c) 2017-2018 The Globaltoken Core developers
+// Copyright (c) 2017-2019 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -104,39 +104,46 @@ public:
         consensus.BIP34Hash = uint256S("0x0000000000000181717c02ef5cebbfb3568887de4e6cb30525ac7b6f5a0b998c");
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
-        consensus.HardforkHeight = 327036;
-        consensus.HardforkTime = 1537617600;
-        consensus.HardforkHash = uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56");	
-        consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-        consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_EQUIHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_HMQ1725 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_TIMETRAVEL10 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PAWELHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X13 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X14 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X15 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X17 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_LYRA2RE = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2S = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2B = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PADIHASH = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ZHASH = uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_KECCAK = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKEIN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GROESTL = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKUNKHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUARK = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X16R = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537617600 /* Hardfork Activation Time */, 327036 /* Hardfork Activation Height */, uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56") /* Hardfork Activation Blockhash */);
+        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1560765600 /* Hardfork Activation Time */, 700000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
+        consensus.vPOWAlgos.reserve(MAX_ALGOS);
+        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        
+        // verification
+        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        {
+            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+        }
+        
         consensus.nTargetSpacing = 60; // 1 minute
         consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
@@ -560,39 +567,47 @@ public:
         consensus.BIP34Hash = uint256S("00000000238f0fdbc6d992a183ecf735ce0009f5ae2088ce8014370fcaaec7e8");
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
-        consensus.HardforkHeight = 2153; // not final
-        consensus.HardforkTime = 1537185600;
-        consensus.HardforkHash = uint256S("0x944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733");
-        consensus.powLimit_SHA256 = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SCRYPT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X11 = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-        consensus.powLimit_NEOSCRYPT = uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_EQUIHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_YESCRYPT = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_HMQ1725 = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_XEVAN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_NIST5 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_TIMETRAVEL10 = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PAWELHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X13 = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X14 = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X15 = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X17 = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_LYRA2RE = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2S = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2B = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ASTRALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PADIHASH = uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_JEONGHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ZHASH = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_KECCAK = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GLOBALHASH = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUBIT = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKEIN = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GROESTL = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKUNKHASH = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUARK = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X16R = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537185600 /* Hardfork Activation Time */, 2153 /* Hardfork Activation Height */, uint256S("0x944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733") /* Hardfork Activation Blockhash */);
+        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1557871200 /* Hardfork Activation Time */, 10000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
+        consensus.vPOWAlgos.clear();
+        consensus.vPOWAlgos.reserve(MAX_ALGOS);
+        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        
+        // verification
+        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        {
+            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+        }
+        
         consensus.nTargetSpacing = 60; // 1 minute
         consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
@@ -1001,39 +1016,47 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
-        consensus.HardforkHeight = 100000000; // activate hardfork here by the given timestamp.
-        consensus.HardforkTime = 1537048800;
-        consensus.HardforkHash = uint256(); // there is no hardfork hash for regtest, it will be just activated with the timestamp.
-        consensus.powLimit_SHA256 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X11 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_NEOSCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_EQUIHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
-        consensus.powLimit_YESCRYPT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_HMQ1725 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_XEVAN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_NIST5 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_TIMETRAVEL10 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PAWELHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X13 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X14 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X15 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X17 = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_LYRA2RE = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2S = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_BLAKE2B = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ASTRALHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_PADIHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_JEONGHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_ZHASH = uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f");
-        consensus.powLimit_KECCAK = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GLOBALHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUBIT = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKEIN = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_GROESTL = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_SKUNKHASH = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_QUARK = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.powLimit_X16R = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537048800 /* Hardfork Activation Time */, 100000000 /* Hardfork Activation Height - unknown yet */, uint256() /* there is no hardfork hash for regtest, it will be just activated with the timestamp. */);
+        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1556661600 /* Hardfork Activation Time */, 100000000 /* Hardfork Activation Height - unknown yet */, uint256() /* there is no hardfork hash for regtest, it will be just activated with the timestamp. */);
+        consensus.vPOWAlgos.clear();
+        consensus.vPOWAlgos.reserve(MAX_ALGOS);
+        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
+        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
+        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        
+        // verification
+        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        {
+            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+        }
+        
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;

@@ -140,11 +140,11 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     }
     
     if (!IsHardForkActivated((uint32_t)currenttime) && algo != ALGO_SHA256D) {
-        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", currenttime, chainparams.GetConsensus().HardforkTime);
+        error("MultiAlgo is not yet active. Current block timestamp %lu, timestamp multialgo becomes active %lu", currenttime, chainparams.GetConsensus().Hardfork1.GetActivationTime());
         return nullptr;
     }
     
-    if(IsHardForkActivated((uint32_t)currenttime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
+    if(chainparams.GetConsensus().Hardfork1.IsActivated((uint32_t)currenttime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
     {
         LogPrintf("%s", GetCoinbaseFeeString(DIVIDEDPAYMENTS_BLOCK_WARNING));
         // Continue and cancel block mining at getblocktemplate / generateblocks
@@ -195,7 +195,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
     coinbaseTx.vout[0].nValue = blockReward;
     
-    if(IsHardForkActivated(pblock->nTime))
+    if(chainparams.GetConsensus().Hardfork1.IsActivated(pblock->nTime))
     {
         CAmount nTreasuryAmount = chainparams.GetTreasuryAmount(blockReward);
         coinbaseTx.vout[0].nValue -= nTreasuryAmount;
@@ -216,7 +216,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
    arith_uint256 nonce;
-   if (IsHardForkActivated(pblock->nTime) && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)) {
+   if (chainparams.GetConsensus().Hardfork1.IsActivated(pblock->nTime) && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)) {
 	 // Randomise nonce for new block format.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)

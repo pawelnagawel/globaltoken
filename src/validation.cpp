@@ -2056,7 +2056,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         // * p2sh (when P2SH enabled in flags and excludes coinbase)
         // * witness (when witness enabled in flags and excludes coinbase)
         nSigOpsCost += GetTransactionSigOpCost(tx, view, flags);
-        if (nSigOpsCost > MaxBlockSigOps(IsHardForkActivated(pindex->nTime)))
+        if (nSigOpsCost > MaxBlockSigOps(chainparams.GetConsensus().Hardfork1.IsActivated(pindex->nTime)))
             return state.DoS(100, error("ConnectBlock(): too many sigops"),
                              REJECT_INVALID, "bad-blk-sigops");
 
@@ -2090,7 +2090,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     // TODO: resync data (both ways?) and try to reprocess this block later.
     CAmount blockReward = nFees + GetBlockSubsidy(pindex->nHeight, chainparams.GetConsensus());
 
-    if(IsHardForkActivated(block.nTime))
+    if(chainparams.GetConsensus().Hardfork1.IsActivated(block.nTime))
     {
         // Coinbase transaction must include the Treasury amount to the given Reward address, if Hardfork is activated.
         bool found = false;
@@ -3218,7 +3218,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // checks that use witness data may be performed here.
 
     // Size limits
-    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MaxBlockWeight(consensusParams.GetConsensus().Hardfork1.IsActivated(block.nTime)) || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MaxBlockWeight(IsHardForkActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
 
     // First transaction must be coinbase, the rest must not be
@@ -3267,7 +3267,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     {
         nSigOps += GetLegacySigOpCount(*tx);
     }
-    if (nSigOps * WITNESS_SCALE_FACTOR > MaxBlockSigOps(IsHardForkActivated(block.nTime)))
+    if (nSigOps * WITNESS_SCALE_FACTOR > MaxBlockSigOps(consensusParams.GetConsensus().Hardfork1.IsActivated(block.nTime)))
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-sigops", false, "out-of-bounds SigOpCount");
 
     if (fCheckPOW && fCheckMerkleRoot)
@@ -3380,12 +3380,12 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
        (block.nVersion < 3 && nHeight >= consensusParams.BIP66Height) ||
        (block.nVersion < 4 && nHeight >= consensusParams.BIP65Height) ||
-       (block.nVersion == 0x20000000 && IsHardForkActivated(block.nTime, consensusParams)))
+       (block.nVersion == 0x20000000 && consensusParams.GetConsensus().Hardfork1.IsActivated(block.nTime)))
             return state.Invalid(false, REJECT_OBSOLETE, strprintf("bad-version(0x%08x)", block.nVersion),
                                  strprintf("rejected nVersion=0x%08x block", block.nVersion));
 
     // Reject reserved / unused algo-IDs!
-    if(IsHardForkActivated(block.nTime, consensusParams) && block.GetAlgo() == ALGO_SHA256D && ((block.nVersion & BLOCK_VERSION_ALGO) != BLOCK_VERSION_SHA256D))
+    if(consensusParams.GetConsensus().Hardfork1.IsActivated(block.nTime) && block.GetAlgo() == ALGO_SHA256D && ((block.nVersion & BLOCK_VERSION_ALGO) != BLOCK_VERSION_SHA256D))
         return state.Invalid(false, REJECT_INVALID, "invalid-multialgo-id", strprintf("Invalid block algo-ID! nVersion = %u, expected ID: %d, got: %d", block.nVersion, BLOCK_VERSION_SHA256D, block.nVersion & BLOCK_VERSION_ALGO));
 
     return true;
@@ -3471,7 +3471,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     // large by filling up the coinbase witness, which doesn't change
     // the block hash, so we couldn't mark the block as permanently
     // failed).
-    if (GetBlockWeight(block) > MaxBlockWeight(IsHardForkActivated(block.nTime))) {
+    if (GetBlockWeight(block) > MaxBlockWeight(consensusParams.GetConsensus().Hardfork1.IsActivated(block.nTime))) {
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-weight", false, strprintf("%s : weight limit failed", __func__));
     }
 
@@ -4928,7 +4928,7 @@ bool CheckCurrentHardforkState()
 {
     LOCK(cs_main);
     CBlockIndex* pblockindex = chainActive.Tip();
-    return IsHardForkActivated(pblockindex->nTime);
+    return Params().GetConsensus().Hardfork1.IsActivated(pblockindex->nTime);
 }
 
 //! Guess how far we are in the verification process at the given block index

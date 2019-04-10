@@ -96,7 +96,7 @@ UniValue GetNetworkHashPS(int lookup, int height) {
 
 UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivationCheck)
 {
-    if(IsHardForkActivated(block.nTime) || skipActivationCheck)
+    if(Params().GetConsensus().Hardfork1.IsActivated(block.nTime) || skipActivationCheck)
     {
         const CChainParams& params = Params();
         CAmount treasuryamount = params.GetTreasuryAmount(block.vtx[0]->GetValueOut());
@@ -122,7 +122,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
 {
     LOCK(cs_main);
     
-    if(IsHardForkActivated(nTime) || skipActivationCheck)
+    if(Params().GetConsensus().Hardfork1.IsActivated(nTime) || skipActivationCheck)
     {
         if(nHeight < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Block height out of range");
@@ -244,7 +244,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         CBlock *pblock = &pblocktemplate->block;
         
         // Check if the user accepted to pay the block treasury / founders reward (dev tax) / blockchain self-funding fee & masternode reward
-        if(IsHardForkActivated(pblock->nTime))
+        if(params.GetConsensus().Hardfork1.IsActivated(pblock->nTime))
         {
             if(!gArgs.GetBoolArg("-acceptdividedcoinbase", false))
             {
@@ -297,7 +297,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
             LOCK(cs_main);
             IncrementExtraNonce(pblock, chainActive.Tip(), nExtraNonce);
         }
-		if(IsHardForkActivated(pblock->nTime))
+		if(params.GetConsensus().Hardfork1.IsActivated(pblock->nTime))
 		{
 			if(currentAlgo == ALGO_EQUIHASH || currentAlgo == ALGO_ZHASH)
 			{
@@ -556,11 +556,13 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
     obj.pushKV("lastblockalgoid",       tip->GetAlgo());
     obj.pushKV("localalgo",             GetAlgoName(currentAlgo));
     obj.pushKV("localalgoid",           currentAlgo);
+    
+    const Consensus::Params& consensusParams = Params().GetConsensus();
 
     for(uint8_t i = 0; i < (uint8_t)NUM_ALGOS; i++)
     {
 	    UniValue algo_description(UniValue::VOBJ);
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i);
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i, consensusParams);
         int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
 	
         algo_description.pushKV("algoid",      i);
@@ -929,7 +931,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, currentAlgo, fSupportsSegwit);
         if (!pblocktemplate)
         {
-            if(IsHardForkActivated(pindexPrevNew->nTime))
+            if(Params().GetConsensus().Hardfork1.IsActivated(pindexPrevNew->nTime))
             {
                 throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
             }
@@ -960,7 +962,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     pblock->nBigNonce = uint256();
 	pblock->nSolution.clear();
     
-    if(IsHardForkActivated(pblock->nTime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
+    if(consensusParams.Hardfork1.IsActivated(pblock->nTime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
     {
         throw std::runtime_error(GetCoinbaseFeeString(DIVIDEDPAYMENTS_BLOCKTEMPLATE_WARNING));
     }
@@ -1021,7 +1023,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         if (tx.IsCoinBase()) 
         {
             // Show treasury reward if it is required and masternode payee
-            if (IsHardForkActivated(pblock->nTime)) {
+            if (consensusParams.Hardfork1.IsActivated(pblock->nTime)) {
                 // Correct this if GetBlockTemplate changes the order
                 entry.pushKV("treasury", treasuryObj);
                 entry.pushKV("masternode", masternodeObj);
@@ -1123,8 +1125,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
     result.pushKV("mutable", aMutable);
     result.pushKV("noncerange", "00000000ffffffff");
-    int64_t nSigOpLimit = MaxBlockSigOps(IsHardForkActivated(pblock->nTime));
-    int64_t nSizeLimit = MaxBlockSerializedSize(IsHardForkActivated(pblock->nTime));
+    int64_t nSigOpLimit = MaxBlockSigOps(consensusParams.Hardfork1.IsActivated(pblock->nTime));
+    int64_t nSizeLimit = MaxBlockSerializedSize(consensusParams.Hardfork1.IsActivated(pblock->nTime));
     if (fPreSegWit) {
         assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
         nSigOpLimit /= WITNESS_SCALE_FACTOR;
@@ -1134,14 +1136,14 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("sigoplimit", nSigOpLimit);
     result.pushKV("sizelimit", nSizeLimit);
     if (!fPreSegWit) {
-        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(IsHardForkActivated(pblock->nTime)));
+        result.pushKV("weightlimit", (int64_t)MaxBlockWeight(consensusParams.Hardfork1.IsActivated(pblock->nTime)));
     }
     result.pushKV("curtime", pblock->GetBlockTime());
     result.pushKV("bits", strprintf("%08x", pblock->nBits));
     result.pushKV("height", (int64_t)(pindexPrev->nHeight+1));
     
     result.pushKV("masternode", masternodeObj);
-    result.pushKV("masternode_payments_started", IsHardForkActivated(pblock->nTime));
+    result.pushKV("masternode_payments_started", consensusParams.Hardfork1.IsActivated(pblock->nTime));
     result.pushKV("masternode_payments_enforced", sporkManager.IsSporkActive(SPORK_5_MASTERNODE_PAYMENT_ENFORCEMENT));
 
     if (!pblocktemplate->vchCoinbaseCommitment.empty() && fSupportsSegwit) {
@@ -1442,7 +1444,7 @@ void AuxMiningCheck()
      past the point of merge-mining start.  Check nevertheless.  */
   {
     LOCK(cs_main);
-    if (!IsHardForkActivated(chainActive.Tip()->nTime))
+    if (!Params().GetConsensus().Hardfork1.IsActivated(chainActive.Tip()->nTime))
       throw std::runtime_error("mining auxblock method is not yet available");
   }
 }
@@ -1481,7 +1483,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
             = BlockAssembler(Params()).CreateNewBlock(scriptPubKey, currentAlgo);
         if (!newBlock)
         {
-            if(IsHardForkActivated(chainActive.Tip()->nTime))
+            if(Params().GetConsensus().Hardfork1.IsActivated(chainActive.Tip()->nTime))
             {
                 throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
             }
@@ -1500,7 +1502,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
             }
         }
         
-        if(IsHardForkActivated(newBlock->block.nTime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
+        if(Params().GetConsensus().Hardfork1.IsActivated(newBlock->block.nTime) && !gArgs.GetBoolArg("-acceptdividedcoinbase", false))
         {
             throw std::runtime_error(GetCoinbaseFeeString(DIVIDEDPAYMENTS_AUXPOW_WARNING));
         }

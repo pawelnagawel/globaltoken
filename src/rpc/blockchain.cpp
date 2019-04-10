@@ -57,7 +57,7 @@ extern void POSTxToJSON(const CPOSTransaction& tx, const uint256 hashBlock, UniV
 double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, uint8_t algo)
 {
     unsigned int nBits;
-    unsigned int powLimit = GetAlgoPowLimit(algo).GetCompact();
+    unsigned int powLimit = Params().GetConsensus().vPOWAlgos[algo].GetPowLimit().GetCompact();
 	
     if (blockindex == nullptr)
     {
@@ -66,7 +66,7 @@ double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, uint8_t
         else
         {
             //blockindex = chainActive.Tip();
-            blockindex = GetLastBlockIndexForAlgo(chain.Tip(), algo);
+            blockindex = GetLastBlockIndexForAlgo(chain.Tip(), algo, Params().GetConsensus());
             if (blockindex == nullptr)
                 nBits = powLimit;
             else
@@ -186,7 +186,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
     bool isauxpow = header.auxpow && (header.auxpow != nullptr);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
-	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo, Params().GetConsensus());
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
 	result.pushKV("algo", GetAlgoName(algo));
@@ -231,7 +231,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
 	uint8_t algo = block.GetAlgo();
     bool isauxpow = block.auxpow && (block.auxpow != nullptr);
 	CBlockIndex *pnext = chainActive.Next(blockindex);
-	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo);
+	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo, Params().GetConsensus());
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
     int confirmations = -1;
