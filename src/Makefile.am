@@ -434,6 +434,7 @@ globaltoken_libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 globaltoken_libglobaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
   globaltoken/hardfork.h \
+  globaltoken/powalgorithm.h \
   arith_uint256.cpp \
   arith_uint256.h \
   uint256.cpp \
