@@ -32,7 +32,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = params.vPOWAlgos[ALGO_SHA256D].GetPowLimit().GetCompact(); // Before the Hardfork starts, there is just SHA256D
+    unsigned int nProofOfWorkLimit = params.vPOWAlgos[ALGO_SHA256D].GetArithPowLimit().GetCompact(); // Before the Hardfork starts, there is just SHA256D
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -67,7 +67,7 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
 
 unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-	unsigned int npowWorkLimit = params.vPOWAlgos[algo].GetPowLimit().GetCompact();
+	unsigned int npowWorkLimit = params.vPOWAlgos[algo].GetArithPowLimit().GetCompact();
 
 	// Genesis block
 	if (pindexLast == nullptr)
