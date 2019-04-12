@@ -57,28 +57,50 @@ unsigned int ParseConfirmTarget(const UniValue& value)
  * or from the last difficulty change if 'lookup' is nonpositive.
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
-UniValue GetNetworkHashPS(int lookup, int height) {
-    CBlockIndex *pb = chainActive.Tip();
+UniValue GetNetworkHashPS(uint8_t nAlgo, int lookup, int height) {
+    CBlockIndex *pb = GetLastBlockIndexForAlgo(chainActive.Tip(), nAlgo, Params().GetConsensus());
 
     if (height >= 0 && height < chainActive.Height())
-        pb = chainActive[height];
+        pb = GetLastBlockIndexForAlgo(chainActive[height], nAlgo, Params().GetConsensus());
 
     if (pb == nullptr || !pb->nHeight)
         return 0;
 
     // If lookup is -1, then use blocks since last difficulty change.
     if (lookup <= 0)
-        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
+    {
+        if(height < Params().GetConsensus().Hardfork1.GetActivationHeight())
+            lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
+        else
+            lookup = 1; // we look for the last block, that has been mined, because multialgo retargets every block.
+    }
 
     // If lookup is larger than chain, then set it to chain length.
     if (lookup > pb->nHeight)
         lookup = pb->nHeight;
 
-    CBlockIndex *pb0 = pb;
+    unsigned int nSuccessfulSteps = 0;
+    CBlockIndex *pb0        = pb;
+    CBlockIndex *pBNulltest = nullptr;
     int64_t minTime = pb0->GetBlockTime();
     int64_t maxTime = minTime;
     for (int i = 0; i < lookup; i++) {
-        pb0 = pb0->pprev;
+        
+        pBNulltest = GetLastBlockIndexForAlgo(pb0->pprev, nAlgo, Params().GetConsensus());
+        
+        if(pBNulltest == nullptr)
+        {
+            if(nSuccessfulSteps == 0)
+                return 0;
+            else
+                break;
+        }
+        else
+        {
+            nSuccessfulSteps++;
+            pb0 = pBNulltest;
+        }
+        
         int64_t time = pb0->GetBlockTime();
         minTime = std::min(time, minTime);
         maxTime = std::max(time, maxTime);
@@ -212,7 +234,7 @@ UniValue getnetworkhashps(const JSONRPCRequest& request)
        );
 
     LOCK(cs_main);
-    return GetNetworkHashPS(!request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
+    return GetNetworkHashPS(currentAlgo, !request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
 }
 
 UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript)
@@ -559,19 +581,19 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
     
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    for(uint8_t i = 0; i < (uint8_t)NUM_ALGOS; i++)
+    for(CPOWAlgoProperties algo : consensusParams.vPOWAlgos)
     {
 	    UniValue algo_description(UniValue::VOBJ);
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, i, consensusParams);
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, algo.GetAlgoID(), consensusParams);
         int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
 	
-        algo_description.pushKV("algoid",      i);
+        algo_description.pushKV("algoid",      algo.GetAlgoID());
         algo_description.pushKV("lastblock",   lastblock);
-        algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, i));
-        algo_description.pushKV("nethashrate", getnetworkhashps(request));
-        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, i, Params().GetConsensus()));
-        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, i, Params().GetConsensus()));
-        algos.pushKV(GetAlgoName(i), algo_description);
+        algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, algo.GetAlgoID()));
+        algo_description.pushKV("nethashrate", GetNetworkHashPS(algo.GetAlgoID(), 120, -1));
+        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, algo.GetAlgoID(), Params().GetConsensus()));
+        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, algo.GetAlgoID(), Params().GetConsensus()));
+        algos.pushKV(GetAlgoName(algo.GetAlgoID()), algo_description);
     }
 	
     obj.pushKV("algo_details", algos);
