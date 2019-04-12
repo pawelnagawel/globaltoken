@@ -70,6 +70,6 @@ public:
     {
         return nMultiplier;
     }
-}
+};
 
 #endif // GLOBALTOKEN_POW_ALGORITHM_H

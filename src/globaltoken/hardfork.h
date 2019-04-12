@@ -68,11 +68,11 @@ public:
     
     uint256 GetActivationBlockHash()
     {
-        return InitializeBlockHash;
+        return Blockhash;
     }
     
     bool IsActivated(uint32_t nTimeCheck);
-}
+};
 
 enum {
     DIVIDEDPAYMENTS_BLOCK_WARNING,
