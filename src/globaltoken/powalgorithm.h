@@ -5,6 +5,7 @@
 #ifndef GLOBALTOKEN_POW_ALGORITHM_H
 #define GLOBALTOKEN_POW_ALGORITHM_H
 
+#include <arith_uint256.h>
 #include <uint256.h>
 
 class CPOWAlgoProperties
