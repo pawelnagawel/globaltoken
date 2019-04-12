@@ -5,7 +5,7 @@
 #ifndef GLOBALTOKEN_HARDFORK_PARAMS_H
 #define GLOBALTOKEN_HARDFORK_PARAMS_H
 
-#include <arith_uint256.h>
+#include <uint256.h>
 
 class CHardforkProperties
 {
