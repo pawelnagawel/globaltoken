@@ -57,7 +57,7 @@ extern void POSTxToJSON(const CPOSTransaction& tx, const uint256 hashBlock, UniV
 double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex, uint8_t algo)
 {
     unsigned int nBits;
-    unsigned int powLimit = Params().GetConsensus().vPOWAlgos[algo].GetPowLimit().GetCompact();
+    unsigned int powLimit = Params().GetConsensus().vPOWAlgos[algo].GetArithPowLimit().GetCompact();
 	
     if (blockindex == nullptr)
     {
