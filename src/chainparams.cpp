@@ -139,7 +139,7 @@ public:
         consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
         {
             assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
         }
@@ -603,7 +603,7 @@ public:
         consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
         {
             assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
         }
@@ -1052,7 +1052,7 @@ public:
         consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
         {
             assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
         }
