@@ -40,7 +40,7 @@ public:
         nMultiplier = 0;
     }
     
-    bool IsNull()
+    bool IsNull() const
     {
         return (nMultiplier == 0);
     }
@@ -52,22 +52,22 @@ public:
         nMultiplier = diffMultiplier;
     }
     
-    uint8_t GetAlgoID()
+    uint8_t GetAlgoID() const
     {
         return nAlgoID;
     }
     
-    uint256 GetPowLimit()
+    uint256 GetPowLimit() const
     {
         return powLimit;
     }
     
-    arith_uint256 GetArithPowLimit()
+    arith_uint256 GetArithPowLimit() const
     {
         return UintToArith256(powLimit);
     }
     
-    int GetMultiplier()
+    int GetMultiplier() const
     {
         return nMultiplier;
     }

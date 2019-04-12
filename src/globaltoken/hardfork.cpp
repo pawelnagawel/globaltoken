@@ -12,7 +12,7 @@
 #include <sstream>
 #include <string>
 
-bool CHardforkProperties::IsActivated(uint32_t nTimeCheck)
+bool CHardforkProperties::IsActivated(uint32_t nTimeCheck) const
 {
     return (nTimeCheck >= nActivationTime);
 }

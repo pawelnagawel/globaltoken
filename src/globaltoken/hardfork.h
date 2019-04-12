@@ -38,7 +38,7 @@ public:
         Blockhash.SetNull();
     }
     
-    bool IsNull()
+    bool IsNull() const
     {
         return (nID == 0);
     }
@@ -51,27 +51,27 @@ public:
         Blockhash = InitializeBlockHash;
     }
     
-    int GetHardforkID()
+    int GetHardforkID() const
     {
         return nID;
     }
     
-    uint32_t GetActivationTime()
+    uint32_t GetActivationTime() const
     {
         return nActivationTime;
     }
     
-    int GetActivationHeight()
+    int GetActivationHeight() const
     {
         return nHeight;
     }
     
-    uint256 GetActivationBlockHash()
+    uint256 GetActivationBlockHash() const
     {
         return Blockhash;
     }
     
-    bool IsActivated(uint32_t nTimeCheck);
+    bool IsActivated(uint32_t nTimeCheck) const;
 };
 
 enum {

@@ -220,7 +220,7 @@ arith_uint256 GetBlockProof(const CBlockIndex& block, const Consensus::Params& p
 {
     if (params.Hardfork1.IsActivated(block.nTime))
     {
-        return GetGeometricMeanPrevWork(block);
+        return GetGeometricMeanPrevWork(block, params);
     }
     else
     {
