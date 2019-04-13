@@ -14,7 +14,6 @@
 #include <limits>
 #include <map>
 #include <string>
-#include <vector>
 
 namespace Consensus {
 
@@ -83,7 +82,7 @@ struct Params {
     uint32_t nMinerConfirmationWindow;
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
-    std::vector<CPOWAlgoProperties> vPOWAlgos(NUM_ALGOS, CPOWAlgoProperties());
+    CPOWAlgoProperties aPOWAlgos[NUM_ALGOS];
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nTargetTimespan;

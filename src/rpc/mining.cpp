@@ -581,19 +581,19 @@ UniValue getalgoinfo(const JSONRPCRequest& request)
     
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    for(CPOWAlgoProperties algo : consensusParams.vPOWAlgos)
+    for(uint8_t i = 0; i < NUM_ALGOS; i++)
     {
 	    UniValue algo_description(UniValue::VOBJ);
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, algo.GetAlgoID(), consensusParams);
+        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(tip, consensusParams.aPOWAlgos[i].GetAlgoID(), consensusParams);
         int lastblock = (pindexLastAlgo != nullptr) ? pindexLastAlgo->nHeight : -1;
 	
-        algo_description.pushKV("algoid",      algo.GetAlgoID());
+        algo_description.pushKV("algoid",      consensusParams.aPOWAlgos[i].GetAlgoID());
         algo_description.pushKV("lastblock",   lastblock);
-        algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, algo.GetAlgoID()));
-        algo_description.pushKV("nethashrate", GetNetworkHashPS(algo.GetAlgoID(), 120, -1));
-        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, algo.GetAlgoID(), Params().GetConsensus()));
-        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, algo.GetAlgoID(), Params().GetConsensus()));
-        algos.pushKV(GetAlgoName(algo.GetAlgoID()), algo_description);
+        algo_description.pushKV("difficulty",  (double)GetDifficulty(NULL, consensusParams.aPOWAlgos[i].GetAlgoID()));
+        algo_description.pushKV("nethashrate", GetNetworkHashPS(consensusParams.aPOWAlgos[i].GetAlgoID(), 120, -1));
+        algo_description.pushKV("lastdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_LAST, consensusParams.aPOWAlgos[i].GetAlgoID(), Params().GetConsensus()));
+        algo_description.pushKV("nextdiffret", CalculateDiffRetargetingBlock(tip, RETARGETING_NEXT, consensusParams.aPOWAlgos[i].GetAlgoID(), Params().GetConsensus()));
+        algos.pushKV(GetAlgoName(consensusParams.aPOWAlgos[i].GetAlgoID()), algo_description);
     }
 	
     obj.pushKV("algo_details", algos);

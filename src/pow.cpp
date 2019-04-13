@@ -32,7 +32,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = params.vPOWAlgos[ALGO_SHA256D].GetArithPowLimit().GetCompact(); // Before the Hardfork starts, there is just SHA256D
+    unsigned int nProofOfWorkLimit = params.aPOWAlgos[ALGO_SHA256D].GetArithPowLimit().GetCompact(); // Before the Hardfork starts, there is just SHA256D
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -67,7 +67,7 @@ unsigned int GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHe
 
 unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-	unsigned int npowWorkLimit = params.vPOWAlgos[algo].GetArithPowLimit().GetCompact();
+	unsigned int npowWorkLimit = params.aPOWAlgos[algo].GetArithPowLimit().GetCompact();
 
 	// Genesis block
 	if (pindexLast == nullptr)
@@ -164,9 +164,9 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		}
 	}
 
-	if (bnNew > params.vPOWAlgos[algo].GetArithPowLimit())
+	if (bnNew > params.aPOWAlgos[algo].GetArithPowLimit())
 	{
-		bnNew = params.vPOWAlgos[algo].GetArithPowLimit();
+		bnNew = params.aPOWAlgos[algo].GetArithPowLimit();
 	}
 
 	return bnNew.GetCompact();
@@ -185,7 +185,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
         nActualTimespan = params.nPowTargetTimespan*4;
 
     // Retarget
-    const arith_uint256 bnPowLimit = params.vPOWAlgos[ALGO_SHA256D].GetArithPowLimit();
+    const arith_uint256 bnPowLimit = params.aPOWAlgos[ALGO_SHA256D].GetArithPowLimit();
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
@@ -241,7 +241,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > params.vPOWAlgos[algo].GetArithPowLimit())
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > params.aPOWAlgos[algo].GetArithPowLimit())
         return false;
 
     // Check proof of work matches claimed amount

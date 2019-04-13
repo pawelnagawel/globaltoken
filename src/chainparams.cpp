@@ -106,41 +106,41 @@ public:
         consensus.BIP66Height = 360000; // not hashed yet ...
         consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537617600 /* Hardfork Activation Time */, 327036 /* Hardfork Activation Height */, uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56") /* Hardfork Activation Blockhash */);
         consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1560765600 /* Hardfork Activation Time */, 700000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
-        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
-        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.aPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < NUM_ALGOS; i++)
         {
-            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+            assert(consensus.aPOWAlgos[i].GetAlgoID() == i);
         }
         
         consensus.nTargetSpacing = 60; // 1 minute
@@ -568,41 +568,41 @@ public:
         consensus.BIP66Height = 10; // not hashed yet.
         consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537185600 /* Hardfork Activation Time */, 2153 /* Hardfork Activation Height */, uint256S("0x944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733") /* Hardfork Activation Blockhash */);
         consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1557871200 /* Hardfork Activation Time */, 10000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
-        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
-        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.aPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("00001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < NUM_ALGOS; i++)
         {
-            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+            assert(consensus.aPOWAlgos[i].GetAlgoID() == i);
         }
         
         consensus.nTargetSpacing = 60; // 1 minute
@@ -1015,41 +1015,41 @@ public:
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537048800 /* Hardfork Activation Time */, 100000000 /* Hardfork Activation Height - unknown yet */, uint256() /* there is no hardfork hash for regtest, it will be just activated with the timestamp. */);
         consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1556661600 /* Hardfork Activation Time */, 100000000 /* Hardfork Activation Height - unknown yet */, uint256() /* there is no hardfork hash for regtest, it will be just activated with the timestamp. */);
-        consensus.vPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
-        consensus.vPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
-        consensus.vPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.vPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SHA256D]       = CPOWAlgoProperties(ALGO_SHA256D, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SCRYPT]        = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X11]           = CPOWAlgoProperties(ALGO_X11, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_NEOSCRYPT]     = CPOWAlgoProperties(ALGO_NEOSCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_EQUIHASH]      = CPOWAlgoProperties(ALGO_EQUIHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT]      = CPOWAlgoProperties(ALGO_YESCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_HMQ1725]       = CPOWAlgoProperties(ALGO_HMQ1725, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_XEVAN]         = CPOWAlgoProperties(ALGO_XEVAN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_NIST5]         = CPOWAlgoProperties(ALGO_NIST5, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_TIMETRAVEL10]  = CPOWAlgoProperties(ALGO_TIMETRAVEL10, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PAWELHASH]     = CPOWAlgoProperties(ALGO_PAWELHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X13]           = CPOWAlgoProperties(ALGO_X13, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X14]           = CPOWAlgoProperties(ALGO_X14, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X15]           = CPOWAlgoProperties(ALGO_X15, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X17]           = CPOWAlgoProperties(ALGO_X17, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_LYRA2RE]       = CPOWAlgoProperties(ALGO_LYRA2RE, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2S]       = CPOWAlgoProperties(ALGO_BLAKE2S, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BLAKE2B]       = CPOWAlgoProperties(ALGO_BLAKE2B, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ASTRALHASH]    = CPOWAlgoProperties(ALGO_ASTRALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PADIHASH]      = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_JEONGHASH]     = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_ZHASH]         = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAK]        = CPOWAlgoProperties(ALGO_KECCAK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GLOBALHASH]    = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUBIT]         = CPOWAlgoProperties(ALGO_QUBIT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKEIN]         = CPOWAlgoProperties(ALGO_SKEIN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_GROESTL]       = CPOWAlgoProperties(ALGO_GROESTL, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_SKUNKHASH]     = CPOWAlgoProperties(ALGO_SKUNKHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_QUARK]         = CPOWAlgoProperties(ALGO_QUARK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X16R]          = CPOWAlgoProperties(ALGO_X16R, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
-        for(uint8_t i = 0; i < consensus.vPOWAlgos.size(); i++)
+        for(uint8_t i = 0; i < NUM_ALGOS; i++)
         {
-            assert(consensus.vPOWAlgos[i].GetAlgoID() == i);
+            assert(consensus.aPOWAlgos[i].GetAlgoID() == i);
         }
         
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
