@@ -83,7 +83,7 @@ struct Params {
     uint32_t nMinerConfirmationWindow;
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
-    std::vector<CPOWAlgoProperties> vPOWAlgos;
+    std::vector<CPOWAlgoProperties> vPOWAlgos(NUM_ALGOS, CPOWAlgoProperties());
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nTargetTimespan;
