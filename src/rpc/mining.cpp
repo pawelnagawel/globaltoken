@@ -58,62 +58,23 @@ unsigned int ParseConfirmTarget(const UniValue& value)
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
 UniValue GetNetworkHashPS(uint8_t nAlgo, int lookup, int height) {
-    CBlockIndex *pb = const_cast <CBlockIndex *>(GetLastBlockIndexForAlgo(chainActive.Tip(), nAlgo, Params().GetConsensus()));
+    CBlockIndex *pb = chainActive.Tip();
 
     if (height >= 0 && height < chainActive.Height())
-        pb = const_cast <CBlockIndex *>(GetLastBlockIndexForAlgo(chainActive[height], nAlgo, Params().GetConsensus()));
+        pb = chainActive[height];
 
     if (pb == nullptr || !pb->nHeight)
         return 0;
 
-    // If lookup is -1, then use blocks since last difficulty change.
+    // If lookup is -1, then use blocks since last difficulty change. (if fork activated, 11 blocks)
     if (lookup <= 0)
-    {
-        if(height < Params().GetConsensus().Hardfork1.GetActivationHeight())
-            lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
-        else
-            lookup = 1; // we look for the last block, that has been mined, because multialgo retargets every block.
-    }
+        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval() + 1;
 
     // If lookup is larger than chain, then set it to chain length.
     if (lookup > pb->nHeight)
         lookup = pb->nHeight;
 
-    unsigned int nSuccessfulSteps = 0;
-    CBlockIndex *pb0        = pb;
-    CBlockIndex *pBNulltest = nullptr;
-    int64_t minTime = pb0->GetBlockTime();
-    int64_t maxTime = minTime;
-    for (int i = 0; i < lookup; i++) {
-        
-        pBNulltest = const_cast <CBlockIndex *>(GetLastBlockIndexForAlgo(pb0->pprev, nAlgo, Params().GetConsensus()));
-        
-        if(pBNulltest == nullptr)
-        {
-            if(nSuccessfulSteps == 0)
-                return 0;
-            else
-                break;
-        }
-        else
-        {
-            nSuccessfulSteps++;
-            pb0 = pBNulltest;
-        }
-        
-        int64_t time = pb0->GetBlockTime();
-        minTime = std::min(time, minTime);
-        maxTime = std::max(time, maxTime);
-    }
-
-    // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
-    if (minTime == maxTime)
-        return 0;
-
-    arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
-    int64_t timeDiff = maxTime - minTime;
-
-    return workDiff.getdouble() / timeDiff;
+    return CalculateAlgoHashrate(*pb, nAlgo, lookup, Params().GetConsensus());
 }
 
 UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivationCheck)

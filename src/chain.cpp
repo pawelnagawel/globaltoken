@@ -160,6 +160,49 @@ arith_uint256 GetBlockProofBase(const CBlockIndex& block)
     return (~bnTarget / (bnTarget + 1)) + 1;
 }
 
+double CalculateAlgoHashrate(const CBlockIndex& block, int algo, int lookup, const Consensus::Params& params)
+{
+    arith_uint256 totalAlgoWork;
+    const CBlockIndex *pStartingAlgoBlock = GetLastBlockIndexForAlgo(&block, algo, params);
+    CBlockIndex *pLastAlgoBlock = const_cast <CBlockIndex *> (pStartingAlgoBlock);
+    if(pLastAlgoBlock == nullptr)
+    {
+        return 0;
+    }
+    
+    totalAlgoWork += GetBlockProofBase(*pStartingAlgoBlock);
+    
+    CBlockIndex *pPreviousAlgoBlock = pLastAlgoBlock;
+
+    int64_t minTime = pPreviousAlgoBlock->GetBlockTime();
+    int64_t maxTime = minTime;
+    for (int i = 0; i < lookup; i++) 
+    {
+        pPreviousAlgoBlock = const_cast <CBlockIndex *> (GetLastBlockIndexForAlgo(pLastAlgoBlock->pprev, algo, params));
+        if(pPreviousAlgoBlock == nullptr)
+        {
+            break;
+        }
+        else
+        {
+            pLastAlgoBlock = pPreviousAlgoBlock;
+            totalAlgoWork += GetBlockProofBase(*pLastAlgoBlock);
+        }
+        int64_t time = pLastAlgoBlock->GetBlockTime();
+        minTime = std::min(time, minTime);
+        maxTime = std::max(time, maxTime);
+    }
+
+    // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
+    if (minTime == maxTime)
+        return 0;
+
+    arith_uint256 workDiff = totalAlgoWork * params.aPOWAlgos[algo].GetMultiplier();
+    int64_t timeDiff = maxTime - minTime;
+
+    return workDiff.getdouble() / timeDiff;
+}
+
 arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo, const Consensus::Params& params)
 {
     int nDistance = 0;
