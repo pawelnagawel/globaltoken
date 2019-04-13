@@ -8,7 +8,7 @@
 #define BITCOIN_PRIMITIVES_PUREHEADER_H
 
 #include <primitives/mining_block.h>
-#include <primitives/block_dependencies.h>
+#include <globaltoken/powalgorithm.h>
 
 #include <serialize.h>
 #include <uint256.h>

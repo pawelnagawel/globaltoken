@@ -434,11 +434,8 @@ globaltoken_libglobaltoken_hardfork_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 globaltoken_libglobaltoken_hardfork_a_SOURCES = \
   globaltoken/hardfork.cpp \
   globaltoken/hardfork.h \
-  globaltoken/powalgorithm.h \
-  arith_uint256.cpp \
-  arith_uint256.h \
-  uint256.cpp \
-  uint256.h
+  globaltoken/powalgorithm.cpp \
+  globaltoken/powalgorithm.h
 
 # common: shared between globaltokend, and globaltoken-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -579,7 +576,7 @@ globaltoken_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # bitcoinconsensus library #
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_algos_libglobaltoken_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(crypto_algos_libglobaltoken_algos_a_SOURCES) $(libbitcoin_consensus_a_SOURCES) $(libglobaltoken_hardfork_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
