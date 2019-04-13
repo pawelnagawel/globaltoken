@@ -584,7 +584,7 @@ endif
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS) $(LIBEQUIHASH_LIBS)
-libbitcoinconsensus_la_CPPFLAGS =  $(AM_CPPFLAGS) $(SCRYPT_FLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG
+libbitcoinconsensus_la_CPPFLAGS =  $(AM_CPPFLAGS) $(SCRYPT_FLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL -DNO_UTIL_LOG -DHARDFORK_IMPORTANT_ONLY
 libbitcoinconsensus_la_CXXFLAGS =  $(AM_CXXFLAGS) $(PIE_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 libbitcoinconsensus_la_CFLAGS =    $(NEOSCRYPT_FLAGS) $(YESCRYPT_COMPILE_FLAGS)
 libbitcoinconsensus_la_CCASFLAGS = $(NEOSCRYPT_FLAGS)

@@ -12,11 +12,7 @@
 #include <sstream>
 #include <string>
 
-bool CHardforkProperties::IsActivated(uint32_t nTimeCheck) const
-{
-    return (nTimeCheck >= nActivationTime);
-}
-
+#ifndef HARDFORK_IMPORTANT_ONLY
 std::string GetCoinbaseFeeString(int type)
 {
     std::stringstream strStream;
@@ -99,4 +95,10 @@ std::string GetCoinbaseFeeString(int type)
         strStream << "";
     }
     return strStream.str();
+}
+#endif
+
+bool CHardforkProperties::IsActivated(uint32_t nTimeCheck) const
+{
+    return (nTimeCheck >= nActivationTime);
 }

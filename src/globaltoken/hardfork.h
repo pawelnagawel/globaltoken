@@ -81,6 +81,8 @@ enum {
     DIVIDEDPAYMENTS_AUXPOW_WARNING
 };
 
+#ifndef HARDFORK_IMPORTANT_ONLY
 std::string GetCoinbaseFeeString(int type);
+#endif
 
 #endif // GLOBALTOKEN_HARDFORK_PARAMS_H
