@@ -4,15 +4,12 @@
 
 #include <globaltoken/hardfork.h>
 
-#include <arith_uint256.h>
+#ifndef HARDFORK_IMPORTANT_ONLY
 #include <chainparams.h>
-#include <primitives/block.h>
-#include <uint256.h>
 
 #include <sstream>
 #include <string>
 
-#ifndef HARDFORK_IMPORTANT_ONLY
 std::string GetCoinbaseFeeString(int type)
 {
     std::stringstream strStream;
