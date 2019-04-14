@@ -1758,10 +1758,13 @@ bool AppInitMain()
     // ********************************************************* Step 8: verify auxpow blocks
     
     uiInterface.InitMessage(_("Verifying auxpow blocks..."));
+    nStart = GetTimeMillis();
     
     std::string strAuxPowFailure;
     if(!VerifyAuxpowBlockIndex(strAuxPowFailure, chainparams.GetConsensus()))
         return InitError(strAuxPowFailure);
+    
+    LogPrintf(" Auxpow verification duration: %15dms\n", GetTimeMillis() - nStart);
 
     // ********************************************************* Step 9: load wallet
 #ifdef ENABLE_WALLET
