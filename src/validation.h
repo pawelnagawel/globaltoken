@@ -274,6 +274,8 @@ bool LoadGenesisBlock(const CChainParams& chainparams);
 bool LoadBlockIndex(const CChainParams& chainparams);
 /** Update the chain tip based on database information. */
 bool LoadChainTip(const CChainParams& chainparams);
+/** Verify the auxpow blockchain data */
+bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& consensusParams);
 /** Unload database information */
 void UnloadBlockIndex();
 /** Run an instance of the script checking thread */

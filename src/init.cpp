@@ -1755,7 +1755,15 @@ bool AppInitMain()
         ::feeEstimator.Read(est_filein);
     fFeeEstimatesInitialized = true;
 
-    // ********************************************************* Step 8: load wallet
+    // ********************************************************* Step 8: verify auxpow blocks
+    
+    uiInterface.InitMessage(_("Verifying auxpow blocks..."));
+    
+    std::string strAuxPowFailure;
+    if(!VerifyAuxpowBlockIndex(strAuxPowFailure, chainparams.GetConsensus()))
+        return InitError(strAuxPowFailure);
+
+    // ********************************************************* Step 9: load wallet
 #ifdef ENABLE_WALLET
     if (!OpenWallets())
         return false;
@@ -1763,7 +1771,7 @@ bool AppInitMain()
     LogPrintf("No wallet support compiled in!\n");
 #endif
 
-    // ********************************************************* Step 9: data directory maintenance
+    // ********************************************************* Step 10: data directory maintenance
 
     // if pruning, unset the service bit and perform the initial blockstore prune
     // after any wallet rescanning has taken place.
@@ -1785,7 +1793,7 @@ bool AppInitMain()
         nLocalServices = ServiceFlags(nLocalServices | NODE_WITNESS);
     }
 
-    // ********************************************************* Step 10: import blocks
+    // ********************************************************* Step 11: import blocks
 
     if (!CheckDiskSpace())
         return false;
@@ -1824,7 +1832,7 @@ bool AppInitMain()
         return false;
     }
     
-    // ********************************************************* Step 11a: setup Masternodes & Spork
+    // ********************************************************* Step 12a: setup Masternodes & Spork
     
     if (!sporkManager.SetSporkAddress(gArgs.GetArg("-sporkaddr", Params().SporkAddress())))
         return InitError(_("Invalid spork address specified with -sporkaddr"));
@@ -1901,7 +1909,7 @@ bool AppInitMain()
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nInstantSendDepth %d\n", nInstantSendDepth);
 
-    // ********************************************************* Step 11b: Load cache data
+    // ********************************************************* Step 12b: Load cache data
 
     // LOAD SERIALIZED DAT FILES INTO DATA CACHES FOR INTERNAL USE
 
@@ -1937,18 +1945,18 @@ bool AppInitMain()
     }
 
 
-    // ********************************************************* Step 11c: update block tip in Globaltoken modules
+    // ********************************************************* Step 12c: update block tip in Globaltoken modules
 
     // force UpdatedBlockTip to initialize nCachedBlockHeight for DS and MN payments
     // but don't call it directly to prevent triggering of other listeners like zmq etc.
     // GetMainSignals().UpdatedBlockTip(chainActive.Tip());
     pgltNotificationInterface->InitializeCurrentBlockTip();
     
-    // ********************************************************* Step 11d: start globaltoken-helper threads
+    // ********************************************************* Step 12d: start globaltoken-helper threads
 
     threadGroup.create_thread(boost::bind(&ThreadCheckMasternodes, boost::ref(*g_connman)));
 
-    // ********************************************************* Step 12: start node
+    // ********************************************************* Step 13: start node
 
     int chain_active_height;
 
@@ -2026,7 +2034,7 @@ bool AppInitMain()
         return false;
     }
 
-    // ********************************************************* Step 13: finished
+    // ********************************************************* Step 14: finished
 
     SetRPCWarmupFinished();
     uiInterface.InitMessage(_("Done loading"));

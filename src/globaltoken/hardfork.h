@@ -6,6 +6,7 @@
 #define GLOBALTOKEN_HARDFORK_PARAMS_H
 
 #include <uint256.h>
+#include <vector>
 
 class CHardforkProperties
 {
@@ -84,5 +85,8 @@ enum {
 #ifndef HARDFORK_IMPORTANT_ONLY
 std::string GetCoinbaseFeeString(int type);
 #endif
+
+/** For verifying the auxpow blocks, after loading block index */
+extern std::vector<uint256> vAuxpowValidation;
 
 #endif // GLOBALTOKEN_HARDFORK_PARAMS_H

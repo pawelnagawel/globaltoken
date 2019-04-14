@@ -102,6 +102,7 @@ public:
      * resume_possible indicates shutting down now will result in the current progress action resuming upon restart.
      */
     boost::signals2::signal<void (const std::string &title, int nProgress, bool resume_possible)> ShowProgress;
+    boost::signals2::signal<void (const std::string &title, double dProgress)> ShowProgressAsDouble;
 
     /** New block has been accepted */
     boost::signals2::signal<void (bool, const CBlockIndex *)> NotifyBlockTip;

@@ -31,6 +31,8 @@ static const char DB_FLAG = 'F';
 static const char DB_REINDEX_FLAG = 'R';
 static const char DB_LAST_BLOCK = 'l';
 
+std::vector<uint256> vAuxpowValidation;
+
 namespace {
 
 struct CoinEntry {
@@ -296,9 +298,13 @@ bool CBlockTreeDB::LoadBlockIndexGuts(const Consensus::Params& consensusParams, 
                 // We may not have enough data, to validate auxpow, if the block header was saved, but not the full block.
                 // Skip validation here and let it continue syncing this Block.
                 // The block will be verified anyways, so skip the validation this time for this block.
-                if(versionverify.IsAuxpow() && pindexNew->GetBlockPos().nFile == -1)
+                if(versionverify.IsAuxpow())
                 {
-                    LogPrintf("%s: Not enough data to verify auxpow ... Skipping block powcheck for : %s with Blockpos %s\n", __func__, pindexNew->ToString(), pindexNew->GetBlockPos().ToString());
+                    if(pindexNew->GetBlockPos().nFile != -1)
+                    {
+                        LogPrint(BCLog::POW, "%s: Adding auxpow block to verify que. Blockhash=%s - Height=%d\n", __func__, pindexNew->GetBlockHash().GetHex(), pindexNew->nHeight);
+                        vAuxpowValidation.push_back(pindexNew->GetBlockHash());
+                    }
                     pcursor->Next();
                     continue;
                 }
