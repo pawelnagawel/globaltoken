@@ -4412,6 +4412,10 @@
         <translation>Lade Blockindex...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>Verifiziere AuxPow Blöcke...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>Lade Wallet...</translation>
     </message>
