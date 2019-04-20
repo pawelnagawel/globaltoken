@@ -4423,6 +4423,10 @@ Establecer la serialización de las transacciones sin procesar o el bloque hex d
         <translation>Cargando el índice de bloques...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>Verificando bloques auxpow...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>Cargando monedero...</translation>
     </message>

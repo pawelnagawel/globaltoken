@@ -831,6 +831,10 @@
         <translation>Cargando el index de bloques...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>Verificando bloques auxpow...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>Cargando cartera...</translation>
     </message>
