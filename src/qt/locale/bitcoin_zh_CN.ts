@@ -4107,6 +4107,10 @@
         <translation>正在加载区块索引...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>驗證auxpow塊...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>正在加载钱包...</translation>
     </message>

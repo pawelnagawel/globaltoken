@@ -4055,6 +4055,10 @@
         <translation>블록 인덱스를 불러오는 중...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>Auxpow 블럭을 확인 중입니다...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>지갑을 불러오는 중...</translation>
     </message>

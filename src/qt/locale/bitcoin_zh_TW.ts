@@ -4413,6 +4413,10 @@
         <translation>正在載入區塊索引...</translation>
     </message>
     <message>
+        <source>Verifying auxpow blocks...</source>
+        <translation>验证auxpow块...</translation>
+    </message>
+    <message>
         <source>Loading wallet...</source>
         <translation>正在載入錢包資料...</translation>
     </message>
