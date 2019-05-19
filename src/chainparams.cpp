@@ -239,11 +239,12 @@ public:
         vSeeds.emplace_back("185.141.62.92");   // GlobalToken Hardfork node: 17/18
         vSeeds.emplace_back("185.203.118.117"); // GlobalToken Hardfork node: 18/18
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,38);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,166);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
+        base58Prefixes[PUBKEY_ADDRESS]     = std::vector<unsigned char>(1,38);
+        base58Prefixes[SCRIPT_ADDRESS_OLD] = std::vector<unsigned char>(1,5);
+        base58Prefixes[SCRIPT_ADDRESS_NEW] = std::vector<unsigned char>(1,141); // The new address format will start with 'y' or 'z'
+        base58Prefixes[SECRET_KEY]         = std::vector<unsigned char>(1,166);
+        base58Prefixes[EXT_PUBLIC_KEY]     = {0x04, 0x88, 0xB2, 0x1E};
+        base58Prefixes[EXT_SECRET_KEY]     = {0x04, 0x88, 0xAD, 0xE4};
 
         bech32_hrp = "gt";
 
@@ -691,11 +692,12 @@ public:
         vSeeds.emplace_back("185.141.62.92");   // GlobalToken Hardfork node: 17/18
         vSeeds.emplace_back("185.203.118.117"); // GlobalToken Hardfork node: 18/18
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
+        base58Prefixes[PUBKEY_ADDRESS]     = std::vector<unsigned char>(1,27);
+        base58Prefixes[SCRIPT_ADDRESS_OLD] = std::vector<unsigned char>(1,196);
+        base58Prefixes[SCRIPT_ADDRESS_NEW] = std::vector<unsigned char>(1,8); // The new address format will start with '4'
+        base58Prefixes[SECRET_KEY]         = std::vector<unsigned char>(1,239);
+        base58Prefixes[EXT_PUBLIC_KEY]     = {0x04, 0x35, 0x87, 0xCF};
+        base58Prefixes[EXT_SECRET_KEY]     = {0x04, 0x35, 0x83, 0x94};
 
         bech32_hrp = "tg";
 
@@ -1381,11 +1383,12 @@ public:
             "2NBh4t5qC1RuGeHPqziZwZan9f7yKLZ3ZVw", /* main-index: 256*/
         };
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,111);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
+        base58Prefixes[PUBKEY_ADDRESS]     = std::vector<unsigned char>(1,27);
+        base58Prefixes[SCRIPT_ADDRESS_OLD] = std::vector<unsigned char>(1,196);
+        base58Prefixes[SCRIPT_ADDRESS_NEW] = std::vector<unsigned char>(1,8); // The new address format will start with '4'
+        base58Prefixes[SECRET_KEY]         = std::vector<unsigned char>(1,239);
+        base58Prefixes[EXT_PUBLIC_KEY]     = {0x04, 0x35, 0x87, 0xCF};
+        base58Prefixes[EXT_SECRET_KEY]     = {0x04, 0x35, 0x83, 0x94};
 
         bech32_hrp = "gtrt";
     }
