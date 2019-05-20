@@ -143,6 +143,7 @@ typedef CBitcoinExtKeyBase<CExtKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_SECRET_
 typedef CBitcoinExtKeyBase<CExtPubKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_PUBLIC_KEY> CBitcoinExtPubKey;
 
 std::string EncodeDestination(const CTxDestination& dest);
+std::string EncodeOldScriptDestination(const CTxDestination& dest);
 CTxDestination DecodeDestination(const std::string& str);
 CTxDestination TryOldScriptDecodeDestination(const std::string& str);
 bool IsValidDestinationString(const std::string& str);

@@ -219,9 +219,10 @@ class DestinationEncoder : public boost::static_visitor<std::string>
 {
 private:
     const CChainParams& m_params;
+    const bool fUseOldScriptEncoding;
 
 public:
-    DestinationEncoder(const CChainParams& params) : m_params(params) {}
+    DestinationEncoder(const CChainParams& params, const bool fEncodeWithOldScript) : m_params(params), fUseOldScriptEncoding(fEncodeWithOldScript) {}
 
     std::string operator()(const CKeyID& id) const
     {
@@ -232,7 +233,7 @@ public:
 
     std::string operator()(const CScriptID& id) const
     {
-        std::vector<unsigned char> data = m_params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_NEW);
+        std::vector<unsigned char> data = m_params.Base58Prefix(fUseOldScriptEncoding ? CChainParams::SCRIPT_ADDRESS_OLD : CChainParams::SCRIPT_ADDRESS_NEW);
         data.insert(data.end(), id.begin(), id.end());
         return EncodeBase58Check(data);
     }
@@ -261,24 +262,6 @@ public:
         return bech32::Encode(m_params.Bech32HRP(), data);
     }
 
-    std::string operator()(const CNoDestination& no) const { return {}; }
-};
-
-class DestinationOldScriptEncoder : public DestinationEncoder
-{
-private:
-    const CChainParams& m_params;
-
-public:
-    DestinationOldScriptEncoder(const CChainParams& params) : m_params(params) {}
-
-    std::string operator()(const CScriptID& id) const
-    {
-        std::vector<unsigned char> data = m_params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
-        data.insert(data.end(), id.begin(), id.end());
-        return EncodeBase58Check(data);
-    }
-    
     std::string operator()(const CNoDestination& no) const { return {}; }
 };
 
@@ -314,17 +297,17 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
         
         // Script-hash-addresses have version 5 (or 196 testnet).
         // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
-        const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
-        if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
-            std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
+        const std::vector<unsigned char>& script_prefix_old = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
+        if (data.size() == hash.size() + script_prefix_old.size() && std::equal(script_prefix_old.begin(), script_prefix_old.end(), data.begin())) {
+            std::copy(data.begin() + script_prefix_old.size(), data.end(), hash.begin());
             return CScriptID(hash);
         }
         
         // Script-hash-addresses have the new address format 'y' or 'z' (or 196 testnet).
         // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
-        const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_NEW);
-        if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
-            std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
+        const std::vector<unsigned char>& script_prefix_new = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_NEW);
+        if (data.size() == hash.size() + script_prefix_new.size() && std::equal(script_prefix_new.begin(), script_prefix_new.end(), data.begin())) {
+            std::copy(data.begin() + script_prefix_new.size(), data.end(), hash.begin());
             return CScriptID(hash);
         }
     }
@@ -401,12 +384,12 @@ bool CBitcoinSecret::SetString(const std::string& strSecret)
 
 std::string EncodeDestination(const CTxDestination& dest)
 {
-    return boost::apply_visitor(DestinationEncoder(Params()), dest);
+    return boost::apply_visitor(DestinationEncoder(Params(), false), dest);
 }
 
 std::string EncodeOldScriptDestination(const CTxDestination& dest)
 {
-    return boost::apply_visitor(DestinationOldScriptEncoder(Params()), dest);
+    return boost::apply_visitor(DestinationEncoder(Params(), true), dest);
 }
 
 CTxDestination DecodeDestination(const std::string& str)
