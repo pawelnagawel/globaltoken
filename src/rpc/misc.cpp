@@ -653,6 +653,8 @@ static const CRPCCommand commands[] =
     { "control",            "logging",                &logging,                {"include", "exclude"}},
     { "util",               "validateaddress",        &validateaddress,        {"address"} }, /* uses wallet if enabled */
     { "util",               "createmultisig",         &createmultisig,         {"nrequired","keys"} },
+    { "util",               "helpnewscriptaddress",   &helpnewscriptaddress,   {} },
+    { "util",               "convertoldscriptaddress",&convertoldscriptaddress,{"address"} },
     { "util",               "verifymessage",          &verifymessage,          {"address","signature","message"} },
     { "util",               "signmessagewithprivkey", &signmessagewithprivkey, {"privkey","message"} },
     
