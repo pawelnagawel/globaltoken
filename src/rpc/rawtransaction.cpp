@@ -454,6 +454,10 @@ UniValue createrawtransaction(const JSONRPCRequest& request)
             if (!IsValidDestination(destination)) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Globaltoken address: ") + name_);
             }
+            
+            if (IsDestinationStringOldScriptFormat(name_)) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(name_));
+            }
 
             if (!destinations.insert(destination).second) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + name_);

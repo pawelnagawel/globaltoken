@@ -12,6 +12,7 @@
 #include <coins.h>
 #include <consensus/consensus.h>
 #include <core_io.h>
+#include <globaltoken/hardfork.h>
 #include <keystore.h>
 #include <policy/policy.h>
 #include <policy/rbf.h>
@@ -275,6 +276,11 @@ static void MutateTxAddOutAddr(CMutableTransaction& tx, const std::string& strIn
     CTxDestination destination = DecodeDestination(strAddr);
     if (!IsValidDestination(destination)) {
         throw std::runtime_error("invalid TX output address");
+    }
+    if(IsDestinationStringOldScriptFormat(strAddr))
+    {
+        std::string strError = GetOldScriptAddressWarning(strAddr);
+        throw std::runtime_error(strError);
     }
     CScript scriptPubKey = GetScriptForDestination(destination);
 

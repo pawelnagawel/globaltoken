@@ -416,6 +416,11 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     if (!IsValidDestination(destination)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
     }
+    
+    if(IsDestinationStringOldScriptFormat(request.params[1].get_str()))
+    {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[1].get_str()));
+    }
 
     std::shared_ptr<CReserveScript> coinbaseScript = std::make_shared<CReserveScript>();
     coinbaseScript->reserveScript = GetScriptForDestination(destination);
@@ -877,6 +882,11 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         {
             if (!IsValidDestination(destination)) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid coinbase address. Check if your entered -coinbasetxnaddress is valid.");
+            }
+            
+            if(IsDestinationStringOldScriptFormat(strAddress))
+            {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(strAddress));
             }
         }
         else
@@ -1621,6 +1631,11 @@ UniValue createauxblock(const JSONRPCRequest& request)
     if (!IsValidDestination(coinbaseScript)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY,
                            "Error: Invalid coinbase payout address");
+    }
+    
+    if(IsDestinationStringOldScriptFormat(request.params[0].get_str()))
+    {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
     }
     const CScript scriptPubKey = GetScriptForDestination(coinbaseScript);
 

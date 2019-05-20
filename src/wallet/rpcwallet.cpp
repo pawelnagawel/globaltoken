@@ -497,6 +497,9 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
     if (!IsValidDestination(dest)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");
     }
+    if (IsDestinationStringOldScriptFormat(request.params[0].get_str())) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
+    }
 
     // Amount
     CAmount nAmount = AmountFromValue(request.params[1]);
@@ -590,6 +593,10 @@ UniValue instantsendtoaddress(const JSONRPCRequest& request)
     CTxDestination address = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(address))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");
+    
+    if (IsDestinationStringOldScriptFormat(request.params[0].get_str())) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
+    }
 
     // Amount
     CAmount nAmount = AmountFromValue(request.params[1]);
@@ -1100,6 +1107,9 @@ UniValue sendfrom(const JSONRPCRequest& request)
     if (!IsValidDestination(dest)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Globaltoken address");
     }
+    if (IsDestinationStringOldScriptFormat(request.params[1].get_str())) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
+    }
     CAmount nAmount = AmountFromValue(request.params[2]);
     if (nAmount <= 0)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount for send");
@@ -1240,6 +1250,10 @@ UniValue sendmany(const JSONRPCRequest& request)
         CTxDestination dest = DecodeDestination(name_);
         if (!IsValidDestination(dest)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Globaltoken address: ") + name_);
+        }
+        
+        if (IsDestinationStringOldScriptFormat(name_)) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(name_));
         }
 
         if (destinations.count(dest)) {
@@ -1466,6 +1480,10 @@ UniValue addwitnessaddress(const JSONRPCRequest& request)
     CTxDestination dest = DecodeDestination(request.params[0].get_str());
     if (!IsValidDestination(dest)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Globaltoken address");
+    }
+    
+    if (IsDestinationStringOldScriptFormat(request.params[0].get_str())) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
     }
 
     bool p2sh = true;
@@ -3284,6 +3302,10 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
 
             if (!IsValidDestination(dest)) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid globaltoken address");
+            }
+            
+            if (IsDestinationStringOldScriptFormat(options["changeAddress"].get_str())) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "changeAddress error: " + GetOldScriptAddressWarning(options["changeAddress"].get_str()));
             }
 
             coinControl.destChange = dest;

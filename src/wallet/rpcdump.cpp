@@ -310,6 +310,10 @@ UniValue importaddress(const JSONRPCRequest& request)
             if (fP2SH) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Cannot use the p2sh flag with an address - use a script instead");
             }
+            if(IsDestinationStringOldScriptFormat(request.params[0].get_str()))
+            {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(request.params[0].get_str()));
+            }
             ImportAddress(pwallet, dest, strLabel);
         } else if (IsHex(request.params[0].get_str())) {
             std::vector<unsigned char> data(ParseHex(request.params[0].get_str()));
@@ -830,6 +834,9 @@ UniValue ProcessImport(CWallet * const pwallet, const UniValue& data, const int6
             dest = DecodeDestination(output);
             if (!IsValidDestination(dest)) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");
+            }
+            if (IsDestinationStringOldScriptFormat(output)) {
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, GetOldScriptAddressWarning(output));
             }
             script = GetScriptForDestination(dest);
         } else {

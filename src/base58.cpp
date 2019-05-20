@@ -264,6 +264,40 @@ public:
     std::string operator()(const CNoDestination& no) const { return {}; }
 };
 
+class DestinationOldScriptEncoder : public DestinationEncoder
+{
+private:
+    const CChainParams& m_params;
+
+public:
+    DestinationOldScriptEncoder(const CChainParams& params) : m_params(params) {}
+
+    std::string operator()(const CScriptID& id) const
+    {
+        std::vector<unsigned char> data = m_params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
+        data.insert(data.end(), id.begin(), id.end());
+        return EncodeBase58Check(data);
+    }
+    
+    std::string operator()(const CNoDestination& no) const { return {}; }
+};
+
+CTxDestination TryOldScriptDecodeDestination(const std::string& str, const CChainParams& params)
+{
+    std::vector<unsigned char> data;
+    uint160 hash;
+    if (DecodeBase58Check(str, data)) {
+        // Script-hash-addresses have version 5 (or 196 testnet).
+        // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
+        const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
+        if (data.size() == hash.size() + script_prefix.size() && std::equal(script_prefix.begin(), script_prefix.end(), data.begin())) {
+            std::copy(data.begin() + script_prefix.size(), data.end(), hash.begin());
+            return CScriptID(hash);
+        }
+    }
+    return CNoDestination();
+}
+
 CTxDestination DecodeDestination(const std::string& str, const CChainParams& params)
 {
     std::vector<unsigned char> data;
@@ -277,6 +311,7 @@ CTxDestination DecodeDestination(const std::string& str, const CChainParams& par
             std::copy(data.begin() + pubkey_prefix.size(), data.end(), hash.begin());
             return CKeyID(hash);
         }
+        
         // Script-hash-addresses have version 5 (or 196 testnet).
         // The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
         const std::vector<unsigned char>& script_prefix = params.Base58Prefix(CChainParams::SCRIPT_ADDRESS_OLD);
@@ -369,9 +404,19 @@ std::string EncodeDestination(const CTxDestination& dest)
     return boost::apply_visitor(DestinationEncoder(Params()), dest);
 }
 
+std::string EncodeOldScriptDestination(const CTxDestination& dest)
+{
+    return boost::apply_visitor(DestinationOldScriptEncoder(Params()), dest);
+}
+
 CTxDestination DecodeDestination(const std::string& str)
 {
     return DecodeDestination(str, Params());
+}
+
+CTxDestination TryOldScriptDecodeDestination(const std::string& str)
+{
+    return TryOldScriptDecodeDestination(str, Params());
 }
 
 bool IsValidDestinationString(const std::string& str, const CChainParams& params)
@@ -382,4 +427,14 @@ bool IsValidDestinationString(const std::string& str, const CChainParams& params
 bool IsValidDestinationString(const std::string& str)
 {
     return IsValidDestinationString(str, Params());
+}
+
+bool IsDestinationStringOldScriptFormat(const std::string& str, const CChainParams& params)
+{
+    return IsValidDestination(TryOldScriptDecodeDestination(str, params));
+}
+
+bool IsDestinationStringOldScriptFormat(const std::string& str)
+{
+    return IsDestinationStringOldScriptFormat(str, Params());
 }

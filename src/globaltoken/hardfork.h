@@ -84,6 +84,7 @@ enum {
 
 #ifndef HARDFORK_IMPORTANT_ONLY
 std::string GetCoinbaseFeeString(int type);
+std::string GetOldScriptAddressWarning(std::string strWrongScriptAddress="");
 #endif
 
 /** For verifying the auxpow blocks, after loading block index */

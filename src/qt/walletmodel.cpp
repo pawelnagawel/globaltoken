@@ -247,6 +247,10 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             {
                 return InvalidAddress;
             }
+            if(IsDestinationStringOldScriptFormat(rcp.address.toStdString()))
+            {
+                return ErrorOldScriptAddressFormat;
+            }
             if(rcp.amount <= 0)
             {
                 return InvalidAmount;

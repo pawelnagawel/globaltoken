@@ -625,6 +625,9 @@ void SendCoinsDialog::processSendCoinsReturn(const WalletModel::SendCoinsReturn 
         msgParams.first = tr("Payment request expired.");
         msgParams.second = CClientUIInterface::MSG_ERROR;
         break;
+    case WalletModel::ErrorOldScriptAddressFormat:
+        msgParams.first = tr("Old script address format found. Convert the address format to the new script address format!");
+        break;
     // included to prevent a compiler warning.
     case WalletModel::OK:
     default:

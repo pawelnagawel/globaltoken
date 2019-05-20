@@ -10,6 +10,24 @@
 #include <sstream>
 #include <string>
 
+std::string GetOldScriptAddressWarning(std::string strWrongScriptAddress)
+{
+    std::stringstream strStream;
+    std::string strFormatedAddress = " ";
+    
+    size_t nWrongScriptAddressLength = strWrongScriptAddress.length();
+    if(nWrongScriptAddressLength > 0)
+        strFormatedAddress = " (" + strWrongScriptAddress + ") ";
+    
+    strStream << "Warning: The address, you entered" << strFormatedAddress << "is in the old address format with a leading '3'.\n\n"
+    << "With the beginning of the GlobalToken Blockchain, the Script address format has not been changed.\n"
+    << "Because GLT used the same address format for script addresses like BTC in the past, the GlobalToken Core Team has decided, to update this address format.\n\n"
+    << "Please check, if your address is really a GlobalToken address, if so, then please proceed with the RPC Console command: convertoldscriptaddress\n\n"
+    << "This call will convert the old GlobalToken address format, to the new script address format, which has unique starting letters, such as 'y' or 'z'\n"
+    << "This improvement protects GlobalToken users from sending GLT's to a BTC address, since they have the identical format.";
+    return strStream.str();
+}
+
 std::string GetCoinbaseFeeString(int type)
 {
     std::stringstream strStream;
