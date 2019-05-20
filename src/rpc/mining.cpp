@@ -92,7 +92,7 @@ UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivation
         
         UniValue obj(UniValue::VOBJ);
         obj.pushKV("height",        nHeight);
-        obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
+        obj.pushKV("address",       EncodeDestination(DecodeDestination(params.GetFoundersRewardAddressAtHeight(nHeight).c_str())));
         obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
         obj.pushKV("amount",        (int64_t)treasuryamount);
         obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
