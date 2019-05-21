@@ -4117,7 +4117,7 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
         else
         {
             strErrMsg = _("Failed to check auxpow blocks! Shutting down.\nFor more details, check your debug.log file!");
-            LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: CheckProofOfWork failed ...\n");
+            LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: Could not load blockhash from mapBlockIndex ...\n");
             return false;
         }
     }
