@@ -276,6 +276,8 @@ bool LoadBlockIndex(const CChainParams& chainparams);
 bool LoadChainTip(const CChainParams& chainparams);
 /** Verify the auxpow blockchain data */
 bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& consensusParams);
+/** Clear the auxpow validation cached block hashes. */
+void ClearAuxpowValidationCache();
 /** Unload database information */
 void UnloadBlockIndex();
 /** Run an instance of the script checking thread */

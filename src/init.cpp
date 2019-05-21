@@ -518,6 +518,7 @@ std::string HelpMessage(HelpMessageMode mode)
     AppendParamsHelpMessages(strUsage, showDebug);
     
     strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-verifyinitialauxpow=<n>", strprintf(_("Verify the auxpow data, after loading the blockchain. (0-1, default: %u)"), 1)
     strUsage += HelpMessageOpt("-sporkaddr=<hex>", strprintf(_("Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.")));
     
     strUsage += HelpMessageGroup(_("Masternode options:"));
@@ -1757,14 +1758,22 @@ bool AppInitMain()
 
     // ********************************************************* Step 8: verify auxpow blocks
     
-    uiInterface.InitMessage(_("Verifying auxpow blocks..."));
-    nStart = GetTimeMillis();
-    
-    std::string strAuxPowFailure;
-    if(!VerifyAuxpowBlockIndex(strAuxPowFailure, chainparams.GetConsensus()))
-        return InitError(strAuxPowFailure);
-    
-    LogPrintf(" Auxpow verification duration: %15dms\n", GetTimeMillis() - nStart);
+    if(gArgs.GetBoolArg("-verifyinitialauxpow", true))
+    {
+        uiInterface.InitMessage(_("Verifying auxpow blocks..."));
+        nStart = GetTimeMillis();
+        
+        std::string strAuxPowFailure;
+        if(!VerifyAuxpowBlockIndex(strAuxPowFailure, chainparams.GetConsensus()))
+            return InitError(strAuxPowFailure);
+        
+        LogPrintf(" Auxpow verification duration: %15dms\n", GetTimeMillis() - nStart);
+    }
+    else
+    {
+        ClearAuxpowValidationCache();
+        LogPrintf("Initial auxpow validation is not wanted ... Skipping ...\n");
+    }
 
     // ********************************************************* Step 9: load wallet
 #ifdef ENABLE_WALLET

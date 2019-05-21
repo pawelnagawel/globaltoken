@@ -4082,6 +4082,7 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
     double auxPowValidationProgress = 0.0;
 
     CBlockIndex* pAuxPowValidationCheckIndex = nullptr;
+    CBlockHeader currentBlockHeader;
     uint32_t vectorsize = vAuxpowValidation.size();
     
     for(uint32_t i = 0; i < vectorsize; i++)
@@ -4101,20 +4102,13 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
             auxPowValidationProgress = static_cast<double>(i) / static_cast<double>(vectorsize);
             auxPowValidationProgress *= 100.0;
             
-            bool equihashvalidator;
-            bool checkresult = CheckProofOfWork(pAuxPowValidationCheckIndex->GetBlockHeader(consensusParams), consensusParams, equihashvalidator);
+            // We don't need to check the auxpow here, because GetBlockHeader reads this auxpow block from disk, and checks the pow.
+            currentBlockHeader = pAuxPowValidationCheckIndex->GetBlockHeader(consensusParams);
             
-            if ((pAuxPowValidationCheckIndex->GetAlgo() == ALGO_EQUIHASH || pAuxPowValidationCheckIndex->GetAlgo() == ALGO_ZHASH) && !equihashvalidator) 
+            if(currentBlockHeader.IsNull())
             {
                 strErrMsg = _("Found invalid auxpow! Shutting down.\nFor more details, check your debug.log file!");
-                LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: %s solution invalid ...\n", pAuxPowValidationCheckIndex->GetBlockHash().GetHex(), pAuxPowValidationCheckIndex->nHeight, GetAlgoName(pAuxPowValidationCheckIndex->GetAlgo()));
-                return false;
-            }
-
-            if (!checkresult)
-            {
-                strErrMsg = _("Found invalid auxpow! Shutting down.\nFor more details, check your debug.log file!");
-                LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: CheckProofOfWork failed ...\n", pAuxPowValidationCheckIndex->GetBlockHash().GetHex(), pAuxPowValidationCheckIndex->nHeight);
+                LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: Aux-Proof of Work validation failed ...\n", pAuxPowValidationCheckIndex->GetBlockHash().GetHex(), pAuxPowValidationCheckIndex->nHeight);
                 return false;
             }
             uiInterface.ShowProgressAsDouble(_("Verifying auxpow blocks..."), auxPowValidationProgress);
@@ -4126,8 +4120,13 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
             return false;
         }
     }
-    vAuxpowValidation.clear();
+    ClearAuxpowValidationCache();
     return true;
+}
+
+void ClearAuxpowValidationCache()
+{
+    vAuxpowValidation.clear();
 }
 
 CVerifyDB::CVerifyDB()
