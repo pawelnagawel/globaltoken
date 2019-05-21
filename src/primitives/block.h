@@ -27,7 +27,7 @@ public:
 
     // auxpow (if this is a merge-minded block)
     boost::shared_ptr<CAuxPow> auxpow;
-    bool fAuxPowChecked;
+    bool fAuxPowChecked; // memory only!
 
     CBlockHeader()
     {
