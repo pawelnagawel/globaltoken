@@ -1176,6 +1176,7 @@ static bool ReadBlockOrHeader(T& block, const CDiskBlockPos& pos, const Consensu
     if (!CheckProofOfWork(block, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
     
+    block.fAuxPowChecked = true;
     return true;
 }
 
@@ -4105,7 +4106,7 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
             // We don't need to check the auxpow here, because GetBlockHeader reads this auxpow block from disk, and checks the pow.
             currentBlockHeader = pAuxPowValidationCheckIndex->GetBlockHeader(consensusParams);
             
-            if(currentBlockHeader.IsNull())
+            if(!currentBlockHeader.fAuxPowChecked)
             {
                 strErrMsg = _("Found invalid auxpow! Shutting down.\nFor more details, check your debug.log file!");
                 LogPrintf("Auxpow is invalid! Blockhash = %s, Blockheight = %d Reason: Aux-Proof of Work validation failed ...\n", pAuxPowValidationCheckIndex->GetBlockHash().GetHex(), pAuxPowValidationCheckIndex->nHeight);

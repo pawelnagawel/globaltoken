@@ -27,6 +27,7 @@ public:
 
     // auxpow (if this is a merge-minded block)
     boost::shared_ptr<CAuxPow> auxpow;
+    bool fAuxPowChecked;
 
     CBlockHeader()
     {
@@ -53,6 +54,7 @@ public:
     {
         CPureBlockHeader::SetNull();
         auxpow.reset();
+        fAuxPowChecked = false;
     }
 
     /**
