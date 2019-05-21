@@ -518,7 +518,7 @@ std::string HelpMessage(HelpMessageMode mode)
     AppendParamsHelpMessages(strUsage, showDebug);
     
     strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all Globaltoken specific functionality (Masternodes, InstantSend) (0-1, default: %u)"), 0));
-    strUsage += HelpMessageOpt("-verifyinitialauxpow=<n>", strprintf(_("Verify the auxpow data, after loading the blockchain. (0-1, default: %u)"), 1)
+    strUsage += HelpMessageOpt("-verifyinitialauxpow=<n>", strprintf(_("Verify the auxpow data, after loading the blockchain. (Recommended!) (0-1, default: %u)"), 1)
     strUsage += HelpMessageOpt("-sporkaddr=<hex>", strprintf(_("Override spork address. Only useful for regtest. Using this on mainnet or testnet will ban you.")));
     
     strUsage += HelpMessageGroup(_("Masternode options:"));
