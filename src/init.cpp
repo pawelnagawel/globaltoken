@@ -1772,7 +1772,7 @@ bool AppInitMain()
     else
     {
         ClearAuxpowValidationCache();
-        LogPrintf("Initial auxpow validation is not wanted ... Skipping ...\n");
+        LogPrintf("Initial auxpow validation disabled by user request... skipping ...\n");
     }
 
     // ********************************************************* Step 9: load wallet
