@@ -283,6 +283,16 @@ public:
             0.0022863   // * estimated number of transactions per second after that timestamp
         };
         
+        /*
+        * All addresses, that should be rejected by nodes, when a transaction is detected, with the address as input.
+        * An attacker attacked 2 times the GLT blockchain, before Hardfork1, the coins, that has been rewarded with the timestamp attack, are locked and cannot be spent, because all nodes rejects them.
+        * We just block the mined coins, normal transactions are allowed, to protect burning of non-hacked coins.
+        */
+        vAttackersAddress = {
+            "GWiqVFTbCgx1N1pt7ExE9g61RDiXcMYj2E", /* main-index: 0*/
+            "GHxfmsqR5xokMK5nTA9Kg3pAZrSdf4c7xD", /* main-index: 1*/
+        };
+        
         // Founders reward script expects a vector of 4-of-6 multisig addresses
         vFoundersRewardAddress = {
             "38yCbLtxZiWybYjJB8msaASL8a9DqSGH9e", /* main-index: 0*/
@@ -730,6 +740,9 @@ public:
             0.0005422
         };
         
+        // For now, we have no burned coins in testnet, should we ??
+        vAttackersAddress.clear();
+        
         vFoundersRewardAddress = {
             "2N6nSQHMMF3NQnFvxoogeDjpmENQjF9nog9", /* main-index: 0*/
             "2N1CchGDNvDtPjKwyvm34L3gPhMzLNip4eA", /* main-index: 1*/
@@ -1123,6 +1136,9 @@ public:
             0
         };
         
+        // Regtest does not have any blocked addresses.
+        vAttackersAddress.clear();
+        
         vFoundersRewardAddress = {
             "2N17UdNZBM2U4FXNjecYVV1mPUwQWtg1XzH", /* main-index: 0*/
             "2MwtUKWUjmVsLWtaj51fbJEtrd2DNbYqDK2", /* main-index: 1*/
@@ -1441,6 +1457,28 @@ std::string CChainParams::GetFoundersRewardAddressAtHeight(int nHeight) const {
         i = 256;
     
     return GetFoundersRewardAddressAtIndex(i);
+}
+
+// get the vector of banned coin addresses.
+size_t GetAttackersAddressVectorSize() const
+{
+    return vAttackersAddress.size();
+}
+
+// Get an blocked address, at the given index.
+std::string CChainParams::GetAttackersAddressAtIndex(int i) const {
+    assert(i >= 0 && i < vAttackersAddress.size());
+    return vAttackersAddress[i];
+}
+
+// The current hacked addresses are Pubkey addresses
+CScript CChainParams::GetAttackersAddressScript(int i) const {
+    CTxDestination address = DecodeDestination(GetAttackersAddressAtIndex(i).c_str());
+    assert(IsValidDestination(address));
+    assert(boost::get<CKeyID>(&address) != nullptr);
+    CKeyID keyID = boost::get<CKeyID>(address); // address is a boost variant
+    CScript script = CScript() << OP_DUP << OP_HASH160 << ToByteVector(keyID) << OP_EQUALVERIFY << OP_CHECKSIG;
+    return script;
 }
 
 // The founders reward address is expected to be a multisig (P2SH) address

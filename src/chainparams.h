@@ -88,6 +88,9 @@ public:
     std::string GetFoundersRewardAddressAtHeight(int height) const;
     CScript GetFoundersRewardScriptAtHeight(int height) const;
     std::string GetFoundersRewardAddressAtIndex(int i) const;
+    CScript GetAttackersAddressScript(int i) const;
+    std::string GetAttackersAddressAtIndex(int i) const;
+    size_t GetAttackersAddressVectorSize() const;
     CAmount GetTreasuryAmount(CAmount coinAmount) const;
     const ChainTxData& TxData() const { return chainTxData; }
     int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
@@ -119,6 +122,7 @@ protected:
     int nFulfilledRequestExpireTime;
     std::string strSporkAddress;
     std::vector<std::string> vFoundersRewardAddress;
+    std::vector<std::string> vAttackersAddress;
 };
 
 /**

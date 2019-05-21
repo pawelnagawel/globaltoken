@@ -206,7 +206,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
     return true;
 }
 
-bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, int nSpendHeight, CAmount& txfee)
+bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, int nSpendHeight, CAmount& txfee, const CChainParams& chainparams)
 {
     // are the actual inputs available?
     if (!inputs.HaveInputs(tx)) {
@@ -227,12 +227,17 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
                 strprintf("tried to spend coinbase at depth %d", nSpendHeight - coin.nHeight));
         }
         
-        // timestamp attack, reverse timestamp hack attack, and burn the inputs, make them unspendable.
-        if (coin.IsCoinBase() && (HexStr(coin.out.scriptPubKey.begin(), coin.out.scriptPubKey.end()) == "76a9148d429be7d11e1d42f6b498a2cd856972622d564188ac"
-            || HexStr(coin.out.scriptPubKey.begin(), coin.out.scriptPubKey.end()) == "76a9140146b062c27a3ffeae2a665eb0a080b51cded2ee88ac")) {
-            return state.Invalid(false,
-                REJECT_INVALID, "bad-txns-hacked-coinbase",
-                strprintf("Hackers keep out! Coinbase marked as a hacked one ... coinbase nHeight = %d", coin.nHeight));
+        // lock unspent hacked coins.
+        // make them unspendable, because no node will accept this hacked coins in a transaction.
+        if (coin.IsCoinBase())
+        {
+            for(size_t i = 0; i < chainparams.GetAttackersAddressVectorSize(); i++)
+            {
+                if(coin.out.scriptPubKey == chainparams.GetAttackersAddressScript(i)) 
+                {
+                    return state.Invalid(false, REJECT_INVALID, "bad-txns-hacked-coinbase", strprintf("Hackers keep out! Coinbase marked as a hacked one ... coinbase nHeight = %d", coin.nHeight));
+                }
+            }
         }
 
         // Check for negative or overflow input values
