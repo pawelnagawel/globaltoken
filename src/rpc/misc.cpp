@@ -128,7 +128,7 @@ UniValue helpnewscriptaddress(const JSONRPCRequest& jsonRequest)
     if (jsonRequest.fHelp || jsonRequest.params.size() > 0)
         throw std::runtime_error(
             "helpnewscriptaddress\n"
-            "\nList all commands, or get help for a specified command.\n"
+            "\nGet a information text about the new script address format.\n"
             "\nArguments:\n"
             "\n(none)\n"
             "\nResult:\n"
