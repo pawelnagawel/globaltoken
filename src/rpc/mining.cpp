@@ -77,14 +77,16 @@ UniValue GetNetworkHashPS(uint8_t nAlgo, int lookup, int height) {
     return CalculateAlgoHashrate(*pb, nAlgo, lookup, Params().GetConsensus());
 }
 
-UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivationCheck)
+UniValue GetUniValueForTreasury(const CAmount blockReward, const uint32_t nTime, int nHeight, const bool skipActivationCheck)
 {
-    if(Params().GetConsensus().Hardfork1.IsActivated(block.nTime) || skipActivationCheck)
+    if(Params().GetConsensus().Hardfork1.IsActivated(nTime) || skipActivationCheck)
     {
         const CChainParams& params = Params();
-        CAmount treasuryamount = params.GetTreasuryAmount(block.vtx[0]->GetValueOut());
+        CAmount treasuryamount = params.GetTreasuryAmount(blockReward);
         CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
         CScript scriptPubKey = params.GetFoundersRewardScriptAtHeight(nHeight);
+        CTxDestination treasuryAddress;
+        ExtractDestination(scriptPubKey, treasuryAddress);
         
         CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
         
@@ -92,13 +94,18 @@ UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivation
         
         UniValue obj(UniValue::VOBJ);
         obj.pushKV("height",        nHeight);
-        obj.pushKV("address",       EncodeDestination(DecodeDestination(params.GetFoundersRewardAddressAtHeight(nHeight).c_str())));
+        obj.pushKV("address",       EncodeDestination(treasuryAddress));
         obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
         obj.pushKV("amount",        (int64_t)treasuryamount);
         obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
         return obj;
     }
     return NullUniValue;
+}
+
+UniValue GetTreasuryOutput(const CBlock &block, int nHeight, bool skipActivationCheck)
+{
+    return GetUniValueForTreasury(block.vtx[0]->GetValueOut(), block.nTime, nHeight, skipActivationCheck);
 }
 
 UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck)
@@ -112,22 +119,7 @@ UniValue GetTreasuryOutput(uint32_t nTime, int nHeight, bool skipActivationCheck
         
         if(nHeight > chainActive.Tip()->nHeight)
         {
-            const CChainParams& params = Params();
-            CAmount treasuryamount = params.GetTreasuryAmount(GetBlockSubsidy(nHeight, params.GetConsensus()));
-            CTxOut out = CTxOut(treasuryamount, params.GetFoundersRewardScriptAtHeight(nHeight));
-            CScript scriptPubKey = params.GetFoundersRewardScriptAtHeight(nHeight);
-            
-            CDataStream sshextxstream(SER_NETWORK, PROTOCOL_VERSION);
-            
-            sshextxstream << out;
-            
-            UniValue obj(UniValue::VOBJ);
-            obj.pushKV("height",        nHeight);
-            obj.pushKV("address",       params.GetFoundersRewardAddressAtHeight(nHeight).c_str());
-            obj.pushKV("scriptPubKey",  HexStr(scriptPubKey.begin(), scriptPubKey.end()));
-            obj.pushKV("amount",        (int64_t)treasuryamount);
-            obj.pushKV("hex",           HexStr(sshextxstream.begin(), sshextxstream.end()));
-            return obj;
+            return GetUniValueForTreasury(GetBlockSubsidy(nHeight, Params().GetConsensus()), nTime, nHeight, skipActivationCheck);
         }
         else
         {
