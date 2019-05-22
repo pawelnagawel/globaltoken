@@ -1459,8 +1459,8 @@ std::string CChainParams::GetFoundersRewardAddressAtHeight(int nHeight) const {
     return GetFoundersRewardAddressAtIndex(i);
 }
 
-// get the vector of banned coin addresses.
-size_t GetAttackersAddressVectorSize() const
+// get the vector size of banned coin addresses.
+size_t CChainParams::GetAttackersAddressVectorSize() const
 {
     return vAttackersAddress.size();
 }
