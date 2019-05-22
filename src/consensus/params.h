@@ -78,8 +78,10 @@ struct Params {
 	/** Block height at which BIP66 becomes active */
     CHardforkProperties Hardfork1;
     CHardforkProperties Hardfork2;
-    uint32_t nRuleChangeActivationThreshold;
-    uint32_t nMinerConfirmationWindow;
+    uint32_t nOldRuleChangeActivationThreshold;
+    uint32_t nOldMinerConfirmationWindow;
+    uint32_t nNewRuleChangeActivationThreshold;
+    uint32_t nNewMinerConfirmationWindow;
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     CPOWAlgoProperties aPOWAlgos[NUM_ALGOS];

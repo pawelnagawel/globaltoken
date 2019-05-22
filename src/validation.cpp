@@ -1824,8 +1824,20 @@ public:
 
     int64_t BeginTime(const Consensus::Params& params) const override { return 0; }
     int64_t EndTime(const Consensus::Params& params) const override { return std::numeric_limits<int64_t>::max(); }
-    int Period(const Consensus::Params& params) const override { return params.nMinerConfirmationWindow; }
-    int Threshold(const Consensus::Params& params) const override { return params.nRuleChangeActivationThreshold; }
+    int Period(const Consensus::Params& params, int checkHeight) const override 
+    { 
+        if(checkHeight >= params.Hardfork1.GetActivationHeight())
+            return params.nNewMinerConfirmationWindow;
+        else
+            return params.nOldMinerConfirmationWindow;
+    }
+    int Threshold(const Consensus::Params& params, int checkHeight) const override 
+    {
+        if(checkHeight >= params.Hardfork1.GetActivationHeight())
+            return params.nNewRuleChangeActivationThreshold; 
+        else
+            return params.nOldRuleChangeActivationThreshold;
+    }
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {

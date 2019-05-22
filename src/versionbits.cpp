@@ -25,8 +25,8 @@ const struct VBDeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION_B
 
 ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex* pindexPrev, const Consensus::Params& params, ThresholdConditionCache& cache) const
 {
-    int nPeriod = Period(params);
-    int nThreshold = Threshold(params);
+    int nPeriod = pindexPrev == nullptr ? Period(params, 0) : Period(params, pindexPrev->nHeight);
+    int nThreshold = pindexPrev == nullptr ? Threshold(params, 0) : Threshold(params, pindexPrev->nHeight);
     int64_t nTimeStart = BeginTime(params);
     int64_t nTimeTimeout = EndTime(params);
 
@@ -117,8 +117,8 @@ BIP9Stats AbstractThresholdConditionChecker::GetStateStatisticsFor(const CBlockI
 {
     BIP9Stats stats = {};
 
-    stats.period = Period(params);
-    stats.threshold = Threshold(params);
+    stats.period = (pindex == nullptr) ? Period(params, 0) : Period(params, pindex->nHeight);
+    stats.threshold = (pindex == nullptr) ? Threshold(params, 0) : Threshold(params, pindex->nHeight);
 
     if (pindex == nullptr)
         return stats;
@@ -156,7 +156,7 @@ int AbstractThresholdConditionChecker::GetStateSinceHeightFor(const CBlockIndex*
         return 0;
     }
 
-    const int nPeriod = Period(params);
+    const int nPeriod = Period(params, (pindexPrev == nullptr) ? 0 : pindexPrev->nHeight);
 
     // A block's state is always the same as that of the first of its period, so it is computed based on a pindexPrev whose height equals a multiple of nPeriod - 1.
     // To ease understanding of the following height calculation, it helps to remember that
@@ -189,8 +189,20 @@ private:
 protected:
     int64_t BeginTime(const Consensus::Params& params) const override { return params.vDeployments[id].nStartTime; }
     int64_t EndTime(const Consensus::Params& params) const override { return params.vDeployments[id].nTimeout; }
-    int Period(const Consensus::Params& params) const override { return params.nMinerConfirmationWindow; }
-    int Threshold(const Consensus::Params& params) const override { return params.nRuleChangeActivationThreshold; }
+    int Period(const Consensus::Params& params, int checkHeight) const override 
+    {
+        if(checkHeight >= params.Hardfork1.GetActivationHeight())
+            return params.nNewMinerConfirmationWindow;
+        else
+            return params.nOldMinerConfirmationWindow;
+    }
+    int Threshold(const Consensus::Params& params, int checkHeight) const override 
+    {
+        if(checkHeight >= params.Hardfork1.GetActivationHeight())
+            return params.nNewRuleChangeActivationThreshold;
+        else
+            return params.nOldRuleChangeActivationThreshold;
+    }
 
     bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const override
     {
