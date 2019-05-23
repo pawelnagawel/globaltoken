@@ -509,7 +509,4 @@ bool DumpMempool();
 /** Load the mempool from disk. */
 bool LoadMempool();
 
-/** Checks if Hardfork is activated at current tip */
-bool CheckCurrentHardforkState();
-
 #endif // BITCOIN_VALIDATION_H
