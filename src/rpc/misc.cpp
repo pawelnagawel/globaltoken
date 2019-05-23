@@ -51,7 +51,7 @@ UniValue listattackersaddresses(const JSONRPCRequest& request)
             "  \"entries\" : \"entries\",                  (numeric) How many addresses are blocked\n"
             "  \"addresses\" : [                         (array) The addresses, that are blocked in array format\n"
             "       \"address\" : \"address\",             (string) The address of this entry.\n"
-            "       \"scriptPubKey\" : \"scriptPubKey\",   (string) The scriptPubKey of this entry.\n"
+            "       \"scriptPubKey\" : \"scriptPubKey\",   (string) The hex encoded scriptPubKey of this entry.\n"
             "   ]\n"
             "}\nExamples:\n"
             + HelpExampleCli("listattackersaddresses", "")

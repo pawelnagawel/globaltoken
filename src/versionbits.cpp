@@ -25,8 +25,8 @@ const struct VBDeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION_B
 
 ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex* pindexPrev, const Consensus::Params& params, ThresholdConditionCache& cache) const
 {
-    int nPeriod = pindexPrev == nullptr ? Period(params, 0) : Period(params, pindexPrev->nHeight);
-    int nThreshold = pindexPrev == nullptr ? Threshold(params, 0) : Threshold(params, pindexPrev->nHeight);
+    int nPeriod = pindexPrev == nullptr ? Period(params, params.Hardfork1.GetActivationHeight()) : Period(params, pindexPrev->nHeight);
+    int nThreshold = pindexPrev == nullptr ? Threshold(params, params.Hardfork1.GetActivationHeight()) : Threshold(params, pindexPrev->nHeight);
     int64_t nTimeStart = BeginTime(params);
     int64_t nTimeTimeout = EndTime(params);
 
@@ -53,6 +53,9 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
             cache[pindexPrev] = THRESHOLD_DEFINED;
             break;
         }
+        // Update the period here, because the pIndex Could be now at the old rule.
+        nPeriod = Period(params, pindexPrev->nHeight - nPeriod);
+        nThreshold = Threshold(params, pindexPrev->nHeight - nPeriod);
         vToCompute.push_back(pindexPrev);
         pindexPrev = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
     }
@@ -83,13 +86,21 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
                 }
                 // We need to count
                 const CBlockIndex* pindexCount = pindexPrev;
+                nPeriod = Period(params, pindexCount->nHeight);
                 int count = 0;
                 for (int i = 0; i < nPeriod; i++) {
                     if (Condition(pindexCount, params)) {
                         count++;
                     }
                     pindexCount = pindexCount->pprev;
+                    
+                    if(Period(params, pindexCount->nHeight) != nPeriod)
+                    {
+                        nPeriod += Period(params, pindexCount->nHeight); // we add it, because the loop must walk + nTheOtherRulePeriod Blocks now.
+                    }
                 }
+                // Finally update the Threshold
+                nThreshold = Threshold(params, pindexCount->nHeight);
                 if (count >= nThreshold) {
                     stateNext = THRESHOLD_LOCKED_IN;
                 }
@@ -117,15 +128,32 @@ BIP9Stats AbstractThresholdConditionChecker::GetStateStatisticsFor(const CBlockI
 {
     BIP9Stats stats = {};
 
-    stats.period = (pindex == nullptr) ? Period(params, 0) : Period(params, pindex->nHeight);
-    stats.threshold = (pindex == nullptr) ? Threshold(params, 0) : Threshold(params, pindex->nHeight);
+    // By default, get the new rules.
+    stats.period = Period(params, params.Hardfork1.GetActivationHeight());
+    stats.threshold = Threshold(params, params.Hardfork1.GetActivationHeight());
 
     if (pindex == nullptr)
         return stats;
+    
+    // Update now the period.
+    stats.period = Period(params, pindex->nHeight);
+    stats.threshold = Threshold(params, pindex->nHeight);
 
     // Find beginning of period
     const CBlockIndex* pindexEndOfPrevPeriod = pindex->GetAncestor(pindex->nHeight - ((pindex->nHeight + 1) % stats.period));
     stats.elapsed = pindex->nHeight - pindexEndOfPrevPeriod->nHeight;
+    
+    if(stats.period != Period(params, pindexEndOfPrevPeriod->nHeight))
+    {
+        // We have a rule period and threshold change here!
+        // Update now the period and threshold.
+        stats.period = Period(params, pindexEndOfPrevPeriod->nHeight);
+        stats.threshold = Threshold(params, pindexEndOfPrevPeriod->nHeight);
+        
+        // Find beginning of period
+        pindexEndOfPrevPeriod = pindex->GetAncestor(pindex->nHeight - ((pindex->nHeight + 1) % stats.period));
+        stats.elapsed = pindex->nHeight - pindexEndOfPrevPeriod->nHeight;
+    }
 
     // Count from current block to beginning of period
     int count = 0;
@@ -156,7 +184,7 @@ int AbstractThresholdConditionChecker::GetStateSinceHeightFor(const CBlockIndex*
         return 0;
     }
 
-    const int nPeriod = Period(params, (pindexPrev == nullptr) ? 0 : pindexPrev->nHeight);
+    int nPeriod = Period(params, pindexPrev->nHeight);
 
     // A block's state is always the same as that of the first of its period, so it is computed based on a pindexPrev whose height equals a multiple of nPeriod - 1.
     // To ease understanding of the following height calculation, it helps to remember that
@@ -171,6 +199,14 @@ int AbstractThresholdConditionChecker::GetStateSinceHeightFor(const CBlockIndex*
     while (previousPeriodParent != nullptr && GetStateFor(previousPeriodParent, params, cache) == initialState) {
         pindexPrev = previousPeriodParent;
         previousPeriodParent = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
+        if(previousPeriodParent != nullptr)
+        {
+            if(Period(params, previousPeriodParent->nHeight) != nPeriod)
+            {
+                nPeriod = Period(params, previousPeriodParent->nHeight);
+                previousPeriodParent = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
+            }
+        }
     }
 
     // Adjust the result because right now we point to the parent block.

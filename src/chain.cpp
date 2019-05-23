@@ -164,7 +164,7 @@ double CalculateAlgoHashrate(const CBlockIndex& block, int algo, int lookup, con
 {
     arith_uint256 totalAlgoWork;
     const CBlockIndex *pStartingAlgoBlock = GetLastBlockIndexForAlgo(&block, algo, params);
-    CBlockIndex *pLastAlgoBlock = const_cast <CBlockIndex *> (pStartingAlgoBlock);
+    const CBlockIndex *pLastAlgoBlock = pStartingAlgoBlock;
     if(pLastAlgoBlock == nullptr)
     {
         return 0;
@@ -172,13 +172,13 @@ double CalculateAlgoHashrate(const CBlockIndex& block, int algo, int lookup, con
     
     totalAlgoWork += GetBlockProofBase(*pStartingAlgoBlock);
     
-    CBlockIndex *pPreviousAlgoBlock = pLastAlgoBlock;
+    const CBlockIndex *pPreviousAlgoBlock = pLastAlgoBlock;
 
     int64_t minTime = pPreviousAlgoBlock->GetBlockTime();
     int64_t maxTime = minTime;
     for (int i = 0; i < lookup; i++) 
     {
-        pPreviousAlgoBlock = const_cast <CBlockIndex *> (GetLastBlockIndexForAlgo(pLastAlgoBlock->pprev, algo, params));
+        pPreviousAlgoBlock = GetLastBlockIndexForAlgo(pLastAlgoBlock->pprev, algo, params);
         if(pPreviousAlgoBlock == nullptr)
         {
             break;
