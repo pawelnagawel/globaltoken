@@ -205,9 +205,11 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.pushKV("merkleroot", blockindex->hashMerkleRoot.GetHex());
     result.pushKV("time", (int64_t)blockindex->nTime);
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
-    result.pushKV("nonce", (uint64_t)blockindex->nNonce);
-    result.pushKV("bignonce", blockindex->nBigNonce.GetHex());
-    if(!isauxpow)
+    if(algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)
+        result.pushKV("nonce", blockindex->nBigNonce.GetHex());
+    else
+        result.pushKV("nonce", (uint64_t)blockindex->nNonce);
+    if(!isauxpow && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH))
         result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", blockindex->nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
@@ -265,9 +267,11 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("tx", txs);
     result.pushKV("time", block.GetBlockTime());
     result.pushKV("mediantime", (int64_t)blockindex->GetMedianTimePast());
-    result.pushKV("nonce", (uint64_t)block.nNonce);
-    result.pushKV("bignonce", block.nBigNonce.GetHex());
-    if(!isauxpow)
+    if(algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)
+        result.pushKV("nonce", block.nBigNonce.GetHex());
+    else
+        result.pushKV("nonce", (uint64_t)block.nNonce);
+    if(!isauxpow && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH))
         result.pushKV("solution", HexStr(blockindex->nSolution));
     result.pushKV("bits", strprintf("%08x", block.nBits));
     result.pushKV("difficulty", GetDifficulty(blockindex, algo));
