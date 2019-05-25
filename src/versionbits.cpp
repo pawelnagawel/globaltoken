@@ -25,8 +25,7 @@ const struct VBDeploymentInfo VersionBitsDeploymentInfo[Consensus::MAX_VERSION_B
 
 ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex* pindexPrev, const Consensus::Params& params, ThresholdConditionCache& cache) const
 {
-    int nPeriod = pindexPrev == nullptr ? Period(params, params.Hardfork1.GetActivationHeight()) : Period(params, pindexPrev->nHeight);
-    int nThreshold = pindexPrev == nullptr ? Threshold(params, params.Hardfork1.GetActivationHeight()) : Threshold(params, pindexPrev->nHeight);
+    int nPeriod = Period(params, params.Hardfork1.GetActivationHeight());
     int64_t nTimeStart = BeginTime(params);
     int64_t nTimeTimeout = EndTime(params);
 
@@ -37,6 +36,7 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
 
     // A block's state is always the same as that of the first of its period, so it is computed based on a pindexPrev whose height equals a multiple of nPeriod - 1.
     if (pindexPrev != nullptr) {
+        nPeriod = Period(params, pindexPrev->nHeight);
         pindexPrev = pindexPrev->GetAncestor(pindexPrev->nHeight - ((pindexPrev->nHeight + 1) % nPeriod));
     }
 
@@ -55,7 +55,6 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
         }
         // Update the period here, because the pIndex Could be now at the old rule.
         nPeriod = Period(params, pindexPrev->nHeight - nPeriod);
-        nThreshold = Threshold(params, pindexPrev->nHeight - nPeriod);
         vToCompute.push_back(pindexPrev);
         pindexPrev = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
     }
@@ -86,22 +85,26 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
                 }
                 // We need to count
                 const CBlockIndex* pindexCount = pindexPrev;
-                nPeriod = Period(params, pindexCount->nHeight);
+                int nPeriodCache = nPeriod; // the last Period
                 int count = 0;
-                for (int i = 0; i < nPeriod; i++) {
+                int i = 0;
+                while(i < nPeriodCache)
+                {
                     if (Condition(pindexCount, params)) {
                         count++;
                     }
                     pindexCount = pindexCount->pprev;
                     
-                    if(Period(params, pindexCount->nHeight) != nPeriod)
+                    if(Period(params, pindexCount->nHeight) != nPeriodCache)
                     {
-                        nPeriod += Period(params, pindexCount->nHeight); // we add it, because the loop must walk + nTheOtherRulePeriod Blocks now.
+                        nPeriodCache = Period(params, pindexCount->nHeight); // Upgrade the nPeriodCache 
+                        i = 0; // Period change, reset i and recount!
+                        count = 0; // Period change, reset the counter!
+                        continue;
                     }
+                    i++;
                 }
-                // Finally update the Threshold
-                nThreshold = Threshold(params, pindexCount->nHeight);
-                if (count >= nThreshold) {
+                if (count >= Threshold(params, pindexCount->nHeight)) {
                     stateNext = THRESHOLD_LOCKED_IN;
                 }
                 break;
@@ -197,16 +200,12 @@ int AbstractThresholdConditionChecker::GetStateSinceHeightFor(const CBlockIndex*
     const CBlockIndex* previousPeriodParent = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
 
     while (previousPeriodParent != nullptr && GetStateFor(previousPeriodParent, params, cache) == initialState) {
+        if(Period(params, previousPeriodParent->nHeight) != nPeriod)
+        {
+            nPeriod = Period(params, previousPeriodParent->nHeight);
+        }
         pindexPrev = previousPeriodParent;
         previousPeriodParent = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
-        if(previousPeriodParent != nullptr)
-        {
-            if(Period(params, previousPeriodParent->nHeight) != nPeriod)
-            {
-                nPeriod = Period(params, previousPeriodParent->nHeight);
-                previousPeriodParent = pindexPrev->GetAncestor(pindexPrev->nHeight - nPeriod);
-            }
-        }
     }
 
     // Adjust the result because right now we point to the parent block.
