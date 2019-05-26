@@ -480,6 +480,13 @@ Exportar los datos en la pestaña actual a un archivo</translation>
     </message>
 </context>
 <context>
+    <name>ClientModel</name>
+    <message>
+        <source>Total: %1 (Enabled: %3)</source>
+        <translation>Total: %1 (Habilitado: %3)</translation>
+    </message>
+</context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Coin Selection</source>

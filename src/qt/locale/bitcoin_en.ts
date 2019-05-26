@@ -726,6 +726,14 @@
     </message>
 </context>
 <context>
+    <name>ClientModel</name>
+    <message>
+        <location filename="../clientmodel.cpp" line="+86"/>
+        <source>Total: %1 (Enabled: %3)</source>
+        <translation>Total: %1 (Enabled: %3)</translation>
+    </message>
+</context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <location filename="../forms/coincontroldialog.ui" line="+14"/>

@@ -573,6 +573,13 @@
     </message>
 </context>
 <context>
+    <name>ClientModel</name>
+    <message>
+        <source>Total: %1 (Enabled: %3)</source>
+        <translation>Gesamt: %1 (Aktiviert: %3)</translation>
+    </message>
+</context>
+<context>
     <name>CoinControlDialog</name>
     <message>
         <source>Coin Selection</source>
