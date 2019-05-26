@@ -177,10 +177,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1519862400; // Thu, 01 Mar 2018.
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000006ca5a7a5a45e8f8b9c");
+        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000134b2af90229877f1cc");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x000000000000014cf4dc216dcc925bf0c6d7096aa6ab82e1af64e946d876df7d"); //200000
+        consensus.defaultAssumeValid = uint256S("0x0000003c2e7d758e5ba8c89a875f379b5463ad00b6fec73c704098e26a49ecd7"); //400009
         
         consensus.nAuxpowChainId = 0x003c; 
         consensus.fStrictChainId = false;
@@ -274,15 +274,16 @@ public:
                 {327035, uint256S("0x0000000000000072f4e5960b252d812991c4c13810b2324d623f824572cb5251")}, // last old chain height
                 {327036, uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56")}, // firt hardfork chain block
                 {328101, uint256S("0x320c067ac8c5cdebbd12df990556b1237f0b41c7dac54a232906f4ce7a180655")},
+                {500000, uint256S("0xac8482b87e86587589e3c170dae61d6ac12567903c3c79beb4a9234c6f9b4760")}
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 320c067ac8c5cdebbd12df990556b1237f0b41c7dac54a232906f4ce7a180655 (height 328101).
-            1537709820, // * UNIX timestamp of last known number of transactions
-            393073,     // * total number of transactions between genesis and that timestamp
+            // Data as of block 14b4ed452d4561f653854001e5a84036e4cf611bdc3e27edb2317fc9ed52ba09 (height 676488).
+            1558828913, // * UNIX timestamp of last known number of transactions
+            1008167,    // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            0.0022863   // * estimated number of transactions per second after that timestamp
+            0.0306467   // * estimated number of transactions per second after that timestamp
         };
         
         /*
