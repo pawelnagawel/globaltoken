@@ -747,6 +747,7 @@ public:
         
         // For now, we have no burned coins in testnet, should we ??
         vAttackersAddress.clear();
+        vAttackersAddressScripts.clear();
         
         vFoundersRewardAddress = {
             "2N6nSQHMMF3NQnFvxoogeDjpmENQjF9nog9", /* main-index: 0*/
@@ -1145,6 +1146,7 @@ public:
         
         // Regtest does not have any blocked addresses.
         vAttackersAddress.clear();
+        vAttackersAddressScripts.clear();
         
         vFoundersRewardAddress = {
             "2N17UdNZBM2U4FXNjecYVV1mPUwQWtg1XzH", /* main-index: 0*/
@@ -1449,6 +1451,7 @@ void SelectParams(const std::string& network)
 {
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(network);
+    globalChainParams->InitAttackersAddressScriptVector();
 }
 
 // Index variable i ranges from 0 - (vFoundersRewardAddress.size()-1)
@@ -1466,10 +1469,22 @@ std::string CChainParams::GetFoundersRewardAddressAtHeight(int nHeight) const {
     return GetFoundersRewardAddressAtIndex(i);
 }
 
-// get the vector size of banned coin addresses.
-size_t CChainParams::GetAttackersAddressVectorSize() const
+void CChainParams::InitAttackersAddressScriptVector()
 {
-    return vAttackersAddress.size();
+    assert(vAttackersAddressScripts.size() == 0);
+    for(size_t i = 0; i < vAttackersAddress.size(); i++)
+    {
+        vAttackersAddressScripts.push_back(DecodeAttackersAddressScript(i));
+    }
+    
+    assert(vAttackersAddress.size() == vAttackersAddressScripts.size()); // they must have the same size!
+    
+    for(size_t i = 0; i < vAttackersAddressScripts.size(); i++)
+    {
+        CTxDestination attackersAddress;
+        ExtractDestination(vAttackersAddressScripts[i], attackersAddress);
+        assert(EncodeDestination(attackersAddress) == vAttackersAddress[i]);
+    }
 }
 
 // Get an blocked address, at the given index.
@@ -1479,13 +1494,10 @@ std::string CChainParams::GetAttackersAddressAtIndex(int i) const {
 }
 
 // The current hacked addresses are Pubkey addresses
-CScript CChainParams::GetAttackersAddressScript(int i) const {
+CScript CChainParams::DecodeAttackersAddressScript(int i) const {
     CTxDestination address = DecodeDestination(GetAttackersAddressAtIndex(i).c_str());
     assert(IsValidDestination(address));
-    assert(boost::get<CKeyID>(&address) != nullptr);
-    CKeyID keyID = boost::get<CKeyID>(address); // address is a boost variant
-    CScript script = CScript() << OP_DUP << OP_HASH160 << ToByteVector(keyID) << OP_EQUALVERIFY << OP_CHECKSIG;
-    return script;
+    return GetScriptForDestination(address);
 }
 
 // The founders reward address is expected to be a multisig (P2SH) address

@@ -58,20 +58,18 @@ UniValue listattackersaddresses(const JSONRPCRequest& request)
             + HelpExampleRpc("listattackersaddresses", "")
         );
         
-    const CChainParams& chainparams = Params();
-    size_t nVectorSize = chainparams.GetAttackersAddressVectorSize();
+    const std::vector<CScript> vBannedAddresses = Params().BannedAddresses();
     UniValue ret(UniValue::VOBJ);
     UniValue arr(UniValue::VARR);
-    ret.pushKV("entries", nVectorSize);
+    ret.pushKV("entries", vBannedAddresses.size());
     
-    for(size_t i = 0; i < nVectorSize; i++)
+    for(const CScript& blockedOutScript : vBannedAddresses)
     {
         UniValue obj(UniValue::VOBJ);
         CTxDestination attackersAddress;
-        CScript attackersScriptPubKey = chainparams.GetAttackersAddressScript(i);
-        ExtractDestination(attackersScriptPubKey, attackersAddress);
+        ExtractDestination(blockedOutScript, attackersAddress);
         obj.pushKV("address", EncodeDestination(attackersAddress));
-        obj.pushKV("scriptPubKey", HexStr(attackersScriptPubKey.begin(), attackersScriptPubKey.end()));
+        obj.pushKV("scriptPubKey", HexStr(blockedOutScript.begin(), blockedOutScript.end()));
         arr.push_back(obj);
     }
 

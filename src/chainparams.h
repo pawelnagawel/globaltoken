@@ -88,10 +88,10 @@ public:
     std::string GetFoundersRewardAddressAtHeight(int height) const;
     CScript GetFoundersRewardScriptAtHeight(int height) const;
     std::string GetFoundersRewardAddressAtIndex(int i) const;
-    CScript GetAttackersAddressScript(int i) const;
-    std::string GetAttackersAddressAtIndex(int i) const;
-    size_t GetAttackersAddressVectorSize() const;
     CAmount GetTreasuryAmount(CAmount coinAmount) const;
+    /** Attackers address stuff */
+    const std::vector<CScript>& BannedAddresses() const { return vAttackersAddressScripts; }
+    void InitAttackersAddressScriptVector();
     const ChainTxData& TxData() const { return chainTxData; }
     int FulfilledRequestExpireTime() const { return nFulfilledRequestExpireTime; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
@@ -123,6 +123,9 @@ protected:
     std::string strSporkAddress;
     std::vector<std::string> vFoundersRewardAddress;
     std::vector<std::string> vAttackersAddress;
+    std::vector<CScript> vAttackersAddressScripts;
+    CScript DecodeAttackersAddressScript(int i) const;
+    std::string GetAttackersAddressAtIndex(int i) const;
 };
 
 /**
@@ -154,5 +157,10 @@ void SelectParams(const std::string& chain);
  * Allows modifying the Version Bits regtest parameters.
  */
 void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
+
+/**
+ * Initializes the attackers address vector with CScripts.
+ */
+void InitAttackersAddressScriptVector();
 
 #endif // BITCOIN_CHAINPARAMS_H

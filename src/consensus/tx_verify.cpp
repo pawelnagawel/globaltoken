@@ -231,9 +231,10 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
         // make them unspendable, because no node will accept this hacked coins in a transaction.
         if (coin.IsCoinBase())
         {
-            for(size_t i = 0; i < chainparams.GetAttackersAddressVectorSize(); i++)
+            const std::vector<CScript> vBannedAddresses = chainparams.BannedAddresses();
+            for(const CScript& blockedOutScript : vBannedAddresses)
             {
-                if(coin.out.scriptPubKey == chainparams.GetAttackersAddressScript(i)) 
+                if(coin.out.scriptPubKey == blockedOutScript) 
                 {
                     return state.Invalid(false, REJECT_INVALID, "bad-txns-hacked-coinbase", strprintf("Hackers keep out! Coinbase marked as a hacked one ... coinbase nHeight = %d", coin.nHeight));
                 }
