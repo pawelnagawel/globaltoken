@@ -93,6 +93,7 @@ private:
     BanTableModel *banTableModel;
 
     QTimer *pollTimer;
+    QTimer *pollMnTimer;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
