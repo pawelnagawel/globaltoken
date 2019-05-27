@@ -659,7 +659,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "           ,...\n"
             "       ]\n"
             "     }\n"
-            "2. algo    (string, optional) The mining algorithm to use for this pow hash, %s\n"
+            "2. algo                     (string, optional) The mining algorithm to use for this pow hash. Available algorithms are: %s\n"
             "\n"
 
             "\nResult:\n"
@@ -693,7 +693,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  },\n"
             "  \"coinbasevalue\" : n,              (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in satoshis)\n"
             "  \"coinbasetxn\" : { ... },          (json object) information for coinbase transaction\n"
-            "  \"treasury\" : {\n                  (json object) treasury transaction,that must be included in this block.\n"
+            "  \"treasury\" : {                    (json object) treasury output, that must be included in the coinbase transaction of this block.\n"
             "       \"height\":       xxxxx,       (numeric) The height of this treasury details\n"
             "       \"address\":      xxxxx,       (string)  The GlobalToken treasury address of this height\n"
             "       \"scriptPubKey\": xxxxx,       (string)  The scriptpubkey of the treasury address\n"
