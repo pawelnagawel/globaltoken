@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2009-2018 The DigiByte Core developers
 // Copyright (c) 2016-2017 The Zcash developers
 // Copyright (c) 2018 The Bitcoin Private developers
 // Copyright (c) 2017-2018 The Bitcoin Gold developers
@@ -190,7 +190,7 @@ UniValue getnetworkhashps(const JSONRPCRequest& request)
     return GetNetworkHashPS(currentAlgo, !request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
 }
 
-UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript)
+UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript, uint8_t nAlgo)
 {
 	static const int nInnerLoopGlobalTokenMask = 0x1FFFF;
     static const int nInnerLoopGlobalTokenCount = 0x10000;
@@ -213,7 +213,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
     unsigned int k;
     while (nHeight < nHeightEnd)
     {
-        std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(Params()).CreateNewBlock(coinbaseScript->reserveScript, currentAlgo));
+        std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(Params()).CreateNewBlock(coinbaseScript->reserveScript, nAlgo));
         if (!pblocktemplate.get())
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
         CBlock *pblock = &pblocktemplate->block;
@@ -226,26 +226,26 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 throw std::runtime_error(GetCoinbaseFeeString(DIVIDEDPAYMENTS_GENERATE_WARNING));
             }
             
-            if(currentAlgo == ALGO_EQUIHASH && !gArgs.GetBoolArg("-enableequihash", false))
+            if(nAlgo == ALGO_EQUIHASH && !gArgs.GetBoolArg("-enableequihash", false))
             {
                 std::stringstream strStream;
-                strStream << "You cannot mine " << GetAlgoName(currentAlgo) << " right now.\n"
-                << "Because of very slow solutions on CPUs " << GetAlgoName(currentAlgo) << " is disabled.\n"
+                strStream << "You cannot mine " << GetAlgoName(nAlgo) << " right now.\n"
+                << "Because of very slow solutions on CPUs " << GetAlgoName(nAlgo) << " is disabled.\n"
                 << "You can enable it the following way:\n\n"
-                << "Add -enable" << GetAlgoName(currentAlgo) << "=1 to your globaltoken.conf or\n"
-                << "start the daemon with the -enable" << GetAlgoName(currentAlgo) << " argument.\n\n"
+                << "Add -enable" << GetAlgoName(nAlgo) << "=1 to your globaltoken.conf or\n"
+                << "start the daemon with the -enable" << GetAlgoName(nAlgo) << " argument.\n\n"
                 << "To activate Equihash, follow the described steps and restart your wallet.";
                 throw std::runtime_error(strStream.str());
             }
             
-            if(currentAlgo == ALGO_ZHASH && !gArgs.GetBoolArg("-enablezhash", false))
+            if(nAlgo == ALGO_ZHASH && !gArgs.GetBoolArg("-enablezhash", false))
             {
                 std::stringstream strStream;
-                strStream << "You cannot mine " << GetAlgoName(currentAlgo) << " right now.\n"
-                << "Because of very slow solutions on CPUs " << GetAlgoName(currentAlgo) << " is disabled.\n"
+                strStream << "You cannot mine " << GetAlgoName(nAlgo) << " right now.\n"
+                << "Because of very slow solutions on CPUs " << GetAlgoName(nAlgo) << " is disabled.\n"
                 << "You can enable it the following way:\n\n"
-                << "Add -enable" << GetAlgoName(currentAlgo) << "=1 to your globaltoken.conf or\n"
-                << "start the daemon with the -enable" << GetAlgoName(currentAlgo) << " argument.\n\n"
+                << "Add -enable" << GetAlgoName(nAlgo) << "=1 to your globaltoken.conf or\n"
+                << "start the daemon with the -enable" << GetAlgoName(nAlgo) << " argument.\n\n"
                 << "To activate Zhash, follow the described steps and restart your wallet.";
                 throw std::runtime_error(strStream.str());
             }
@@ -256,7 +256,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         
         CAuxPow::initAuxPow(*pblock);
         CPureBlockHeader& miningHeader = pblock->auxpow->parentBlock;
-        while (nMaxTries > 0 && miningHeader.nNonce < nInnerLoopCount && !CheckProofOfWork(miningHeader.GetPoWHash(currentAlgo), pblock->nBits, Params().GetConsensus())) {
+        while (nMaxTries > 0 && miningHeader.nNonce < nInnerLoopCount && !CheckProofOfWork(miningHeader.GetPoWHash(nAlgo), pblock->nBits, Params().GetConsensus())) {
             ++miningHeader.nNonce;
             --nMaxTries;
         }
@@ -274,16 +274,16 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         }
 		if(params.GetConsensus().Hardfork1.IsActivated(pblock->nTime))
 		{
-			if(currentAlgo == ALGO_EQUIHASH || currentAlgo == ALGO_ZHASH)
+			if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
 			{
                 CEquihashBlockHeader equihashblock = pblock->GetEquihashBlockHeader();
 				nInnerLoopMask = nInnerLoopEquihashMask;
 				nInnerLoopCount = nInnerLoopEquihashCount;
-                n = (currentAlgo == ALGO_EQUIHASH) ? params.EquihashN() : params.ZhashN();
-                k = (currentAlgo == ALGO_EQUIHASH) ? params.EquihashK() : params.ZhashK();
+                n = (nAlgo == ALGO_EQUIHASH) ? params.EquihashN() : params.ZhashN();
+                k = (nAlgo == ALGO_EQUIHASH) ? params.EquihashK() : params.ZhashK();
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
-                EhInitialiseState(n, k, eh_state, currentAlgo == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
+                EhInitialiseState(n, k, eh_state, nAlgo == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
 
 				// I = the block header minus nonce and solution.
 				CEquihashInput I{equihashblock};
@@ -310,7 +310,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 					std::function<bool(std::vector<unsigned char>)> validBlock =
 							[&equihashblock](std::vector<unsigned char> soln) {
 						equihashblock.nSolution = soln;
-						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), currentAlgo);
+						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), nAlgo);
 					};
 					bool found = EhBasicSolveUncancellable(n, k, curr_state, validBlock);
                     --nMaxTries;
@@ -329,7 +329,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 CDefaultBlockHeader defaultblockheader = pblock->GetDefaultBlockHeader();
 				nInnerLoopMask = nInnerLoopGlobalTokenMask;
 				nInnerLoopCount = nInnerLoopGlobalTokenCount;
-				while (nMaxTries > 0 && defaultblockheader.nNonce < nInnerLoopCount && !CheckProofOfWork(defaultblockheader.GetPoWHash(currentAlgo), defaultblockheader.nBits, Params().GetConsensus(), currentAlgo)) {
+				while (nMaxTries > 0 && defaultblockheader.nNonce < nInnerLoopCount && !CheckProofOfWork(defaultblockheader.GetPoWHash(nAlgo), defaultblockheader.nBits, Params().GetConsensus(), nAlgo)) {
 					++defaultblockheader.nNonce;
 					--nMaxTries;
 				}
@@ -379,24 +379,35 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 
 UniValue generatetoaddress(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 3)
-        throw std::runtime_error(
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+        throw std::runtime_error(strprintf(
             "generatetoaddress nblocks address (maxtries)\n"
             "\nMine blocks immediately to a specified address (before the RPC call returns)\n"
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
             "2. address      (string, required) The address to send the newly generated globaltoken to.\n"
             "3. maxtries     (numeric, optional) How many iterations to try (default = 1000000 or 50000 for scrypt, neoscrypt and yescrypt).\n"
+            "4. algo         (string, optional) Which mining algorithm to use. (%s)\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
             "\nExamples:\n"
             "\nGenerate 11 blocks to myaddress\n"
             + HelpExampleCli("generatetoaddress", "11 \"myaddress\"")
-        );
+        , GetAlgoRangeString()));
 
     int nGenerate = request.params[0].get_int();
     uint64_t nMaxTries;
-    if(currentAlgo == ALGO_NEOSCRYPT || ALGO_YESCRYPT || ALGO_SCRYPT)
+    
+    uint8_t algo = currentAlgo;
+    bool fAlgoFound = false;
+    if (!request.params[3].isNull()) {
+        algo = GetAlgoByName(request.params[3].get_str(), algo, fAlgoFound);
+    }
+    
+    if(!fAlgoFound)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[3].get_str(), GetAlgoRangeString()));
+    
+    if(algo == ALGO_NEOSCRYPT || algo == ALGO_YESCRYPT || algo == ALGO_SCRYPT)
         nMaxTries = 50000;
     else
         nMaxTries = 1000000;
@@ -417,7 +428,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     std::shared_ptr<CReserveScript> coinbaseScript = std::make_shared<CReserveScript>();
     coinbaseScript->reserveScript = GetScriptForDestination(destination);
 
-    return generateBlocks(coinbaseScript, nGenerate, nMaxTries, false);
+    return generateBlocks(coinbaseScript, nGenerate, nMaxTries, false, algo);
 }
 
 UniValue getmininginfo(const JSONRPCRequest& request)
@@ -624,8 +635,8 @@ std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
 
 UniValue getblocktemplate(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() > 1)
-        throw std::runtime_error(
+    if (request.fHelp || request.params.size() > 2)
+        throw std::runtime_error(strprintf(
             "getblocktemplate ( TemplateRequest )\n"
             "\nIf the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.\n"
             "It returns data needed to construct a block to work on.\n"
@@ -648,6 +659,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "           ,...\n"
             "       ]\n"
             "     }\n"
+            "2. algo    (string, optional) The mining algorithm to use for this pow hash, %s\n"
             "\n"
 
             "\nResult:\n"
@@ -713,7 +725,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "\nExamples:\n"
             + HelpExampleCli("getblocktemplate", "")
             + HelpExampleRpc("getblocktemplate", "")
-         );
+         , GetAlgoRangeString()));
 
     LOCK(cs_main);
 
@@ -789,6 +801,16 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             }
         }
     }
+    
+    uint8_t algo = currentAlgo;
+    bool fAlgoFound = false;
+    if (!request.params[1].isNull()) {
+        std::string strAlgo = request.params[1].get_str();
+        algo = GetAlgoByName(strAlgo, algo, fAlgoFound);
+    }
+    
+    if(!fAlgoFound)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[3].get_str(), GetAlgoRangeString()));
 
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
@@ -897,9 +919,10 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     // Cache whether the last invocation was with segwit support, to avoid returning
     // a segwit-block to a non-segwit caller.
     static bool fLastTemplateSupportsSegwit = true;
+    static int lastAlgo;
     if (pindexPrev != chainActive.Tip() ||
         (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 5) ||
-        fLastTemplateSupportsSegwit != fSupportsSegwit)
+        fLastTemplateSupportsSegwit != fSupportsSegwit || algo != lastAlgo)
     {
         // Clear pindexPrev so future calls make a new block, despite any failures from here on
         pindexPrev = nullptr;
@@ -909,11 +932,12 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         CBlockIndex* pindexPrevNew = chainActive.Tip();
         nStart = GetTime();
         fLastTemplateSupportsSegwit = fSupportsSegwit;
+        lastAlgo = algo;
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
         CScript createscript = (coinbasetxn) ? coinbasetxnscript : scriptDummy;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, currentAlgo, fSupportsSegwit);
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, algo, fSupportsSegwit);
         if (!pblocktemplate)
         {
             if(Params().GetConsensus().Hardfork1.IsActivated(pindexPrevNew->nTime))
@@ -922,14 +946,14 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             }
             else
             {
-                if(currentAlgo == ALGO_SHA256D)
+                if(algo == ALGO_SHA256D)
                 {
                     throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
                 }
                 else
                 {
                     std::stringstream strstream;
-                    strstream << "You cannot mine with Algorithm " << GetAlgoName(currentAlgo) << ", because Hardfork is not activated yet.";
+                    strstream << "You cannot mine with Algorithm " << GetAlgoName(algo) << ", because Hardfork is not activated yet.";
                     throw JSONRPCError(RPC_INVALID_PARAMS, strstream.str()); 
                 }
             }
@@ -942,7 +966,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
     // Update nTime
-    UpdateTime(pblock, consensusParams, pindexPrev, currentAlgo);
+    UpdateTime(pblock, consensusParams, pindexPrev, algo);
     pblock->nNonce = 0;
     pblock->nBigNonce = uint256();
 	pblock->nSolution.clear();

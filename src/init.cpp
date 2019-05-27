@@ -1,8 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
-// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2009-2018 The DigiByte Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2017-2018 The Globaltoken Core developers
+// Copyright (c) 2017-2019 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -549,7 +549,7 @@ std::string HelpMessage(HelpMessageMode mode)
 
     strUsage += HelpMessageGroup(_("Block creation options:"));
     strUsage += HelpMessageOpt("-acceptdividedcoinbase", strprintf(_("You must pay the founders reward and masternode reward from coinbase. If you enable this argument then you accept to pay this fee. (default: %u)"), false));
-    strUsage += HelpMessageOpt("-algo=<algo>", _("Mining algorithms: astralhash, blake2b, blake2s, equihash, globalhash, groestl, hmq1725, jeonghash, keccak, lyra2re, neoscrypt, nist5, padihash, pawelhash, quark, qubit, scrypt, sha256d, skein, skunkhash, timetravel10, x11, x13, x14, x15, x16r, x17, xevan, yescrypt, zhash"));
+    strUsage += HelpMessageOpt("-algo=<algo>", strprintf(_("Mining algorithms: %s"), GetAlgoRangeString()));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");
     strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DEFAULT_BLOCK_MAX_WEIGHT));
@@ -1452,75 +1452,14 @@ bool AppInitMain()
     }
 	
     // Algo
+    bool fAlgoFound = false;
     std::string strAlgo = gArgs.GetArg("-algo", "sha256d");
-    transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
-    if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
-        currentAlgo = ALGO_SHA256D;
-    else if (strAlgo == "scrypt")
-        currentAlgo = ALGO_SCRYPT;
-    else if (strAlgo == "neoscrypt")
-        currentAlgo = ALGO_NEOSCRYPT;
-    else if (strAlgo == "equihash")
-        currentAlgo = ALGO_EQUIHASH;
-    else if (strAlgo == "yescrypt")
-        currentAlgo = ALGO_YESCRYPT;
-    else if (strAlgo == "hmq1725")
-        currentAlgo = ALGO_HMQ1725;
-    else if (strAlgo == "xevan")
-        currentAlgo = ALGO_XEVAN;
-    else if (strAlgo == "nist5")
-        currentAlgo = ALGO_NIST5;
-    else if (strAlgo == "timetravel" || strAlgo == "timetravel10")
-        currentAlgo = ALGO_TIMETRAVEL10;
-    else if (strAlgo == "pawelhash")
-        currentAlgo = ALGO_PAWELHASH;
-    else if (strAlgo == "x11")
-        currentAlgo = ALGO_X11;
-    else if (strAlgo == "x13")
-        currentAlgo = ALGO_X13;
-    else if (strAlgo == "x14")
-        currentAlgo = ALGO_X14;
-    else if (strAlgo == "x15")
-        currentAlgo = ALGO_X15;
-    else if (strAlgo == "x16r")
-        currentAlgo = ALGO_X16R;
-    else if (strAlgo == "x17")
-        currentAlgo = ALGO_X17;
-    else if (strAlgo == "lyra" || strAlgo == "lyra2re" || strAlgo == "lyra2" || strAlgo == "lyra2rev2")
-        currentAlgo = ALGO_LYRA2RE;
-    else if (strAlgo == "blake2s")
-        currentAlgo = ALGO_BLAKE2S;
-    else if (strAlgo == "blake2b" || strAlgo == "sia")
-        currentAlgo = ALGO_BLAKE2B;
-    else if (strAlgo == "astralhash")
-        currentAlgo = ALGO_ASTRALHASH;
-    else if (strAlgo == "padihash")
-        currentAlgo = ALGO_PADIHASH;
-    else if (strAlgo == "jeonghash")
-        currentAlgo = ALGO_JEONGHASH;
-    else if (strAlgo == "keccak")
-        currentAlgo = ALGO_KECCAK;
-    else if (strAlgo == "zhash" || strAlgo == "equihash1445" || strAlgo == "equihash144.5")
-        currentAlgo = ALGO_ZHASH;
-    else if (strAlgo == "globalhash")
-        currentAlgo = ALGO_GLOBALHASH;
-    else if (strAlgo == "groestl" || strAlgo == "groestlsha2")
-        currentAlgo = ALGO_GROESTL;
-    else if (strAlgo == "skein" || strAlgo == "skeinsha2")
-        currentAlgo = ALGO_SKEIN;
-    else if (strAlgo == "q2c" || strAlgo == "qubit")
-        currentAlgo = ALGO_QUBIT;
-    else if (strAlgo == "skunk" || strAlgo == "skunkhash")
-        currentAlgo = ALGO_SKUNKHASH;
-    else if (strAlgo == "quark")
-        currentAlgo = ALGO_QUARK;
+    currentAlgo = GetAlgoByName(strAlgo, ALGO_SHA256D, fAlgoFound);
+    if(fAlgoFound)
+        LogPrintf("Mining Algorithm %s (ID : %d) selected\n", GetAlgoName(currentAlgo), currentAlgo);
     else
-    {
-        currentAlgo = ALGO_SHA256D;
         LogPrintf("Unknown mining algorithm: (%s) ~ Auto choosing (%s) instead\n", strAlgo, GetAlgoName(currentAlgo));
-    }
-
-    LogPrintf("Mining Algorithm %s (ID : %d) selected\n", GetAlgoName(currentAlgo), currentAlgo);
+        
 
     // see Step 2: parameter interactions for more information about these
     fListen = gArgs.GetBoolArg("-listen", DEFAULT_LISTEN);

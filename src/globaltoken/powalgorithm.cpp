@@ -1,9 +1,13 @@
-// Copyright (c) 2009-2017 The DigiByte Core developers
+// Copyright (c) 2009-2019 The DigiByte Core developers
 // Copyright (c) 2019 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <globaltoken/powalgorithm.h>
+
+#include <sstream>
+#include <vector>
+#include <algorithm>
 
 std::string GetAlgoName(uint8_t Algo)
 {
@@ -71,4 +75,97 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("x16r");
     }
     return std::string("unknown");       
+}
+
+uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
+{
+    transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
+    fAlgoFound = true;
+    if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
+        return ALGO_SHA256D;
+    else if (strAlgo == "scrypt")
+        return ALGO_SCRYPT;
+    else if (strAlgo == "neoscrypt")
+        return ALGO_NEOSCRYPT;
+    else if (strAlgo == "equihash")
+        return ALGO_EQUIHASH;
+    else if (strAlgo == "yescrypt")
+        return ALGO_YESCRYPT;
+    else if (strAlgo == "hmq1725")
+        return ALGO_HMQ1725;
+    else if (strAlgo == "xevan")
+        return ALGO_XEVAN;
+    else if (strAlgo == "nist5")
+        return ALGO_NIST5;
+    else if (strAlgo == "timetravel" || strAlgo == "timetravel10")
+        return ALGO_TIMETRAVEL10;
+    else if (strAlgo == "pawelhash")
+        return ALGO_PAWELHASH;
+    else if (strAlgo == "x11")
+        return ALGO_X11;
+    else if (strAlgo == "x13")
+        return ALGO_X13;
+    else if (strAlgo == "x14")
+        return ALGO_X14;
+    else if (strAlgo == "x15")
+        return ALGO_X15;
+    else if (strAlgo == "x16r")
+        return ALGO_X16R;
+    else if (strAlgo == "x17")
+        return ALGO_X17;
+    else if (strAlgo == "lyra" || strAlgo == "lyra2re" || strAlgo == "lyra2" || strAlgo == "lyra2rev2")
+        return ALGO_LYRA2RE;
+    else if (strAlgo == "blake2s")
+        return ALGO_BLAKE2S;
+    else if (strAlgo == "blake2b" || strAlgo == "sia")
+        return ALGO_BLAKE2B;
+    else if (strAlgo == "astralhash")
+        return ALGO_ASTRALHASH;
+    else if (strAlgo == "padihash")
+        return ALGO_PADIHASH;
+    else if (strAlgo == "jeonghash")
+        return ALGO_JEONGHASH;
+    else if (strAlgo == "keccak")
+        return ALGO_KECCAK;
+    else if (strAlgo == "zhash" || strAlgo == "equihash1445" || strAlgo == "equihash144.5")
+        return ALGO_ZHASH;
+    else if (strAlgo == "globalhash")
+        return ALGO_GLOBALHASH;
+    else if (strAlgo == "groestl" || strAlgo == "groestlsha2")
+        return ALGO_GROESTL;
+    else if (strAlgo == "skein" || strAlgo == "skeinsha2")
+        return ALGO_SKEIN;
+    else if (strAlgo == "q2c" || strAlgo == "qubit")
+        return ALGO_QUBIT;
+    else if (strAlgo == "skunk" || strAlgo == "skunkhash")
+        return ALGO_SKUNKHASH;
+    else if (strAlgo == "quark")
+        return ALGO_QUARK;
+    else
+    {
+        fAlgoFound = false;
+        return fallback;
+    }
+}
+
+std::string GetAlgoRangeString()
+{
+    std::vector <std::string> vAlgoStrings;
+    std::stringstream strStream;
+    for(uint8_t i = 0; i < MAX_ALGOS; i++)
+    {
+        vAlgoStrings.push_back(GetAlgoName(i));
+    }
+    // Sort all algos in alphabetical order
+    std::sort(vAlgoStrings.begin(), vAlgoStrings.end());
+    size_t nWhileIndex = 0;
+    while(nWhileIndex < vAlgoStrings.size())
+    {
+        if(nWhileIndex == vAlgoStrings.size()-1)
+            strStream << vAlgoStrings[i];
+        else
+            strStream << vAlgoStrings[i] << ", ";
+        nWhileIndex++;
+    }
+    return strStream.str();
 }

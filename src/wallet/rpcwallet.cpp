@@ -3625,24 +3625,35 @@ UniValue generate(const JSONRPCRequest& request)
         return NullUniValue;
     }
 
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2) {
-        throw std::runtime_error(
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 3) {
+        throw std::runtime_error(strprintf(
             "generate nblocks ( maxtries )\n"
             "\nMine up to nblocks blocks immediately (before the RPC call returns) to an address in the wallet.\n"
             "\nArguments:\n"
             "1. nblocks      (numeric, required) How many blocks are generated immediately.\n"
             "2. maxtries     (numeric, optional) How many iterations to try (default = 1000000 or 50000 for scrypt, neoscrypt and yescrypt).\n"
+            "3. algo         (string, optional) Which mining algorithm to use. (%s)\n"
             "\nResult:\n"
             "[ blockhashes ]     (array) hashes of blocks generated\n"
             "\nExamples:\n"
             "\nGenerate 11 blocks\n"
             + HelpExampleCli("generate", "11")
-        );
+        , GetAlgoRangeString()));
     }
 
     int num_generate = request.params[0].get_int();
+    
+    uint8_t algo = currentAlgo;
+    bool fAlgoFound = false;
+    if (!request.params[2].isNull()) {
+        algo = GetAlgoByName(request.params[2].get_str(), algo, fAlgoFound);
+    }
+    
+    if(!fAlgoFound)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[3].get_str(), GetAlgoRangeString()));
+    
     uint64_t max_tries;
-    if(currentAlgo == ALGO_NEOSCRYPT || ALGO_YESCRYPT || ALGO_SCRYPT)
+    if(algo == ALGO_NEOSCRYPT || algo == ALGO_YESCRYPT || algo == ALGO_SCRYPT)
         max_tries = 50000;
     else
         max_tries = 1000000;
@@ -3663,7 +3674,7 @@ UniValue generate(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No coinbase script available");
     }
 
-    return generateBlocks(coinbase_script, num_generate, max_tries, true);
+    return generateBlocks(coinbase_script, num_generate, max_tries, true, algo);
 }
 
 UniValue rescanblockchain(const JSONRPCRequest& request)

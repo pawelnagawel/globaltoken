@@ -1,4 +1,5 @@
 // Copyright (c) 2019 The Globaltoken Core developers
+// Copyright (c) 2014-2019 The DigiByte Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -80,6 +81,8 @@ enum {
 const int NUM_ALGOS = 30;
 
 std::string GetAlgoName(uint8_t Algo);
+uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound);
+std::string GetAlgoRangeString();
 
 class CPOWAlgoProperties
 {
