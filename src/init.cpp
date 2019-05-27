@@ -549,7 +549,7 @@ std::string HelpMessage(HelpMessageMode mode)
 
     strUsage += HelpMessageGroup(_("Block creation options:"));
     strUsage += HelpMessageOpt("-acceptdividedcoinbase", strprintf(_("You must pay the founders reward and masternode reward from coinbase. If you enable this argument then you accept to pay this fee. (default: %u)"), false));
-    strUsage += HelpMessageOpt("-algo=<algo>", strprintf(_("Mining algorithms: %s"), GetAlgoRangeString()));
+    strUsage += HelpMessageOpt("-algo=<algo>", strprintf(_("Standard mining proof of work mining algorithm to use for mining. Available algorithms: %s"), GetAlgoRangeString()));
     if (showDebug)
         strUsage += HelpMessageOpt("-blockmaxsize=<n>", "Set maximum BIP141 block weight to this * 4. Deprecated, use blockmaxweight");
     strUsage += HelpMessageOpt("-blockmaxweight=<n>", strprintf(_("Set maximum BIP141 block weight (default: %d)"), DEFAULT_BLOCK_MAX_WEIGHT));

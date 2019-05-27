@@ -3644,13 +3644,13 @@ UniValue generate(const JSONRPCRequest& request)
     int num_generate = request.params[0].get_int();
     
     uint8_t algo = currentAlgo;
-    bool fAlgoFound = false;
+    bool fAlgoFound = true;
     if (!request.params[2].isNull()) {
         algo = GetAlgoByName(request.params[2].get_str(), algo, fAlgoFound);
     }
     
     if(!fAlgoFound)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[3].get_str(), GetAlgoRangeString()));
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[2].get_str(), GetAlgoRangeString()));
     
     uint64_t max_tries;
     if(algo == ALGO_NEOSCRYPT || algo == ALGO_YESCRYPT || algo == ALGO_SCRYPT)

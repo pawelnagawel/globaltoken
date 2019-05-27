@@ -308,7 +308,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
 
 					// (x_1, x_2, ...) = A(I, V, n, k)
 					std::function<bool(std::vector<unsigned char>)> validBlock =
-							[&equihashblock](std::vector<unsigned char> soln) {
+							[&equihashblock, nAlgo](std::vector<unsigned char> soln) {
 						equihashblock.nSolution = soln;
 						return CheckProofOfWork(equihashblock.GetHash(), equihashblock.nBits, Params().GetConsensus(), nAlgo);
 					};
@@ -399,7 +399,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     uint64_t nMaxTries;
     
     uint8_t algo = currentAlgo;
-    bool fAlgoFound = false;
+    bool fAlgoFound = true;
     if (!request.params[3].isNull()) {
         algo = GetAlgoByName(request.params[3].get_str(), algo, fAlgoFound);
     }
@@ -803,14 +803,14 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     }
     
     uint8_t algo = currentAlgo;
-    bool fAlgoFound = false;
+    bool fAlgoFound = true;
     if (!request.params[1].isNull()) {
         std::string strAlgo = request.params[1].get_str();
         algo = GetAlgoByName(strAlgo, algo, fAlgoFound);
     }
     
     if(!fAlgoFound)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[3].get_str(), GetAlgoRangeString()));
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[1].get_str(), GetAlgoRangeString()));
 
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");

@@ -152,7 +152,7 @@ std::string GetAlgoRangeString()
 {
     std::vector <std::string> vAlgoStrings;
     std::stringstream strStream;
-    for(uint8_t i = 0; i < MAX_ALGOS; i++)
+    for(uint8_t i = 0; i < NUM_ALGOS; i++)
     {
         vAlgoStrings.push_back(GetAlgoName(i));
     }
@@ -162,9 +162,9 @@ std::string GetAlgoRangeString()
     while(nWhileIndex < vAlgoStrings.size())
     {
         if(nWhileIndex == vAlgoStrings.size()-1)
-            strStream << vAlgoStrings[i];
+            strStream << vAlgoStrings[nWhileIndex];
         else
-            strStream << vAlgoStrings[i] << ", ";
+            strStream << vAlgoStrings[nWhileIndex] << ", ";
         nWhileIndex++;
     }
     return strStream.str();
