@@ -72,7 +72,9 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	// Genesis block
 	if (pindexLast == nullptr)
 		return npowWorkLimit;
-		
+
+    // We removed the special testnet rule, because Multishield will automatically go to npowWorkLimit if there are no blocks found with this algo.
+    // But regtest, should not retarget and get always the same genesis diff.
 	if (params.fPowNoRetargeting)
 	{
 		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
@@ -83,34 +85,6 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		else
 		{
 		    return pindexLastAlgo->nBits;	
-		}
-	}
-
-	if (params.fPowAllowMinDifficultyBlocks)
-	{
-        const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
-		if(pindexLastAlgo == nullptr)
-		{
-		    return npowWorkLimit;
-		}
-        
-		// Special difficulty rule for testnet:
-		// If the new block's timestamp is more than NUM_ALGOS * 1 minutes
-		// then allow mining of a min-difficulty block.
-		if (pblock->nTime > pindexLastAlgo->nTime + params.nTargetSpacing * NUM_ALGOS)
-			return npowWorkLimit;
-		else
-		{
-			// Return the last non-special-min-difficulty-rules-block
-			const CBlockIndex* pindex = pindexLastAlgo;
-            
-			while (pindex != nullptr && pindex->pprev && pindex->nHeight % params.nInterval != 0 && pindex->nBits == npowWorkLimit)
-				pindex = GetLastBlockIndexForAlgo(pindex->pprev, algo, params);
-            
-            if (pindex == nullptr)
-                return npowWorkLimit;
-            else
-                return pindex->nBits;
 		}
 	}
 
