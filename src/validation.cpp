@@ -3181,6 +3181,16 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     bool checkresult;
     uint8_t nAlgo = block.GetAlgo();
     
+    if(consensusParams.Hardfork2.IsActivated(block.nTime))
+    {
+        const int64_t nHeaderSize = GetBlockHeaderSize(block);
+        if(block.IsAuxpow())
+        {
+            if(nHeaderSize > MAX_AUXPOW_BLOCK_HEADER_SIZE)
+                return state.DoS(100, false, REJECT_INVALID, "header-big-auxpow", false, strprintf("Block header is too large! Maximum allowed size for auxpow: %"PRId64", got header size of %"PRId64, MAX_AUXPOW_BLOCK_HEADER_SIZE, nHeaderSize));
+        }
+    }
+    
     if (fCheckPOW)
         checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
     

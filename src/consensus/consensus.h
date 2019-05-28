@@ -18,6 +18,8 @@ static const unsigned int MAX_BLOCK_WEIGHT = 4000000 * 10;
 static const int64_t MAX_BLOCK_SIGOPS_COST = 80000 * 10;
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
 static const int COINBASE_MATURITY = 100;
+/** The total max allowed header size of an block header, that includes auxpow. */
+static const unsigned int MAX_AUXPOW_BLOCK_HEADER_SIZE = 8192; // An auxpow block should not have a header bigger then this size of bytes.
 
 static const int WITNESS_SCALE_FACTOR = 4;
 

@@ -185,7 +185,7 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
 	uint8_t algo = blockindex->GetAlgo();
     CBlockHeader header = blockindex->GetBlockHeader(Params().GetConsensus());
     bool isauxpow = header.auxpow && (header.auxpow != nullptr);
-	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo, Params().GetConsensus());
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
@@ -232,7 +232,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     UniValue result(UniValue::VOBJ);
 	uint8_t algo = block.GetAlgo();
     bool isauxpow = block.auxpow && (block.auxpow != nullptr);
-	CBlockIndex *pnext = chainActive.Next(blockindex);
+	const CBlockIndex *pnext = chainActive.Next(blockindex);
 	const CBlockIndex* plastAlgo = GetLastBlockIndexForAlgo(blockindex->pprev, algo, Params().GetConsensus());
 	const CBlockIndex* pnextAlgo = GetNextBlockIndexForAlgo(pnext, algo);
     result.pushKV("hash", blockindex->GetBlockHash().GetHex());
