@@ -143,18 +143,19 @@ public:
             assert(consensus.aPOWAlgos[i].GetAlgoID() == i);
         }
         
-        consensus.nTargetSpacing = 60; // 1 minute
-        consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
-        consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
+        consensus.nPowTargetSpacingMultiAlgoV1 = 60 * NUM_ALGOS_OLD; // (NUM_ALGOS old = 30) * 60
+        consensus.nPowTargetSpacingMultiAlgoV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
         consensus.nAveragingInterval = 5; // 5 blocks
-        consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
+        consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingMultiAlgoV1;
+        consensus.nAveragingTargetTimespanV2 = consensus.nAveragingInterval * consensus.nPowTargetSpacingMultiAlgoV2;
         consensus.nMaxAdjustDown = 16; // 16% adjustment down
         consensus.nMaxAdjustUp = 8; // 8% adjustment up
         consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
         consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
+        consensus.nMinActualTimespanV2 = consensus.nAveragingTargetTimespanV2 * (100 - consensus.nMaxAdjustUp) / 100;
+        consensus.nMaxActualTimespanV2 = consensus.nAveragingTargetTimespanV2 * (100 + consensus.nMaxAdjustDown) / 100;
         consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -619,18 +620,19 @@ public:
             assert(consensus.aPOWAlgos[i].GetAlgoID() == i);
         }
         
-        consensus.nTargetSpacing = 60; // 1 minute
-        consensus.nTargetTimespan =  60; // 5 minutes
         consensus.nPowTargetTimespan = 10 * 60; // ten minutes
         consensus.nPowTargetSpacing = 60;
-        consensus.nPowTargetSpacingV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
-        consensus.nInterval = consensus.nTargetTimespan / consensus.nTargetSpacing;
+        consensus.nPowTargetSpacingMultiAlgoV1 = 60 * NUM_ALGOS_OLD; // (NUM_ALGOS old = 30) * 60
+        consensus.nPowTargetSpacingMultiAlgoV2 = 60 * NUM_ALGOS; // NUM_ALGOS * 60
         consensus.nAveragingInterval = 5; // 5 blocks
-        consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingV2;
+        consensus.nAveragingTargetTimespan = consensus.nAveragingInterval * consensus.nPowTargetSpacingMultiAlgoV1;
+        consensus.nAveragingTargetTimespanV2 = consensus.nAveragingInterval * consensus.nPowTargetSpacingMultiAlgoV2;
         consensus.nMaxAdjustDown = 16; // 16% adjustment down
         consensus.nMaxAdjustUp = 8; // 8% adjustment up
         consensus.nMinActualTimespan = consensus.nAveragingTargetTimespan * (100 - consensus.nMaxAdjustUp) / 100;
         consensus.nMaxActualTimespan = consensus.nAveragingTargetTimespan * (100 + consensus.nMaxAdjustDown) / 100;
+        consensus.nMinActualTimespanV2 = consensus.nAveragingTargetTimespanV2 * (100 - consensus.nMaxAdjustUp) / 100;
+        consensus.nMaxActualTimespanV2 = consensus.nAveragingTargetTimespanV2 * (100 + consensus.nMaxAdjustDown) / 100;
         consensus.nLocalTargetAdjustment = 4; //difficulty adjustment per algo
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;

@@ -78,7 +78,8 @@ enum {
     BLOCK_VERSION_X16R              = (30 << 9),
 };
     
-const int NUM_ALGOS = 30;
+const int NUM_ALGOS_OLD = 30;
+const int NUM_ALGOS = 60;
 
 std::string GetAlgoName(uint8_t Algo);
 uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound);

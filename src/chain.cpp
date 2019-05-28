@@ -227,7 +227,7 @@ arith_uint256 GetPrevWorkForAlgoWithDecay(const CBlockIndex& block, int algo, co
     return arith_uint256(0);
 }
 
-arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block, const Consensus::Params& params)
+arith_uint256 GetGeometricMeanPrevWorkHF2(const CBlockIndex& block, const Consensus::Params& params)
 {
     //arith_uint256 bnRes;
     arith_uint256 nBlockWork = GetBlockProofBase(block);
@@ -254,6 +254,33 @@ arith_uint256 GetGeometricMeanPrevWork(const CBlockIndex& block, const Consensus
     return UintToArith256(bnRes.getuint256());
 }
 
+arith_uint256 GetGeometricMeanPrevWorkHF1(const CBlockIndex& block, const Consensus::Params& params)
+{
+    //arith_uint256 bnRes;
+    arith_uint256 nBlockWork = GetBlockProofBase(block);
+    CBigNum bnBlockWork = CBigNum(ArithToUint256(nBlockWork));
+    int nAlgo = block.GetAlgo();
+    
+    for (int algo = 0; algo < NUM_ALGOS_OLD; algo++)
+    {
+        if (algo != nAlgo)
+        {
+            arith_uint256 nBlockWorkAlt = GetPrevWorkForAlgoWithDecay(block, algo, params);
+            CBigNum bnBlockWorkAlt = CBigNum(ArithToUint256(nBlockWorkAlt));
+            if (bnBlockWorkAlt != 0)
+                bnBlockWork *= bnBlockWorkAlt;
+        }
+    }
+    // Compute the geometric mean
+    CBigNum bnRes = bnBlockWork.nthRoot(NUM_ALGOS_OLD);
+    
+    // Scale to roughly match the old work calculation
+    bnRes <<= 8;
+    
+    //return bnRes;
+    return UintToArith256(bnRes.getuint256());
+}
+
 arith_uint256 GetBlockProof(const CBlockIndex& block)
 {
 	return GetBlockProof(block, Params().GetConsensus());
@@ -261,9 +288,13 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
 
 arith_uint256 GetBlockProof(const CBlockIndex& block, const Consensus::Params& params)
 {
-    if (params.Hardfork1.IsActivated(block.nTime))
+    if (params.Hardfork2.IsActivated(block.nTime))
     {
-        return GetGeometricMeanPrevWork(block, params);
+        return GetGeometricMeanPrevWorkHF2(block, params);
+    }
+    else if (params.Hardfork1.IsActivated(block.nTime))
+    {
+        return GetGeometricMeanPrevWorkHF1(block, params);
     }
     else
     {

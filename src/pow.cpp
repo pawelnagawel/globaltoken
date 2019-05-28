@@ -23,7 +23,9 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
 {
-    if(params.Hardfork1.IsActivated(pblock->nTime))
+    if(params.Hardfork2.IsActivated(pblock->nTime))
+       return GetNextWorkRequiredV3(pindexLast, pblock, params, algo);
+    else if(params.Hardfork1.IsActivated(pblock->nTime))
        return GetNextWorkRequiredV2(pindexLast, pblock, params, algo);
     else
        return GetNextWorkRequiredV1(pindexLast, pblock, params, algo);
@@ -134,6 +136,87 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 		for (int i = 0; i < -nAdjustments; i++)
 		{
 			bnNew *= (100 + params.nLocalTargetAdjustment);
+			bnNew /= 100;
+		}
+	}
+
+	if (bnNew > params.aPOWAlgos[algo].GetArithPowLimit())
+	{
+		bnNew = params.aPOWAlgos[algo].GetArithPowLimit();
+	}
+
+	return bnNew.GetCompact();
+}
+
+unsigned int GetNextWorkRequiredV3(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, uint8_t algo)
+{
+	unsigned int npowWorkLimit = params.aPOWAlgos[algo].GetArithPowLimit().GetCompact();
+
+	// Genesis block
+	if (pindexLast == nullptr)
+		return npowWorkLimit;
+
+    // We removed the special testnet rule, because Multishield will automatically go to npowWorkLimit if there are no blocks found with this algo.
+    // But regtest, should not retarget and get always the same genesis diff.
+	if (params.fPowNoRetargeting)
+	{
+		const CBlockIndex* pindexLastAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
+		if(pindexLastAlgo == nullptr)
+		{
+		    return npowWorkLimit;
+		}
+		else
+		{
+		    return pindexLastAlgo->nBits;	
+		}
+	}
+
+	// find first block in averaging interval
+	// Go back by what we want to be nAveragingInterval blocks per algo
+	const CBlockIndex* pindexFirst = pindexLast;
+	for (int i = 0; pindexFirst && i < NUM_ALGOS*params.nAveragingInterval; i++) // unchanged, nAveragingInterval is still the same
+	{
+		pindexFirst = pindexFirst->pprev;
+	}
+
+	const CBlockIndex* pindexPrevAlgo = GetLastBlockIndexForAlgo(pindexLast, algo, params);
+	if (pindexPrevAlgo == nullptr || pindexFirst == nullptr)
+	{
+		return npowWorkLimit;
+	}
+
+	// Limit adjustment step
+	// Use medians to prevent time-warp attacks
+	int64_t nActualTimespan = pindexLast-> GetMedianTimePast() - pindexFirst->GetMedianTimePast();
+	nActualTimespan = params.nAveragingTargetTimespanV2 + (nActualTimespan - params.nAveragingTargetTimespanV2)/4;
+
+	if (nActualTimespan < params.nMinActualTimespanV2)
+		nActualTimespan = params.nMinActualTimespanV2;
+	if (nActualTimespan > params.nMaxActualTimespanV2)
+		nActualTimespan = params.nMaxActualTimespanV2;
+
+	//Global retarget
+	arith_uint256 bnNew;
+	bnNew.SetCompact(pindexPrevAlgo->nBits);
+
+	bnNew *= nActualTimespan;
+	bnNew /= params.nAveragingTargetTimespanV2;
+
+	//Per-algo retarget
+	int nAdjustments = pindexPrevAlgo->nHeight + NUM_ALGOS - 1 - pindexLast->nHeight;
+	if (nAdjustments > 0)
+	{
+		for (int i = 0; i < nAdjustments; i++)
+		{
+			bnNew *= 100;
+			bnNew /= (100 + params.nLocalTargetAdjustment); // unchanged
+		}
+	}
+	else if (nAdjustments < 0)//make it easier
+	{
+		for (int i = 0; i < -nAdjustments; i++)
+		{
+			bnNew *= (100 + params.nLocalTargetAdjustment); // unchanged
 			bnNew /= 100;
 		}
 	}
