@@ -139,6 +139,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2REV3]       = CPOWAlgoProperties(ALGO_LYRA2REV3, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R16V2]  = CPOWAlgoProperties(ALGO_YESCRYPT_R16V2, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -619,6 +620,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2REV3]       = CPOWAlgoProperties(ALGO_LYRA2REV3, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R16V2]  = CPOWAlgoProperties(ALGO_YESCRYPT_R16V2, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -1077,6 +1079,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2REV3]       = CPOWAlgoProperties(ALGO_LYRA2REV3, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R16V2]  = CPOWAlgoProperties(ALGO_YESCRYPT_R16V2, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
