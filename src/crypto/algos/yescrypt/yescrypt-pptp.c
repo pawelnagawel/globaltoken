@@ -18,7 +18,6 @@
  * SUCH DAMAGE.
  */
 #include "yescrypt.h"
-#include "yescrypt-best_c.h"
 
 #define YESCRYPT_N 4096
 #define YESCRYPT_R 16
