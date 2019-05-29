@@ -316,8 +316,9 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
 
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params, bool &ehsolutionvalid)
 {
-    bool hardfork = params.Hardfork1.IsActivated(block.nTime);
-    uint8_t nAlgo = block.GetAlgo();
+    bool hardfork   = params.Hardfork1.IsActivated(block.nTime);
+    bool hardfork2  = params.Hardfork2.IsActivated(block.nTime);
+    uint8_t nAlgo   = block.GetAlgo();
     ehsolutionvalid = true;
     
     /* Except for legacy blocks with full version 1, ensure that
@@ -330,6 +331,9 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
                      " (got %d, expected %d, full nVersion %d)",
                      __func__, block.GetChainId(),
                      params.nAuxpowChainId, block.nVersion);
+                     
+    if(!hardfork2 && !IsAlgoAllowedBeforeHF2(nAlgo))
+        return error("%s : Algo %s not allowed because Hardfork 2 is not activated.", __func__, GetAlgoName(nAlgo));
 
     /* If there is no auxpow, just check the block hash.  */
     if (!block.auxpow)
@@ -468,6 +472,8 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, uint8_t a
 		if (!pindex)
 			return nullptr;
         if (!params.Hardfork1.IsActivated(pindex->nTime) && algo != ALGO_SHA256D)
+            return nullptr;
+        if (!params.Hardfork2.IsActivated(pindex->nTime) && !IsAlgoAllowedBeforeHF2(algo))
             return nullptr;
 		if (pindex->GetAlgo() == algo)
 			return pindex;

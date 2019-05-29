@@ -905,7 +905,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         }
         else
         {
-            LogPrintf("%s: WARNING: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
+            LogPrint(BCLog::POW, "%s: WARNING: Trying to use coinbasetxn, but no -coinbasetxnaddress is provided. coinbasetxn will be skipped.\n", __func__);
             coinbasetxn = false;
         }
 
@@ -940,20 +940,20 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
         pblocktemplate = BlockAssembler(Params()).CreateNewBlock(createscript, algo, fSupportsSegwit);
         if (!pblocktemplate)
         {
-            if(Params().GetConsensus().Hardfork1.IsActivated(pindexPrevNew->nTime))
+            if(Params().GetConsensus().Hardfork2.IsActivated(pindexPrevNew->nTime))
             {
                 throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
             }
             else
             {
-                if(algo == ALGO_SHA256D)
+                if(IsAlgoAllowedBeforeHF2(algo))
                 {
                     throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
                 }
                 else
                 {
                     std::stringstream strstream;
-                    strstream << "You cannot mine with Algorithm " << GetAlgoName(algo) << ", because Hardfork is not activated yet.";
+                    strstream << "You cannot mine with Algorithm " << GetAlgoName(algo) << ", because Hardfork 2 is not activated yet.";
                     throw JSONRPCError(RPC_INVALID_PARAMS, strstream.str()); 
                 }
             }
