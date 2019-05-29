@@ -182,6 +182,9 @@ public:
             case ALGO_LYRA2REV3:
                 nVersion |= BLOCK_VERSION_LYRA2REV3;
                 break;
+            case ALGO_YESCRYPT_R16V2:
+                nVersion |= BLOCK_VERSION_YESCRYPT_R16V2;
+                break;
             default:
                 break;
         }

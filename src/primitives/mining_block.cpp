@@ -7,7 +7,8 @@
 // Copyright (c) 2009-2016 The Litecoin Core developers
 // Copyright (c) 2014-2017 The Mun Core developers
 // Copyright (c) 2017 The Raven Core developers
-// Copyright (c) 2018 The GlobalToken Core developers
+// Copyright (c) 2018-2019 The GlobalToken Core developers
+// Copyright (c) 2018-2018 The Pptp Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -168,6 +169,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             uint256 thash;
             lyra2re3_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
+        case ALGO_YESCRYPT_R16V2:
+        {
+            uint256 thash;
+            yescrypt_pptp_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
     }

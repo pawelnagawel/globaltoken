@@ -128,6 +128,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_X16R;
         case BLOCK_VERSION_LYRA2REV3:
             return ALGO_LYRA2REV3;
+        case BLOCK_VERSION_YESCRYPT_R16V2:
+            return ALGO_YESCRYPT_R16V2;
     }
     return ALGO_SHA256D;
 }

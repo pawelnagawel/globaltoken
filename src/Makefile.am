@@ -376,9 +376,11 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/equihash/equihash.cpp \
   crypto/algos/equihash/equihash.h \
   crypto/algos/equihash/equihash.tcc \
+  crypto/algos/yescrypt/sha256_c_pptp.h \
   crypto/algos/yescrypt/sha256_Y.c \
   crypto/algos/yescrypt/sha256_Y.h \
   crypto/algos/yescrypt/sysendian.h \
+  crypto/algos/yescrypt/yescrypt-pptp.c \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c
