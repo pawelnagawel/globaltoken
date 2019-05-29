@@ -96,8 +96,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_X15;
         case BLOCK_VERSION_X17:
             return ALGO_X17;
-        case BLOCK_VERSION_LYRA2RE:
-            return ALGO_LYRA2RE;
+        case BLOCK_VERSION_LYRA2REV2:
+            return ALGO_LYRA2REV2;
         case BLOCK_VERSION_BLAKE2S:
             return ALGO_BLAKE2S;
         case BLOCK_VERSION_BLAKE2B:
@@ -126,6 +126,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_QUARK;
         case BLOCK_VERSION_X16R:
             return ALGO_X16R;
+        case BLOCK_VERSION_LYRA2REV3:
+            return ALGO_LYRA2REV3;
     }
     return ALGO_SHA256D;
 }

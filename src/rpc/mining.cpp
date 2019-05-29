@@ -442,8 +442,16 @@ UniValue getmininginfo(const JSONRPCRequest& request)
             "  \"blocks\": nnn,             (numeric) The current block\n"
             "  \"currentblockweight\": nnn, (numeric) The last block weight\n"
             "  \"currentblocktx\": nnn,     (numeric) The last block transaction\n"
-            "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
-            "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
+            "  \"difficulty\": xxx.xxxxx    (numeric) The current local algo difficulty\n"
+            "  \"networkhashps\": nnn,      (numeric) The local algo network hashes per second\n"
+            "  \"algodetails\": json-obj    (json-object) Returns difficulty & hashrate for all algos\n"
+            "  {\n"
+            "     \"algoname\": json-obj,   (json-object) The details of this algo\n"
+            "     {\n"
+            "        \"difficulty\": xxx.xxxxx    (numeric) The algo difficulty\n"
+            "        \"networkhashps\": nnn,      (numeric) The algo network hashes per second\n"
+            "     },\n"
+            "  }\n"
             "  \"pooledtx\": n              (numeric) The size of the mempool\n"
             "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
             "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
@@ -457,43 +465,22 @@ UniValue getmininginfo(const JSONRPCRequest& request)
     LOCK(cs_main);
 
     UniValue obj(UniValue::VOBJ);
-    obj.pushKV("blocks",           (int)chainActive.Height());
+    UniValue algodetails(UniValue::VOBJ);
+    obj.pushKV("blocks",             (int)chainActive.Height());
     obj.pushKV("currentblockweight", (uint64_t)nLastBlockWeight);
-    obj.pushKV("currentblocktx",   (uint64_t)nLastBlockTx);
-	obj.pushKV("algoid",        currentAlgo);
-	obj.pushKV("algo",           GetAlgoName(currentAlgo));
-    obj.pushKV("difficulty",       (double)GetDifficulty(NULL, currentAlgo));
-	obj.pushKV("difficulty_SHA256D",       (double)GetDifficulty(NULL, ALGO_SHA256D));
-	obj.pushKV("difficulty_SCRYPT",       (double)GetDifficulty(NULL, ALGO_SCRYPT));
-	obj.pushKV("difficulty_X11",       (double)GetDifficulty(NULL, ALGO_X11));
-	obj.pushKV("difficulty_NEOSCRYPT",       (double)GetDifficulty(NULL, ALGO_NEOSCRYPT));
-	obj.pushKV("difficulty_EQUIHASH",       (double)GetDifficulty(NULL, ALGO_EQUIHASH));
-	obj.pushKV("difficulty_YESCRYPT",       (double)GetDifficulty(NULL, ALGO_YESCRYPT));
-	obj.pushKV("difficulty_HMQ1725",       (double)GetDifficulty(NULL, ALGO_HMQ1725));
-	obj.pushKV("difficulty_XEVAN",       (double)GetDifficulty(NULL, ALGO_XEVAN));
-    obj.pushKV("difficulty_NIST5",       (double)GetDifficulty(NULL, ALGO_NIST5));
-    obj.pushKV("difficulty_TIMETRAVEL10", (double)GetDifficulty(NULL, ALGO_TIMETRAVEL10));
-    obj.pushKV("difficulty_PAWELHASH", (double)GetDifficulty(NULL, ALGO_PAWELHASH));
-    obj.pushKV("difficulty_X13", (double)GetDifficulty(NULL, ALGO_X13));
-    obj.pushKV("difficulty_X14", (double)GetDifficulty(NULL, ALGO_X14));
-    obj.pushKV("difficulty_X15", (double)GetDifficulty(NULL, ALGO_X15));
-    obj.pushKV("difficulty_X17", (double)GetDifficulty(NULL, ALGO_X17));
-    obj.pushKV("difficulty_LYRA2RE", (double)GetDifficulty(NULL, ALGO_LYRA2RE));
-    obj.pushKV("difficulty_BLAKE2S", (double)GetDifficulty(NULL, ALGO_BLAKE2S));
-    obj.pushKV("difficulty_BLAKE2B", (double)GetDifficulty(NULL, ALGO_BLAKE2B));
-    obj.pushKV("difficulty_ASTRALHASH", (double)GetDifficulty(NULL, ALGO_ASTRALHASH));
-    obj.pushKV("difficulty_PADIHASH", (double)GetDifficulty(NULL, ALGO_PADIHASH));
-    obj.pushKV("difficulty_JEONGHASH", (double)GetDifficulty(NULL, ALGO_JEONGHASH));
-    obj.pushKV("difficulty_KECCAK", (double)GetDifficulty(NULL, ALGO_KECCAK));
-    obj.pushKV("difficulty_ZHASH", (double)GetDifficulty(NULL, ALGO_ZHASH));
-    obj.pushKV("difficulty_GLOBALHASH", (double)GetDifficulty(NULL, ALGO_GLOBALHASH));
-    obj.pushKV("difficulty_SKEIN", (double)GetDifficulty(NULL, ALGO_SKEIN));
-    obj.pushKV("difficulty_GROESTL", (double)GetDifficulty(NULL, ALGO_GROESTL));
-    obj.pushKV("difficulty_QUBIT", (double)GetDifficulty(NULL, ALGO_QUBIT));
-    obj.pushKV("difficulty_SKUNKHASH", (double)GetDifficulty(NULL, ALGO_SKUNKHASH));
-    obj.pushKV("difficulty_QUARK", (double)GetDifficulty(NULL, ALGO_QUARK));
-    obj.pushKV("difficulty_X16R", (double)GetDifficulty(NULL, ALGO_X16R));
-    obj.pushKV("networkhashps",    getnetworkhashps(request));
+    obj.pushKV("currentblocktx",     (uint64_t)nLastBlockTx);
+	obj.pushKV("algoid",             currentAlgo);
+	obj.pushKV("algo",               GetAlgoName(currentAlgo));
+    obj.pushKV("difficulty",         (double)GetDifficulty(NULL, currentAlgo));
+    obj.pushKV("networkhashps",      getnetworkhashps(request));
+    for(uint8_t i = 0; i < NUM_ALGOS; i++)
+    {
+        UniValue currentAlgo(UniValue::VOBJ);
+        currentAlgo.pushKV("difficulty",       (double)GetDifficulty(NULL, i));
+        currentAlgo.pushKV("nethashrate",      GetNetworkHashPS(i, 120, -1));
+        algodetails.pushKV(GetAlgoName(i), currentAlgo);
+    }
+	obj.pushKV("algodetails", algodetails);
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));

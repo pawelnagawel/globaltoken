@@ -27,7 +27,7 @@ enum : uint8_t {
     ALGO_X14          = 12,
     ALGO_X15          = 13,
     ALGO_X17          = 14,
-    ALGO_LYRA2RE      = 15,
+    ALGO_LYRA2REV2    = 15,
     ALGO_BLAKE2S      = 16,
     ALGO_BLAKE2B      = 17,
     ALGO_ASTRALHASH   = 18,
@@ -42,10 +42,11 @@ enum : uint8_t {
     ALGO_SKUNKHASH    = 27,
     ALGO_QUARK        = 28,
     ALGO_X16R         = 29,
+    ALGO_LYRA2REV3    = 30,
     NUM_ALGOS_IMPL };
 
 enum {
-    BLOCK_VERSION_ALGO              = 0x3E00,
+    BLOCK_VERSION_ALGO              = 0x7E00,
     BLOCK_VERSION_SHA256D           = (1 << 9),
     BLOCK_VERSION_SCRYPT            = (2 << 9),
     BLOCK_VERSION_X11               = (3 << 9),
@@ -61,7 +62,7 @@ enum {
     BLOCK_VERSION_X14               = (13 << 9),
     BLOCK_VERSION_X15               = (14 << 9),
     BLOCK_VERSION_X17               = (15 << 9),
-    BLOCK_VERSION_LYRA2RE           = (16 << 9),
+    BLOCK_VERSION_LYRA2REV2         = (16 << 9),
     BLOCK_VERSION_BLAKE2S           = (17 << 9),
     BLOCK_VERSION_BLAKE2B           = (18 << 9),
     BLOCK_VERSION_ASTRALHASH        = (19 << 9),
@@ -76,6 +77,7 @@ enum {
     BLOCK_VERSION_SKUNKHASH         = (28 << 9),
     BLOCK_VERSION_QUARK             = (29 << 9),
     BLOCK_VERSION_X16R              = (30 << 9),
+    BLOCK_VERSION_LYRA2REV3         = (31 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;

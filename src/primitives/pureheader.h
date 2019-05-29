@@ -134,8 +134,8 @@ public:
             case ALGO_X17:
                 nVersion |= BLOCK_VERSION_X17;
                 break;
-            case ALGO_LYRA2RE:
-                nVersion |= BLOCK_VERSION_LYRA2RE;
+            case ALGO_LYRA2REV2:
+                nVersion |= BLOCK_VERSION_LYRA2REV2;
                 break;
             case ALGO_BLAKE2S:
                 nVersion |= BLOCK_VERSION_BLAKE2S;
@@ -178,6 +178,9 @@ public:
                 break;
             case ALGO_X16R:
                 nVersion |= BLOCK_VERSION_X16R;
+                break;
+            case ALGO_LYRA2REV3:
+                nVersion |= BLOCK_VERSION_LYRA2REV3;
                 break;
             default:
                 break;

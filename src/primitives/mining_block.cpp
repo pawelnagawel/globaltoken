@@ -102,7 +102,7 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return HashX17(BEGIN(nVersion), END(nNonce));
         }
-        case ALGO_LYRA2RE:
+        case ALGO_LYRA2REV2:
         {
             uint256 thash;
             lyra2re2_hash(BEGIN(nVersion), BEGIN(thash));
@@ -163,6 +163,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         case ALGO_X16R:
         {
             return HashX16R(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+        }
+        case ALGO_LYRA2REV3:
+        {
+            uint256 thash;
+            lyra2re3_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
         }
     }
     return GetHash();

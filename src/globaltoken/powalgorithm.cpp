@@ -43,8 +43,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("x15");
         case ALGO_X17:
             return std::string("x17");
-        case ALGO_LYRA2RE:
-            return std::string("lyra2re");
+        case ALGO_LYRA2REV2:
+            return std::string("lyra2rev2");
         case ALGO_BLAKE2S:
             return std::string("blake2s");
         case ALGO_BLAKE2B:
@@ -73,6 +73,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("quark");
         case ALGO_X16R:
             return std::string("x16r");
+        case ALGO_LYRA2REV3:
+            return std::string("lyra2rev3");
     }
     return std::string("unknown");       
 }
@@ -114,7 +116,7 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
     else if (strAlgo == "x17")
         return ALGO_X17;
     else if (strAlgo == "lyra" || strAlgo == "lyra2re" || strAlgo == "lyra2" || strAlgo == "lyra2rev2")
-        return ALGO_LYRA2RE;
+        return ALGO_LYRA2REV2;
     else if (strAlgo == "blake2s")
         return ALGO_BLAKE2S;
     else if (strAlgo == "blake2b" || strAlgo == "sia")
@@ -141,6 +143,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_SKUNKHASH;
     else if (strAlgo == "quark")
         return ALGO_QUARK;
+    else if (strAlgo == "lyra2rev3")
+        return ALGO_LYRA2REV3;
     else
     {
         fAlgoFound = false;
