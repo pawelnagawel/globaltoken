@@ -379,7 +379,8 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yescrypt/sha256_Y.c \
   crypto/algos/yescrypt/sha256_Y.h \
   crypto/algos/yescrypt/sysendian.h \
-  crypto/algos/yescrypt/yescrypt-pptp.c \
+  crypto/algos/yescrypt/yescrypt-r16v2.c \
+  crypto/algos/yescrypt/yescrypt-r24.c \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c
