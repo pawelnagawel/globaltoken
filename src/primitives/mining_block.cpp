@@ -189,6 +189,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
             yescrypt_r8_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
+        case ALGO_YESCRYPT_R32:
+        {
+            uint256 thash;
+            yescrypt_r32_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
     }
     return GetHash();
 }

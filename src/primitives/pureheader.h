@@ -191,6 +191,9 @@ public:
             case ALGO_YESCRYPT_R8:
                 nVersion |= BLOCK_VERSION_YESCRYPT_R8;
                 break;
+            case ALGO_YESCRYPT_R32:
+                nVersion |= BLOCK_VERSION_YESCRYPT_R32;
+                break;
             default:
                 break;
         }
