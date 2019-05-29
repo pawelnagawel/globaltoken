@@ -18,7 +18,6 @@
  * SUCH DAMAGE.
  */
 #include "yescrypt.h"
-#include "sha256_c_pptp.h"
 #include "yescrypt-best_c.h"
 
 #define YESCRYPT_N 4096
