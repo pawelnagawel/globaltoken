@@ -141,6 +141,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, (~uint256(0) >>11), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -623,6 +624,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, (~uint256(0) >>11), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -1083,6 +1085,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)

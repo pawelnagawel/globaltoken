@@ -25,6 +25,7 @@
 #include <crypto/algos/yescrypt/yescrypt.h>
 #include <crypto/algos/Lyra2RE/Lyra2RE.h>
 #include <crypto/algos/blake/hashblake.h>
+#include <crypto/algos/bcrypt/bcrypt.h>
 
 uint256 CDefaultBlockHeader::GetHash() const
 {
@@ -193,6 +194,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             uint256 thash;
             yescrypt_r32_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
+        case ALGO_BCRYPT:
+        {
+            uint256 thash;
+            bcrypt(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
     }

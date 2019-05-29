@@ -136,6 +136,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_YESCRYPT_R8;
         case BLOCK_VERSION_YESCRYPT_R32:
             return ALGO_YESCRYPT_R32;
+        case BLOCK_VERSION_BCRYPT:
+            return ALGO_BCRYPT;
     }
     return ALGO_SHA256D;
 }

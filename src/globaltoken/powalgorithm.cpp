@@ -83,6 +83,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("yescryptr8");
         case ALGO_YESCRYPT_R32:
             return std::string("yescryptr32");
+        case ALGO_BCRYPT:
+            return std::string("bcrypt");
     }
     return std::string("unknown");       
 }
@@ -161,6 +163,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_YESCRYPT_R8;
     else if (strAlgo == "yescryptr32")
         return ALGO_YESCRYPT_R32;
+    else if (strAlgo == "bcrypt")
+        return ALGO_BCRYPT;
     else
     {
         fAlgoFound = false;

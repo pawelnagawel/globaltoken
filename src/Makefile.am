@@ -385,7 +385,9 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yescrypt/yescrypt-r32.c \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
-  crypto/algos/yescrypt/yescryptcommon.c
+  crypto/algos/yescrypt/yescryptcommon.c \
+  crypto/algos/bcrypt/bcrypt.cpp \
+  crypto/algos/bcrypt/bcrypt.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
