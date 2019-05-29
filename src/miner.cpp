@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <queue>
 #include <utility>
+#include <inttypes.h>
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -135,7 +136,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     int64_t currenttime = GetAdjustedTime();
     
     if (!chainparams.GetConsensus().Hardfork2.IsActivated((uint32_t)currenttime) && !IsAlgoAllowedBeforeHF2(nBlockAlgo)) {
-        error("Mining algorithm %s is not active yet. It will be activated with hardfork 2, at Unix-Timestamp: %"PRIu32" // Current time: %"PRIu32, GetAlgoName(nBlockAlgo), chainparams.GetConsensus().Hardfork2.GetActivationTime(), currenttime);
+        error("Mining algorithm %s is not active yet. It will be activated with hardfork 2, at Unix-Timestamp: %" PRIu32 " // Current time: %" PRIu32, GetAlgoName(nBlockAlgo), chainparams.GetConsensus().Hardfork2.GetActivationTime(), currenttime);
         return nullptr;
     }
     
