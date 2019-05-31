@@ -141,7 +141,7 @@ void clear_internal_memory(void *v, size_t n) {
   }
 }
 
-void finalize(const argon2_context *context, argon2_instance_t *instance) {
+void glt_argon2_finalize(const argon2_context *context, argon2_instance_t *instance) {
     if (context != NULL && instance != NULL) {
         block blockhash;
         uint32_t l;
@@ -175,7 +175,7 @@ void finalize(const argon2_context *context, argon2_instance_t *instance) {
     }
 }
 
-uint32_t index_alpha(const argon2_instance_t *instance,
+uint32_t glt_argon2_index_alpha(const argon2_instance_t *instance,
                      const argon2_position_t *position, uint32_t pseudo_rand,
                      int same_lane) {
     /*
@@ -246,7 +246,7 @@ uint32_t index_alpha(const argon2_instance_t *instance,
 }
 
 /* Single-threaded version for p=1 case */
-static int fill_memory_blocks_st(argon2_instance_t *instance) {
+static int glt_argon2_fill_memory_blocks_st(argon2_instance_t *instance) {
     uint32_t r, s, l;
 
     for (r = 0; r < instance->passes; ++r) {
@@ -278,7 +278,7 @@ static void *fill_segment_thr(void *thread_data)
 }
 
 /* Multi-threaded version for p > 1 case */
-static int fill_memory_blocks_mt(argon2_instance_t *instance) {
+static int glt_argon2_fill_memory_blocks_mt(argon2_instance_t *instance) {
     uint32_t r, s;
     argon2_thread_handle_t *thread = NULL;
     argon2_thread_data *thr_data = NULL;
@@ -359,19 +359,19 @@ fail:
 
 #endif /* ARGON2_NO_THREADS */
 
-int fill_memory_blocks(argon2_instance_t *instance) {
+int glt_argon2_fill_memory_blocks(argon2_instance_t *instance) {
 	if (instance == NULL || instance->lanes == 0) {
 	    return ARGON2_INCORRECT_PARAMETER;
     }
 #if defined(ARGON2_NO_THREADS)
-    return fill_memory_blocks_st(instance);
+    return glt_argon2_fill_memory_blocks_st(instance);
 #else
     return instance->threads == 1 ?
-			fill_memory_blocks_st(instance) : fill_memory_blocks_mt(instance);
+			glt_argon2_fill_memory_blocks_st(instance) : glt_argon2_fill_memory_blocks_mt(instance);
 #endif
 }
 
-int validate_inputs(const argon2_context *context) {
+int glt_argon2_validate_inputs(const argon2_context *context) {
     if (NULL == context) {
         return ARGON2_INCORRECT_PARAMETER;
     }
@@ -498,7 +498,7 @@ int validate_inputs(const argon2_context *context) {
     return ARGON2_OK;
 }
 
-void fill_first_blocks(uint8_t *blockhash, const argon2_instance_t *instance) {
+void glt_argon2_fill_first_blocks(uint8_t *blockhash, const argon2_instance_t *instance) {
     uint32_t l;
     /* Make the first and second block in each lane as G(H0||0||i) or
        G(H0||1||i) */
@@ -521,7 +521,7 @@ void fill_first_blocks(uint8_t *blockhash, const argon2_instance_t *instance) {
     clear_internal_memory(blockhash_bytes, ARGON2_BLOCK_SIZE);
 }
 
-void initial_hash(uint8_t *blockhash, argon2_context *context,
+void glt_argon2_initial_hash(uint8_t *blockhash, argon2_context *context,
                   argon2_type type) {
     blake2b_state BlakeHash;
     uint8_t value[sizeof(uint32_t)];
@@ -614,7 +614,7 @@ int initialize(argon2_instance_t *instance, argon2_context *context) {
     /* H_0 + 8 extra bytes to produce the first blocks */
     /* uint8_t blockhash[ARGON2_PREHASH_SEED_LENGTH]; */
     /* Hashing all inputs */
-    initial_hash(blockhash, context, instance->type);
+    glt_argon2_initial_hash(blockhash, context, instance->type);
     /* Zeroing 8 extra bytes */
     clear_internal_memory(blockhash + ARGON2_PREHASH_DIGEST_LENGTH,
                           ARGON2_PREHASH_SEED_LENGTH -
@@ -626,7 +626,7 @@ int initialize(argon2_instance_t *instance, argon2_context *context) {
 
     /* 3. Creating first blocks, we always have at least two blocks in a slice
      */
-    fill_first_blocks(blockhash, instance);
+    glt_argon2_fill_first_blocks(blockhash, instance);
     /* Clearing the hash */
     clear_internal_memory(blockhash, ARGON2_PREHASH_SEED_LENGTH);
 

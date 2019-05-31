@@ -171,7 +171,7 @@ void fill_segment(const argon2_instance_t *instance,
          * lane.
          */
         position.index = i;
-        ref_index = index_alpha(instance, &position, pseudo_rand & 0xFFFFFFFF,
+        ref_index = glt_argon2_index_alpha(instance, &position, pseudo_rand & 0xFFFFFFFF,
                                 ref_lane == position.lane);
 
         /* 2 Creating a new block */
