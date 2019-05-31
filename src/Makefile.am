@@ -397,7 +397,6 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/argon2d/encoding.c \
   crypto/algos/argon2d/opt.c \
   crypto/algos/argon2d/thread.c \
-  crypto/algos/argon2d/blake2b.c \
   crypto/algos/argon2d/blake2.h \
   crypto/algos/argon2d/blake2-impl.h \
   crypto/algos/argon2d/blamka-round-opt.h \
