@@ -6,6 +6,7 @@
 // Copyright (c) 2017-2018 The AmsterdamCoin developers
 // Copyright (c) 2017 The Raven Core developers
 // Copyright (c) 2014-2017 The Mun Core developers
+// Copyright (c) 2017 The Copper Core developers
 // Copyright (c) 2018 The Globaltoken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -34,6 +35,8 @@
 #include <crypto/algos/hashlib/sph_haval.h>
 #include <crypto/algos/hashlib/sph_gost.h>
 #include <crypto/algos/blake/blake2.h>
+#include <crypto/algos/Lyra2RE/Lyra2.h>
+#include <crypto/algos/argon2d/hashargon.h>
 #include <openssl/sha.h>
 
 #ifdef GLOBALDEFINED
@@ -100,7 +103,7 @@ GLOBAL sph_haval256_5_context   z_haval;
 #define HASH_FUNC_COUNT 10                   // BitCore: HASH_FUNC_COUNT of 11
 #define HASH_FUNC_COUNT_PERMUTATIONS 40320   // BitCore: HASH_FUNC_COUNT!
 
-inline int GetHashSelection(const uint256 PrevBlockHash, int index) 
+inline int GetHashSelectionX16R(const uint256 PrevBlockHash, int index) 
 {
     assert(index >= 0);
     assert(index < 16);
@@ -108,6 +111,179 @@ inline int GetHashSelection(const uint256 PrevBlockHash, int index)
     #define START_OF_LAST_16_NIBBLES_OF_HASH 48
     int hashSelection = PrevBlockHash.GetNibble(START_OF_LAST_16_NIBBLES_OF_HASH + index);
     return(hashSelection);
+}
+
+inline int GetHashSelectionCPU23R(const uint256 PrevBlockHash, int index) {
+    assert(index >= 0);
+    assert(index < 23);
+
+    #define START_OF_LAST_23_NIBBLES_OF_HASH 41
+    int hashSelection = PrevBlockHash.GetNibble(START_OF_LAST_23_NIBBLES_OF_HASH + index);
+    return(hashSelection);
+}
+
+template<typename T1>
+inline uint256 HashCPU23R(const T1 pbegin, const T1 pend, const uint256 PrevBlockHash)
+{
+    int hashSelection;
+
+    sph_blake512_context     ctx_blake;
+    sph_bmw512_context       ctx_bmw;
+    sph_groestl512_context   ctx_groestl;
+    sph_jh512_context        ctx_jh;
+    sph_keccak512_context    ctx_keccak;
+    sph_skein512_context     ctx_skein;
+    sph_luffa512_context     ctx_luffa;
+    sph_cubehash512_context  ctx_cubehash;
+    sph_shavite512_context   ctx_shavite;
+    sph_simd512_context      ctx_simd;
+    sph_echo512_context      ctx_echo;
+    sph_hamsi512_context     ctx_hamsi;
+    sph_fugue512_context     ctx_fugue;
+    sph_shabal512_context    ctx_shabal;
+    sph_whirlpool_context    ctx_whirlpool;
+    sph_sha512_context       ctx_sha512;
+
+    sph_haval256_5_context   ctx_haval;
+    sph_blake256_context     ctx_blake256;
+    sph_gost512_context      ctx_gost;
+    sph_sha256_context       ctx_sha256;
+
+    static unsigned char pblank[1];
+
+    uint512 hash[23];
+
+    unsigned int t_costs = 2;
+    unsigned int m_costs = 16;
+
+    for (int i=0;i<23;i++) 
+    {
+        const void *toHash;
+        int lenToHash;
+        if (i == 0) {
+            toHash = (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0]));
+            lenToHash = (pend - pbegin) * sizeof(pbegin[0]);
+        } else {
+            toHash = static_cast<const void*>(&hash[i-1]);
+            lenToHash = 64;
+        }
+
+        hashSelection = GetHashSelectionCPU23R(PrevBlockHash, i);
+
+        switch(hashSelection) {
+            case 0:
+                sph_blake512_init(&ctx_blake);
+                sph_blake512 (&ctx_blake, toHash, lenToHash);
+                sph_blake512_close(&ctx_blake, static_cast<void*>(&hash[i]));
+                break;
+            case 1:
+                sph_bmw512_init(&ctx_bmw);
+                sph_bmw512 (&ctx_bmw, toHash, lenToHash);
+                sph_bmw512_close(&ctx_bmw, static_cast<void*>(&hash[i]));
+                break;
+            case 2:
+                sph_groestl512_init(&ctx_groestl);
+                sph_groestl512 (&ctx_groestl, toHash, lenToHash);
+                sph_groestl512_close(&ctx_groestl, static_cast<void*>(&hash[i]));
+                break;
+            case 3:
+                sph_jh512_init(&ctx_jh);
+                sph_jh512 (&ctx_jh, toHash, lenToHash);
+                sph_jh512_close(&ctx_jh, static_cast<void*>(&hash[i]));
+                break;
+            case 4:
+                sph_keccak512_init(&ctx_keccak);
+                sph_keccak512 (&ctx_keccak, toHash, lenToHash);
+                sph_keccak512_close(&ctx_keccak, static_cast<void*>(&hash[i]));
+                break;
+            case 5:
+                sph_skein512_init(&ctx_skein);
+                sph_skein512 (&ctx_skein, toHash, lenToHash);
+                sph_skein512_close(&ctx_skein, static_cast<void*>(&hash[i]));
+                break;
+            case 6:
+                sph_luffa512_init(&ctx_luffa);
+                sph_luffa512 (&ctx_luffa, toHash, lenToHash);
+                sph_luffa512_close(&ctx_luffa, static_cast<void*>(&hash[i]));
+                break;
+            case 7:
+                sph_cubehash512_init(&ctx_cubehash);
+                sph_cubehash512 (&ctx_cubehash, toHash, lenToHash);
+                sph_cubehash512_close(&ctx_cubehash, static_cast<void*>(&hash[i]));
+                break;
+            case 8:
+                sph_shavite512_init(&ctx_shavite);
+                sph_shavite512(&ctx_shavite, toHash, lenToHash);
+                sph_shavite512_close(&ctx_shavite, static_cast<void*>(&hash[i]));
+                break;
+            case 9:
+                sph_simd512_init(&ctx_simd);
+                sph_simd512 (&ctx_simd, toHash, lenToHash);
+                sph_simd512_close(&ctx_simd, static_cast<void*>(&hash[i]));
+                break;
+            case 10:
+                sph_echo512_init(&ctx_echo);
+                sph_echo512 (&ctx_echo, toHash, lenToHash);
+                sph_echo512_close(&ctx_echo, static_cast<void*>(&hash[i]));
+                break;
+            case 11:
+                sph_hamsi512_init(&ctx_hamsi);
+                sph_hamsi512 (&ctx_hamsi, toHash, lenToHash);
+                sph_hamsi512_close(&ctx_hamsi, static_cast<void*>(&hash[i]));
+                break;
+            case 12:
+                sph_fugue512_init(&ctx_fugue);
+                sph_fugue512 (&ctx_fugue, toHash, lenToHash);
+                sph_fugue512_close(&ctx_fugue, static_cast<void*>(&hash[i]));
+                break;
+            case 13:
+                sph_shabal512_init(&ctx_shabal);
+                sph_shabal512 (&ctx_shabal, toHash, lenToHash);
+                sph_shabal512_close(&ctx_shabal, static_cast<void*>(&hash[i]));
+                break;
+            case 14:
+                sph_whirlpool_init(&ctx_whirlpool);
+                sph_whirlpool(&ctx_whirlpool, toHash, lenToHash);
+                sph_whirlpool_close(&ctx_whirlpool, static_cast<void*>(&hash[i]));
+                break;
+            case 15:
+                sph_sha512_init(&ctx_sha512);
+                sph_sha512 (&ctx_sha512, toHash, lenToHash);
+                sph_sha512_close(&ctx_sha512, static_cast<void*>(&hash[i]));
+                break;
+            case 16:
+                sph_haval256_5_init(&ctx_haval);
+                sph_haval256_5 (&ctx_haval, toHash, lenToHash);
+                sph_haval256_5_close(&ctx_haval, static_cast<void*>(&hash[i]));
+                break;
+            case 17:
+                sph_blake256_init(&ctx_blake256);
+                sph_blake256 (&ctx_blake256, toHash, lenToHash);
+                sph_blake256_close(&ctx_blake256, static_cast<void*>(&hash[i]));
+                break;
+            case 18:
+                LYRA2(static_cast<void*>(&hash[i]), lenToHash, toHash, lenToHash, toHash, lenToHash, 1, 4, 4);
+                break;
+            case 19:
+                sph_gost512_init(&ctx_gost);
+                sph_gost512 (&ctx_gost, toHash, lenToHash);
+                sph_gost512_close(&ctx_gost, static_cast<void*>(&hash[i]));
+                break;
+            case 20:
+                sph_sha256_init(&ctx_sha256);
+                sph_sha256 (&ctx_sha256, toHash, lenToHash);
+                sph_sha256_close(&ctx_sha256, static_cast<void*>(&hash[i]));
+                break;
+            case 21:
+                cpu23R_hash_argon2d(static_cast<void*>(&hash[i]), lenToHash, toHash, lenToHash, toHash, lenToHash, t_costs, m_costs);
+                break;
+            case 22:
+                cpu23R_hash_argon2i(static_cast<void*>(&hash[i]), lenToHash, toHash, lenToHash, toHash, lenToHash, t_costs, m_costs);
+                break;
+        }
+    }
+
+    return hash[22].trim256();
 }
 
 template<typename T1>
@@ -163,7 +339,7 @@ inline uint256 HashX16R(const T1 pbegin, const T1 pend, const uint256 PrevBlockH
             lenToHash = 64;
         }
 
-        hashSelection = GetHashSelection(PrevBlockHash, i);
+        hashSelection = GetHashSelectionX16R(PrevBlockHash, i);
 
         switch(hashSelection) {
             case 0:

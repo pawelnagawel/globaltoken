@@ -140,6 +140,10 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_BCRYPT;
         case BLOCK_VERSION_ARGON2D:
             return ALGO_ARGON2D;
+        case BLOCK_VERSION_ARGON2I:
+            return ALGO_ARGON2I;
+        case BLOCK_VERSION_CPU23R:
+            return ALGO_CPU23R;
     }
     return ALGO_SHA256D;
 }

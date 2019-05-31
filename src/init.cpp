@@ -20,6 +20,7 @@
 #include <checkpoints.h>
 #include <compat/sanity.h>
 #include <consensus/validation.h>
+#include <crypto/algos/argon2d/hashargon.h>
 #include <fs.h>
 #include <httpserver.h>
 #include <httprpc.h>
@@ -317,6 +318,8 @@ void Shutdown()
 #endif
     globalVerifyHandle.reset();
     ECC_Stop();
+    Argon2Deinit();
+    LogPrintf("%s: argon2 unloaded\n", __func__);
     LogPrintf("%s: done\n", __func__);
 }
 
@@ -1285,6 +1288,7 @@ bool AppInitLockDataDirectory()
 bool AppInitMain()
 {
     const CChainParams& chainparams = Params();
+    Argon2Init();
     // ********************************************************* Step 4a: application initialization
 #ifndef WIN32
     CreatePidFile(GetPidFile(), getpid());

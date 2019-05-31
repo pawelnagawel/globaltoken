@@ -200,6 +200,12 @@ public:
             case ALGO_ARGON2D:
                 nVersion |= BLOCK_VERSION_ARGON2D;
                 break;
+            case ALGO_ARGON2I:
+                nVersion |= BLOCK_VERSION_ARGON2I;
+                break;
+            case ALGO_CPU23R:
+                nVersion |= BLOCK_VERSION_CPU23R;
+                break;
             default:
                 break;
         }
