@@ -387,7 +387,23 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c \
   crypto/algos/bcrypt/bcrypt.cpp \
-  crypto/algos/bcrypt/bcrypt.h
+  crypto/algos/bcrypt/bcrypt.h \
+  crypto/algos/argon2d/argon2.h \
+  crypto/algos/argon2d/core.h \
+  crypto/algos/argon2d/encoding.h \
+  crypto/algos/argon2d/thread.h \
+  crypto/algos/argon2d/argon2.c \
+  crypto/algos/argon2d/core.c \
+  crypto/algos/argon2d/encoding.c \
+  crypto/algos/argon2d/opt.c \
+  crypto/algos/argon2d/thread.c \
+  crypto/algos/argon2d/blake2b.c \
+  crypto/algos/argon2d/blake2.h \
+  crypto/algos/argon2d/blake2-impl.h \
+  crypto/algos/argon2d/blamka-round-opt.h \
+  crypto/algos/argon2d/blamka-round-ref.h \
+  crypto/algos/argon2d/hashargon.cpp \
+  crypto/algos/argon2d/hashargon.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S

@@ -202,6 +202,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
             bcrypt(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
+        case ALGO_ARGON2D:
+        {
+            uint256 thash;
+            Argon2dHash(BEGIN(nVersion), BEGIN(thash), nTime);
+            return thash;
+        }
     }
     return GetHash();
 }

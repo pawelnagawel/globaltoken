@@ -197,6 +197,9 @@ public:
             case ALGO_BCRYPT:
                 nVersion |= BLOCK_VERSION_BCRYPT;
                 break;
+            case ALGO_ARGON2D:
+                nVersion |= BLOCK_VERSION_ARGON2D;
+                break;
             default:
                 break;
         }
