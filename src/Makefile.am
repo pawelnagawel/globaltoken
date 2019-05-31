@@ -335,6 +335,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/shavite.c \
   crypto/algos/hashlib/simd.c \
   crypto/algos/hashlib/skein.c \
+  crypto/algos/hashlib/tiger.cpp \
   crypto/algos/hashlib/sph_blake.h \
   crypto/algos/hashlib/sph_bmw.h \
   crypto/algos/hashlib/sph_cubehash.h \
@@ -352,6 +353,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/sph_shavite.h \
   crypto/algos/hashlib/sph_simd.h \
   crypto/algos/hashlib/sph_skein.h \
+  crypto/algos/hashlib/sph_tiger.h \
   crypto/algos/hashlib/sph_types.h \
   crypto/algos/hashlib/sph_whirlpool.h \
   crypto/algos/hashlib/whirlpool.c \

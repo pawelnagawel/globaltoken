@@ -209,6 +209,9 @@ public:
             case ALGO_YESPOWER:
                 nVersion |= BLOCK_VERSION_YESPOWER;
                 break;
+            case ALGO_X21S:
+                nVersion |= BLOCK_VERSION_X21S;
+                break;
             default:
                 break;
         }

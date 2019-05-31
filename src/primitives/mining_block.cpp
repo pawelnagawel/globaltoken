@@ -226,6 +226,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
             yespower_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
+        case ALGO_X21S:
+        {
+            return HashX21S(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+        }
     }
     return GetHash();
 }
