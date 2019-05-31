@@ -122,6 +122,11 @@ extern int yespower(yespower_local_t *local,
  */
 extern int yespower_tls(const uint8_t *src, size_t srclen,
     const yespower_params_t *params, yespower_binary_t *dst);
+    
+/**
+ * The yespower cryptocurrency pow hash.
+ */
+int yespower_hash(const char *input, char *output);
 
 #ifdef __cplusplus
 }
