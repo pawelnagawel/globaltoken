@@ -51,6 +51,7 @@ enum : uint8_t {
     ALGO_ARGON2D        = 36,
     ALGO_ARGON2I        = 37,
     ALGO_CPU23R         = 38,
+    ALGO_YESPOWER       = 39,
     NUM_ALGOS_IMPL };
 
 enum {
@@ -94,6 +95,7 @@ enum {
     BLOCK_VERSION_ARGON2D           = (37 << 9),
     BLOCK_VERSION_ARGON2I           = (38 << 9),
     BLOCK_VERSION_CPU23R            = (39 << 9),
+    BLOCK_VERSION_YESPOWER          = (40 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;

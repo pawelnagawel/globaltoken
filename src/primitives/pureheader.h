@@ -206,6 +206,9 @@ public:
             case ALGO_CPU23R:
                 nVersion |= BLOCK_VERSION_CPU23R;
                 break;
+            case ALGO_YESPOWER:
+                nVersion |= BLOCK_VERSION_YESPOWER;
+                break;
             default:
                 break;
         }

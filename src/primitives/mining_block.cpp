@@ -27,6 +27,7 @@
 #include <crypto/algos/blake/hashblake.h>
 #include <crypto/algos/bcrypt/bcrypt.h>
 #include <crypto/algos/argon2d/hashargon.h>
+#include <crypto/algos/yespower/yespower.h>
 
 uint256 CDefaultBlockHeader::GetHash() const
 {
@@ -218,6 +219,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         case ALGO_CPU23R:
         {
             return HashCPU23R(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+        }
+        case ALGO_YESPOWER:
+        {
+            uint256 thash;
+            yespower_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
         }
     }
     return GetHash();
