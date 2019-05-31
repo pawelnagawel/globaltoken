@@ -35,6 +35,7 @@
 #include <crypto/algos/hashlib/sph_sha2.h>
 #include <crypto/algos/hashlib/sph_haval.h>
 #include <crypto/algos/hashlib/sph_gost.h>
+#include <crypto/algos/hashlib/sph_tiger.h>
 #include <crypto/algos/blake/blake2.h>
 #include <crypto/algos/Lyra2RE/Lyra2.h>
 #include <crypto/algos/argon2d/hashargon.h>
