@@ -23,14 +23,14 @@
 
 #include "yespower.h"
 
-#undef TEST_PBKDF2_SHA256
+#undef TEST_YESPOWER_PBKDF2_SHA256
 
-#ifdef TEST_PBKDF2_SHA256
+#ifdef TEST_YESPOWER_PBKDF2_SHA256
 #include <assert.h>
 
 #include "sha256.h"
 
-static void print_PBKDF2_SHA256_raw(const char *passwd, size_t passwdlen,
+static void print_YESPOWER_PBKDF2_SHA256_raw(const char *passwd, size_t passwdlen,
     const char *salt, size_t saltlen, uint64_t c, size_t dkLen)
 {
 	uint8_t dk[64];
@@ -39,20 +39,20 @@ static void print_PBKDF2_SHA256_raw(const char *passwd, size_t passwdlen,
 	assert(dkLen <= sizeof(dk));
 
 	/* XXX This prints the strings truncated at first NUL */
-	printf("PBKDF2_SHA256(\"%s\", \"%s\", %llu, %llu) = ",
+	printf("YESPOWER_PBKDF2_SHA256(\"%s\", \"%s\", %llu, %llu) = ",
 	    passwd, salt, (unsigned long long)c, (unsigned long long)dkLen);
 
-	PBKDF2_SHA256((const uint8_t *) passwd, passwdlen,
+	YESPOWER_PBKDF2_SHA256((const uint8_t *) passwd, passwdlen,
 	    (const uint8_t *) salt, saltlen, c, dk, dkLen);
 
 	for (i = 0; i < dkLen; i++)
 		printf("%02x%c", dk[i], i < dkLen - 1 ? ' ' : '\n');
 }
 
-static void print_PBKDF2_SHA256(const char *passwd,
+static void print_YESPOWER_PBKDF2_SHA256(const char *passwd,
     const char *salt, uint64_t c, size_t dkLen)
 {
-	print_PBKDF2_SHA256_raw(passwd, strlen(passwd), salt, strlen(salt), c,
+	print_YESPOWER_PBKDF2_SHA256_raw(passwd, strlen(passwd), salt, strlen(salt), c,
 	    dkLen);
 }
 #endif
@@ -132,28 +132,28 @@ int main(void)
 {
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
-#ifdef TEST_PBKDF2_SHA256
-	print_PBKDF2_SHA256("password", "salt", 1, 20);
-	print_PBKDF2_SHA256("password", "salt", 2, 20);
-	print_PBKDF2_SHA256("password", "salt", 4096, 20);
-	print_PBKDF2_SHA256("password", "salt", 16777216, 20);
-	print_PBKDF2_SHA256("passwordPASSWORDpassword",
+#ifdef TEST_YESPOWER_PBKDF2_SHA256
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 1, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 2, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 16777216, 20);
+	print_YESPOWER_PBKDF2_SHA256("passwordPASSWORDpassword",
 	    "saltSALTsaltSALTsaltSALTsaltSALTsalt", 4096, 25);
-	print_PBKDF2_SHA256_raw("pass\0word", 9, "sa\0lt", 5, 4096, 16);
+	print_YESPOWER_PBKDF2_SHA256_raw("pass\0word", 9, "sa\0lt", 5, 4096, 16);
 #if 0
-	print_PBKDF2_SHA256("password", "salt", 1, 32);
-	print_PBKDF2_SHA256("password", "salt", 2, 32);
-	print_PBKDF2_SHA256("password", "salt", 4096, 32);
-	print_PBKDF2_SHA256("password", "salt", 16777216, 32);
-	print_PBKDF2_SHA256("passwordPASSWORDpassword",
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 1, 32);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 2, 32);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 32);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 16777216, 32);
+	print_YESPOWER_PBKDF2_SHA256("passwordPASSWORDpassword",
 	    "saltSALTsaltSALTsaltSALTsaltSALTsalt", 4096, 40);
-	print_PBKDF2_SHA256("password", "salt", 4096, 16);
-	print_PBKDF2_SHA256("password", "salt", 1, 20);
-	print_PBKDF2_SHA256("password", "salt", 2, 20);
-	print_PBKDF2_SHA256("password", "salt", 4096, 20);
-	print_PBKDF2_SHA256("password", "salt", 16777216, 20);
-	print_PBKDF2_SHA256("password", "salt", 4096, 25);
-	print_PBKDF2_SHA256("password", "salt", 4096, 16);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 16);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 1, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 2, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 16777216, 20);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 25);
+	print_YESPOWER_PBKDF2_SHA256("password", "salt", 4096, 16);
 #endif
 #endif
 
