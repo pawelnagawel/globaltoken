@@ -15,6 +15,10 @@
  * software. If not, they may be obtained at the above URLs.
  */
 
+#if defined(__MINGW32__) && defined(__i386__)
+ #include "./ref.c"
+#else
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,8 +26,8 @@
 #include "argon2.h"
 #include "core.h"
 
-#include "blake2.h"
-#include "blamka-round-opt.h"
+#include "blake2/blake2.h"
+#include "blake2/blamka-round-opt.h"
 
 /*
  * Function fills a new memory block and optionally XORs the old block over the new one.
@@ -191,6 +195,22 @@ void fill_segment(const argon2_instance_t *instance,
         return;
     }
 
+    data_independent_addressing =
+        (instance->type == Argon2_i) ||
+        (instance->type == Argon2_id && (position.pass == 0) &&
+         (position.slice < ARGON2_SYNC_POINTS / 2));
+
+    if (data_independent_addressing) {
+        init_block_value(&input_block, 0);
+
+        input_block.v[0] = position.pass;
+        input_block.v[1] = position.lane;
+        input_block.v[2] = position.slice;
+        input_block.v[3] = instance->memory_blocks;
+        input_block.v[4] = instance->passes;
+        input_block.v[5] = instance->type;
+    }
+
     starting_index = 0;
 
     if ((0 == position.pass) && (0 == position.slice)) {
@@ -253,7 +273,16 @@ void fill_segment(const argon2_instance_t *instance,
         ref_block =
             instance->memory + instance->lane_length * ref_lane + ref_index;
         curr_block = instance->memory + curr_offset;
-
-        fill_block(state, ref_block, curr_block, 0);   
+        if (ARGON2_VERSION_10 == instance->version) {
+            /* version 1.2.1 and earlier: overwrite, not XOR */
+            fill_block(state, ref_block, curr_block, 0);
+        } else {
+            if(0 == position.pass) {
+                fill_block(state, ref_block, curr_block, 0);
+            } else {
+                fill_block(state, ref_block, curr_block, 1);
+            }
+        }
     }
 }
+#endif

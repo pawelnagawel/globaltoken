@@ -326,6 +326,10 @@ int decode_string(argon2_context *ctx, const char *str, argon2_type type) {
     CC("$");
     CC(type_string);
 
+    /* Reading the version number if the default is suppressed */
+    ctx->version = ARGON2_VERSION_10;
+    CC_opt("$v=", DECIMAL_U32(ctx->version));
+
     CC("$m=");
     DECIMAL_U32(ctx->m_cost);
     CC(",t=");
@@ -410,6 +414,9 @@ int encode_string(char *dst, size_t dst_len, argon2_context *ctx,
 
     SS("$");
     SS(type_string);
+
+    SS("$v=");
+    SX(ctx->version);
 
     SS("$m=");
     SX(ctx->m_cost);
