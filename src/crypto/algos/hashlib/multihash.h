@@ -616,7 +616,7 @@ inline uint256 HashX16s(const T1 pbegin, const T1 pend, const uint256 PrevBlockH
         }
     }
 
-    return uint256(hash[15]);
+    return hash[15].trim256();
 
 }
 
