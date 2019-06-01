@@ -24,6 +24,7 @@
 #include <crypto/algos/scrypt/scrypt.h>
 #include <crypto/algos/yescrypt/yescrypt.h>
 #include <crypto/algos/Lyra2RE/Lyra2RE.h>
+#include <crypto/algos/Lyra2RE/Lyra2Z.h>
 #include <crypto/algos/blake/hashblake.h>
 #include <crypto/algos/bcrypt/bcrypt.h>
 #include <crypto/algos/argon2d/hashargon.h>
@@ -237,6 +238,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         case ALGO_X22I:
         {
             return HashX22I(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_LYRA2Z:
+        {
+            uint256 thash;
+            lyra2z_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
         }
     }
     return GetHash();

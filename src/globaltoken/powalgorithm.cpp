@@ -99,6 +99,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("x16s");
         case ALGO_X22I:
             return std::string("x22i");
+        case ALGO_LYRA2Z:
+            return std::string("lyra2z");
     }
     return std::string("unknown");       
 }
@@ -193,6 +195,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_X16S;
     else if (strAlgo == "x22i")
         return ALGO_X22I;
+    else if (strAlgo == "lyra2z")
+        return ALGO_LYRA2Z;
     else
     {
         fAlgoFound = false;

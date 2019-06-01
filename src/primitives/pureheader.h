@@ -218,6 +218,9 @@ public:
             case ALGO_X22I:
                 nVersion |= BLOCK_VERSION_X22I;
                 break;
+            case ALGO_LYRA2Z:
+                nVersion |= BLOCK_VERSION_LYRA2Z;
+                break;
             default:
                 break;
         }

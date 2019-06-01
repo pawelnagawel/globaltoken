@@ -362,6 +362,8 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/multihash.h \
   crypto/algos/Lyra2RE/Lyra2.c \
   crypto/algos/Lyra2RE/Lyra2.h \
+  crypto/algos/Lyra2RE/Lyra2Z.c \
+  crypto/algos/Lyra2RE/Lyra2Z.h \
   crypto/algos/Lyra2RE/Lyra2RE.c \
   crypto/algos/Lyra2RE/Lyra2RE.h \
   crypto/algos/Lyra2RE/Sponge.c \

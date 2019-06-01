@@ -55,6 +55,7 @@ enum : uint8_t {
     ALGO_X21S           = 40,
     ALGO_X16S           = 41,
     ALGO_X22I           = 42,
+    ALGO_LYRA2Z         = 43,
     NUM_ALGOS_IMPL };
 
 enum {
@@ -102,6 +103,7 @@ enum {
     BLOCK_VERSION_X21S              = (41 << 9),
     BLOCK_VERSION_X16S              = (42 << 9),
     BLOCK_VERSION_X22I              = (43 << 9),
+    BLOCK_VERSION_LYRA2Z            = (44 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;
