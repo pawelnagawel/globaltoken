@@ -1570,13 +1570,7 @@ CAmount CChainParams::GetTreasuryAmount(CAmount coinAmount) const
 unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const
 {
     assert(IsEquihashBasedAlgo(nAlgo));
-    
-    if(nAlgo == ALGO_EQUIHASH)
-        return EhSolutionWidth(EquihashN(), EquihashK());
-    else if(nAlgo == ALGO_ZHASH)
-        return EhSolutionWidth(ZhashN(), ZhashK());
-    else
-        return 0;
+    return EhSolutionWidth(GetEquihashAlgoN(nAlgo), GetEquihashAlgoK(nAlgo));
 }
 
 unsigned int CChainParams::GetEquihashAlgoN(uint8_t nAlgo) const

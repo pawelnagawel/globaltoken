@@ -279,8 +279,8 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 CEquihashBlockHeader equihashblock = pblock->GetEquihashBlockHeader();
 				nInnerLoopMask = nInnerLoopEquihashMask;
 				nInnerLoopCount = nInnerLoopEquihashCount;
-                n = (nAlgo == ALGO_EQUIHASH) ? params.EquihashN() : params.ZhashN();
-                k = (nAlgo == ALGO_EQUIHASH) ? params.EquihashK() : params.ZhashK();
+                n = params.GetEquihashAlgoN(nAlgo);
+                k = params.GetEquihashAlgoK(nAlgo);
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
                 EhInitialiseState(n, k, eh_state, GetEquihashBasedDefaultPersonalize(nAlgo));
