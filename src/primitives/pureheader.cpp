@@ -148,6 +148,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_YESPOWER;
         case BLOCK_VERSION_X21S:
             return ALGO_X21S;
+        case BLOCK_VERSION_X16S:
+            return ALGO_X16S;
     }
     return ALGO_SHA256D;
 }

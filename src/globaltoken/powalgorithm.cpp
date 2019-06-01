@@ -95,6 +95,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("yespower");
         case ALGO_X21S:
             return std::string("x21s");
+        case ALGO_X16S:
+            return std::string("x16s");
     }
     return std::string("unknown");       
 }
@@ -185,6 +187,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_YESPOWER;
     else if (strAlgo == "x21s")
         return ALGO_X21S;
+    else if (strAlgo == "x16s")
+        return ALGO_X16S;
     else
     {
         fAlgoFound = false;
