@@ -408,7 +408,9 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/argon2d/hashargon.h \
   crypto/algos/yespower/yespower-sha256.c \
   crypto/algos/yespower/yespower-opt.c \
-  crypto/algos/yespower/yespower.c
+  crypto/algos/yespower/yespower.c \
+  crypto/algos/SWIFFTX/SWIFFTX.c \
+  crypto/algos/SWIFFTX/SWIFFTX.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S

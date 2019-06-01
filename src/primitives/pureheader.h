@@ -215,6 +215,9 @@ public:
             case ALGO_X16S:
                 nVersion |= BLOCK_VERSION_X16S;
                 break;
+            case ALGO_X22I:
+                nVersion |= BLOCK_VERSION_X22I;
+                break;
             default:
                 break;
         }
