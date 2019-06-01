@@ -1579,7 +1579,7 @@ unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const
         return 0;
 }
 
-unsigned int GetEquihashAlgoN(uint8_t nAlgo) const
+unsigned int CChainParams::GetEquihashAlgoN(uint8_t nAlgo) const
 {
     assert(IsEquihashBasedAlgo(nAlgo));
     switch(nAlgo)
@@ -1591,7 +1591,7 @@ unsigned int GetEquihashAlgoN(uint8_t nAlgo) const
     }
 }
 
-unsigned int GetEquihashAlgoK(uint8_t nAlgo) const
+unsigned int CChainParams::GetEquihashAlgoK(uint8_t nAlgo) const
 {
     assert(IsEquihashBasedAlgo(nAlgo));
     switch(nAlgo)
