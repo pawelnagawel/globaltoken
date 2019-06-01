@@ -406,7 +406,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/argon2d/blamka-round-ref.h \
   crypto/algos/argon2d/hashargon.cpp \
   crypto/algos/argon2d/hashargon.h \
-  crypto/algos/yespower/sha256.c \
+  crypto/algos/yespower/yespower-sha256.c \
   crypto/algos/yespower/yespower-opt.c \
   crypto/algos/yespower/yespower.c
 

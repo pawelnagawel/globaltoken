@@ -95,7 +95,7 @@
 #include <string.h>
 
 #include "insecure_memzero.h"
-#include "sha256.h"
+#include "yespower-sha256.h"
 #include "sysendian.h"
 
 #include "yespower.h"

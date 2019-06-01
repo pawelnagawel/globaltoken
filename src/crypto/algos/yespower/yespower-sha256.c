@@ -32,7 +32,7 @@
 #include "insecure_memzero.h"
 #include "sysendian.h"
 
-#include "sha256.h"
+#include "yespower-sha256.h"
 
 #ifdef __ICC
 /* Miscompile with icc 14.0.0 (at least), so don't use restrict there */
