@@ -412,7 +412,22 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yespower/yespower-opt.c \
   crypto/algos/yespower/yespower.c \
   crypto/algos/SWIFFTX/SWIFFTX.c \
-  crypto/algos/SWIFFTX/SWIFFTX.h
+  crypto/algos/SWIFFTX/SWIFFTX.h \
+  crypto/algos/honeycomb/facets_helper.c\
+  crypto/algos/honeycomb/facet_one.c \
+  crypto/algos/honeycomb/facet_two.c \
+  crypto/algos/honeycomb/facet_three.c \
+  crypto/algos/honeycomb/facet_four.c \
+  crypto/algos/honeycomb/facet_five.c \
+  crypto/algos/honeycomb/facet_six.c \
+  crypto/algos/honeycomb/facet_one.h \
+  crypto/algos/honeycomb/facet_two.h \
+  crypto/algos/honeycomb/facet_three.h \
+  crypto/algos/honeycomb/facet_four.h \
+  crypto/algos/honeycomb/facet_five.h \
+  crypto/algos/honeycomb/facet_six.h \
+  crypto/algos/honeycomb/honeycomb_types.h \
+  crypto/algos/honeycomb/hash_honeycomb.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S

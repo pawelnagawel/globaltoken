@@ -29,6 +29,7 @@
 #include <crypto/algos/bcrypt/bcrypt.h>
 #include <crypto/algos/argon2d/hashargon.h>
 #include <crypto/algos/yespower/yespower.h>
+#include <crypto/algos/honeycomb/hash_honeycomb.h>
 
 uint256 CDefaultBlockHeader::GetHash() const
 {
@@ -244,6 +245,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
             uint256 thash;
             lyra2z_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
+        }
+        case ALGO_HONEYCOMB:
+        {
+            return HashHoneyComb(BEGIN(nVersion), END(nNonce));
         }
     }
     return GetHash();
