@@ -18,10 +18,10 @@
 
 inline arith_uint512 HoneyBee( unsigned char *in, unsigned int sz )
 {
-	arith_uint512 result;
+	uint512 result;
 	memcpy( &result.begin()[ 0], &in[0],     36 );
 	memcpy( &result.begin()[36], &in[sz-28], 28 );
-	return result;    
+	return UintToArith512(result);    
 }
 
 /* ----------- Beenode Hash ------------------------------------------------ */
