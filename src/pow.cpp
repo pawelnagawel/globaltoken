@@ -254,11 +254,11 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, bool fisZhash, const std::string stateString)
+bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, uint8_t nAlgo, const std::string stateString)
 {
     // if fisZhash is true, this is a Zhash Block, otherwhise Equihash.
-    unsigned int n = fisZhash ? params.ZhashN() : params.EquihashN();
-    unsigned int k = fisZhash ? params.ZhashK() : params.EquihashK();
+    unsigned int n = params.GetEquihashAlgoN(nAlgo);
+    unsigned int k = params.GetEquihashAlgoK(nAlgo);
 
     // Hash state
     crypto_generichash_blake2b_state state;
@@ -284,9 +284,10 @@ bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParam
 
 bool CheckEquihashSolution(const CBlockHeader *pblock, const CChainParams& params)
 {
+    uint8_t nAlgo = pblock->GetAlgo();
     CEquihashBlockHeader pequihashblock;
     pequihashblock = pblock->GetEquihashBlockHeader();
-    return CheckEquihashSolution(&pequihashblock, params, pblock->GetAlgo() == ALGO_ZHASH, pblock->GetAlgo() == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
+    return CheckEquihashSolution(&pequihashblock, params, nAlgo, GetEquihashBasedDefaultPersonalize(nAlgo));
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint8_t algo)
@@ -344,7 +345,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         
         if(hardfork)
         {
-            if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
+            if(IsEquihashBasedAlgo(nAlgo))
             {
                 const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
                 
@@ -393,7 +394,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
     if(!hardfork)
         return error("%s : Found AuxPOW! - AuxPOW not valid yet, It will be activated with the Hardfork.", __func__);
 
-    if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
+    if(IsEquihashBasedAlgo(nAlgo))
     {
         const size_t sol_size = Params().EquihashSolutionWidth(nAlgo);
         if (!block.IsAuxpow())
@@ -424,7 +425,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         if(nAlgo == ALGO_ZHASH)
         {
             // Check Zhash solution
-            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), true, block.auxpow->strZhashConfig)) {
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo, block.auxpow->strZhashConfig)) {
                 ehsolutionvalid = false;
                 return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
             }
@@ -432,7 +433,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         else
         {
             // Check Equihash solution
-            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), false, DEFAULT_EQUIHASH_PERSONALIZE)) {
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo, GetEquihashBasedDefaultPersonalize(nAlgo))) {
                 ehsolutionvalid = false;
                 return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
             }

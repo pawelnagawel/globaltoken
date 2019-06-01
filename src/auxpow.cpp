@@ -184,7 +184,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
   
-  if((header.GetAlgo() == ALGO_EQUIHASH || header.GetAlgo() == ALGO_ZHASH) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG || nAuxPowVersion & AUXPOW_ZHASH_FLAG))
+  if((IsEquihashBasedAlgo(header.GetAlgo())) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG || nAuxPowVersion & AUXPOW_ZHASH_FLAG))
   {
       if(nAuxPowVersion & AUXPOW_STAKE_FLAG)
       {
@@ -234,8 +234,8 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
           {
               // Set the Zhash personalization string.
-              assert (DEFAULT_ZHASH_PERSONALIZE.length() == 8);
-              header.auxpow->strZhashConfig = DEFAULT_ZHASH_PERSONALIZE;
+              assert (GetEquihashBasedDefaultPersonalize(header.GetAlgo()).length() == 8);
+              header.auxpow->strZhashConfig = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
               assert (header.auxpow->strZhashConfig.length() == 8);
           }
       }
@@ -282,8 +282,8 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
           {
               // Set the Zhash personalization string.
-              assert (DEFAULT_ZHASH_PERSONALIZE.length() == 8);
-              header.auxpow->strZhashConfig = DEFAULT_ZHASH_PERSONALIZE;
+              assert (GetEquihashBasedDefaultPersonalize(header.GetAlgo()).length() == 8);
+              header.auxpow->strZhashConfig = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
               assert (header.auxpow->strZhashConfig.length() == 8);
           }
       }

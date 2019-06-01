@@ -235,3 +235,20 @@ bool IsAlgoAllowedBeforeHF2(uint8_t nAlgo)
     // Hardfork 1 starts with algo sha256 and ends with last algo id x16r
     return (nAlgo >= ALGO_SHA256D && nAlgo <= ALGO_X16R);
 }
+
+bool IsEquihashBasedAlgo(uint8_t nAlgo)
+{
+    return (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH);
+}
+
+std::string GetEquihashBasedDefaultPersonalize(uint8_t nAlgo)
+{
+    assert(IsEquihashBasedAlgo(nAlgo));
+    switch(nAlgo)
+    {
+        case ALGO_EQUIHASH:
+            return std::string("ZcashPoW");
+        case ALGO_ZHASH:
+            return std::string("GLTZhash");
+    }
+}

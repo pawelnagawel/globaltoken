@@ -274,7 +274,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         }
 		if(params.GetConsensus().Hardfork1.IsActivated(pblock->nTime))
 		{
-			if(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH)
+			if(IsEquihashBasedAlgo(nAlgo))
 			{
                 CEquihashBlockHeader equihashblock = pblock->GetEquihashBlockHeader();
 				nInnerLoopMask = nInnerLoopEquihashMask;
@@ -283,7 +283,7 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 k = (nAlgo == ALGO_EQUIHASH) ? params.EquihashK() : params.ZhashK();
 				// Solve Equihash.
 				crypto_generichash_blake2b_state eh_state;
-                EhInitialiseState(n, k, eh_state, nAlgo == ALGO_ZHASH ? DEFAULT_ZHASH_PERSONALIZE : DEFAULT_EQUIHASH_PERSONALIZE);
+                EhInitialiseState(n, k, eh_state, GetEquihashBasedDefaultPersonalize(nAlgo));
 
 				// I = the block header minus nonce and solution.
 				CEquihashInput I{equihashblock};
@@ -356,10 +356,10 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         if (nMaxTries == 0) {
             break;
         }
-        if ((pblock->GetAlgo() == ALGO_EQUIHASH || pblock->GetAlgo() == ALGO_ZHASH) && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
+        if (IsEquihashBasedAlgo(pblock->GetAlgo()) && ((int)pblock->nBigNonce.GetUint64(0) & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
-        if (!(pblock->GetAlgo() == ALGO_EQUIHASH || pblock->GetAlgo() == ALGO_ZHASH) && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
+        if (!IsEquihashBasedAlgo(pblock->GetAlgo()) && (pblock->nNonce & nInnerLoopMask) == nInnerLoopCount) {
             continue;
         }
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
@@ -1509,7 +1509,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         nStart = GetTime();
 	    
         // If new block is an Equihash block, set the nNonce to null, because it is randomized by default.
-        if(currentAlgo == ALGO_EQUIHASH || currentAlgo == ALGO_ZHASH)
+        if(IsEquihashBasedAlgo(currentAlgo))
             newBlock->block.nBigNonce.SetNull();
 
         // Finalise it by setting the version and building the merkle root

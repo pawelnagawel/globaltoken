@@ -132,11 +132,10 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
     
-    uint8_t nBlockAlgo = algo;
     int64_t currenttime = GetAdjustedTime();
     
-    if (!chainparams.GetConsensus().Hardfork2.IsActivated((uint32_t)currenttime) && !IsAlgoAllowedBeforeHF2(nBlockAlgo)) {
-        error("Mining algorithm %s is not active yet. It will be activated with hardfork 2, at Unix-Timestamp: %" PRIu32 " // Current time: %" PRIu32, GetAlgoName(nBlockAlgo), chainparams.GetConsensus().Hardfork2.GetActivationTime(), currenttime);
+    if (!chainparams.GetConsensus().Hardfork2.IsActivated((uint32_t)currenttime) && !IsAlgoAllowedBeforeHF2(algo)) {
+        error("Mining algorithm %s is not active yet. It will be activated with hardfork 2, at Unix-Timestamp: %" PRIu32 " // Current time: %" PRIu32, GetAlgoName(algo), chainparams.GetConsensus().Hardfork2.GetActivationTime(), currenttime);
         return nullptr;
     }
     
@@ -154,7 +153,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     if (chainparams.MineBlocksOnDemand())
         pblock->SetBaseVersion(gArgs.GetArg("-blockversion", pblock->GetBaseVersion(nChainId)), nChainId);
     
-    pblock->SetAlgo(nBlockAlgo);
+    pblock->SetAlgo(algo);
 
     pblock->nTime = currenttime;
     const int64_t nMedianTimePast = pindexPrev->GetMedianTimePast();
@@ -212,7 +211,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
 
    arith_uint256 nonce;
-   if (chainparams.GetConsensus().Hardfork1.IsActivated(pblock->nTime) && (algo == ALGO_EQUIHASH || algo == ALGO_ZHASH)) {
+   if (chainparams.GetConsensus().Hardfork1.IsActivated(pblock->nTime) && (IsEquihashBasedAlgo(algo))) {
 	 // Randomise nonce for new block format.
 	 nonce = UintToArith256(GetRandHash());
 	 // Clear the top and bottom 16 bits (for local use as thread flags and counters)

@@ -3194,7 +3194,7 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     if (fCheckPOW)
         checkresult = CheckProofOfWork(block, consensusParams, equihashvalidator);
     
-    if (fCheckPOW && (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH) && !equihashvalidator) 
+    if (fCheckPOW && IsEquihashBasedAlgo(nAlgo) && !equihashvalidator) 
     {
         return state.DoS(100, error("CheckBlockHeader(): %s solution invalid", GetAlgoName(nAlgo)),
                          REJECT_INVALID, "invalid-solution");

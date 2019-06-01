@@ -115,6 +115,8 @@ std::string GetAlgoName(uint8_t Algo);
 uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound);
 std::string GetAlgoRangeString();
 bool IsAlgoAllowedBeforeHF2(uint8_t nAlgo);
+bool IsEquihashBasedAlgo(uint8_t nAlgo);
+std::string GetEquihashBasedDefaultPersonalize(uint8_t nAlgo);
 
 class CPOWAlgoProperties
 {

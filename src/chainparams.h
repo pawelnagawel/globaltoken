@@ -67,10 +67,8 @@ public:
     /** Policy: Filter transactions that do not match well-defined patterns */
     bool RequireStandard() const { return fRequireStandard; }
     uint64_t PruneAfterHeight() const { return nPruneAfterHeight; }
-	unsigned int EquihashN() const { return nEquihashN; }
-    unsigned int EquihashK() const { return nEquihashK; }
-    unsigned int ZhashN() const { return nZhashN; }
-    unsigned int ZhashK() const { return nZhashK; }
+    unsigned int GetEquihashAlgoN(uint8_t nAlgo) const;
+    unsigned int GetEquihashAlgoK(uint8_t nAlgo) const;
     unsigned int EquihashSolutionWidth(uint8_t nAlgo) const;
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }

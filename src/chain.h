@@ -429,17 +429,17 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH) {
+        if (IsEquihashBasedAlgo(GetAlgo())) {
             READWRITE(hashReserved);
         }
         READWRITE(nTime);
         READWRITE(nBits);
-        if (GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH)
+        if (IsEquihashBasedAlgo(GetAlgo()))
         {
             READWRITE(nBigNonce);
             READWRITE(nSolution);
         }
-        if(!(GetAlgo() == ALGO_EQUIHASH || GetAlgo() == ALGO_ZHASH))
+        if(!IsEquihashBasedAlgo(GetAlgo()))
         {
             READWRITE(nNonce);
         }

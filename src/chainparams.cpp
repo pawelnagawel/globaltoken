@@ -1569,7 +1569,7 @@ CAmount CChainParams::GetTreasuryAmount(CAmount coinAmount) const
 
 unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const
 {
-    assert(nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH);
+    assert(IsEquihashBasedAlgo(nAlgo));
     
     if(nAlgo == ALGO_EQUIHASH)
         return EhSolutionWidth(EquihashN(), EquihashK());
@@ -1577,6 +1577,30 @@ unsigned int CChainParams::EquihashSolutionWidth(uint8_t nAlgo) const
         return EhSolutionWidth(ZhashN(), ZhashK());
     else
         return 0;
+}
+
+unsigned int GetEquihashAlgoN(uint8_t nAlgo) const
+{
+    assert(IsEquihashBasedAlgo(nAlgo));
+    switch(nAlgo)
+    {
+        case ALGO_EQUIHASH:
+            return nEquihashN;
+        case ALGO_ZHASH:
+            return nZhashN;
+    }
+}
+
+unsigned int GetEquihashAlgoK(uint8_t nAlgo) const
+{
+    assert(IsEquihashBasedAlgo(nAlgo));
+    switch(nAlgo)
+    {
+        case ALGO_EQUIHASH:
+            return nEquihashK;
+        case ALGO_ZHASH:
+            return nZhashK;
+    }
 }
 
 void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
