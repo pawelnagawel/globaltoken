@@ -1,10 +1,12 @@
 // Copyright (c) 2019 The BeeGroup developers are EternityGroup
+// Copyright (c) 2019 The GlobalToken Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef HONEYCOMB_HASH_H
 #define HONEYCOMB_HASH_H
 
+#include <arith_uint256.h>
 #include <uint256.h>
 
 #include <crypto/algos/honeycomb/facet_one.h>
@@ -14,9 +16,9 @@
 #include <crypto/algos/honeycomb/facet_five.h>
 #include <crypto/algos/honeycomb/facet_six.h>
 
-inline uint512 HoneyBee( unsigned char *in, unsigned int sz )
+inline arith_uint512 HoneyBee( unsigned char *in, unsigned int sz )
 {
-	uint512 result;
+	arith_uint512 result;
 	memcpy( &result.begin()[ 0], &in[0],     36 );
 	memcpy( &result.begin()[36], &in[sz-28], 28 );
 	return result;    
@@ -34,8 +36,8 @@ inline uint256 HashHoneyComb( const T1 pbegin, const T1 pend )
     facet_five_context		ctx_five;
     facet_six_context     	ctx_six;
     static unsigned char pblank[1];
-    uint512 hash[12];
-    uint512 honey;
+    arith_uint512 hash[12];
+    arith_uint512 honey;
     honey = HoneyBee( (unsigned char*)static_cast<const void*>(&pbegin[0]), (pend-pbegin) * sizeof(pbegin[0]) );
     facet_one_init(&ctx_one);
     facet_one(&ctx_one, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]) );
@@ -61,7 +63,7 @@ inline uint256 HashHoneyComb( const T1 pbegin, const T1 pend )
     facet_six_close(&ctx_six, static_cast<void*>(&hash[9]));
     hash[10] = honey^hash[9];
     hash[11] = hash[8]^hash[10];	
-    return hash[11].trim256();
+    return ArithToUint512(hash[11]).trim256();
 }
 
 #endif // HONEYCOMB_HASH_H
