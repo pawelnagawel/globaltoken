@@ -330,6 +330,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/jh.c \
   crypto/algos/hashlib/keccak.c \
   crypto/algos/hashlib/luffa.c \
+  crypto/algos/hashlib/sph_sha2.c \
   crypto/algos/hashlib/sha2big.c \
   crypto/algos/hashlib/shabal.c \
   crypto/algos/hashlib/shavite.c \
