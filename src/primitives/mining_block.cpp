@@ -250,6 +250,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return HashHoneyComb(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_EH192:
+        {
+            return GetHash();
+        }
     }
     return GetHash();
 }

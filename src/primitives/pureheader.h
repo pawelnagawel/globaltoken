@@ -224,6 +224,9 @@ public:
             case ALGO_HONEYCOMB:
                 nVersion |= BLOCK_VERSION_HONEYCOMB;
                 break;
+            case ALGO_EH192:
+                nVersion |= BLOCK_VERSION_EH192;
+                break;
             default:
                 break;
         }

@@ -256,7 +256,6 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
 bool CheckEquihashSolution(const CEquihashBlockHeader *pblock, const CChainParams& params, uint8_t nAlgo, const std::string stateString)
 {
-    // if fisZhash is true, this is a Zhash Block, otherwhise Equihash.
     unsigned int n = params.GetEquihashAlgoN(nAlgo);
     unsigned int k = params.GetEquihashAlgoK(nAlgo);
 
@@ -414,7 +413,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         if (block.nSolution.size() != 0)
             return error("%s : auxpow - Found solution in GlobalToken block!", __func__);
 
-        if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
+        if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params, nAlgo))
             return error("%s : AUX POW is not valid", __func__);
         
         if(block.auxpow->getEquihashParentBlock().nSolution.size() != sol_size) {
@@ -422,10 +421,10 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
             return error("%s: AUX proof of work - %s solution has invalid size have %d need %d", __func__, GetAlgoName(nAlgo), block.nSolution.size(), sol_size);
         }
 
-        if(nAlgo == ALGO_ZHASH)
+        if(nAlgo != ALGO_EQUIHASH && IsEquihashBasedAlgo(nAlgo))
         {
-            // Check Zhash solution
-            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo, block.auxpow->strZhashConfig)) {
+            // Check Equihash solution, where Personalize String can be different.
+            if (!CheckEquihashSolution(&block.auxpow->getEquihashParentBlock(), Params(), nAlgo, block.auxpow->strEquihashPersString)) {
                 ehsolutionvalid = false;
                 return error("%s: AUX proof of work - %s solution failed. (bad %s solution)", __func__, GetAlgoName(nAlgo), GetAlgoName(nAlgo));
             }
@@ -455,7 +454,7 @@ bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params& params
         if (block.auxpow->getDefaultParentBlock().IsAuxpow())
             return error("%s : auxpow parent block has auxpow version", __func__);
 
-        if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params))
+        if (!block.auxpow->check(block.GetHash(), block.GetChainId(), params, nAlgo))
             return error("%s : AUX POW is not valid", __func__);
 
         // Check the header

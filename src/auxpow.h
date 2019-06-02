@@ -25,9 +25,9 @@ class CValidationState;
 static const unsigned char pchMergedMiningHeader[] = { 0xfa, 0xbe, 'm', 'm' };
 
 /** Operation flags */
-static const int AUXPOW_STAKE_FLAG    = 0x00001000;
-static const int AUXPOW_EQUIHASH_FLAG = 0x00002000;
-static const int AUXPOW_ZHASH_FLAG    = 0x00004000;
+static const int AUXPOW_STAKE_FLAG           = 0x00001000;
+static const int AUXPOW_EQUIHASH_FLAG        = 0x00002000;
+static const int AUXPOW_PERS_STRING_FLAG     = 0x00004000;
 static const uint32_t CURRENT_AUXPOW_VERSION = 1;
 
 /**
@@ -184,8 +184,8 @@ public:
   /** CPOSMerkleTx to save the POS coinbase tx. */
   CPOSMerkleTx            coinbasePOSTx;
   
-  /** Zhash personalization string */
-  std::string strZhashConfig;
+  /** Equihash based algo personalization string */
+  std::string strEquihashPersString;
 
 public:
 
@@ -211,8 +211,8 @@ public:
     SerializationOp (Stream& s, Operation ser_action)
   {
     READWRITE (this->nVersion);
-    if(isAuxPowZhash())
-        READWRITE(strZhashConfig);
+    if(hasEquihashPersString())
+        READWRITE(strEquihashPersString);
     if(isAuxPowPOS())
         READWRITE (coinbasePOSTx);
     else
@@ -236,17 +236,18 @@ public:
    * @param hashAuxBlock Hash of the merge-mined block.
    * @param nChainId The auxpow chain ID of the block to check.
    * @param params Consensus parameters.
+   * @param nBlockAlgo The block algo ID, of this block.
    * @return True if the auxpow is valid.
    */
   bool check (const uint256& hashAuxBlock, int nChainId,
-              const Consensus::Params& params) const;
+              const Consensus::Params& params, const uint8_t nBlockAlgo) const;
 
   /**
    * Check if we have Equihash Auxpow or AuxPOW in POS Version.
    */   
   bool isAuxPowEquihash() const;
   bool isAuxPowPOS() const;
-  bool isAuxPowZhash() const;
+  bool hasEquihashPersString() const;
 
   /**
    * Get the parent block's hash.  This is used to verify that it

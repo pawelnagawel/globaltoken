@@ -103,6 +103,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("lyra2z");
         case ALGO_HONEYCOMB:
             return std::string("honeycomb");
+        case ALGO_EH192:
+            return std::string("equihash192");
     }
     return std::string("unknown");       
 }
@@ -117,7 +119,7 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_SCRYPT;
     else if (strAlgo == "neoscrypt")
         return ALGO_NEOSCRYPT;
-    else if (strAlgo == "equihash")
+    else if (strAlgo == "equihash" || strAlgo == "zcash" || strAlgo == "equihash200" || strAlgo == "equihash2009" || strAlgo == "equihash200.9")
         return ALGO_EQUIHASH;
     else if (strAlgo == "yescrypt")
         return ALGO_YESCRYPT;
@@ -157,7 +159,7 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_JEONGHASH;
     else if (strAlgo == "keccak")
         return ALGO_KECCAK;
-    else if (strAlgo == "zhash" || strAlgo == "equihash1445" || strAlgo == "equihash144.5")
+    else if (strAlgo == "zhash" || strAlgo == "equihash144" || strAlgo == "equihash1445" || strAlgo == "equihash144_5" || strAlgo == "equihash144.5")
         return ALGO_ZHASH;
     else if (strAlgo == "globalhash")
         return ALGO_GLOBALHASH;
@@ -201,6 +203,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_LYRA2Z;
     else if (strAlgo == "honeycomb")
         return ALGO_HONEYCOMB;
+    else if (strAlgo == "equihash192" || strAlgo == "equihash1927" || strAlgo == "equihash192.7" || strAlgo == "equihash192_7")
+        return ALGO_EH192;
     else
     {
         fAlgoFound = false;
@@ -238,7 +242,7 @@ bool IsAlgoAllowedBeforeHF2(uint8_t nAlgo)
 
 bool IsEquihashBasedAlgo(uint8_t nAlgo)
 {
-    return (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH);
+    return (nAlgo == ALGO_EQUIHASH || nAlgo == ALGO_ZHASH || nAlgo == ALGO_EH192);
 }
 
 std::string GetEquihashBasedDefaultPersonalize(uint8_t nAlgo)
@@ -250,5 +254,7 @@ std::string GetEquihashBasedDefaultPersonalize(uint8_t nAlgo)
             return std::string("ZcashPoW");
         case ALGO_ZHASH:
             return std::string("GLTZhash");
+        case ALGO_EH192:
+            return std::string("GLTEh192");
     }
 }

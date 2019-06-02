@@ -226,27 +226,15 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
                 throw std::runtime_error(GetCoinbaseFeeString(DIVIDEDPAYMENTS_GENERATE_WARNING));
             }
             
-            if(nAlgo == ALGO_EQUIHASH && !gArgs.GetBoolArg("-enableequihash", false))
+            if(IsEquihashBasedAlgo(nAlgo) && !gArgs.GetBoolArg("-enableequihash", false))
             {
                 std::stringstream strStream;
                 strStream << "You cannot mine " << GetAlgoName(nAlgo) << " right now.\n"
-                << "Because of very slow solutions on CPUs " << GetAlgoName(nAlgo) << " is disabled.\n"
+                << "Because of very slow solutions on CPUs " << GetAlgoName(nAlgo) << " is disabled.\nAll equihash based algorithms are disabled by default\n"
                 << "You can enable it the following way:\n\n"
-                << "Add -enable" << GetAlgoName(nAlgo) << "=1 to your globaltoken.conf or\n"
-                << "start the daemon with the -enable" << GetAlgoName(nAlgo) << " argument.\n\n"
-                << "To activate Equihash, follow the described steps and restart your wallet.";
-                throw std::runtime_error(strStream.str());
-            }
-            
-            if(nAlgo == ALGO_ZHASH && !gArgs.GetBoolArg("-enablezhash", false))
-            {
-                std::stringstream strStream;
-                strStream << "You cannot mine " << GetAlgoName(nAlgo) << " right now.\n"
-                << "Because of very slow solutions on CPUs " << GetAlgoName(nAlgo) << " is disabled.\n"
-                << "You can enable it the following way:\n\n"
-                << "Add -enable" << GetAlgoName(nAlgo) << "=1 to your globaltoken.conf or\n"
-                << "start the daemon with the -enable" << GetAlgoName(nAlgo) << " argument.\n\n"
-                << "To activate Zhash, follow the described steps and restart your wallet.";
+                << "Add -enableequihash=1 to your globaltoken.conf or\n"
+                << "start the daemon with the -enableequihash argument.\n\n"
+                << "To activate Equihash based algorithms, follow the described steps and restart your wallet.";
                 throw std::runtime_error(strStream.str());
             }
         }
@@ -1540,7 +1528,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
     result.pushKV("baseversion", (int64_t)CURRENT_AUXPOW_VERSION);
     result.pushKV("posflag", strprintf("%08x", AUXPOW_STAKE_FLAG));
     result.pushKV("equihashflag", strprintf("%08x", AUXPOW_EQUIHASH_FLAG));
-    result.pushKV("zhashflag", strprintf("%08x", AUXPOW_ZHASH_FLAG));
+    result.pushKV("personalizeflag", strprintf("%08x", AUXPOW_PERS_STRING_FLAG));
     result.pushKV("hash", pblock->GetHash().GetHex());
     result.pushKV("chainid", pblock->GetChainId());
     result.pushKV("previousblockhash", pblock->hashPrevBlock.GetHex());
@@ -1570,12 +1558,14 @@ bool AuxMiningSubmitBlock(const std::string& hashHex,
         throw JSONRPCError(RPC_INVALID_PARAMETER, "block hash unknown");
     CBlock& block = *mit->second;
     
-    if(nAuxPoWVersion == 1 && block.GetAlgo() == ALGO_ZHASH)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Zhash is not mineable with Auxpow 1.0, use Auxpow 2.0 for Zhash!");
+    uint8_t nBlockAlgo = block.GetAlgo();
+    
+    if(nAuxPoWVersion == 1 && IsEquihashBasedAlgo(nBlockAlgo) &&  nBlockAlgo != ALGO_EQUIHASH)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("%s is not mineable with Auxpow 1.0, use Auxpow 2.0 for %s!", GetAlgoName(nBlockAlgo), GetAlgoName(nBlockAlgo)));
     
     if(nAuxPoWVersion == 1)
     {
-        if(block.GetAlgo() == ALGO_EQUIHASH)
+        if(nBlockAlgo == ALGO_EQUIHASH)
             nVersion |= AUXPOW_EQUIHASH_FLAG;
         
         CDataStream ssAuxPow(SER_NETWORK, PROTOCOL_VERSION | RPCSerializationFlags());

@@ -156,6 +156,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_LYRA2Z;
         case BLOCK_VERSION_HONEYCOMB:
             return ALGO_HONEYCOMB;
+        case BLOCK_VERSION_EH192:
+            return ALGO_EH192;
     }
     return ALGO_SHA256D;
 }

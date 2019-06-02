@@ -103,11 +103,11 @@ namespace
 {
 UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
 {
-    uint32_t nAuxpowVersion = (auxpow.isAuxPowEquihash() || auxpow.isAuxPowPOS() || auxpow.isAuxPowZhash()) ? 2 : 1;
+    uint32_t nAuxpowVersion = (auxpow.isAuxPowEquihash() || auxpow.isAuxPowPOS() || auxpow.hasEquihashPersString()) ? 2 : 1;
     
     bool fIsStake = auxpow.isAuxPowPOS();
     bool fIsEquihash = auxpow.isAuxPowEquihash();
-    bool fIsZhash = auxpow.isAuxPowZhash();
+    bool fHasPers = auxpow.hasEquihashPersString();
     const uint256 parentBlockHash = fIsEquihash ? auxpow.getEquihashParentBlock().GetHash() : auxpow.getDefaultParentBlock().GetHash();
     std::string hexTX;
     
@@ -125,8 +125,8 @@ UniValue AuxpowToJSON(const CAuxPow& auxpow, const uint8_t nAlgo)
     result.pushKV("auxpow_version", (int64_t)nAuxpowVersion);
     result.pushKV("auxpow_isstake", fIsStake);
     result.pushKV("auxpow_isequihash", fIsEquihash);
-    result.pushKV("auxpow_iszhash", fIsZhash);
-    result.pushKV("auxpow_zhash_personalization", auxpow.strZhashConfig);
+    result.pushKV("auxpow_has_equihash_pers_string", fHasPers);
+    result.pushKV("auxpow_equihash_personalization", auxpow.strEquihashPersString);
     result.pushKV("powhash", auxpow.getParentBlockPoWHash(nAlgo).GetHex());
     if(fIsEquihash)
         result.pushKV("solution", HexStr(auxpow.getEquihashParentBlock().nSolution));

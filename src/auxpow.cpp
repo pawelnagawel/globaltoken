@@ -32,9 +32,9 @@ bool CAuxPow::isAuxPowEquihash() const
     return nVersion & AUXPOW_EQUIHASH_FLAG;
 }
 
-bool CAuxPow::isAuxPowZhash() const
+bool CAuxPow::hasEquihashPersString() const
 {
-    return nVersion & AUXPOW_ZHASH_FLAG;
+    return nVersion & AUXPOW_PERS_STRING_FLAG;
 }
 
 bool CAuxPow::isAuxPowPOS() const
@@ -44,8 +44,14 @@ bool CAuxPow::isAuxPowPOS() const
 
 bool
 CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
-                const Consensus::Params& params) const
+                const Consensus::Params& params, const uint8_t nBlockAlgo) const
 {
+    if (isAuxPowEquihash() && !IsEquihashBasedAlgo(nBlockAlgo))
+        return error(strprintf("Aux POW equihash block flag is initialized, but the algo is not an equihash algorithm (%s).", GetAlgoName(nBlockAlgo)));
+    
+    if (!isAuxPowEquihash() && IsEquihashBasedAlgo(nBlockAlgo))
+        return error(strprintf("Aux POW parent has %s enabled, but the auxpow version does not include the equihash flag.", GetAlgoName(nBlockAlgo)));
+    
     bool fSameChainId = isAuxPowEquihash() ? (getEquihashParentBlock().GetChainId () == nChainId) : (getDefaultParentBlock().GetChainId () == nChainId);
     
     int nIndex = isAuxPowPOS() ? coinbasePOSTx.nIndex : coinbaseTx.nIndex;
@@ -58,8 +64,25 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
     if (vChainMerkleBranch.size() > 30)
         return error("Aux POW chain merkle branch too long");
     
-    if(isAuxPowZhash() && strZhashConfig.length() != 8)
-        return error("Aux POW Zhash personalization string size has wrong size.");
+    if(hasEquihashPersString())
+    {
+        if(IsEquihashBasedAlgo(nBlockAlgo))
+        {
+            if(nBlockAlgo == ALGO_EQUIHASH) // Equihash has no unique pers strings, the equihash pow use the same pers string for all coins!
+            {
+                return error("Aux POW does not allow a pers string for pure equihash!");
+            }
+            else
+            {
+                if(strEquihashPersString.length() != 8)
+                    return error(strprintf("Aux POW personalization string size has wrong size. Expected: 8, Got: %d", strEquihashPersString.length()));
+            }
+        }
+        else
+        {
+            return error(strprintf("Aux POW personalization string not allowed for algo '%s'!", GetAlgoName(nBlockAlgo)));
+        }
+    }
 
     // Check that the chain merkle root is in the coinbase
     const uint256 nRootHash
@@ -184,7 +207,7 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
   /* Set auxpow flag right now, since we take the block hash below.  */
   header.SetAuxpowVersion(true);
   
-  if((IsEquihashBasedAlgo(header.GetAlgo())) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG || nAuxPowVersion & AUXPOW_ZHASH_FLAG))
+  if((IsEquihashBasedAlgo(header.GetAlgo())) && (nAuxPowVersion & AUXPOW_EQUIHASH_FLAG || nAuxPowVersion & AUXPOW_PERS_STRING_FLAG))
   {
       if(nAuxPowVersion & AUXPOW_STAKE_FLAG)
       {
@@ -231,12 +254,12 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           header.auxpow->coinbasePOSTx.nIndex = 0;
           header.auxpow->equihashparentBlock = equihashblock;
           
-          if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
+          if(nAuxPowVersion & AUXPOW_PERS_STRING_FLAG)
           {
-              // Set the Zhash personalization string.
+              // Set the personalization string for equihash based algos.
               assert (GetEquihashBasedDefaultPersonalize(header.GetAlgo()).length() == 8);
-              header.auxpow->strZhashConfig = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
-              assert (header.auxpow->strZhashConfig.length() == 8);
+              header.auxpow->strEquihashPersString = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
+              assert (header.auxpow->strEquihashPersString.length() == 8);
           }
       }
       else
@@ -279,12 +302,12 @@ CAuxPow::initAuxPow (CBlockHeader& header, uint32_t nAuxPowVersion)
           header.auxpow->coinbaseTx.nIndex = 0;
           header.auxpow->equihashparentBlock = parent;
           
-          if(nAuxPowVersion & AUXPOW_ZHASH_FLAG)
+          if(nAuxPowVersion & AUXPOW_PERS_STRING_FLAG)
           {
-              // Set the Zhash personalization string.
+              // Set the personalization string for equihash based algos.
               assert (GetEquihashBasedDefaultPersonalize(header.GetAlgo()).length() == 8);
-              header.auxpow->strZhashConfig = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
-              assert (header.auxpow->strZhashConfig.length() == 8);
+              header.auxpow->strEquihashPersString = GetEquihashBasedDefaultPersonalize(header.GetAlgo());
+              assert (header.auxpow->strEquihashPersString.length() == 8);
           }
       }
   }

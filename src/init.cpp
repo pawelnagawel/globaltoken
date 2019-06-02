@@ -561,8 +561,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += HelpMessageOpt("-blockversion=<n>", "Override block version to test forking scenarios");
 		
     strUsage += HelpMessageOpt("-coinbasetxnaddress=<address>", _("If you mine with getblocktemplate coinbasetxn, you need to paste an address here. It will be used to generate the coinbasetxn"));
-    strUsage += HelpMessageOpt("-enableequihash", _("Activate equihash to mine blocks with this algorithm solo in this wallet. (default: disabled)"));
-    strUsage += HelpMessageOpt("-enablezhash", _("Activate zhash to mine blocks with this algorithm solo in this wallet. (default: disabled)"));
+    strUsage += HelpMessageOpt("-enableequihash", _("Activate this option, to mine equihash based algorithms in this wallet. (default: disabled)"));
     strUsage += HelpMessageGroup(_("RPC server options:"));
     strUsage += HelpMessageOpt("-rest", strprintf(_("Accept public REST requests (default: %u)"), DEFAULT_REST_ENABLE));
     strUsage += HelpMessageOpt("-rpcallowip=<ip>", _("Allow JSON-RPC connections from specified source. Valid for <ip> are a single IP (e.g. 1.2.3.4), a network/netmask (e.g. 1.2.3.4/255.255.255.0) or a network/CIDR (e.g. 1.2.3.4/24). This option can be specified multiple times"));
