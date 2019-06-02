@@ -47,10 +47,10 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
                 const Consensus::Params& params, const uint8_t nBlockAlgo) const
 {
     if (isAuxPowEquihash() && !IsEquihashBasedAlgo(nBlockAlgo))
-        return error(strprintf("Aux POW equihash block flag is initialized, but the algo is not an equihash algorithm (%s).", GetAlgoName(nBlockAlgo)));
+        return error("Aux POW equihash block flag is initialized, but the algo is not an equihash algorithm (%s).", GetAlgoName(nBlockAlgo));
     
     if (!isAuxPowEquihash() && IsEquihashBasedAlgo(nBlockAlgo))
-        return error(strprintf("Aux POW parent has %s enabled, but the auxpow version does not include the equihash flag.", GetAlgoName(nBlockAlgo)));
+        return error("Aux POW parent has %s enabled, but the auxpow version does not include the equihash flag.", GetAlgoName(nBlockAlgo));
     
     bool fSameChainId = isAuxPowEquihash() ? (getEquihashParentBlock().GetChainId () == nChainId) : (getDefaultParentBlock().GetChainId () == nChainId);
     
@@ -75,12 +75,12 @@ CAuxPow::check (const uint256& hashAuxBlock, int nChainId,
             else
             {
                 if(strEquihashPersString.length() != 8)
-                    return error(strprintf("Aux POW personalization string size has wrong size. Expected: 8, Got: %d", strEquihashPersString.length()));
+                    return error("Aux POW personalization string size has wrong size. Expected: 8, Got: %d", strEquihashPersString.length());
             }
         }
         else
         {
-            return error(strprintf("Aux POW personalization string not allowed for algo '%s'!", GetAlgoName(nBlockAlgo)));
+            return error("Aux POW personalization string not allowed for algo '%s'!", GetAlgoName(nBlockAlgo));
         }
     }
 
