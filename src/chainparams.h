@@ -107,6 +107,8 @@ protected:
     unsigned int nZhashK = 0;
     unsigned int nEh192N = 0;
     unsigned int nEh192K = 0;
+    unsigned int nMarsN = 0;
+    unsigned int nMarsK = 0;
     std::vector<std::string> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
     std::string bech32_hrp;

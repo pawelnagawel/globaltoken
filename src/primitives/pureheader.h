@@ -227,6 +227,9 @@ public:
             case ALGO_EH192:
                 nVersion |= BLOCK_VERSION_EH192;
                 break;
+            case ALGO_MARS:
+                nVersion |= BLOCK_VERSION_MARS;
+                break;
             default:
                 break;
         }

@@ -152,6 +152,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2Z]          = CPOWAlgoProperties(ALGO_LYRA2Z, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_HONEYCOMB]       = CPOWAlgoProperties(ALGO_HONEYCOMB, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_EH192]           = CPOWAlgoProperties(ALGO_EH192, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_MARS]            = CPOWAlgoProperties(ALGO_MARS, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -213,16 +214,19 @@ public:
         pchMessageStart[3] = 0x2d;
         nDefaultPort = 9319;
         nPruneAfterHeight = 750000;
-        const size_t N = 200, K = 9, ZN = 144, ZK = 5, EH192_7_N = 192, EH192_7_K = 7;
+        const size_t N = 200, K = 9, ZN = 144, ZK = 5, EH192_7_N = 192, EH192_7_K = 7, MARS_N = 96, MARS_K = 5;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(EH192_7_N, EH192_7_K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(MARS_N, MARS_K));
         nEquihashN = N;
         nEquihashK = K;
         nZhashN = ZN;
         nZhashK = ZK;
         nEh192N = EH192_7_N;
         nEh192K = EH192_7_K;
+        nMarsN = MARS_N;
+        nMarsK = MARS_K;
 
         genesis = CreateGenesisBlock(1480961109, 2864352084, 0x1d00ffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -647,6 +651,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2Z]          = CPOWAlgoProperties(ALGO_LYRA2Z, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_HONEYCOMB]       = CPOWAlgoProperties(ALGO_HONEYCOMB, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_EH192]           = CPOWAlgoProperties(ALGO_EH192, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_MARS]            = CPOWAlgoProperties(ALGO_MARS, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -703,16 +708,19 @@ public:
         pchMessageStart[3] = 0x5b;
         nDefaultPort = 19319;
         nPruneAfterHeight = 1000;
-        const size_t N = 200, K = 9, ZN = 144, ZK = 5, EH192_7_N = 192, EH192_7_K = 7;  // Same as mainchain.
+        const size_t N = 200, K = 9, ZN = 144, ZK = 5, EH192_7_N = 192, EH192_7_K = 7, MARS_N = 96, MARS_K = 5;  // Same as mainchain.
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(EH192_7_N, EH192_7_K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(MARS_N, MARS_K));
         nEquihashN = N;
         nEquihashK = K;
         nZhashN = ZN;
         nZhashK = ZK;
         nEh192N = EH192_7_N;
         nEh192K = EH192_7_K;
+        nMarsN = MARS_N;
+        nMarsK = MARS_K;
 
         genesis = CreateGenesisBlock(1480961109, 2864352084, 0x1d00ffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -1120,6 +1128,7 @@ public:
         consensus.aPOWAlgos[ALGO_LYRA2Z]          = CPOWAlgoProperties(ALGO_LYRA2Z, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_HONEYCOMB]       = CPOWAlgoProperties(ALGO_HONEYCOMB, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_EH192]           = CPOWAlgoProperties(ALGO_EH192, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
+        consensus.aPOWAlgos[ALGO_MARS]            = CPOWAlgoProperties(ALGO_MARS, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -1160,16 +1169,19 @@ public:
         pchMessageStart[3] = 0xd6;
         nDefaultPort = 20144;
         nPruneAfterHeight = 1000;
-        const size_t N = 48, K = 5, ZN = 96, ZK = 5, EH192_7_N = 48, EH192_7_K = 5;
+        const size_t N = 48, K = 5, ZN = 96, ZK = 5, EH192_7_N = 48, EH192_7_K = 5, MARS_N = 96, MARS_K = 5;
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(N, K));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(ZN, ZK));
         BOOST_STATIC_ASSERT(equihash_parameters_acceptable(EH192_7_N, EH192_7_K));
+        BOOST_STATIC_ASSERT(equihash_parameters_acceptable(MARS_N, MARS_K));
         nEquihashN = N;
         nEquihashK = K;
         nZhashN = ZN;
         nZhashK = ZK;
         nEh192N = EH192_7_N;
         nEh192K = EH192_7_K;
+        nMarsN = MARS_N;
+        nMarsK = MARS_K;
 
         genesis = CreateGenesisBlock(1480961109, 2, 0x207fffff, 1, 100 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -1593,6 +1605,8 @@ unsigned int CChainParams::GetEquihashAlgoN(uint8_t nAlgo) const
             return nZhashN;
         case ALGO_EH192:
             return nEh192N;
+        case ALGO_MARS:
+            return nMarsN;
     }
 }
 
@@ -1607,6 +1621,8 @@ unsigned int CChainParams::GetEquihashAlgoK(uint8_t nAlgo) const
             return nZhashK;
         case ALGO_EH192:
             return nEh192K;
+        case ALGO_MARS:
+            return nMarsK;
     }
 }
 
