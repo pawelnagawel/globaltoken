@@ -823,7 +823,7 @@ template bool Equihash<48,5>::OptimisedSolve(const eh_HashState& base_state,
                                              const std::function<bool(EhSolverCancelCheck)> cancelled);
 template bool Equihash<48,5>::IsValidSolution(const eh_HashState& base_state, std::vector<unsigned char> soln);
 // Explicit instantiations for Equihash<192,7>
-template int Equihash<192,7>::InitialiseState(eh_HashState& base_state);
+template int Equihash<192,7>::InitialiseState(eh_HashState& base_state, const std::string strPersonalstring);
 template bool Equihash<192,7>::BasicSolve(const eh_HashState& base_state,
                                          const std::function<bool(std::vector<unsigned char>)> validBlock,
                                          const std::function<bool(EhSolverCancelCheck)> cancelled);
