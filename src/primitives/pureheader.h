@@ -239,6 +239,9 @@ public:
             case ALGO_DEDAL:
                 nVersion |= BLOCK_VERSION_DEDAL;
                 break;
+            case ALGO_C11:
+                nVersion |= BLOCK_VERSION_C11;
+                break;
             default:
                 break;
         }
