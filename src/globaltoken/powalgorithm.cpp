@@ -111,6 +111,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("x12");
         case ALGO_HEX:
             return std::string("hex");
+        case ALGO_DEDAL:
+            return std::string("dedal");
     }
     return std::string("unknown");       
 }
@@ -217,6 +219,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_X12;
     else if (strAlgo == "hex")
         return ALGO_HEX;
+    else if (strAlgo == "dedal")
+        return ALGO_DEDAL;
     else
     {
         fAlgoFound = false;

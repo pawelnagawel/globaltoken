@@ -164,6 +164,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_X12;
         case BLOCK_VERSION_HEX:
             return ALGO_HEX;
+        case BLOCK_VERSION_DEDAL:
+            return ALGO_DEDAL;
     }
     return ALGO_SHA256D;
 }

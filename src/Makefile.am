@@ -429,7 +429,9 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/honeycomb/honeycomb_types.h \
   crypto/algos/honeycomb/hash_honeycomb.h \
   crypto/algos/hex/hex.c \
-  crypto/algos/hex/hex.h
+  crypto/algos/hex/hex.h \
+  crypto/algos/dedal/dedal.c \
+  crypto/algos/dedal/dedal.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S
