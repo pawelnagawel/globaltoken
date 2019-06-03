@@ -59,6 +59,7 @@ enum : uint8_t {
     ALGO_HONEYCOMB      = 44,
     ALGO_EH192          = 45,
     ALGO_MARS           = 46,
+    ALGO_X12            = 47,
     NUM_ALGOS_IMPL };
 
 enum {
@@ -110,6 +111,7 @@ enum {
     BLOCK_VERSION_HONEYCOMB         = (45 << 9),
     BLOCK_VERSION_EH192             = (46 << 9),
     BLOCK_VERSION_MARS              = (47 << 9),
+    BLOCK_VERSION_X12               = (48 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;

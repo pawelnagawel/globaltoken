@@ -258,6 +258,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return GetHash();
         }
+        case ALGO_X12:
+        {
+            return HashX12(BEGIN(nVersion), END(nNonce));
+        }
     }
     return GetHash();
 }

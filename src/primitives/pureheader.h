@@ -230,6 +230,9 @@ public:
             case ALGO_MARS:
                 nVersion |= BLOCK_VERSION_MARS;
                 break;
+            case ALGO_X12:
+                nVersion |= BLOCK_VERSION_X12;
+                break;
             default:
                 break;
         }

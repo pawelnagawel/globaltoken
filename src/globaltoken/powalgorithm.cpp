@@ -107,6 +107,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("equihash192");
         case ALGO_MARS:
             return std::string("mars");
+        case ALGO_X12:
+            return std::string("x12");
     }
     return std::string("unknown");       
 }
@@ -209,6 +211,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_EH192;
     else if (strAlgo == "mars" || strAlgo == "equihash96" || strAlgo == "equihash965" || strAlgo == "equihash96_5" || strAlgo == "equihash96.5")
         return ALGO_MARS;
+    else if (strAlgo == "x12")
+        return ALGO_X12;
     else
     {
         fAlgoFound = false;
