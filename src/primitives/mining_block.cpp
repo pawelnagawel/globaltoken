@@ -9,6 +9,7 @@
 // Copyright (c) 2017 The Raven Core developers
 // Copyright (c) 2018-2019 The GlobalToken Core developers
 // Copyright (c) 2018-2018 The Pptp Core developers
+// Copyright (c) 2017-2018 The XDNA Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -261,6 +262,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         case ALGO_X12:
         {
             return HashX12(BEGIN(nVersion), END(nNonce));
+        }
+        case ALGO_HEX:
+        {
+            return HashHEX(BEGIN(nVersion), END(nNonce));
         }
     }
     return GetHash();

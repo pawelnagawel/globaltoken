@@ -40,6 +40,7 @@
 #include <crypto/algos/Lyra2RE/Lyra2.h>
 #include <crypto/algos/argon2d/hashargon.h>
 #include <crypto/algos/SWIFFTX/SWIFFTX.h>
+#include <crypto/algos/hex/hex.h>
 #include <openssl/sha.h>
 
 #ifdef GLOBALDEFINED
@@ -132,6 +133,22 @@ inline int GetX21sSelection(const uint256 PrevBlockHash, int index) {
     #define START_OF_LAST_16_NIBBLES_OF_HASH 48
     int hashSelection = PrevBlockHash.GetNibble(START_OF_LAST_16_NIBBLES_OF_HASH + index);
     return(hashSelection);
+}
+
+/* ----------- HEX ------------------------------------------------ */
+template <typename T>
+inline uint256 HashHEX(const T* pbegin, const T* pend)
+{
+    static T pblank[1];
+
+    uint256 hash;
+
+    const void* data = pbegin == pend ? pblank : pbegin;
+    size_t      len  = (pend - pbegin) * sizeof(T);
+
+    hex_hash(data, len, hash.begin());
+
+    return hash;
 }
 
 /* x22i-hash */

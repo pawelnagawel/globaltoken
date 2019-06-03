@@ -233,6 +233,9 @@ public:
             case ALGO_X12:
                 nVersion |= BLOCK_VERSION_X12;
                 break;
+            case ALGO_HEX:
+                nVersion |= BLOCK_VERSION_HEX;
+                break;
             default:
                 break;
         }
