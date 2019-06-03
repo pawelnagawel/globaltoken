@@ -41,6 +41,7 @@
 #include <crypto/algos/argon2d/hashargon.h>
 #include <crypto/algos/SWIFFTX/SWIFFTX.h>
 #include <crypto/algos/hex/hex.h>
+#include <crypto/algos/dedal/dedal.h>
 #include <openssl/sha.h>
 
 #ifdef GLOBALDEFINED
@@ -133,6 +134,21 @@ inline int GetX21sSelection(const uint256 PrevBlockHash, int index) {
     #define START_OF_LAST_16_NIBBLES_OF_HASH 48
     int hashSelection = PrevBlockHash.GetNibble(START_OF_LAST_16_NIBBLES_OF_HASH + index);
     return(hashSelection);
+}
+
+template <typename T>
+inline uint256 HashDedal(const T* pbegin, const T* pend)
+{
+    static T pblank[1];
+
+    uint256 hash;
+
+    const void* data = pbegin == pend ? pblank : pbegin;
+    size_t      len  = (pend - pbegin) * sizeof(T);
+
+    dedal_hash(data, hash.begin(), len);
+
+    return hash;
 }
 
 /* ----------- HEX ------------------------------------------------ */
