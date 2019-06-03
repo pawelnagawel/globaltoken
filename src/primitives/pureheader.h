@@ -242,6 +242,9 @@ public:
             case ALGO_C11:
                 nVersion |= BLOCK_VERSION_C11;
                 break;
+            case ALGO_PHI1612:
+                nVersion |= BLOCK_VERSION_PHI1612;
+                break;
             default:
                 break;
         }

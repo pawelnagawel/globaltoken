@@ -157,6 +157,7 @@ public:
         consensus.aPOWAlgos[ALGO_HEX]             = CPOWAlgoProperties(ALGO_HEX, ArithToUint256(~arith_uint256(0) >>20), 1);
         consensus.aPOWAlgos[ALGO_DEDAL]           = CPOWAlgoProperties(ALGO_DEDAL, ArithToUint256(~arith_uint256(0) >>20), 1);
         consensus.aPOWAlgos[ALGO_C11]             = CPOWAlgoProperties(ALGO_C11, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PHI1612]         = CPOWAlgoProperties(ALGO_PHI1612, ArithToUint256(~arith_uint256(0) >>20), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -660,6 +661,7 @@ public:
         consensus.aPOWAlgos[ALGO_HEX]             = CPOWAlgoProperties(ALGO_HEX, ArithToUint256(~arith_uint256(0) >>20), 1);
         consensus.aPOWAlgos[ALGO_DEDAL]           = CPOWAlgoProperties(ALGO_DEDAL, ArithToUint256(~arith_uint256(0) >>16), 1);
         consensus.aPOWAlgos[ALGO_C11]             = CPOWAlgoProperties(ALGO_C11, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PHI1612]         = CPOWAlgoProperties(ALGO_PHI1612, ArithToUint256(~arith_uint256(0) >>20), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -1141,6 +1143,7 @@ public:
         consensus.aPOWAlgos[ALGO_HEX]             = CPOWAlgoProperties(ALGO_HEX, ArithToUint256(~arith_uint256(0) >>1), 1);
         consensus.aPOWAlgos[ALGO_DEDAL]           = CPOWAlgoProperties(ALGO_DEDAL, ArithToUint256(~arith_uint256(0) >>1), 1);
         consensus.aPOWAlgos[ALGO_C11]             = CPOWAlgoProperties(ALGO_C11, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_PHI1612]         = CPOWAlgoProperties(ALGO_PHI1612, ArithToUint256(~arith_uint256(0) >>1), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
