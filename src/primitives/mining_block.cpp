@@ -279,6 +279,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return Phi1612(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_PHI2:
+        {
+            return PHI2(BEGIN(nVersion), END(nNonce));
+        }
     }
     return GetHash();
 }

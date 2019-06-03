@@ -136,6 +136,56 @@ inline int GetX21sSelection(const uint256 PrevBlockHash, int index) {
     return(hashSelection);
 }
 
+template<typename T1>
+inline uint256 PHI2(const T1 pbegin, const T1 pend)
+{
+    unsigned char hash[128] = { 0 };
+    unsigned char hashA[64] = { 0 };
+    unsigned char hashB[64] = { 0 };
+    static unsigned char pblank[1];
+    uint512 output;
+
+    sph_cubehash512_context ctx_cubehash;
+    sph_jh512_context ctx_jh;
+    sph_gost512_context ctx_gost;
+    sph_echo512_context ctx_echo;
+    sph_skein512_context ctx_skein;
+
+    sph_cubehash512_init(&ctx_cubehash);
+    sph_cubehash512(&ctx_cubehash, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
+    sph_cubehash512_close(&ctx_cubehash, (void*)hashB);
+
+    LYRA2(&hashA[ 0], 32, &hashB[ 0], 32, &hashB[ 0], 32, 1, 8, 8);
+    LYRA2(&hashA[32], 32, &hashB[32], 32, &hashB[32], 32, 1, 8, 8);
+
+    sph_jh512_init(&ctx_jh);
+    sph_jh512(&ctx_jh, static_cast<const void*>(hashA), 64);
+    sph_jh512_close(&ctx_jh, static_cast<void*>(hash));
+
+    if (hash[0] & 1) {
+        sph_gost512_init(&ctx_gost);
+        sph_gost512(&ctx_gost, static_cast<const void*>(hash), 64);
+        sph_gost512_close(&ctx_gost, static_cast<void*>(hash));
+    } else {
+        sph_echo512_init(&ctx_echo);
+        sph_echo512(&ctx_echo, static_cast<const void*>(hash), 64);
+        sph_echo512_close(&ctx_echo, static_cast<void*>(hash));
+
+        sph_echo512_init(&ctx_echo);
+        sph_echo512(&ctx_echo, static_cast<const void*>(hash), 64);
+        sph_echo512_close(&ctx_echo, static_cast<void*>(hash));
+    }
+    sph_skein512_init(&ctx_skein);
+    sph_skein512(&ctx_skein, static_cast<const void*>(hash), 64);
+    sph_skein512_close(&ctx_skein, static_cast<void*>(hash));
+
+    for (int i=0; i<32; i++)
+        hash[i] ^= hash[i+32];
+
+    memcpy(static_cast<void*>(&output), hash, 32);
+    return output.trim256();
+}
+
 /* ----------- Phi1612 Hash ------------------------------------------------ */
 
 template<typename T1>

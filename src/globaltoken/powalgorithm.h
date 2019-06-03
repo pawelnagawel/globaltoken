@@ -64,6 +64,7 @@ enum : uint8_t {
     ALGO_DEDAL          = 49,
     ALGO_C11            = 50,
     ALGO_PHI1612        = 51,
+    ALGO_PHI2           = 52,
     NUM_ALGOS_IMPL };
 
 enum {
@@ -120,6 +121,7 @@ enum {
     BLOCK_VERSION_DEDAL             = (50 << 9),
     BLOCK_VERSION_C11               = (51 << 9),
     BLOCK_VERSION_PHI1612           = (52 << 9),
+    BLOCK_VERSION_PHI2              = (53 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;
