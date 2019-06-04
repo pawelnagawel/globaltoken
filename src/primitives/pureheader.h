@@ -248,6 +248,9 @@ public:
             case ALGO_PHI2:
                 nVersion |= BLOCK_VERSION_PHI2;
                 break;
+            case ALGO_X16RT:
+                nVersion |= BLOCK_VERSION_X16RT;
+                break;
             default:
                 break;
         }

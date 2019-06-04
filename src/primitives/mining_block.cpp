@@ -283,6 +283,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return PHI2(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_X16RT:
+        {
+            int32_t nTimeX16r = nTime & 0xffffff80;
+            uint256 hashTime = Hash(BEGIN(nTimeX16r), END(nTimeX16r));
+            return HashX16R(BEGIN(nVersion), END(nNonce), hashTime);
+        }
     }
     return GetHash();
 }
