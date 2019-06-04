@@ -128,7 +128,7 @@ public:
         consensus.aPOWAlgos[ALGO_PADIHASH]        = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_JEONGHASH]       = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ZHASH]           = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0007ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.aPOWAlgos[ALGO_KECCAK]          = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAKC]         = CPOWAlgoProperties(ALGO_KECCAKC, uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_GLOBALHASH]      = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_QUBIT]           = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_SKEIN]           = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
@@ -633,7 +633,7 @@ public:
         consensus.aPOWAlgos[ALGO_PADIHASH]        = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_JEONGHASH]       = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ZHASH]           = CPOWAlgoProperties(ALGO_ZHASH, uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.aPOWAlgos[ALGO_KECCAK]          = CPOWAlgoProperties(ALGO_KECCAK, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAKC]         = CPOWAlgoProperties(ALGO_KECCAKC, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_GLOBALHASH]      = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_QUBIT]           = CPOWAlgoProperties(ALGO_QUBIT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_SKEIN]           = CPOWAlgoProperties(ALGO_SKEIN, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
@@ -1116,7 +1116,7 @@ public:
         consensus.aPOWAlgos[ALGO_PADIHASH]        = CPOWAlgoProperties(ALGO_PADIHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_JEONGHASH]       = CPOWAlgoProperties(ALGO_JEONGHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ZHASH]           = CPOWAlgoProperties(ALGO_ZHASH, uint256S("0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"), 1);
-        consensus.aPOWAlgos[ALGO_KECCAK]          = CPOWAlgoProperties(ALGO_KECCAK, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_KECCAKC]         = CPOWAlgoProperties(ALGO_KECCAKC, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_GLOBALHASH]      = CPOWAlgoProperties(ALGO_GLOBALHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_QUBIT]           = CPOWAlgoProperties(ALGO_QUBIT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_SKEIN]           = CPOWAlgoProperties(ALGO_SKEIN, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);

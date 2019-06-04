@@ -55,8 +55,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("padihash");
         case ALGO_JEONGHASH:
             return std::string("jeonghash");
-        case ALGO_KECCAK:
-            return std::string("keccak");
+        case ALGO_KECCAKC:
+            return std::string("keccakc");
         case ALGO_ZHASH:
             return std::string("zhash");
         case ALGO_GLOBALHASH:
@@ -171,8 +171,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_PADIHASH;
     else if (strAlgo == "jeonghash")
         return ALGO_JEONGHASH;
-    else if (strAlgo == "keccak")
-        return ALGO_KECCAK;
+    else if (strAlgo == "keccak" || strAlgo == "keccakc")
+        return ALGO_KECCAKC;
     else if (strAlgo == "zhash" || strAlgo == "equihash144" || strAlgo == "equihash1445" || strAlgo == "equihash144_5" || strAlgo == "equihash144.5")
         return ALGO_ZHASH;
     else if (strAlgo == "globalhash")

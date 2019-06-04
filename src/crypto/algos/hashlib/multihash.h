@@ -774,7 +774,7 @@ inline uint256 HashCPU23R(const T1 pbegin, const T1 pend, const uint256 PrevBloc
 }
 
 template<typename T1>
-inline uint256 HashKeccak(const T1 pbegin, const T1 pend)
+inline uint256 HashKeccakC(const T1 pbegin, const T1 pend)
 {
     sph_keccak256_context ctx_keccak;
     static unsigned char pblank[1];
