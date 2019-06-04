@@ -251,6 +251,9 @@ public:
             case ALGO_X16RT:
                 nVersion |= BLOCK_VERSION_X16RT;
                 break;
+            case ALGO_TRIBUS:
+                nVersion |= BLOCK_VERSION_TRIBUS;
+                break;
             default:
                 break;
         }

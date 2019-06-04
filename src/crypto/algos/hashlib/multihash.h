@@ -137,6 +137,37 @@ inline int GetX21sSelection(const uint256 PrevBlockHash, int index) {
 }
 
 template<typename T1>
+inline uint256 Tribus(const T1 pbegin, const T1 pend)
+
+{
+    sph_jh512_context        ctx_jh;
+    sph_keccak512_context    ctx_keccak;
+    sph_echo512_context      ctx_echo;
+    static unsigned char pblank[1];
+
+#ifndef QT_NO_DEBUG
+    //std::string strhash;
+    //strhash = "";
+#endif
+    
+    uint512 hash[3];
+
+    sph_jh512_init(&ctx_jh);
+    sph_jh512 (&ctx_jh, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
+    sph_jh512_close(&ctx_jh, static_cast<void*>(&hash[0]));
+
+    sph_keccak512_init(&ctx_keccak);
+    sph_keccak512 (&ctx_keccak, static_cast<const void*>(&hash[0]), 64);
+    sph_keccak512_close(&ctx_keccak, static_cast<void*>(&hash[1]));
+
+    sph_echo512_init(&ctx_echo);
+    sph_echo512 (&ctx_echo, static_cast<const void*>(&hash[1]), 64);
+    sph_echo512_close(&ctx_echo, static_cast<void*>(&hash[2]));
+	
+    return hash[2].trim256();
+}
+
+template<typename T1>
 inline uint256 PHI2(const T1 pbegin, const T1 pend)
 {
     unsigned char hash[128] = { 0 };
