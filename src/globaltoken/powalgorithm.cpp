@@ -127,6 +127,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("allium");
         case ALGO_ARCTICHASH:
             return std::string("arctichash");
+        case ALGO_DESERTHASH:
+            return std::string("deserthash");
     }
     return std::string("unknown");       
 }
@@ -249,6 +251,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_ALLIUM;
     else if (strAlgo == "arctichash")
         return ALGO_ARCTICHASH;
+    else if (strAlgo == "deserthash")
+        return ALGO_DESERTHASH;
     else
     {
         fAlgoFound = false;

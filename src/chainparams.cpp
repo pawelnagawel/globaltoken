@@ -163,6 +163,7 @@ public:
         consensus.aPOWAlgos[ALGO_TRIBUS]          = CPOWAlgoProperties(ALGO_TRIBUS, ArithToUint256(~arith_uint256(0) >>20), 1);
         consensus.aPOWAlgos[ALGO_ALLIUM]          = CPOWAlgoProperties(ALGO_ALLIUM, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARCTICHASH]      = CPOWAlgoProperties(ALGO_ARCTICHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_DESERTHASH]      = CPOWAlgoProperties(ALGO_DESERTHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -672,6 +673,7 @@ public:
         consensus.aPOWAlgos[ALGO_TRIBUS]          = CPOWAlgoProperties(ALGO_TRIBUS, ArithToUint256(~arith_uint256(0) >>16), 1);
         consensus.aPOWAlgos[ALGO_ALLIUM]          = CPOWAlgoProperties(ALGO_ALLIUM, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARCTICHASH]      = CPOWAlgoProperties(ALGO_ARCTICHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_DESERTHASH]      = CPOWAlgoProperties(ALGO_DESERTHASH, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)
@@ -1159,6 +1161,7 @@ public:
         consensus.aPOWAlgos[ALGO_TRIBUS]          = CPOWAlgoProperties(ALGO_TRIBUS, ArithToUint256(~arith_uint256(0) >>1), 1);
         consensus.aPOWAlgos[ALGO_ALLIUM]          = CPOWAlgoProperties(ALGO_ALLIUM, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARCTICHASH]      = CPOWAlgoProperties(ALGO_ARCTICHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_DESERTHASH]      = CPOWAlgoProperties(ALGO_DESERTHASH, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         
         // verification
         for(uint8_t i = 0; i < NUM_ALGOS; i++)

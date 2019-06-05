@@ -305,6 +305,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return ArcticHash(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_DESERTHASH:
+        {
+            return DesertHash(BEGIN(nVersion), END(nNonce));
+        }
     }
     return GetHash();
 }

@@ -180,6 +180,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_ALLIUM;
         case BLOCK_VERSION_ARCTICHASH:
             return ALGO_ARCTICHASH;
+        case BLOCK_VERSION_DESERTHASH:
+            return ALGO_DESERTHASH;
     }
     return ALGO_SHA256D;
 }

@@ -260,6 +260,9 @@ public:
             case ALGO_ARCTICHASH:
                 nVersion |= BLOCK_VERSION_ARCTICHASH;
                 break;
+            case ALGO_DESERTHASH:
+                nVersion |= BLOCK_VERSION_DESERTHASH;
+                break;
             default:
                 break;
         }

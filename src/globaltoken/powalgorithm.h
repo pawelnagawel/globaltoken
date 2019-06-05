@@ -69,6 +69,7 @@ enum : uint8_t {
     ALGO_TRIBUS         = 54,
     ALGO_ALLIUM         = 55,
     ALGO_ARCTICHASH     = 56,
+    ALGO_DESERTHASH     = 57,
     NUM_ALGOS_IMPL };
 
 enum {
@@ -130,6 +131,7 @@ enum {
     BLOCK_VERSION_TRIBUS            = (55 << 9),
     BLOCK_VERSION_ALLIUM            = (56 << 9),
     BLOCK_VERSION_ARCTICHASH        = (57 << 9),
+    BLOCK_VERSION_DESERTHASH        = (58 << 9),
 };
     
 const int NUM_ALGOS_OLD = 30;
