@@ -431,7 +431,9 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hex/hex.c \
   crypto/algos/hex/hex.h \
   crypto/algos/dedal/dedal.c \
-  crypto/algos/dedal/dedal.h
+  crypto/algos/dedal/dedal.h \
+  crypto/algos/allium/allium.c \
+  crypto/algos/allium/allium.h
 
 if USE_ASM
 crypto_algos_libglobaltoken_algos_a_SOURCES += crypto/algos/neoscrypt/neoscrypt_asm.S

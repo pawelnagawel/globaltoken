@@ -294,6 +294,12 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return Tribus(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_ALLIUM:
+        {
+            uint256 thash;
+            allium_hash(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
     }
     return GetHash();
 }

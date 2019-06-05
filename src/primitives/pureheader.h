@@ -254,6 +254,9 @@ public:
             case ALGO_TRIBUS:
                 nVersion |= BLOCK_VERSION_TRIBUS;
                 break;
+            case ALGO_ALLIUM:
+                nVersion |= BLOCK_VERSION_ALLIUM;
+                break;
             default:
                 break;
         }

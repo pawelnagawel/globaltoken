@@ -123,6 +123,8 @@ std::string GetAlgoName(uint8_t Algo)
             return std::string("x16rt");
         case ALGO_TRIBUS:
             return std::string("tribus");
+        case ALGO_ALLIUM:
+            return std::string("allium");
     }
     return std::string("unknown");       
 }
@@ -241,6 +243,8 @@ uint8_t GetAlgoByName(std::string strAlgo, uint8_t fallback, bool &fAlgoFound)
         return ALGO_X16RT;
     else if (strAlgo == "tribus")
         return ALGO_TRIBUS;
+    else if (strAlgo == "allium")
+        return ALGO_ALLIUM;
     else
     {
         fAlgoFound = false;
