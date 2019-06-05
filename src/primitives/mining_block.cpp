@@ -32,6 +32,7 @@
 #include <crypto/algos/argon2d/hashargon.h>
 #include <crypto/algos/yespower/yespower.h>
 #include <crypto/algos/honeycomb/hash_honeycomb.h>
+#include <crypto/algos/allium/allium.h>
 
 uint256 CDefaultBlockHeader::GetHash() const
 {
