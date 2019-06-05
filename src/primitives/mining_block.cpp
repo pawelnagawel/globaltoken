@@ -300,6 +300,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
             allium_hash(BEGIN(nVersion), BEGIN(thash));
             return thash;
         }
+        case ALGO_ARCTICHASH:
+        {
+            return ArcticHash(BEGIN(nVersion), END(nNonce));
+        }
     }
     return GetHash();
 }

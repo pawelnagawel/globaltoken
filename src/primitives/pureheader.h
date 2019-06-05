@@ -257,6 +257,9 @@ public:
             case ALGO_ALLIUM:
                 nVersion |= BLOCK_VERSION_ALLIUM;
                 break;
+            case ALGO_ARCTICHASH:
+                nVersion |= BLOCK_VERSION_ARCTICHASH;
+                break;
             default:
                 break;
         }
