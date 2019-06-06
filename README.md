@@ -60,7 +60,6 @@ InstantSend Support
 ````
 
 *sha256d is the default algorithm
-
 Use "algo=x16r" in globaltoken.conf to change the algorithm in use.
 
 Links
@@ -85,6 +84,16 @@ http://gltminer.com/
 
 Running GlobalToken with Docker
 ----------------
+Please install the latest Docker CE and Docker Compose from Docker.com 
+
+Docker CE
+Linux : https://docs.docker.com/install/linux/docker-ce/ubuntu/  
+Windows : https://docs.docker.com/docker-for-windows/install/  
+Mac : https://docs.docker.com/docker-for-mac/install/  
+
+Docker Compose
+https://docs.docker.com/compose/install/
+
 There are two ways to run GlobalToken with Docker.  The easiest way to is to use the container from Docker Hub, alternatively you can build your own.  GlobalToken container be found on DockerHub at : ````cryptoandcoffee/globaltoken````  
 ````
 docker pull cryptoandcoffee/globaltoken
@@ -117,11 +126,9 @@ docker run -d -p 9319:9319 -v ./local_globaltoken.conf:/root/.globaltoken/global
 
 ----------------
 
-Build GlobalToken Docker container and manage with Docker-compose
+Build GlobalToken Docker container and manage with Docker Compose
 ----------------
-Requirements : Latest docker-ce and docker-compose
-
-Build your own "globaltoken" container
+Build your own local container named "globaltoken"
 ````
 git clone https://github.com/globaltoken/globaltoken
 cd globaltoken ; docker-compose build
