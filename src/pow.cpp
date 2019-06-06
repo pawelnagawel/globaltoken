@@ -93,7 +93,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	// find first block in averaging interval
 	// Go back by what we want to be nAveragingInterval blocks per algo
 	const CBlockIndex* pindexFirst = pindexLast;
-	for (int i = 0; pindexFirst && i < NUM_ALGOS*params.nAveragingInterval; i++)
+	for (int i = 0; pindexFirst && i < NUM_ALGOS_OLD*params.nAveragingInterval; i++)
 	{
 		pindexFirst = pindexFirst->pprev;
 	}
@@ -122,7 +122,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 	bnNew /= params.nAveragingTargetTimespan;
 
 	//Per-algo retarget
-	int nAdjustments = pindexPrevAlgo->nHeight + NUM_ALGOS - 1 - pindexLast->nHeight;
+	int nAdjustments = pindexPrevAlgo->nHeight + NUM_ALGOS_OLD - 1 - pindexLast->nHeight;
 	if (nAdjustments > 0)
 	{
 		for (int i = 0; i < nAdjustments; i++)
