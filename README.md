@@ -59,7 +59,7 @@ InstantSend Support
 30. zhash
 ````
 
-*sha256d is the default algorithm
+*sha256d is the default algorithm  
 Use "algo=x16r" in globaltoken.conf to change the algorithm in use.
 
 Links
@@ -80,11 +80,11 @@ https://bitcointalk.org/index.php?topic=5035302.0
 
 Mining
 ----------------
-http://gltminer.com/
+https://gltminer.com/
 
 Running GlobalToken with Docker
 ----------------
-Please install the latest Docker CE and Docker Compose from Docker.com 
+Please install the latest Docker CE and Docker Compose from https://docker.com 
 
 Docker CE  
 Linux : https://docs.docker.com/install/linux/docker-ce/ubuntu/  
