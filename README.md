@@ -63,16 +63,34 @@ InstantSend Support
 
 Use "algo=x16r" in globaltoken.conf to change the algorithm in use.
 
-# Running GlobalToken with Docker
+Links
 ----------------
-There are two ways to run GlobalToken with Docker.  The easiest way to is to use the container from Docker Hub, alternatively you can build your own.  
+https://globaltoken.org  
+https://explorer.globaltoken.org
 
-GlobalToken container be found on DockerHub at : ````cryptoandcoffee/globaltoken````  
+Price Info
+----------------
+https://coinmarketcap.com/currencies/globaltoken/  
+https://coingecko.com/en/coins/globaltoken
+
+Social
+----------------
+https://discord.gg/futDmxM  
+https://twitter.com/globaltokencoin  
+https://bitcointalk.org/index.php?topic=5035302.0
+
+Mining
+----------------
+http://gltminer.com/
+
+Running GlobalToken with Docker
+----------------
+There are two ways to run GlobalToken with Docker.  The easiest way to is to use the container from Docker Hub, alternatively you can build your own.  GlobalToken container be found on DockerHub at : ````cryptoandcoffee/globaltoken````  
 ````
 docker pull cryptoandcoffee/globaltoken
 ````
 
-Run GlobalToken from Docker Hub in the Foreground  
+Run GlobalToken from Docker Hub in the Foreground (press CTRL-C to stop) 
 ````
 docker run cryptoandcoffee/globaltoken
 ````
@@ -99,46 +117,30 @@ docker run -d -p 9319:9319 -v ./local_globaltoken.conf:/root/.globaltoken/global
 
 ----------------
 
-# Build a GlobalToken container with Docker-compose  
+Build GlobalToken Docker container and manage with Docker-compose
+----------------
 Requirements : Latest docker-ce and docker-compose
+
+Build your own "globaltoken" container
 ````
 git clone https://github.com/globaltoken/globaltoken
 cd globaltoken ; docker-compose build
 ````
-# Run GlobalToken in the Foreground with Docker-compose  
+
+Run GlobalToken in the Foreground with Docker-compose  
 ````
 docker-compose up
 ````
 
-# Run GlobalToken in the Background (forever) with Docker-compose
+Run GlobalToken in the Background (forever) with Docker-compose
 ````
 docker-compose up -d
 ````
 
-# Deploy GlobalToken to Docker Swarm
+Deploy GlobalToken to Docker Swarm
 ````
 docker stack deploy -f docker-compose.yml globaltoken_swarm
 ````
-
-Links
-----------------
-https://globaltoken.org  
-https://explorer.globaltoken.org
-
-Price Info
-----------------
-https://coinmarketcap.com/currencies/globaltoken/  
-https://coingecko.com/en/coins/globaltoken
-
-Social
-----------------
-https://discord.gg/futDmxM  
-https://twitter.com/globaltokencoin  
-https://bitcointalk.org/index.php?topic=5035302.0
-
-Mining
-----------------
-http://gltminer.com/
 
 For more information, as well as an immediately useable, binary version of
 the GlobalToken Core software, see https://globaltoken.org/#downloads, or read the
