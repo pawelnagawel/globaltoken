@@ -105,7 +105,7 @@ public:
         consensus.BIP65Height = 380000; // not hashed yet ...
         consensus.BIP66Height = 360000; // not hashed yet ...
         consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537617600 /* Hardfork Activation Time */, 327036 /* Hardfork Activation Height */, uint256S("0xfa2a1f17edbb39496a4d1c9ee643797bc2b0d72dd9038e3646872c0fd7d3fd56") /* Hardfork Activation Blockhash */);
-        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1560765600 /* Hardfork Activation Time */, 700000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
+        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1562760000 /* Hardfork Activation Time */, 700000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
         consensus.aPOWAlgos[ALGO_SHA256D]         = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_SCRYPT]          = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_X11]             = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
@@ -616,7 +616,7 @@ public:
         consensus.BIP65Height = 100; // not hashed yet.
         consensus.BIP66Height = 10; // not hashed yet.
         consensus.Hardfork1.Initialize(1 /* Hardfork ID */, 1537185600 /* Hardfork Activation Time */, 2153 /* Hardfork Activation Height */, uint256S("0x944140d0c734a7a94ca0b306cd3ad8c9bfe70889c927ca6c4852e5644b621733") /* Hardfork Activation Blockhash */);
-        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1557871200 /* Hardfork Activation Time */, 10000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
+        consensus.Hardfork2.Initialize(2 /* Hardfork ID */, 1560715200 /* Hardfork Activation Time */, 10000 /* Hardfork Activation Height - unknown yet */, uint256() /* Hardfork Activation Blockhash - unknown yet */);
         consensus.aPOWAlgos[ALGO_SHA256D]         = CPOWAlgoProperties(ALGO_SHA256D, uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_SCRYPT]          = CPOWAlgoProperties(ALGO_SCRYPT, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_X11]             = CPOWAlgoProperties(ALGO_X11, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
