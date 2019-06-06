@@ -86,12 +86,12 @@ Running GlobalToken with Docker
 ----------------
 Please install the latest Docker CE and Docker Compose from Docker.com 
 
-Docker CE
+Docker CE  
 Linux : https://docs.docker.com/install/linux/docker-ce/ubuntu/  
 Windows : https://docs.docker.com/docker-for-windows/install/  
 Mac : https://docs.docker.com/docker-for-mac/install/  
 
-Docker Compose
+Docker Compose  
 https://docs.docker.com/compose/install/
 
 There are two ways to run GlobalToken with Docker.  The easiest way to is to use the container from Docker Hub, alternatively you can build your own.  GlobalToken container be found on DockerHub at : ````cryptoandcoffee/globaltoken````  
@@ -134,19 +134,19 @@ git clone https://github.com/globaltoken/globaltoken
 cd globaltoken ; docker-compose build
 ````
 
-Run GlobalToken in the Foreground with Docker-compose  
+Run GlobalToken in the Foreground with Docker Compose  
 ````
 docker-compose up
 ````
 
-Run GlobalToken in the Background (forever) with Docker-compose
+Run GlobalToken in the Background (forever) with Docker Compose
 ````
 docker-compose up -d
 ````
 
 Deploy GlobalToken to Docker Swarm
 ````
-docker stack deploy -f docker-compose.yml globaltoken_swarm
+docker stack deploy globaltoken_swarm
 ````
 
 For more information, as well as an immediately useable, binary version of
