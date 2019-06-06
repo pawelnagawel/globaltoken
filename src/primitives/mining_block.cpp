@@ -309,6 +309,10 @@ uint256 CDefaultBlockHeader::GetPoWHash(uint8_t algo) const
         {
             return DesertHash(BEGIN(nVersion), END(nNonce));
         }
+        case ALGO_CRYPTOANDCOFFEE:
+        {
+            return cryptoandcoffee_hash(BEGIN(nVersion), END(nNonce));
+        }
     }
     return GetHash();
 }

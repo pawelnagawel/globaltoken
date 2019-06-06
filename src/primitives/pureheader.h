@@ -263,6 +263,9 @@ public:
             case ALGO_DESERTHASH:
                 nVersion |= BLOCK_VERSION_DESERTHASH;
                 break;
+            case ALGO_CRYPTOANDCOFFEE:
+                nVersion |= BLOCK_VERSION_CRYPTOANDCOFFEE;
+                break;
             default:
                 break;
         }
