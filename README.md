@@ -8,12 +8,15 @@ What is GlobalToken?
 GlobalToken (GLT) is a Proof of Work Multi-Algorithm cryptocurrency. GlobalToken uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network. GlobalToken Core is the name of open source software which enables the use of this currency.
 
 ````
-Codebase: Bitcoin
+Codebase : Bitcoin
+RPC Port: 9320
+P2P / Masternode Port : 9319
+Masternode Collateral : 50,000 GLT
 PoW Phase : Active
 Block Size : 10MB
 Transaction Size : 1MB
 TPM / Transactions Per Minute : 44247
-TPS / Transactions Per Second: 737.45
+TPS / Transactions Per Second : 737.45
 MultiShield Retargeting (DGB powered)
 Merged Mining Enabled (NMC powered)
 AuxPoW Enabled
@@ -60,20 +63,77 @@ InstantSend Support
 
 Use "algo=x16r" in globaltoken.conf to change the algorithm in use.
 
+# Running GlobalToken with Docker
+----------------
+There are two ways to run GlobalToken with Docker.  The easiest way to is to use the container from Docker Hub, alternatively you can build your own.  
+
+GlobalToken container be found on DockerHub at : ````cryptoandcoffee/globaltoken````  
+````
+docker pull cryptoandcoffee/globaltoken
+````
+
+Run GlobalToken from Docker Hub in the Foreground  
+````
+docker run cryptoandcoffee/globaltoken
+````
+
+Run GlobalToken from Docker Hub in the Background (forever)  
+````
+docker run -d cryptoandcoffee/globaltoken
+````
+
+Run GlobalToken with a permanent volume
+````
+docker run -d -v ./local_global_token_directory:/root/.globaltoken/cryptoandcoffee/globaltoken cryptoandcoffee/globaltoken
+````
+
+Run GlobalToken with a permanent volume and expose a port
+````
+docker run -d -p 9319:9319 -v ./local_global_token_directory:/root/.globaltoken/ cryptoandcoffee/globaltoken   
+````
+
+Run GlobalToken with a permanent volume and expose a port and custom configuration file
+````
+docker run -d -p 9319:9319 -v ./local_globaltoken.conf:/root/.globaltoken/globaltoken.conf -v ./local_global_token_directory:/root/.globaltoken/ cryptoandcoffee/globaltoken
+````
+
+----------------
+
+# Build a GlobalToken container with Docker-compose  
+Requirements : Latest docker-ce and docker-compose
+````
+git clone https://github.com/globaltoken/globaltoken
+cd globaltoken ; docker-compose build
+````
+# Run GlobalToken in the Foreground with Docker-compose  
+````
+docker-compose up
+````
+
+# Run GlobalToken in the Background (forever) with Docker-compose
+````
+docker-compose up -d
+````
+
+# Deploy GlobalToken to Docker Swarm
+````
+docker stack deploy -f docker-compose.yml globaltoken_swarm
+````
+
 Links
 ----------------
-https://globaltoken.org
+https://globaltoken.org  
 https://explorer.globaltoken.org
 
 Price Info
 ----------------
-https://coinmarketcap.com/currencies/globaltoken/
+https://coinmarketcap.com/currencies/globaltoken/  
 https://coingecko.com/en/coins/globaltoken
 
 Social
 ----------------
-https://discord.gg/futDmxM
-https://twitter.com/globaltokencoin
+https://discord.gg/futDmxM  
+https://twitter.com/globaltokencoin  
 https://bitcointalk.org/index.php?topic=5035302.0
 
 Mining
