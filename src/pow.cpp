@@ -26,7 +26,7 @@ bool IsAuxPowAllowed(const CBlockIndex* pindexLast, const CBlockHeader *pblock, 
     if(!pblock->IsAuxpow())
         return true; // This is not an auxpow block! - The block is allowed!
     
-    if(params.Hardfork2.IsActivated(pblock->nTime))
+    if(params.Hardfork2.IsActivated(pindexLast->nTime))
     {
         if(params.nMaxAuxpowBlocks == ~uint32_t(0)) // Max value of uint32_t means, there is no limit for auxpow blocks.
             return true;
@@ -37,8 +37,7 @@ bool IsAuxPowAllowed(const CBlockIndex* pindexLast, const CBlockHeader *pblock, 
             return false; // No block yet, auxpow unallowed!
         
         // If this block has genesis diff, it is allowed to mine auxpow!
-        // The correctness of the nBits is checked earlier in ContextualCheckBlockHeader, so if we have genesis diff here, it's correct.
-        if(pblock->nBits == npowWorkLimit)
+        if(GetNextWorkRequired(pindexLast, pblock, params, algo) == npowWorkLimit)
             return true;
         
         uint32_t blocksfound = 0;
@@ -81,7 +80,7 @@ bool IsAuxPowAllowed(const CBlockIndex* pindexLast, const CBlockHeader *pblock, 
     }
     else
     {
-        if(params.Hardfork1.IsActivated(pblock->nTime))
+        if(params.Hardfork1.IsActivated(pindexLast->nTime))
             return true; // Hardfork 1 has full auxpow support.
         else
             return false; // Before hardfork 1, there was no auxpow.
