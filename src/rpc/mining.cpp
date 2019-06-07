@@ -695,6 +695,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  },\n"
             "  \"masternode_payments_started\" :  true|false, (boolean) true, if masternode payments started\n"
             "  \"masternode_payments_enforced\" : true|false, (boolean) true, if masternode payments are enforced\n"
+            "  \"auxpow_allowed\" : true|false,               (boolean) true, if this blockheight is allowed for merge mining.\n"
             "}\n"
 
             "\nExamples:\n"
@@ -1129,6 +1130,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("masternode", masternodeObj);
     result.pushKV("masternode_payments_started", consensusParams.Hardfork1.IsActivated(pblock->nTime));
     result.pushKV("masternode_payments_enforced", sporkManager.IsSporkActive(SPORK_5_MASTERNODE_PAYMENT_ENFORCEMENT));
+    result.pushKV("auxpow_allowed", IsAuxPowAllowed(pindexPrev, pblock, consensusParams, pblock->GetAlgo()));
 
     if (!pblocktemplate->vchCoinbaseCommitment.empty() && fSupportsSegwit) {
         result.pushKV("default_witness_commitment", HexStr(pblocktemplate->vchCoinbaseCommitment.begin(), pblocktemplate->vchCoinbaseCommitment.end()));
@@ -1525,6 +1527,7 @@ UniValue AuxMiningCreateBlock(const CScript& scriptPubKey)
         throw std::runtime_error("invalid difficulty bits in block");
 
     UniValue result(UniValue::VOBJ);
+    result.pushKV("auxpow_allowed", IsAuxPowAllowed(pindexPrev, pblock, Params().GetConsensus(), pblock->GetAlgo()));
     result.pushKV("baseversion", (int64_t)CURRENT_AUXPOW_VERSION);
     result.pushKV("posflag", strprintf("%08x", AUXPOW_STAKE_FLAG));
     result.pushKV("equihashflag", strprintf("%08x", AUXPOW_EQUIHASH_FLAG));
@@ -1605,6 +1608,11 @@ UniValue createauxblock(const JSONRPCRequest& request)
             "1. address      (string, required) specify coinbase transaction payout address\n"
             "\nResult:\n"
             "{\n"
+            "  \"auxpow_allowed\" :   (boolean) true, if this blockheight is allowed for merge mining, false if merge mining is not allowed at this height.\n"
+            "  \"baseversion\"        (numeric) the current auxpow version.\n"
+            "  \"posflag\"            (string) hex flag for auxpow 2.0 proof of stake hybrid merge mining\n"
+            "  \"equihashflag\"       (string) hex flag for auxpow 2.0 equihash based blocks.\n"
+            "  \"personalizeflag\"    (string) hex flag for auxpow 2.0 equihash algos personalisation string.\n"
             "  \"hash\"               (string) hash of the created block\n"
             "  \"chainid\"            (numeric) chain ID for this block\n"
             "  \"previousblockhash\"  (string) hash of the previous block\n"
