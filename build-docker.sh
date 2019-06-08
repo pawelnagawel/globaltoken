@@ -1,4 +1,8 @@
+# Copyright (c) 2019 Crypto and Coffee | https://cryptoandcoffee.com/ however
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 # Maintained by Crypto and Coffee | https://cryptoandcoffee.com
+
 #Docker uses this file internally to build GlobalToken for Ubuntu 16.04.  This code is portable for other Ubuntu/Debian usage.
 #Setup dependencies
 echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
