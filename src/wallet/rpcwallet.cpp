@@ -3644,7 +3644,7 @@ UniValue generate(const JSONRPCRequest& request)
     int num_generate = request.params[0].get_int();
     
     uint8_t algo = currentAlgo;
-    bool fAlgoFound = true;
+    bool fAlgoFound = false;
     if (!request.params[2].isNull()) {
         algo = GetAlgoByName(request.params[2].get_str(), algo, fAlgoFound);
     }
@@ -4012,7 +4012,7 @@ UniValue getauxblock(const JSONRPCRequest& request)
     std::shared_ptr<CReserveScript> coinbaseScript;
     pwallet->GetScriptForMining(coinbaseScript);
     
-    bool fAccepted = false;
+    bool fAccepted = false, fAlgoFound = false;
     uint8_t nAlgo = currentAlgo;
     const int nAuxPoWVersion =  (request.params.size() == 4) ? request.params[3].get_int() : (request.params.size() == 3) ? request.params[2].get_int() : 1;
 
