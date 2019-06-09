@@ -322,11 +322,9 @@ uint256 CMultihasher::GetHash() const
         {
             assert(buf.size() == 80);
             uint32_t nTime;
-            unsigned char timeBuffer[4];
             memcpy(&nTime, buf.data() + 68, 4);
             int32_t nTimeX16r = nTime & 0xffffff80;
-            memcpy(&timeBuffer, &nTimeX16r, 4);
-            uint256 hashTime = Hash(timeBuffer, timeBuffer + 3);
+            uint256 hashTime = Hash(static_cast<char*>(static_cast<void*>(&nTimeX16r)), static_cast<char*>(static_cast<void*>(&nTimeX16r))+4);
             return HashX16R(buf.data(), buf.data() + buf.size(), hashTime);
         }
         case ALGO_TRIBUS:
