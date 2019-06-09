@@ -97,7 +97,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "listunspent", 2, "addresses" },
     { "listunspent", 3, "include_unsafe" },
     { "listunspent", 4, "query_options" },
-    { "getauxblock", 2, "auxpowversion"},
+    { "getauxblock", 3, "auxpowversion"},
     { "getblock", 1, "verbosity" },
     { "getblock", 1, "verbose" },
     { "getblockheader", 1, "verbose" },

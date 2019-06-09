@@ -4111,9 +4111,9 @@ bool VerifyAuxpowBlockIndex(std::string &strErrMsg, const Consensus::Params& con
 
     CBlockIndex* pAuxPowValidationCheckIndex = nullptr;
     CBlockHeader currentBlockHeader;
-    uint32_t vectorsize = vAuxpowValidation.size();
+    size_t vectorsize = vAuxpowValidation.size();
     
-    for(uint32_t i = 0; i < vectorsize; i++)
+    for(size_t i = 0; i < vectorsize; i++)
     {
         uint256 currentBlockHash = vAuxpowValidation[i];
         if (mapBlockIndex.count(currentBlockHash) != 0)

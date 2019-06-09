@@ -5,6 +5,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <primitives/pureheader.h>
+#include <globaltoken/multihasher.h>
 
 #include <hash.h>
 #include <utilstrencodings.h>
@@ -43,20 +44,12 @@ CDefaultBlockHeader CPureBlockHeader::GetDefaultBlockHeader() const
 
 uint256 CPureBlockHeader::GetPoWHash() const
 {
-    return GetPoWHash(GetAlgo());
+    return SerializeMultiAlgoHash(*this, GetAlgo());
 }
 
 uint256 CPureBlockHeader::GetPoWHash(uint8_t nAlgo) const
 {
-    if(IsEquihashBasedAlgo(nAlgo))
-    {
-        CEquihashBlockHeader block;
-        block = CPureBlockHeader::GetEquihashBlockHeader();
-        return block.GetHash();
-    }
-    CDefaultBlockHeader block;
-    block = CPureBlockHeader::GetDefaultBlockHeader();
-    return block.GetPoWHash(nAlgo);
+    return SerializeMultiAlgoHash(*this, nAlgo);
 }
 
 uint8_t CPureBlockHeader::GetAlgo() const

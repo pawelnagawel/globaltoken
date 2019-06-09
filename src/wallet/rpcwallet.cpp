@@ -4012,7 +4012,7 @@ UniValue getauxblock(const JSONRPCRequest& request)
     std::shared_ptr<CReserveScript> coinbaseScript;
     pwallet->GetScriptForMining(coinbaseScript);
     
-    bool fAccepted = false, fAlgoFound = false;
+    bool fAccepted = false, fAlgoFound = true;
     uint8_t nAlgo = currentAlgo;
     const int nAuxPoWVersion =  (request.params.size() == 4) ? request.params[3].get_int() : (request.params.size() == 3) ? request.params[2].get_int() : 1;
 

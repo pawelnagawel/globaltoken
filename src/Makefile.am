@@ -463,6 +463,8 @@ libbitcoin_consensus_a_SOURCES = \
   primitives/pureheader.h \
   primitives/transaction.cpp \
   primitives/transaction.h \
+  globaltoken/multihasher.cpp \
+  globaltoken/multihasher.h \
   pubkey.cpp \
   pubkey.h \
   script/bitcoinconsensus.cpp \

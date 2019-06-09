@@ -1646,7 +1646,7 @@ UniValue createauxblock(const JSONRPCRequest& request)
     const CScript scriptPubKey = GetScriptForDestination(coinbaseScript);
     
     uint8_t nAlgo = currentAlgo;
-    bool fAlgoFound = false;
+    bool fAlgoFound = true;
     if (!request.params[1].isNull()) {
         nAlgo = GetAlgoByName(request.params[1].get_str(), nAlgo, fAlgoFound);
     }
