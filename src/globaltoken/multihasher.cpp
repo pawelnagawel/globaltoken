@@ -24,7 +24,6 @@
 #include <crypto/algos/Lyra2RE/Lyra2RE.h>
 #include <crypto/algos/Lyra2RE/Lyra2Z.h>
 #include <crypto/algos/blake/hashblake.h>
-#include <crypto/algos/bcrypt/bcrypt.h>
 #include <crypto/algos/argon2d/hashargon.h>
 #include <crypto/algos/yespower/yespower.h>
 #include <crypto/algos/honeycomb/hash_honeycomb.h>
