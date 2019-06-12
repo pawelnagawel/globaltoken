@@ -170,11 +170,9 @@ inline uint256 Tribus(const T1 pbegin, const T1 pend)
 template<typename T1>
 inline uint256 PHI2(const T1 pbegin, const T1 pend)
 {
-    unsigned char hash[128] = { 0 };
-    unsigned char hashA[64] = { 0 };
-    unsigned char hashB[64] = { 0 };
+    arith_uint512 hash, hashA, hashB;
     static unsigned char pblank[1];
-    uint512 output;
+    arith_uint256 workHash1, workHash2;
 
     sph_cubehash512_context ctx_cubehash;
     sph_jh512_context ctx_jh;
@@ -184,37 +182,38 @@ inline uint256 PHI2(const T1 pbegin, const T1 pend)
 
     sph_cubehash512_init(&ctx_cubehash);
     sph_cubehash512(&ctx_cubehash, (pbegin == pend ? pblank : static_cast<const void*>(&pbegin[0])), (pend - pbegin) * sizeof(pbegin[0]));
-    sph_cubehash512_close(&ctx_cubehash, (void*)hashB);
+    sph_cubehash512_close(&ctx_cubehash, static_cast<void*>(&hashB));
 
-    LYRA2(&hashA[ 0], 32, &hashB[ 0], 32, &hashB[ 0], 32, 1, 8, 8);
-    LYRA2(&hashA[32], 32, &hashB[32], 32, &hashB[32], 32, 1, 8, 8);
+    LYRA2_old(static_cast<unsigned char*>(static_cast<void*>(&hashA)), 32, static_cast<unsigned char*>(static_cast<void*>(&hashB)), 32, static_cast<unsigned char*>(static_cast<void*>(&hashB)), 32, 1, 8, 8);
+    LYRA2_old(static_cast<unsigned char*>(static_cast<void*>(&hashA)) + 32, 32, static_cast<unsigned char*>(static_cast<void*>(&hashB)) + 32, 32, static_cast<unsigned char*>(static_cast<void*>(&hashB)) + 32, 32, 1, 8, 8);
 
     sph_jh512_init(&ctx_jh);
-    sph_jh512(&ctx_jh, static_cast<const void*>(hashA), 64);
-    sph_jh512_close(&ctx_jh, static_cast<void*>(hash));
+    sph_jh512(&ctx_jh, static_cast<const void*>(&hashA), 64);
+    sph_jh512_close(&ctx_jh, static_cast<void*>(&hash));
 
-    if (hash[0] & 1) {
+    if (*static_cast<unsigned char*>(static_cast<void*>(&hash)) & 1) {
         sph_gost512_init(&ctx_gost);
-        sph_gost512(&ctx_gost, static_cast<const void*>(hash), 64);
-        sph_gost512_close(&ctx_gost, static_cast<void*>(hash));
+        sph_gost512(&ctx_gost, static_cast<const void*>(&hash), 64);
+        sph_gost512_close(&ctx_gost, static_cast<void*>(&hash));
     } else {
         sph_echo512_init(&ctx_echo);
-        sph_echo512(&ctx_echo, static_cast<const void*>(hash), 64);
-        sph_echo512_close(&ctx_echo, static_cast<void*>(hash));
+        sph_echo512(&ctx_echo, static_cast<const void*>(&hash), 64);
+        sph_echo512_close(&ctx_echo, static_cast<void*>(&hash));
 
         sph_echo512_init(&ctx_echo);
-        sph_echo512(&ctx_echo, static_cast<const void*>(hash), 64);
-        sph_echo512_close(&ctx_echo, static_cast<void*>(hash));
+        sph_echo512(&ctx_echo, static_cast<const void*>(&hash), 64);
+        sph_echo512_close(&ctx_echo, static_cast<void*>(&hash));
     }
     sph_skein512_init(&ctx_skein);
-    sph_skein512(&ctx_skein, static_cast<const void*>(hash), 64);
-    sph_skein512_close(&ctx_skein, static_cast<void*>(hash));
+    sph_skein512(&ctx_skein, static_cast<const void*>(&hash), 64);
+    sph_skein512_close(&ctx_skein, static_cast<void*>(&hash));
+    
+    memcpy(&workHash1, static_cast<unsigned char*>(static_cast<void*>(&hash)), 32);
+    memcpy(&workHash2, static_cast<unsigned char*>(static_cast<void*>(&hash)) + 32, 32);
+    
+    workHash1 ^= workHash2;
 
-    for (int i=0; i<32; i++)
-        hash[i] ^= hash[i+32];
-
-    memcpy(static_cast<void*>(&output), hash, 32);
-    return output.trim256();
+    return ArithToUint256(workHash1);
 }
 
 /* ----------- Phi1612 Hash ------------------------------------------------ */

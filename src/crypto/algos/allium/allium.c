@@ -56,13 +56,13 @@ void allium_hash(const char* input, char* state)
     sph_keccak256(&ctx_keccak, hashA, 32);
     sph_keccak256_close(&ctx_keccak, hashB);
 
-    LYRA2(hashA, 32, hashB, 32, hashB, 32, 1, 8, 8);
+    LYRA2_old(hashA, 32, hashB, 32, hashB, 32, 1, 8, 8);
 
     sph_cubehash256_init(&ctx_cube);
     sph_cubehash256(&ctx_cube, hashA, 32);
     sph_cubehash256_close(&ctx_cube, hashB);
 
-    LYRA2(hashA, 32, hashB, 32, hashB, 32, 1, 8, 8);
+    LYRA2_old(hashA, 32, hashB, 32, hashB, 32, 1, 8, 8);
 
     sph_skein256_init(&ctx_skein);
     sph_skein256(&ctx_skein, hashA, 32);
