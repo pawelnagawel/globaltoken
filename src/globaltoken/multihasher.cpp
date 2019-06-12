@@ -219,11 +219,9 @@ uint256 CMultihasher::GetHash() const
             yescrypt_r32_hash((const char*)buf.data(), (char*)&thash);
             return thash;
         }
-        case ALGO_BCRYPT:
+        case ALGO_X25X:
         {
-            uint256 thash;
-            bcrypt((const char*)buf.data(), (char*)&thash);
-            return thash;
+            return HashX25X(buf.data(), buf.data() + buf.size());
         }
         case ALGO_ARGON2D:
         {

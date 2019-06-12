@@ -129,8 +129,8 @@ uint8_t CPureBlockHeader::GetAlgo() const
             return ALGO_YESCRYPT_R8;
         case BLOCK_VERSION_YESCRYPT_R32:
             return ALGO_YESCRYPT_R32;
-        case BLOCK_VERSION_BCRYPT:
-            return ALGO_BCRYPT;
+        case BLOCK_VERSION_X25X:
+            return ALGO_X25X;
         case BLOCK_VERSION_ARGON2D:
             return ALGO_ARGON2D;
         case BLOCK_VERSION_ARGON2I:

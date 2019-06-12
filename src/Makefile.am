@@ -330,6 +330,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/jh.c \
   crypto/algos/hashlib/keccak.c \
   crypto/algos/hashlib/luffa.c \
+  crypto/algos/hashlib/panama.c \
   crypto/algos/hashlib/sph_sha2.c \
   crypto/algos/hashlib/sha2big.c \
   crypto/algos/hashlib/shabal.c \
@@ -349,6 +350,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/sph_jh.h \
   crypto/algos/hashlib/sph_keccak.h \
   crypto/algos/hashlib/sph_luffa.h \
+  crypto/algos/hashlib/sph_panama.h \
   crypto/algos/hashlib/sph_sha2.h \
   crypto/algos/hashlib/sph_shabal.h \
   crypto/algos/hashlib/sph_shavite.h \
@@ -359,6 +361,8 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/hashlib/sph_whirlpool.h \
   crypto/algos/hashlib/whirlpool.c \
   crypto/algos/hashlib/aes_helper.c \
+  crypto/algos/hashlib/lane.c \
+  crypto/algos/hashlib/lane.h \
   crypto/algos/hashlib/multihash.h \
   crypto/algos/Lyra2RE/Lyra2.c \
   crypto/algos/Lyra2RE/Lyra2.h \
@@ -391,8 +395,6 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c \
-  crypto/algos/bcrypt/bcrypt.cpp \
-  crypto/algos/bcrypt/bcrypt.h \
   crypto/algos/argon2d/argon2.h \
   crypto/algos/argon2d/core.h \
   crypto/algos/argon2d/encoding.h \

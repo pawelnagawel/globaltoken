@@ -142,7 +142,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, ArithToUint256(~arith_uint256(0) >>11), 1);
+        consensus.aPOWAlgos[ALGO_X25X]            = CPOWAlgoProperties(ALGO_X25X, uint256S("0000ffff00000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2D]         = CPOWAlgoProperties(ALGO_ARGON2D, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2I]         = CPOWAlgoProperties(ALGO_ARGON2I, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_CPU23R]          = CPOWAlgoProperties(ALGO_CPU23R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
@@ -655,7 +655,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("00000fffff000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, ArithToUint256(~arith_uint256(0) >>11), 1);
+        consensus.aPOWAlgos[ALGO_X25X]            = CPOWAlgoProperties(ALGO_X25X, uint256S("0000ffff00000000000000000000000000000000000000000000000000000000"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2D]         = CPOWAlgoProperties(ALGO_ARGON2D, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2I]         = CPOWAlgoProperties(ALGO_ARGON2I, uint256S("00007fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_CPU23R]          = CPOWAlgoProperties(ALGO_CPU23R, uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
@@ -1146,7 +1146,7 @@ public:
         consensus.aPOWAlgos[ALGO_YESCRYPT_R24]    = CPOWAlgoProperties(ALGO_YESCRYPT_R24, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R8]     = CPOWAlgoProperties(ALGO_YESCRYPT_R8, uint256S("3fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_YESCRYPT_R32]    = CPOWAlgoProperties(ALGO_YESCRYPT_R32, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
-        consensus.aPOWAlgos[ALGO_BCRYPT]          = CPOWAlgoProperties(ALGO_BCRYPT, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
+        consensus.aPOWAlgos[ALGO_X25X]            = CPOWAlgoProperties(ALGO_X25X, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2D]         = CPOWAlgoProperties(ALGO_ARGON2D, uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_ARGON2I]         = CPOWAlgoProperties(ALGO_ARGON2I, uint256S("0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
         consensus.aPOWAlgos[ALGO_CPU23R]          = CPOWAlgoProperties(ALGO_CPU23R, uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"), 1);
