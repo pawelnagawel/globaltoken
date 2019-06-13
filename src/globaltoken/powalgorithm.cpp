@@ -315,4 +315,5 @@ std::string GetEquihashBasedDefaultPersonalize(uint8_t nAlgo)
         case ALGO_MARS:
             return std::string("GLT-Mars");
     }
+    return std::string("Unknown!"); // should not happen
 }
