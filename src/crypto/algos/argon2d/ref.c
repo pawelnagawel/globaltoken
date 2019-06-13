@@ -22,7 +22,7 @@
 #include "argon2.h"
 #include "core.h"
 
-#include "blamka-round-ref.h"
+#include "argon2-helper.h" // "blamka-round-ref.h"
 #include "blake2-impl.h"
 #include "blake2.h"
 

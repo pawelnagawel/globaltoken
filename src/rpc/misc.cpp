@@ -61,7 +61,7 @@ UniValue listattackersaddresses(const JSONRPCRequest& request)
     const std::vector<CScript> vBannedAddresses = Params().BannedAddresses();
     UniValue ret(UniValue::VOBJ);
     UniValue arr(UniValue::VARR);
-    ret.pushKV("entries", vBannedAddresses.size());
+    ret.pushKV("entries", static_cast<int64_t>(vBannedAddresses.size()));
     
     for(const CScript& blockedOutScript : vBannedAddresses)
     {

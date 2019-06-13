@@ -27,7 +27,7 @@
 #include "core.h"
 
 #include "blake2.h"
-#include "blamka-round-opt.h"
+#include "argon2-helper.h" //"blamka-round-opt.h"
 
 /*
  * Function fills a new memory block and optionally XORs the old block over the new one.
