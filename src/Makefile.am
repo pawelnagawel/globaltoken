@@ -407,6 +407,7 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/argon2d/blake2.h \
   crypto/algos/argon2d/blake2-impl.h \
   crypto/algos/argon2d/argon2-helper.h \
+  crypto/algos/argon2d/blake2b-argon.c \
   crypto/algos/argon2d/hashargon.cpp \
   crypto/algos/argon2d/hashargon.h \
   crypto/algos/yespower/yespower-sha256.c \
