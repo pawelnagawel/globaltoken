@@ -799,7 +799,7 @@ public:
         
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         
-        strSporkAddress = "mnGzwQeK4FkhQfYGMYKfuXHq29DJN1MVzd";
+        strSporkAddress = "BytLEHc7R6q6iFpzJJLuAzRk9ma4czZNWp";
 
 
         checkpointData = {
@@ -1240,7 +1240,7 @@ public:
         
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
         
-        strSporkAddress = "mqakdpV7YNSnfobctsdSt6GmDzmQTEMois";
+        strSporkAddress = "C3C5vhSuuDXByPtLqdeg9ZQgMd8Akg3s71";
 
         checkpointData = {
             {
