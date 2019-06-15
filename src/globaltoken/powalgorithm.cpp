@@ -293,7 +293,7 @@ std::string GetAlgoRangeString()
 bool IsAlgoAllowedBeforeHF2(uint8_t nAlgo)
 {
     // Hardfork 1 starts with algo sha256 and ends with last algo id x16r
-    return (nAlgo >= ALGO_SHA256D && nAlgo <= ALGO_X16R);
+    return (nAlgo <= ALGO_X16R);
 }
 
 bool IsEquihashBasedAlgo(uint8_t nAlgo)
