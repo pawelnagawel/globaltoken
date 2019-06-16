@@ -3644,7 +3644,7 @@ UniValue generate(const JSONRPCRequest& request)
     int num_generate = request.params[0].get_int();
     
     uint8_t algo = currentAlgo;
-    bool fAlgoFound = false;
+    bool fAlgoFound = true;
     if (!request.params[2].isNull()) {
         algo = GetAlgoByName(request.params[2].get_str(), algo, fAlgoFound);
     }
