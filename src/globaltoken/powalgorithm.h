@@ -75,7 +75,7 @@ enum : uint8_t {
     NUM_ALGOS_IMPL };
 
 enum {
-    BLOCK_VERSION_ALGO              = 0x7E00,
+    BLOCK_VERSION_ALGO              = 0xfe00, // we reserve some bits, maybe for future forks?
     BLOCK_VERSION_SHA256D           = (1 << 9),
     BLOCK_VERSION_SCRYPT            = (2 << 9),
     BLOCK_VERSION_X11               = (3 << 9),
