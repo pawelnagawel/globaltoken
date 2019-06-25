@@ -20,7 +20,6 @@
 #include <checkpoints.h>
 #include <compat/sanity.h>
 #include <consensus/validation.h>
-#include <crypto/algos/argon2d/hashargon.h>
 #include <fs.h>
 #include <httpserver.h>
 #include <httprpc.h>
