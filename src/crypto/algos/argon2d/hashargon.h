@@ -8,10 +8,8 @@
 
 #include <cstdint>
 
-int Argon2Init();
-void Argon2Deinit();
-void Argon2dHash(const char* input, const char* output, const int64_t nTime);
-void Argon2iHash(const char* input, const char* output, const int64_t nTime);
+void Argon2dHash(const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen);
+void Argon2iHash(const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen);
 
 /**
  * Function to hash the inputs in the memory-hard fashion (uses Argon2i)

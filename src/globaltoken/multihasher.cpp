@@ -224,21 +224,19 @@ uint256 CMultihasher::GetHash() const
         }
         case ALGO_ARGON2D:
         {
-            assert(buf.size() == 80);
-            uint32_t nTime;
-            memcpy(&nTime, buf.data() + 68, 4);
-            uint256 thash;
-            Argon2dHash((const char*)buf.data(), (char*)&thash, nTime);
-            return thash;
+            uint256 salt, pepper, finalhash;
+            salt = GlobalHash(buf.data(), buf.data() + buf.size());
+            pepper = HashX16R(buf.data(), buf.data() + buf.size(), salt);
+            Argon2dHash(buf.data(), buf.size(), &finalhash, 32, salt.begin(), 32, pepper.begin(), 32);
+            return finalhash;
         }
         case ALGO_ARGON2I:
         {
-            assert(buf.size() == 80);
-            uint32_t nTime;
-            memcpy(&nTime, buf.data() + 68, 4);
-            uint256 thash;
-            Argon2iHash((const char*)buf.data(), (char*)&thash, nTime);
-            return thash;
+            uint256 salt, pepper, finalhash;
+            salt = GlobalHash(buf.data(), buf.data() + buf.size());
+            pepper = HashCPU23R(buf.data(), buf.data() + buf.size(), salt);
+            Argon2iHash(buf.data(), buf.size(), &finalhash, 32, salt.begin(), 32, pepper.begin(), 32);
+            return finalhash;
         }
         case ALGO_CPU23R:
         {

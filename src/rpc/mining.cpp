@@ -170,8 +170,8 @@ UniValue getblocktreasury(const JSONRPCRequest& request)
 
 UniValue getnetworkhashps(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() > 2)
-        throw std::runtime_error(
+    if (request.fHelp || request.params.size() > 3)
+        throw std::runtime_error(strprintf(
             "getnetworkhashps ( nblocks height )\n"
             "\nReturns the estimated network hashes per second based on the last n blocks.\n"
             "Pass in [blocks] to override # of blocks, -1 specifies since last difficulty change.\n"
@@ -179,15 +179,26 @@ UniValue getnetworkhashps(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. nblocks     (numeric, optional, default=120) The number of blocks, or -1 for blocks since last difficulty change.\n"
             "2. height      (numeric, optional, default=-1) To estimate at the time of the given height.\n"
+            "3. algo        (string, optional, default= -algo in .conf / sha256d) The algorithm to show the hashrate from. (%s)\n"
             "\nResult:\n"
             "x             (numeric) Hashes per second estimated\n"
             "\nExamples:\n"
             + HelpExampleCli("getnetworkhashps", "")
             + HelpExampleRpc("getnetworkhashps", "")
-       );
+        , GetAlgoRangeString()));
 
     LOCK(cs_main);
-    return GetNetworkHashPS(currentAlgo, !request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
+    
+    uint8_t algo = currentAlgo;
+    bool fAlgoFound = true;
+    if (!request.params[2].isNull()) {
+        algo = GetAlgoByName(request.params[3].get_str(), algo, fAlgoFound);
+    }
+    
+    if(!fAlgoFound)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid mining algorithm '%s' selected. Available algorithms: %s", request.params[2].get_str(), GetAlgoRangeString()));
+    
+    return GetNetworkHashPS(algo, !request.params[0].isNull() ? request.params[0].get_int() : 120, !request.params[1].isNull() ? request.params[1].get_int() : -1);
 }
 
 UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGenerate, uint64_t nMaxTries, bool keepScript, uint8_t nAlgo)
