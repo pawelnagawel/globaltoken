@@ -609,7 +609,7 @@ public:
         consensus.nMasternodePayeeReward = 32;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nTreasuryAddressChange = 600000;
+        consensus.nTreasuryAddressChange = 200000;
         consensus.nTreasuryAddressChangeStart = 100000;
         consensus.nTreasuryAmount = 18;
         consensus.BIP16Height = 1;

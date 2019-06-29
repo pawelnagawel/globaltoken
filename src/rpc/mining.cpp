@@ -1141,7 +1141,11 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("masternode", masternodeObj);
     result.pushKV("masternode_payments_started", consensusParams.Hardfork1.IsActivated(pblock->nTime));
     result.pushKV("masternode_payments_enforced", sporkManager.IsSporkActive(SPORK_5_MASTERNODE_PAYMENT_ENFORCEMENT));
+    // We just simulate, that this is an auxpow block, to see if auxpow is allowed at this point.
+    // After that, we reset the version.
+    pblock->SetAuxpowVersion(true);
     result.pushKV("auxpow_allowed", IsAuxPowAllowed(pindexPrev, pblock, consensusParams, pblock->GetAlgo()));
+    pblock->SetAuxpowVersion(false);
 
     if (!pblocktemplate->vchCoinbaseCommitment.empty() && fSupportsSegwit) {
         result.pushKV("default_witness_commitment", HexStr(pblocktemplate->vchCoinbaseCommitment.begin(), pblocktemplate->vchCoinbaseCommitment.end()));

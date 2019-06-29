@@ -318,7 +318,7 @@ inline uint256 Tribus(const T1 pbegin, const T1 pend)
 template<typename T1>
 inline uint256 PHI2(const T1 pbegin, const T1 pend)
 {
-    arith_uint512 hash, hashA, hashB;
+    uint512 hash, hashA, hashB;
     static unsigned char pblank[1];
     arith_uint256 workHash1, workHash2;
 
@@ -339,7 +339,7 @@ inline uint256 PHI2(const T1 pbegin, const T1 pend)
     sph_jh512(&ctx_jh, static_cast<const void*>(&hashA), 64);
     sph_jh512_close(&ctx_jh, static_cast<void*>(&hash));
 
-    if (*static_cast<unsigned char*>(static_cast<void*>(&hash)) & 1) {
+    if (*hash.begin() & 1) {
         sph_gost512_init(&ctx_gost);
         sph_gost512(&ctx_gost, static_cast<const void*>(&hash), 64);
         sph_gost512_close(&ctx_gost, static_cast<void*>(&hash));
