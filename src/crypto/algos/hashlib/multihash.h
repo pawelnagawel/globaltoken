@@ -41,7 +41,7 @@
 #include <crypto/algos/hashlib/lane.h>
 #include <crypto/algos/blake/blake2.h>
 #include <crypto/algos/Lyra2RE/Lyra2.h>
-#include <crypto/algos/argon2d/hashargon.h>
+#include <crypto/algos/argon2/hashargon.h>
 #include <crypto/algos/SWIFFTX/SWIFFTX.h>
 #include <crypto/algos/hex/hex.h>
 #include <crypto/algos/dedal/dedal.h>
