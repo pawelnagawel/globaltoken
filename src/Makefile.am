@@ -395,21 +395,20 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/yescrypt/yescrypt.h \
   crypto/algos/yescrypt/yescrypt-best.c \
   crypto/algos/yescrypt/yescryptcommon.c \
-  crypto/algos/argon2d/argon2.h \
-  crypto/algos/argon2d/core.h \
-  crypto/algos/argon2d/encoding.h \
-  crypto/algos/argon2d/thread.h \
-  crypto/algos/argon2d/argon2.c \
-  crypto/algos/argon2d/core.c \
-  crypto/algos/argon2d/encoding.c \
-  crypto/algos/argon2d/argon2-helper.c \
-  crypto/algos/argon2d/thread.c \
-  crypto/algos/argon2d/blake2.h \
-  crypto/algos/argon2d/blake2-impl.h \
-  crypto/algos/argon2d/argon2-helper.h \
-  crypto/algos/argon2d/blake2b-argon.c \
-  crypto/algos/argon2d/hashargon.cpp \
-  crypto/algos/argon2d/hashargon.h \
+  crypto/algos/argon2/argon2.h \
+  crypto/algos/argon2/core.h \
+  crypto/algos/argon2/encoding.h \
+  crypto/algos/argon2/thread.h \
+  crypto/algos/argon2/argon2.c \
+  crypto/algos/argon2/core.c \
+  crypto/algos/argon2/encoding.c \
+  crypto/algos/argon2/argon2-helper.c \
+  crypto/algos/argon2/thread.c \
+  crypto/algos/argon2/blake2.h \
+  crypto/algos/argon2/blake2-impl.h \
+  crypto/algos/argon2/blake2b-argon.c \
+  crypto/algos/argon2/hashargon.cpp \
+  crypto/algos/argon2/hashargon.h \
   crypto/algos/yespower/yespower-sha256.c \
   crypto/algos/yespower/yespower-opt.c \
   crypto/algos/yespower/yespower.c \
@@ -658,6 +657,13 @@ YESCRYPT_DIST = crypto/algos/yescrypt/yescrypt-platform.c
 YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-opt.c
 YESCRYPT_DIST += crypto/algos/yescrypt/yescrypt-simd.c
 
+ARGON2_DIST  = crypto/algos/argon2/ref.c
+ARGON2_DIST += crypto/algos/argon2/ref.h
+ARGON2_DIST += crypto/algos/argon2/opt.c
+ARGON2_DIST += crypto/algos/argon2/opt.h
+ARGON2_DIST += crypto/algos/argon2/blamka-round-opt.h
+ARGON2_DIST += crypto/algos/argon2/blamka-round-ref.h
+
 CLEANFILES = $(EXTRA_LIBRARIES)
 
 CLEANFILES += *.gcda *.gcno
@@ -675,7 +681,7 @@ CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += obj/build.h
 
-EXTRA_DIST = $(CTAES_DIST) $(YESCRYPT_DIST)
+EXTRA_DIST = $(CTAES_DIST) $(YESCRYPT_DIST) $(ARGON2_DIST)
 
 
 config/bitcoin-config.h: config/stamp-h1
