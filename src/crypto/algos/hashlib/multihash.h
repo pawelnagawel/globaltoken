@@ -39,7 +39,8 @@
 #include <crypto/algos/hashlib/sph_tiger.h>
 #include <crypto/algos/hashlib/sph_panama.h>
 #include <crypto/algos/hashlib/lane.h>
-#include <crypto/algos/blake/blake2.h>
+#include <crypto/algos/blake/blake2b.h>
+#include <crypto/algos/blake/blake2s.h>
 #include <crypto/algos/Lyra2RE/Lyra2.h>
 #include <crypto/algos/argon2/hashargon.h>
 #include <crypto/algos/SWIFFTX/SWIFFTX.h>
