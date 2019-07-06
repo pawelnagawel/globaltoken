@@ -224,18 +224,24 @@ uint256 CMultihasher::GetHash() const
         }
         case ALGO_ARGON2D:
         {
+            assert(buf.size() == 80);
             uint256 salt, pepper, finalhash;
-            salt = GlobalHash(buf.data(), buf.data() + buf.size());
-            pepper = HashX16R(buf.data(), buf.data() + buf.size(), salt);
-            Argon2dHash(buf.data(), buf.size(), &finalhash, 32, salt.begin(), 32, pepper.begin(), 32);
+            uint8_t blockBytes[80] = {0};
+            memcpy(blockBytes, buf.data(), 80);
+            salt = GlobalHash(blockBytes, blockBytes + 80);
+            pepper = HashX16R(blockBytes, blockBytes + 80, salt);
+            Argon2dHash(blockBytes, static_cast<uint8_t*>(static_cast<void*>(&finalhash)), static_cast<uint8_t*>(static_cast<void*>(&salt)), static_cast<uint8_t*>(static_cast<void*>(&pepper)));
             return finalhash;
         }
         case ALGO_ARGON2I:
         {
+            assert(buf.size() == 80);
             uint256 salt, pepper, finalhash;
-            salt = GlobalHash(buf.data(), buf.data() + buf.size());
-            pepper = HashCPU23R(buf.data(), buf.data() + buf.size(), salt);
-            Argon2iHash(buf.data(), buf.size(), &finalhash, 32, salt.begin(), 32, pepper.begin(), 32);
+            uint8_t blockBytes[80] = {0};
+            memcpy(blockBytes, buf.data(), 80);
+            salt = GlobalHash(blockBytes, blockBytes + 80);
+            pepper = HashCPU23R(blockBytes, blockBytes + 80, salt);
+            Argon2iHash(blockBytes, static_cast<uint8_t*>(static_cast<void*>(&finalhash)), static_cast<uint8_t*>(static_cast<void*>(&salt)), static_cast<uint8_t*>(static_cast<void*>(&pepper)));
             return finalhash;
         }
         case ALGO_CPU23R:

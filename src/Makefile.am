@@ -372,7 +372,8 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/Lyra2RE/Lyra2RE.h \
   crypto/algos/Lyra2RE/Sponge.c \
   crypto/algos/Lyra2RE/Sponge.h \
-  crypto/algos/blake/blake2.h \
+  crypto/algos/blake/blake2b.h \
+  crypto/algos/blake/blake2s.h \
   crypto/algos/blake/blake2-impl.h \
   crypto/algos/blake/blake2b-ref.c \
   crypto/algos/blake/blake2s-ref.c \
@@ -404,9 +405,6 @@ crypto_algos_libglobaltoken_algos_a_SOURCES = \
   crypto/algos/argon2/encoding.c \
   crypto/algos/argon2/argon2-helper.c \
   crypto/algos/argon2/thread.c \
-  crypto/algos/argon2/blake2.h \
-  crypto/algos/argon2/blake2-impl.h \
-  crypto/algos/argon2/blake2b-argon.c \
   crypto/algos/argon2/hashargon.cpp \
   crypto/algos/argon2/hashargon.h \
   crypto/algos/yespower/yespower-sha256.c \

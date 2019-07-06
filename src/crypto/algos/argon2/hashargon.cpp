@@ -96,23 +96,23 @@ int cpu23R_hash_argon2d(void *out, size_t outlen, const void *in, size_t inlen,
     return argon2_ctx(&context, Argon2_d);
 }
 
-void Argon2dHash (const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
+void Argon2dHash (uint8_t* input, uint8_t* output, uint8_t *salthash, uint8_t *secrethash)
 {
     argon2_context ctx;
 
     ctx.version         = ARGON2_VERSION_13;
     ctx.flags           = ARGON2_DEFAULT_FLAGS;
 
-    ctx.out             = (uint8_t*) output;
-    ctx.outlen          = (uint32_t )outlen;
-    ctx.pwd             = (uint8_t*) input;
-    ctx.pwdlen          = (uint32_t) inlen;
-    ctx.salt            = (uint8_t*) salthash;
-    ctx.saltlen         = (uint32_t) salthashlen;
+    ctx.out             = output;
+    ctx.outlen          = 32;
+    ctx.pwd             = input;
+    ctx.pwdlen          = 80;
+    ctx.salt            = salthash;
+    ctx.saltlen         = 32;
     
-    ctx.secret          = (uint8_t*) secrethash;
-    ctx.secretlen       = (uint32_t) secrethashlen;
-    ctx.ad              = nullptr;
+    ctx.secret          = secrethash;
+    ctx.secretlen       = 32;
+    ctx.ad              = NULL;
     ctx.adlen           = 0;
 
     ctx.m_cost          = 512;
@@ -120,30 +120,30 @@ void Argon2dHash (const void* input, const size_t inlen, const void* output, con
     ctx.lanes           = 2;
     ctx.threads         = 1;
 
-    ctx.allocate_cbk    = nullptr;
-    ctx.free_cbk        = nullptr;
+    ctx.allocate_cbk    = NULL;
+    ctx.free_cbk        = NULL;
 
     const int result = argon2_ctx (&ctx, Argon2_d);
     assert (result == ARGON2_OK);
 }
 
-void Argon2iHash (const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
+void Argon2iHash (uint8_t* input, uint8_t* output, uint8_t *salthash, uint8_t *secrethash)
 {
     argon2_context ctx;
 
     ctx.version         = ARGON2_VERSION_13;
     ctx.flags           = ARGON2_DEFAULT_FLAGS;
 
-    ctx.out             = (uint8_t*) output;
-    ctx.outlen          = (uint32_t) outlen;
-    ctx.pwd             = (uint8_t*) input;
-    ctx.pwdlen          = (uint32_t) inlen;
-    ctx.salt            = (uint8_t*) salthash;
-    ctx.saltlen         = (uint32_t) salthashlen;
+    ctx.out             = output;
+    ctx.outlen          = 32;
+    ctx.pwd             = input;
+    ctx.pwdlen          = 80;
+    ctx.salt            = salthash;
+    ctx.saltlen         = 32;
     
-    ctx.secret          = (uint8_t*) secrethash;
-    ctx.secretlen       = (uint32_t) secrethashlen;
-    ctx.ad              = nullptr;
+    ctx.secret          = secrethash;
+    ctx.secretlen       = 32;
+    ctx.ad              = NULL;
     ctx.adlen           = 0;
 
     ctx.m_cost          = 256;
@@ -151,8 +151,8 @@ void Argon2iHash (const void* input, const size_t inlen, const void* output, con
     ctx.lanes           = 4;
     ctx.threads         = 1;
 
-    ctx.allocate_cbk    = nullptr;
-    ctx.free_cbk        = nullptr;
+    ctx.allocate_cbk    = NULL;
+    ctx.free_cbk        = NULL;
 
     const int result = argon2_ctx (&ctx, Argon2_i);
     assert (result == ARGON2_OK);

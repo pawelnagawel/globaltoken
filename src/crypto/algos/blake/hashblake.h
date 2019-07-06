@@ -7,7 +7,8 @@
 #ifndef HASH_BLAKE_H
 #define HASH_BLAKE_H
 
-#include "blake2.h"
+#include "blake2b.h"
+#include "blake2s.h"
 #include <uint256.h>
 
 template<typename T1>

@@ -19,12 +19,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <crypto/algos/blake/blake2b.h>
+#include <crypto/algos/blake/blake2-impl.h>
+
 #include "argon2.h"
 #include "ref.h"
 
 #include "blamka-round-ref.h"
-#include "blake2-impl.h"
-#include "blake2.h"
 
 
 void fill_block(const block *prev_block, const block *ref_block,

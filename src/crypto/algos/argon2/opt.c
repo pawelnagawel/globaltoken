@@ -19,10 +19,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <crypto/algos/blake/blake2b.h>
+
 #include "argon2.h"
 #include "opt.h"
 
-#include "blake2.h"
 #include "blamka-round-opt.h"
 
 void fill_block(__m128i *state, const block *ref_block, block *next_block,

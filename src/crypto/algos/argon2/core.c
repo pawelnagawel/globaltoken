@@ -29,10 +29,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <crypto/algos/blake/blake2b.h>
+#include <crypto/algos/blake/blake2-impl.h>
+
 #include "core.h"
 #include "thread.h"
-#include "blake2.h"
-#include "blake2-impl.h"
 
 #ifdef GENKAT
 #include "genkat.h"

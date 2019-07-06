@@ -18,7 +18,7 @@
 #ifndef BLAKE_ROUND_MKA_OPT_H
 #define BLAKE_ROUND_MKA_OPT_H
 
-#include "blake2-impl.h"
+#include <crypto/algos/blake/blake2-impl.h>
 
 #include <emmintrin.h>
 #if defined(__SSSE3__)

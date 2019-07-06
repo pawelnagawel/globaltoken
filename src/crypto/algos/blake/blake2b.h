@@ -4,7 +4,7 @@
  * Copyright 2015
  * Daniel Dinu, Dmitry Khovratovich, Jean-Philippe Aumasson, and Samuel Neves
  *
- * You may use this work under the terms of a Creative Commons CC0 1.0
+ * You may use this work under the terms of a Creative Commons CC0 1.0 
  * License/Waiver or the Apache Public License 2.0, at your option. The terms of
  * these licenses can be found at:
  *
@@ -18,7 +18,9 @@
 #ifndef PORTABLE_BLAKE2_H
 #define PORTABLE_BLAKE2_H
 
-#include "argon2.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <limits.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -67,19 +69,19 @@ enum {
 };
 
 /* Streaming API */
-ARGON2_LOCAL int blake2b_init(blake2b_state *S, size_t outlen);
-ARGON2_LOCAL int blake2b_init_key(blake2b_state *S, size_t outlen, const void *key,
+int blake2b_init(blake2b_state *S, size_t outlen);
+int blake2b_init_key(blake2b_state *S, size_t outlen, const void *key,
                      size_t keylen);
-ARGON2_LOCAL int blake2b_init_param(blake2b_state *S, const blake2b_param *P);
-ARGON2_LOCAL int blake2b_update(blake2b_state *S, const void *in, size_t inlen);
-ARGON2_LOCAL int blake2b_final(blake2b_state *S, void *out, size_t outlen);
+int blake2b_init_param(blake2b_state *S, const blake2b_param *P);
+int blake2b_update(blake2b_state *S, const void *in, size_t inlen);
+int blake2b_final(blake2b_state *S, void *out, size_t outlen);
 
 /* Simple API */
-ARGON2_LOCAL int blake2b(void *out, size_t outlen, const void *in, size_t inlen,
-                         const void *key, size_t keylen);
+int blake2b(void *out, size_t outlen, const void *in, size_t inlen,
+            const void *key, size_t keylen);
 
 /* Argon2 Team - Begin Code */
-ARGON2_LOCAL int blake2b_long(void *out, size_t outlen, const void *in, size_t inlen);
+int blake2b_long(void *out, size_t outlen, const void *in, size_t inlen);
 /* Argon2 Team - End Code */
 
 #if defined(__cplusplus)
