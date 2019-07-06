@@ -79,6 +79,28 @@ static BLAKE2_INLINE uint64_t load64(const void *src) {
 #endif
 }
 
+/* BLAKE2s required code BEGIN */
+
+static BLAKE2_INLINE void store16( void *dst, uint16_t w )
+{
+#if defined(NATIVE_LITTLE_ENDIAN)
+  memcpy(dst, &w, sizeof w);
+#else
+  uint8_t *p = ( uint8_t * )dst;
+  *p++ = ( uint8_t )w; w >>= 8;
+  *p++ = ( uint8_t )w;
+#endif
+}
+
+/* prevents compiler optimizing out memset() */
+static BLAKE2_INLINE void secure_zero_memory(void *v, size_t n)
+{
+  static void *(*const volatile memset_v)(void *, int, size_t) = &memset;
+  memset_v(v, 0, n);
+}
+
+/* BLAKE2s required code END */
+
 static BLAKE2_INLINE void store32(void *dst, uint32_t w) {
 #if defined(NATIVE_LITTLE_ENDIAN)
     memcpy(dst, &w, sizeof w);
