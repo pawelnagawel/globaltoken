@@ -115,7 +115,7 @@ void Argon2dHash (const void* input, const size_t inlen, void* output, const siz
     ctx.ad              = nullptr;
     ctx.adlen           = 0;
 
-    ctx.m_cost          = 16384;
+    ctx.m_cost          = 384;
     ctx.t_cost          = 2;
     ctx.lanes           = 2;
     ctx.threads         = 1;
@@ -146,7 +146,7 @@ void Argon2iHash (const void* input, const size_t inlen, void* output, const siz
     ctx.ad              = nullptr;
     ctx.adlen           = 0;
 
-    ctx.m_cost          = 8192;
+    ctx.m_cost          = 128;
     ctx.t_cost          = 4;
     ctx.lanes           = 6;
     ctx.threads         = 1;
