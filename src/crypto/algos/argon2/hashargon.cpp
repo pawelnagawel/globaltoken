@@ -96,7 +96,7 @@ int cpu23R_hash_argon2d(void *out, size_t outlen, const void *in, size_t inlen,
     return argon2_ctx(&context, Argon2_d);
 }
 
-void Argon2dHash (const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
+void Argon2dHash (const void* input, const size_t inlen, void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
 {
     argon2_context ctx;
 
@@ -127,7 +127,7 @@ void Argon2dHash (const void* input, const size_t inlen, const void* output, con
     assert (result == ARGON2_OK);
 }
 
-void Argon2iHash (const void* input, const size_t inlen, const void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
+void Argon2iHash (const void* input, const size_t inlen, void* output, const size_t outlen, const void *salthash, const size_t salthashlen, const void *secrethash, const size_t secrethashlen)
 {
     argon2_context ctx;
 
