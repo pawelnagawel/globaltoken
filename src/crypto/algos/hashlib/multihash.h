@@ -125,9 +125,11 @@ inline int GetHashSelectionX16R(const uint256 PrevBlockHash, int index)
 inline int GetHashSelectionCPU23R(const uint256 PrevBlockHash, int index) {
     assert(index >= 0);
     assert(index < 23);
+    
+    // We fixed this algo, because the GetNibble function only returns values from 0 - 15.
 
-    #define START_OF_LAST_23_NIBBLES_OF_HASH 41
-    int hashSelection = PrevBlockHash.GetNibble(START_OF_LAST_23_NIBBLES_OF_HASH + index);
+    const unsigned char *hashBits = PrevBlockHash.end() - 23 + index;
+    int hashSelection = *hashBits % 23;
     return(hashSelection);
 }
 
